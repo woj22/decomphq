@@ -232,7 +232,7 @@ End-of-shift souls waiting = 24 + 22 − 12 − P: P = 0 gives 34, P = 6 gives 2
 - **Pay packet** = `8 base + 1 x Processed + 1 x Sound − 2 x Unsound + 5 if Processed >= 6 + 3 if Accuracy >= 80 %`.
 - Example shift: 8 processed, 6 sound, 2 unsound, incident resolved, 26 souls waiting. Accuracy 75 %. Pay = 8 + 8 + 6 − 4 + 5 = **23 ob**, purse 12 to 35. Order = 68 + 12 − 10 − 0 + 4 = **74 %**.
 - Optional spend: Quartermaster's hatch sells a desk lamp for 20 ob (highlights one inconsistency per case next shift). It proves the earn-and-spend loop in one object.
-- Suggested progression input for the Director: promotion review passes if Processed >= 6, Accuracy >= 67 % and Order >= 60. Soft failure only: at 36 or more souls waiting the supervisor reprimands the player; the shift still ends normally.
+- Suggested progression input for the Director: promotion review passes if Processed >= 6, Accuracy >= 67 % and Order >= 60. Soft failure only: at 32 or more souls waiting the supervisor reprimands the player; the shift still ends normally.
 
 Out of scope for the prototype: employee stats, efficiency formula, economy beyond the purse, favour, expansion, night step, Appeals, Detention.
 
