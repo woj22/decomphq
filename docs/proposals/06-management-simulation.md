@@ -4,7 +4,6 @@
 **Principle:** the fortress is a pipeline of integers that is always ticking; the player's rank decides how much of it they can see and touch. Every number here is a starting value for tuning and should live in one data file.
 
 ## 1. Clock
-
 | Item | Value |
 |---|---|
 | Playable shift | 08:00–18:00 (10 game hours) |
@@ -12,19 +11,13 @@
 | Sim tick | every 10 game minutes (60 ticks per shift) |
 | Clock pauses | story dialogue, pause menu, tutorial cards. It does **not** pause at the judgement desk (time pressure) |
 | Night (18:00–08:00) | resolved as one step at shift end: arrivals at 0.3 x rate, every department at 0.3 x capacity |
-| Day roll-over | pay, morale/integrity update, event draw, favour update, autosave |
-| Offline progress | none; days advance only in play |
+| Day roll-over | pay, morale/integrity update, event draw, favour update, autosave. No offline progress |
 
 Arrival rate: `λ(day, t) = 12 souls/h x (1 + 0.02 x (day − 1)) x wave(t) x eventMult`
 `wave`: 08–10 = 1.3, 10–14 = 1.0, 14–16 = 0.7, 16–18 = 1.0. `eventMult` = 1, or 1.5–2.5 on story surge days (war, plague). The 2 %/day growth is the brief's "administrative crisis" expressed as a number.
 
 ## 2. Soul pipeline
-
-```
-Arrival -> Registration -> Records lookup -+-> (30 % flagged) Investigation -+-> Judgement -> Transport -> Heaven / Hell
-                                           +-> (70 % routine) ---------------+       |
-                                                   Appeals <- (contested verdicts) --+--> Detention (holds, escapees, pending appeals)
-```
+`Arrival -> Registration -> Records lookup -> [30 % flagged: Investigation] -> Judgement -> Transport -> Heaven / Hell`; contested verdicts go to **Appeals**, and holds, escapees and pending appeals sit in **Detention**.
 
 | Stage (location) | Role | Base rate, souls per staff-hour | Staff, Day 1 | Queue cap | Day-1 queue |
 |---|---|---|---|---|---|
@@ -45,7 +38,6 @@ Per tick, per department `d` (Δt = 1/6 h):
 The third term is blocking: a full downstream hall stops the upstream one, and the overflow stands visibly in corridors and courtyards. Fractions carry over in an accumulator, so the run is deterministic for a given seed.
 
 **Department efficiency**
-
 `Eff_d = CompMod x MoraleMod x SupMod x ToolMod x (1 − Disruption)`
 
 | Term | Formula | Neutral point |
@@ -57,7 +49,6 @@ The third term is blocking: a full downstream hall stops the upstream one, and t
 | Disruption | `0.05 x open disputes + absent fraction + 0.10 if a realm inspector is posted` | 0 |
 
 **Quality**
-
 `Err_d = clamp( 0.20 − 0.15 x C̄/100 + 0.05 x max(0, Load_d − 1) + 0.30 x Corr_d , 0.02 , 0.60 )`, where `Load_d = Q_d / (4 x hourly capacity)`.
 
 - Wrong verdicts: `Judged x Err_judgement`. Appeals lodged = 20 % of wrong + 2 % of right. Appealed souls wait in Detention.
@@ -65,7 +56,6 @@ The third term is blocking: a full downstream hall stops the upstream one, and t
 - Wrong deliveries are only discovered by auditors (each auditor samples 10 dispatched souls per day). Discovered ones cost favour.
 
 ## 3. Employees
-
 Every employee is a stored record: seeded name, role, grade (1–3), four stats 0–100, 1–2 traits, 0–1 secret, flags.
 
 | Stat | Generated | Drives |
@@ -96,12 +86,10 @@ Secrets (about 20 % of staff, found by talking, gossip, audits or documents in t
 | Bribery | on_take exposed, or offered to the player | confront, report to auditor, take a cut | dismiss (Order +2), cover (Corr stays, leverage gained), share (purse up, own Integrity flag) |
 | Burnout | M < 25 for 3 days | grant leave, reassign, ignore | absent 3 days / 30 % quits / collapses at desk in view |
 | Promotion request | A > 70 and 10+ days in grade | answer at their desk | grant: wage x1.25, grade +1; deny: M −10, I −5, A-driven rivalry |
-| Poaching | A > 80, either favour < 35 | counter-offer or let go | lose employee to an embassy, or pay +20 % wage |
 
 Budget: 1–3 events drawn per day, at most 6 live at once.
 
 ## 4. Economy
-
 Single currency: **obols** (ob). Favour is a meter, not a currency, and cannot be bought directly.
 
 | Income per day | Formula | Day-1 value |
@@ -111,20 +99,13 @@ Single currency: **obols** (ob). Favour is a meter, not a currency, and cannot b
 | Hell stipend | `250 x LF/50`, capped 500; 0 while LF < 25 | 250 |
 | Special grants | negotiated in the Diplomatic Quarter (R4+), tied to a pledge | 0 |
 
-| Daily wage | ob | Daily wage | ob |
-|---|---|---|---|
-| receptionist, transporter | 8 | adjudicator | 14 |
-| archivist, guard | 10 | auditor | 16 |
-| investigator | 12 | supervisor | 24 |
-
-Grade multiplier x1.0 / x1.25 / x1.5. Day-1 wage bill 642 ob (appeals bench included in adjudicators). Upkeep 40 ob per open wing (5 open = 200). Hire fee = 5 days' wage. Dismissal = 3 days' severance, and M −3 in that department. Treasury starts at **2,750 ob**; a negative treasury means wages are late (WageMod −6) and building stops.
+Daily wages (ob): receptionist 8, transporter 8, archivist 10, guard 10, investigator 12, adjudicator 14, auditor 16, supervisor 24. Grade multiplier x1.0 / x1.25 / x1.5. Day-1 wage bill 670 ob. Upkeep 40 ob per open wing (5 open = 200). Hire fee = 5 days' wage. Dismissal = 3 days' severance, and M −3 in that department. Treasury starts at **2,750 ob**; a negative treasury means wages are late (WageMod −6) and building stops.
 
 **Quotas** (reissued every 5 days, posted on the Diplomatic Quarter noticeboard):
 - Throughput: at least 110 souls dispatched per day (rises with λ).
 - Share bands: Heaven expects 35–55 % of dispatches; Hell expects 45–65 %. Both are satisfied at 45–55 % Heaven. As the story crisis advances the bands drift apart until they no longer overlap, at which point pleasing both is impossible and the choice becomes political.
 
 ## 5. Global meters
-
 | Meter | Range / start | Computation |
 |---|---|---|
 | **Backlog B** | integer, start 124 | sum of all queues. `BacklogDays = B / (bottleneck hourly capacity x 10)` |
@@ -143,28 +124,23 @@ Day-1 check: BacklogDays 124/122 = 1.02; Corr 0.12; GuardCover 10/10.3 = 0.97; 3
 | Breach | Order < 20 | souls cross the wrong border; both favours −5/day; Detention fills |
 | Cold shoulder | a favour < 25 | that stipend frozen; inspector posted in one department (Disruption +0.10) |
 | Embargo | a favour < 10 | that realm's gate closed for a day; Transport blocks and backs up |
-| Patronage | a favour > 75 | that stipend at cap; one gift upgrade; the other realm's favour −1/day |
-| Partisan | abs(HF − LF) > 40 | the scorned realm opens Soul Dispute events against past verdicts |
+| Patronage / Partisan | a favour > 75 / abs(HF − LF) > 40 | stipend at cap and one gift upgrade, other favour −1/day / the scorned realm opens Soul Dispute events against past verdicts |
 
 ## 6. Fortress expansion
-
 | Build | Unlock | Cost / days | Simulation effect | Visible change |
 |---|---|---|---|---|
 | Second Registration Arcade | R3 | 600 / 2 | +4 receptionist desks; Arrival cap +60 | new rope lanes and lantern row; portcullis raised |
 | Records Undercroft | R3 | 900 / 3 | +6 archivist desks; Records ToolMod +0.10 | stair opens; lit shelf stacks below the floor grate |
-| Pneumatic tube line | R3 | 400 / 1 | Records to Judgement blocking removed; ToolMod +0.05 both | brass pipes along walls, canisters travelling |
 | Appeals Court | R2 story, R4 expand | 1,200 / 4 | Appeals bench +4; appeal rate −25 % | sealed doors open; gallery fills with petitioners |
 | Detention Tower | R4 | 1,000 / 3 | Detention cap 20 to 60; Breach effects halved | tower rises over Border Guard HQ; lit cell windows |
 | Stair / Ferry enlargement (two builds) | R4 | 800 / 3 each | that realm's transport +50 % | wider golden stair / second ferry at the red quay |
 | Refectory and Dormitory | R4 | 700 / 2 | morale Target 60 to 68 | staff eat and rest there off-shift; chimney smoke |
 | Audit Office | R4 | 900 / 3 | +4 auditor desks; exposure chance 40 % to 60 % | ledger hall; auditors seen walking the departments |
-| Embassy refurbishment (per realm) | R4 | 1,500 / 5 | that favour's daily penalties halved | banners, envoys and retinues in the Diplomatic Quarter |
 | High Chancellor's Office | R5 | story | edicts; summons bell | tower top opens; fortress-wide view |
 
 Construction is physical: scaffolding and mason NPCs occupy the site for the build days, the area is walkable but roped off, and completion adds desks which then need hiring to fill. Staff headcount grows roughly 55 (R1), 80 (R2), 130 (R3), 250 (R4), 400+ (R5).
 
 ## 7. Running it cheaply on mobile
-
 | Tier | What | Count | Update cost |
 |---|---|---|---|
 | A. Department aggregates | queue, present staff, C̄, M̄, Ī, Corr, Eff | 8–12 records | a few multiplications each per tick (every 10 real seconds) |
@@ -174,24 +150,20 @@ Construction is physical: scaffolding and mason NPCs occupy the site for the bui
 
 - A queue is an integer. The Arrival Hall draws `min(Q, visible slots)` soul sprites along the lane path; when Q drops, the front sprite walks off and the rest shuffle. Overflow beyond the slots is drawn as a clump at the gate, and beyond that as density tiers (sparse, packed, spilling).
 - Only souls that reach the **player's** desk or the Appeals bench become full cases. All others are counts with a Heaven/Hell/contested split.
-- When the player enters a room, embodied NPCs are picked from that department's roster and seated at desks; leaving returns them to being roster rows. Their state is never lost because it lives in the roster.
-- An event promotes its 1–3 actors to Tier C wherever they are, so the argument is actually happening at those desks when the player walks in.
+- Embodied NPCs are drawn from the room's roster when the player enters and return to roster rows on leaving; an event promotes its 1–3 actors to Tier C wherever they are, so the argument is really happening at those desks.
 - Everything is seeded and deterministic, so save data is the aggregates, the roster and the seed.
 
 ## 8. Every action happens in the world
-
 | Action | Where / who |
 |---|---|
-| Read a department's state | its slate **noticeboard** (queue, staff present, error tally); the supervisor's spoken morning report |
-| Read fortress state | Exchequer ledger (treasury), Diplomatic Quarter board (quotas, favour), the great tally board in the central courtyard (Backlog) |
+| Read state | each department's slate **noticeboard** (queue, staff present, errors) and its supervisor's morning report; Exchequer ledger (treasury); Diplomatic Quarter board (quotas, favour); courtyard tally board (Backlog) |
 | Judge / hear an appeal | sit at your desk / the Appeals bench |
 | Praise, warn, question, settle a dispute, answer a promotion request | talk to the employee at their desk |
 | Reassign | talk to the employee, issue a transfer slip; they walk to the new desk |
 | Dismiss | in person, or via their supervisor (slower, M −1 extra) |
 | Hire | Hiring Hall bench in the Administrative Offices: candidates physically wait; talk to each, one visible stat is hidden until interviewed |
-| Set wages, approve overtime | Paymaster's desk, Exchequer |
+| Set wages, approve overtime; assign auditors | Paymaster's desk, Exchequer; Chief Auditor's desk |
 | Build / upgrade | Master Mason's drafting table in the courtyard, then visit the site |
-| Assign auditors, open an investigation | Chief Auditor's desk |
 | Set department policy (Speed vs Care, Strict vs Lenient) | tell that supervisor |
 | Negotiate grants, quotas, bands | envoys in the Diplomatic Quarter |
 
@@ -199,7 +171,6 @@ Walking is kept tolerable by in-world shortcuts earned with rank, not by menus: 
 The mockup's bottom bar (Staff / Reports / Upgrades) is proposed as the player's **pocket ledger**: read-only copies of what they have personally read or been told, stamped with the day and hour they saw it. It can set a waypoint to the relevant desk but cannot perform any action.
 
 ## 9. Staging by rank
-
 | Rank | Visible | Controllable | Still ticking unseen |
 |---|---|---|---|
 | 1 Junior Processing Clerk | shift clock; souls waiting; own purse; Order; own processed and accuracy; the Arrival Hall queue as bodies; colleagues' moods through talk | own verdicts; whether to report or ignore what they witness | the entire pipeline, roster, events, treasury, favour. The player's desk is 1 of 13 judgement desks and its output is added to the department's |
@@ -211,7 +182,6 @@ The mockup's bottom bar (Staff / Reports / Upgrades) is proposed as the player's
 The HUD coin always shows the money the player personally controls: own purse (R1–2), department budget (R3), treasury (R4–5).
 
 ## 10. Worked example: Day 1, whole fortress (aggregate tier)
-
 Judgement efficiency: C̄ 52 gives 1.02; M̄ 55 gives 0.967; supervisor C 55, span 12 gives 1.015; no tools; one open dispute gives 0.95. `Eff = 1.02 x 0.967 x 1.015 x 1.0 x 0.95 = 0.95`.
 Hourly capacities: Registration 5 x 3.0 x 0.90 = 13.5; Records 7 x 2.0 x 0.95 = 13.3; Investigation 8 x 0.5 x 1.0 = 4.0; Judgement 12 x 1.0 x 0.95 + player 0.8 = 12.2; Transport 5 x 2.5 x 1.0 = 12.5.
 
@@ -227,12 +197,11 @@ Hourly capacities: Registration 5 x 3.0 x 0.90 = 13.5; Records 7 x 2.0 x 0.95 = 
 - Backlog: 124 + 120 − 125 = **119** (pipeline 109, Appeals 6, Detention 4). Judgement is the bottleneck: its queue grew 28 to 41 while Registration fell 46 to 31. This is what the Rank 3 player should notice on the noticeboard.
 - Quality: Err = 0.20 − 0.078 + 0 + 0.036 = 0.16, so 19 wrong verdicts. Appeals lodged 4 + 2 = 6; the bench heard 6; net 0.
 - Share: 57 to Heaven, 68 to Hell = 46 % Heaven, inside both bands. Quota 110 met. HF +1, LF +1, minus 0.5 for one wrong delivery an auditor found for Heaven: HF 50.5, LF 51.
-- Money: fees 125 x 4 = 500; stipends 250 + 250; income **1,000**. Wages 642 + upkeep 200 = **842**. Net **+158**; treasury 2,750 to 2,908.
+- Money: fees 125 x 4 = 500; stipends 250 + 250; income **1,000**. Wages 670 + upkeep 200 = **870**. Net **+130**; treasury 2,750 to 2,880.
 - Order: one dispute settled (2 incidents left) gives target 100 − 11.7 − 7.2 − 0 − 8 = 73; the meter drifts from 68 to about **71** by 18:00.
-- Night step: arrivals 0.3 x 12 x 14 = 50; bottleneck 0.3 x 12.2 x 14 = 51. Day 2 opens at B = 118 with λ = 12.24/h. With no intervention, growth overtakes capacity around Day 3 and BacklogDays passes 2 near Day 15.
+- Night step: arrivals 0.3 x 12 x 14 = 50; bottleneck 0.3 x 12.2 x 14 = 51. Day 2 opens at B = 118 with λ = 12.24/h. With no intervention, arrivals exceed capacity from Day 3 and BacklogDays passes 2 around Day 12.
 
 ## 11. PROTOTYPE subset (10–15 minute first playable)
-
 One shift at Rank 1. Three integers, five embodied NPCs, no roster, no treasury, no favour, no events deck.
 
 | Element | Specification |
@@ -268,7 +237,6 @@ End-of-shift souls waiting = 24 + 22 − 12 − P: P = 0 gives 34, P = 6 gives 2
 Out of scope for the prototype: employee stats, efficiency formula, economy beyond the purse, favour, expansion, night step, Appeals, Detention.
 
 ## Dependencies on other roles
-
 | Role | What I need | What I supply |
 |---|---|---|
 | Game Director | definition of a "sound" verdict; real seconds per case; promotion criteria per rank; whether the clock runs at the desk | counters (Processed, Accuracy, Order, purse), pipeline state, pay formula, per-rank exposure table |
@@ -279,13 +247,10 @@ Out of scope for the prototype: employee stats, efficiency formula, economy beyo
 | QA/Producer | a balancing spreadsheet check against these formulas | the worked example as a reference test case |
 
 ## Open questions / risks
-
 1. **Walking versus convenience.** Strictly in-world management may be tedious at Rank 4–5 on a phone. Runners, tubes and the bell are my answer; if the UI/UX proposal makes the bottom bar a set of action menus, that contradicts this document and needs a ruling.
 2. **Coin meaning changes with rank** (purse, then budget, then treasury). It is consistent as "money you control", but may confuse; the alternative is two separate readouts.
 3. **Scale of numbers.** About 120 souls a day is tiny for "every dead human". Either this fortress is one gate of many, or one counted soul stands for a batch. Narrative must choose; the formulas do not care.
 4. **Clock at the desk.** I assume time runs during a case. If the Director wants untimed deliberation, the prototype rates must be re-derived from cases per shift instead of seconds.
-5. **Day length.** Ten real minutes suits Rank 1; a Rank 4 day of walking, talking and building may need 15–20, or a "retire early" option.
-6. **None of these numbers have been played.** The worked example is arithmetic only. The 2 %/day arrival growth, the Order weights and the morale constants are first guesses and are the most likely to need changing.
-7. **Order mixes several causes** (backlog, corruption, guards, incidents). Players may not understand why it moved; each cause needs an in-world tell and a line on the noticeboard.
-8. **Sound versus unsound verdicts** sits awkwardly with "no obvious right answer" cases. Ambiguous cases should count every option as sound and carry their consequences through favour and story instead.
-9. **Roster reveal.** Hiding stats until the player talks to staff is good for exploration but slow for 400 employees; supervisors' summaries have to carry most of the load at Rank 4+.
+5. **None of these numbers have been played.** The worked example is arithmetic only. The 2 %/day arrival growth, the Order weights and the morale constants are first guesses and are the most likely to need changing.
+6. **Order mixes several causes** (backlog, corruption, guards, incidents). Players may not understand why it moved; each cause needs an in-world tell and a line on the noticeboard.
+7. **Sound versus unsound verdicts** sits awkwardly with "no obvious right answer" cases. Ambiguous cases should count every option as sound and carry their consequences through favour and story instead.
