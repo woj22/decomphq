@@ -6,7 +6,7 @@
   14
  ],
  "ambience": "amb_court",
- "backdrop": "court",
+ "backdrop": "none",
  "grid": [
   "####D#####D###",
   "#B.sss.....B.k",

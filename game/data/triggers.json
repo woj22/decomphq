@@ -656,6 +656,14 @@
      "case": "case_s007",
      "value": "hell"
     }
+   },
+   {
+    "op": "not",
+    "of": {
+     "op": "case_state",
+     "case": "case_s007",
+     "value": "pending"
+    }
    }
   ],
   "once": true,
