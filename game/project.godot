@@ -1,0 +1,55 @@
+; Engine configuration file — The Purgatory Border (M1 prototype)
+config_version=5
+
+[application]
+
+config/name="The Purgatory Border"
+config/description="M1 prototype"
+run/main_scene="res://ui/main.tscn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+boot_splash/show_image=false
+boot_splash/bg_color=Color(0.051, 0.043, 0.071, 1)
+
+[autoload]
+
+EventBus="*res://autoload/event_bus.gd"
+Content="*res://autoload/content.gd"
+GameState="*res://autoload/game_state.gd"
+Clock="*res://autoload/clock.gd"
+Sim="*res://autoload/sim.gd"
+World="*res://autoload/world.gd"
+Dialogue="*res://autoload/dialogue.gd"
+SaveGame="*res://autoload/save_game.gd"
+Audio="*res://autoload/audio.gd"
+Playtest="*res://autoload/playtest.gd"
+
+[debug]
+
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/unsafe_property_access=0
+gdscript/warnings/unsafe_method_access=0
+
+[display]
+
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/stretch/scale_mode="integer"
+window/handheld/orientation=4
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.051, 0.043, 0.071, 1)
