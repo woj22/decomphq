@@ -20,6 +20,7 @@ var shift: Dictionary = {}
 var pending_scored: Array = []
 var triggers_fired: Dictionary = {}
 var dialogue_log: Array = []
+var back_room_log: Array = [] # lines spoken in the Back Room (the companion was present)
 var last_ledger: Dictionary = {}
 var choices_log: Array = []
 var in_game := false
@@ -55,6 +56,7 @@ func reset() -> void:
 	pending_scored = []
 	triggers_fired = {}
 	dialogue_log = []
+	back_room_log = []
 	last_ledger = {}
 	choices_log = []
 
@@ -549,6 +551,14 @@ func gate_result() -> String:
 
 func _on_line(speaker: String, text: String) -> void:
 	dialogue_log.append({"speaker": speaker, "text": text})
+	if World.area_id == "area_back_room":
+		var nm := speaker
+		var n := Content.npc(speaker)
+		if not n.is_empty():
+			nm = str(n.get("name", speaker))
+		back_room_log.append({"speaker": nm, "text": text})
+		while back_room_log.size() > 30:
+			back_room_log.pop_front()
 	while dialogue_log.size() > 20:
 		dialogue_log.pop_front()
 
@@ -559,7 +569,7 @@ func to_dict() -> Dictionary:
 		"docket": docket.duplicate(), "docket_day": docket_day, "objective": objective, "unlocked_areas": unlocked_areas.duplicate(),
 		"incidents": incidents.duplicate(), "items": items.duplicate(), "snapshots": snapshots.duplicate(true),
 		"shift": shift.duplicate(true), "pending_scored": pending_scored.duplicate(), "triggers_fired": triggers_fired.duplicate(),
-		"dialogue_log": dialogue_log.duplicate(true), "last_ledger": last_ledger.duplicate(true), "choices_log": choices_log.duplicate(true)}
+		"dialogue_log": dialogue_log.duplicate(true), "back_room_log": back_room_log.duplicate(true), "last_ledger": last_ledger.duplicate(true), "choices_log": choices_log.duplicate(true)}
 
 
 ## JSON turns ints into floats; restore integral values to int, recursively.
@@ -610,6 +620,7 @@ func from_dict(raw: Dictionary) -> void:
 	pending_scored = (d.get("pending_scored", []) as Array).duplicate()
 	triggers_fired = (d.get("triggers_fired", {}) as Dictionary).duplicate()
 	dialogue_log = (d.get("dialogue_log", []) as Array).duplicate(true)
+	back_room_log = (d.get("back_room_log", []) as Array).duplicate(true)
 	last_ledger = (d.get("last_ledger", {}) as Dictionary).duplicate(true)
 	choices_log = (d.get("choices_log", []) as Array).duplicate(true)
 	in_game = true

@@ -38,6 +38,23 @@ func _row(label: String, value: String, cb: Callable) -> void:
 	rows.add_child(h)
 
 
+## A text field row (the companion's API key is kept only on this device, in user://companion.cfg).
+func _text_row(label: String, value: String, secret: bool, cb: Callable) -> void:
+	var h := HBoxContainer.new()
+	var l := UiKit.label(label, 16)
+	l.custom_minimum_size.x = 150
+	h.add_child(l)
+	var e := LineEdit.new()
+	e.text = value
+	e.secret = secret
+	e.placeholder_text = "sk-..." if secret else "gpt-4o-mini"
+	e.custom_minimum_size = Vector2(220, 48)
+	e.virtual_keyboard_enabled = true
+	e.text_changed.connect(func(t: String) -> void: cb.call(t))
+	h.add_child(e)
+	rows.add_child(h)
+
+
 func _fill() -> void:
 	for c in rows.get_children():
 		c.queue_free()
@@ -46,3 +63,10 @@ func _fill() -> void:
 	_row("Joystick", "On" if Settings.joystick else "Off", func() -> void: Settings.joystick = not Settings.joystick)
 	_row("Haptics", "On" if Settings.haptics else "Off", func() -> void: Settings.haptics = not Settings.haptics)
 	_row("Screen shake", "On" if Settings.shake else "Off", func() -> void: Settings.shake = not Settings.shake)
+	_text_row("OpenAI key", Companion.api_key, true, func(t: String) -> void:
+		Companion.api_key = t.strip_edges()
+		Companion.save_settings())
+	_text_row("Model", Companion.model, false, func(t: String) -> void:
+		if t.strip_edges() != "":
+			Companion.model = t.strip_edges()
+			Companion.save_settings())

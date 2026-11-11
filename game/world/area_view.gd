@@ -227,7 +227,7 @@ func _build_npcs() -> void:
 		if not (o is Dictionary):
 			continue
 		var od: Dictionary = o
-		if str(od.get("type", "")) != "npc":
+		if not (str(od.get("type", "")) in ["npc", "companion"]):
 			continue
 		var oid := str(od.get("id", ""))
 		var npc_id := str(od.get("npc", ""))

@@ -1,0 +1,15 @@
+{"steps": [
+ {"do": "new_game"}, {"do": "drain"},
+ {"do": "debug_promote"}, {"do": "drain"},
+ {"do": "teleport", "area": "area_adjudicator_chamber", "spawn": "from_court"}, {"do": "clear_docket"},
+ {"do": "set_flag", "id": "flag_night_pact"}, {"do": "set_flag", "id": "flag_found_violet_ink"},
+ {"do": "set_time", "hour": 23}, {"do": "drain"},
+ {"do": "talk", "object": "obj_secret_cabinet", "prefer": ["Slide"]}, {"do": "drain"}, {"do": "wait", "seconds": 1.0},
+ {"do": "assert", "area": "area_back_room"},
+ {"do": "talk", "object": "obj_pell_back"}, {"do": "drain"}, {"do": "wait_companion"},
+ {"do": "assert", "back_room_said": "Pell is right"},
+ {"do": "interact", "object": "obj_odalys"}, {"do": "wait", "seconds": 0.3},
+ {"do": "companion_say", "text": "What do you make of the violet ink?"},
+ {"do": "wait", "seconds": 0.3},
+ {"do": "screenshot", "name": "companion_chat"}
+]}

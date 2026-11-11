@@ -26,7 +26,8 @@ func delete_save() -> void:
 
 func snapshot() -> Dictionary:
 	return {"version": VERSION, "saved_at": Time.get_datetime_string_from_system(true), "clock": Clock.to_dict(),
-		"player": World.to_dict(), "sim": Sim.to_dict(), "state": GameState.to_dict()}
+		"player": World.to_dict(), "sim": Sim.to_dict(), "state": GameState.to_dict(),
+		"companion": Companion.to_dict()}
 
 
 func autosave(reason: String = "") -> bool:
@@ -64,6 +65,7 @@ func restore(d: Dictionary) -> Dictionary:
 	GameState.from_dict(d.get("state", {}))
 	Clock.from_dict(d.get("clock", {}))
 	Sim.from_dict(d.get("sim", {}))
+	Companion.from_dict(d.get("companion", {}))
 	GameState.recompute_derived()
 	EventBus.game_loaded.emit()
 	return d.get("player", {})

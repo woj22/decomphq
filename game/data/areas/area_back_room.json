@@ -143,6 +143,21 @@
     5
    ],
    "dialogue": "dlg_back_map"
+  },
+  {
+   "id": "obj_odalys",
+   "type": "companion",
+   "npc": "npc_odalys",
+   "cell": [
+    3,
+    4
+   ],
+   "facing": "ne",
+   "use_cell": [
+    3,
+    5
+   ],
+   "verb": "Talk"
   }
  ],
  "spawns": {

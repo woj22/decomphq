@@ -322,6 +322,22 @@ func run_step(s: Dictionary) -> bool:
 			for r: String in ["display", "body", "mono", "large"]:
 				var f: Font = Assets.font(r)
 				_log("font %s -> %s" % [r, f.get_font_name() if f != null else "NULL"])
+		"companion_say":
+			Companion.ask(str(s.get("text", "")))
+			var until := Time.get_ticks_msec() + 10000
+			await frames(2)
+			while Companion.busy and Time.get_ticks_msec() < until:
+				await frames(2)
+			var last: Dictionary = Companion.history.back() if not Companion.history.is_empty() else {}
+			if str(last.get("role", "")) != "assistant":
+				fail("companion gave no reply")
+				return false
+			_log("Odalys: " + str(last.get("content", "")))
+		"wait_companion":
+			var until2 := Time.get_ticks_msec() + 10000
+			await frames(2)
+			while Companion.busy and Time.get_ticks_msec() < until2:
+				await frames(2)
 		"set_flag":
 			GameState.set_flag(str(s["id"]), s.get("value", true))
 		"leave_desk":
@@ -505,6 +521,9 @@ func check(s: Dictionary) -> bool:
 		return false
 	if s.has("in_game") and GameState.in_game != bool(s["in_game"]):
 		fail("in_game = %s, want %s" % [str(GameState.in_game), str(s["in_game"])])
+		return false
+	if s.has("back_room_said") and not str(GameState.back_room_log).contains(str(s["back_room_said"])):
+		fail("Back Room log lacks: " + str(s["back_room_said"]))
 		return false
 	if s.has("area") and World.area_id != str(s["area"]):
 		fail("area %s, want %s" % [World.area_id, str(s["area"])])

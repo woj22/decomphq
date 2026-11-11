@@ -21,3 +21,4 @@ Binding rulings from the project owner. These override any proposal that conflic
 | D15 | 2026-11-11 | **Nights are deadlier;** guards die; a healer revives the player; if every defender dies Purgatory is overrun (game over). | Owner |
 | D16 | 2026-11-11 | **Senior Adjudicator reviews** junior verdicts (right, wrong or deferred) and souls from the Deferral Cells, rather than judging fresh. | Owner |
 | D17 | 2026-11-11 | **The Back Room:** a secret room behind the Chamber's cabinet for night meetings with Pell and Quill. | Owner |
+| D18 | 2026-11-11 | **LLM companion:** Odalys Wick (ex-Room 0 copying clerk) lives in the Back Room, voiced by an OpenAI-compatible Chat Completions API using the player's own key (stored only on the device). Knows a little more than the player at the start; is briefed with live game state; comments after Pell/Quill speak in the Back Room. | Owner |

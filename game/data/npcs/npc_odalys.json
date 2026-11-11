@@ -1,0 +1,8 @@
+{
+ "id": "npc_odalys",
+ "name": "Odalys Wick",
+ "title": "Formerly Deputy Clerk (Copying), Room 0",
+ "sprite": "chr_clerk_lilac",
+ "portrait": "por_marrow",
+ "dialogue": []
+}

@@ -6,6 +6,7 @@ signal joystick_changed(active: bool, base: Vector2, knob: Vector2)
 signal focus_changed(object_id: String, verb: String)
 signal desk_requested(case_id: String)
 signal tap_marker(world_pos: Vector2)
+signal companion_requested()
 
 var root: Node2D # world container supplied by the main scene
 var view: AreaView
@@ -253,7 +254,7 @@ func verb_for(o: Dictionary) -> String:
 
 func interactable(o: Dictionary) -> bool:
 	var t := str(o.get("type", ""))
-	return t in ["npc", "hatch", "door", "desk_player", "inspect", "stair"] and model.object_visible(o)
+	return t in ["npc", "hatch", "door", "desk_player", "inspect", "stair", "companion"] and model.object_visible(o)
 
 
 func input_locked() -> bool:
@@ -319,6 +320,8 @@ func interact(o: Dictionary) -> void:
 					Dialogue.request(str(o["dialogue"]))
 			elif o.has("dialogue"):
 				Dialogue.request(str(o["dialogue"]))
+		"companion":
+			companion_requested.emit()
 		"inspect":
 			if o.has("dialogue"):
 				Dialogue.request(str(o["dialogue"]))

@@ -36,6 +36,7 @@ func _ready() -> void:
 	dialogue_panel = DialoguePanel.new()
 	dialog_layer.add_child(dialogue_panel)
 	World.desk_requested.connect(open_desk)
+	World.companion_requested.connect(func() -> void: _menu(CompanionChat.new()))
 	World.tap_marker.connect(_tap_marker)
 	Dialogue.modal_opened.connect(_on_modal)
 	EventBus.rank_changed.connect(func(_r: int) -> void: World.refresh_player_sprite())
