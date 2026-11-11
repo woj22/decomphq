@@ -338,6 +338,9 @@ func run_step(s: Dictionary) -> bool:
 			await frames(2)
 			while Companion.busy and Time.get_ticks_msec() < until2:
 				await frames(2)
+		"open_settings":
+			main._menu(SettingsScreen.new())
+			await frames(3)
 		"set_flag":
 			GameState.set_flag(str(s["id"]), s.get("value", true))
 		"leave_desk":

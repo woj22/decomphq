@@ -1,0 +1,1 @@
+{"steps":[{"do":"new_game"},{"do":"drain"},{"do":"open_settings"},{"do":"screenshot","name":"settings"}]}
