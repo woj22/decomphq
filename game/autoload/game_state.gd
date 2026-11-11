@@ -41,7 +41,7 @@ func reset() -> void:
 	stats["purse"] = Content.cfg_i("purse_start", 12)
 	for s: Variant in Content.stat_defs():
 		if s is Dictionary and (s as Dictionary).has("id"):
-			stats[str(s["id"])] = (s as Dictionary).get("start", 0)
+			_store(str(s["id"]), float((s as Dictionary).get("start", 0)))
 	flags = {}
 	cases = {}
 	docket = []
@@ -491,7 +491,25 @@ func to_dict() -> Dictionary:
 		"dialogue_log": dialogue_log.duplicate(true), "last_ledger": last_ledger.duplicate(true), "choices_log": choices_log.duplicate(true)}
 
 
-func from_dict(d: Dictionary) -> void:
+## JSON turns ints into floats; restore integral values to int, recursively.
+static func normalize(v: Variant) -> Variant:
+	if v is float and is_equal_approx(v, round(v)) and absf(v) < 1.0e12:
+		return int(round(v))
+	if v is Dictionary:
+		var out := {}
+		for k: Variant in v:
+			out[k] = normalize((v as Dictionary)[k])
+		return out
+	if v is Array:
+		var a: Array = []
+		for x: Variant in v:
+			a.append(normalize(x))
+		return a
+	return v
+
+
+func from_dict(raw: Dictionary) -> void:
+	var d: Dictionary = normalize(raw)
 	reset()
 	rank = int(d.get("rank", 1))
 	stats = (d.get("stats", stats) as Dictionary).duplicate(true)

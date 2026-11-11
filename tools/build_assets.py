@@ -252,7 +252,10 @@ def main():
     raw = keep or tempfile.mkdtemp(prefix='art_raw_')
     os.makedirs(raw, exist_ok=True)
     for g in ('tiles', 'walls', 'props', 'characters', 'fx', 'backdrops', 'ui', 'portraits', 'audio'):
-        shutil.rmtree(os.path.join(ASSETS, g), ignore_errors=True)
+        d = os.path.join(ASSETS, g)          # remove our outputs only (keep Godot's .import sidecars)
+        for fn in (os.listdir(d) if os.path.isdir(d) else []):
+            if fn.endswith(('.png', '.json', '.wav')):
+                os.remove(os.path.join(d, fn))
     pool = ProcessPoolExecutor(max_workers=2)
     futs = [pool.submit(pil_tiles, 0), pool.submit(pil_ui, 0), pool.submit(pil_audio, 0)] + \
            [pool.submit(pil_backdrop, n) for n in spec.BACKDROPS]

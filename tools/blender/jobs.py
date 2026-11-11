@@ -48,6 +48,8 @@ def j_kerbs(ctx):
     kit.kerb(ctx, 'y'); shot(ctx, 'wall_kerb_y')
     kit.kerb(ctx, 'c'); shot(ctx, 'wall_kerb_corner')
     kit.stairs(ctx); shot(ctx, 'stairs_up')
+    kit.kerb_door(ctx, 'x'); shot(ctx, 'wall_kerb_door_x')
+    kit.kerb_door(ctx, 'y'); shot(ctx, 'wall_kerb_door_y')
 
 
 def j_brazier(ctx):

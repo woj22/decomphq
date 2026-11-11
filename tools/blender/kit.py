@@ -166,8 +166,6 @@ def stairs(ctx):
         z1 = (i + 1) * (2 * HU) / n
         ctx.box((-.5, y0, 0), (.5, .5, z1), st)
         ctx.box((-.5, y0 - .01, z1 - 2 / ZPX), (.5, y0 + .04, z1), nose)
-    # side cheeks
-    ctx.box((.44, -.5, 0), (.5, .5, 2 * HU + 4 / ZPX), m('4b4654'))
 
 
 # ------------------------------------------------------------------ props
@@ -204,19 +202,40 @@ def wall_torch(ctx, axis, f):
 
 
 def banner(ctx, f):
+    """wall-hung banner on a bracket at the cell's near corner (works on both _x and _y wall cells)."""
     m = ctx.m
-    ctx.cyl(.12, .08, 0, .06, m('27232f'), seg=8)
-    ctx.cyl(.022, .022, 0, 2.2, m('37323f'), seg=6)
-    ctx.sphere(.04, (0, 0, 2.24), m('e0a83e'))
-    ctx.box((-.26, -.02, 2.08), (.26, .02, 2.11), m('27232f'))
+    root = ctx.empty('banner', (.56, -.56, 0))
+    root.rotation_euler = (0, 0, math.radians(45))
+    ctx.box((-.03, .0, 2.0), (.03, .1, 2.06), m('27232f'), root)
+    ctx.box((-.27, -.02, 2.06), (.27, .02, 2.1), m('37323f'), root)
+    for sx in (-.27, .27):
+        ctx.sphere(.03, (sx, 0, 2.08), m('e0a83e'), parent=root)
     sw = [0, .03][f]
-    # cloth: tapered swallow-tail (polygon in XZ)
-    pts = [(-.22, 2.08), (.22, 2.08), (.22 + sw, .95), (0 + sw, 1.12), (-.22 + sw, .95)]
-    cl = ctx.poly_prism(pts, .02, m('b3261e')); cl.location = (0, -.04, 0)
-    tr = ctx.poly_prism([(-.22, 2.08), (.22, 2.08), (.22, 2.0), (-.22, 2.0)], .025, m('e0a83e')); tr.location = (0, -.045, 0)
-    # sigil: gold scale / flame mark
-    ctx.cyl(.07, .07, 1.6 - .01, 1.6 + .01, m('e0a83e'), seg=4, loc=(sw * .5, -.06)).rotation_euler = (math.radians(90), 0, 0)
-    ctx.box((-.012 + sw * .5, -.07, 1.38), (.012 + sw * .5, -.05, 1.82), m('e0a83e'))
+    pts = [(-.22, 2.06), (.22, 2.06), (.22 + sw, .98), (0 + sw, 1.16), (-.22 + sw, .98)]
+    cl = ctx.poly_prism(pts, .02, m('b3261e'), parent=root)
+    tr = ctx.poly_prism([(-.22, 2.06), (.22, 2.06), (.22, 1.98), (-.22, 1.98)], .025, m('e0a83e'), parent=root)
+    tr.location = (0, -.005, 0)
+    for zz in (1.86, 1.2):
+        ctx.poly_prism([(-.22 + sw * (2.06 - zz), zz), (.22 + sw * (2.06 - zz), zz), (.22, zz - .03), (-.22, zz - .03)], .025, m('74161b'), parent=root).location = (0, -.005, 0)
+    ctx.cyl(.075, .075, -.01, .01, m('e0a83e'), seg=4, loc=(sw * .5, 0), parent=root).rotation_euler = (math.radians(90), 0, 0)
+    ctx.cyl(.075, .075, -.01, .01, m('e0a83e'), seg=4, loc=(sw * .5, 0), parent=root).location = (sw * .5, -.02, 1.58)
+    ctx.box((-.012 + sw * .5, -.03, 1.36), (.012 + sw * .5, -.015, 1.8), m('e0a83e'), root)
+
+
+def kerb_door(ctx, axis='x'):
+    """low gateway for a door cell on a near kerb row: two piers, threshold, lantern; floor shows through."""
+    root = ctx.empty('kdoor')
+    m = ctx.m
+    side = ctx.brick('kerbbrick', '4b4654', '37323f', '1a1722', bw=1 / 3, bh=6 / ZPX, mort=0.03)
+    for sx in (-1, 1):
+        x0, x1 = (-.5, -.3) if sx < 0 else (.3, .5)
+        ctx.box((x0, -.5, 0), (x1, -.28, .78), side, root)
+        ctx.box((x0 - .02, -.52, .78), (x1 + .02, -.26, .84), m('8a8591'), root)
+        ctx.cyl(.1, 0, .84, 1.1, m('66616e'), seg=4, loc=((x0 + x1) / 2, -.39), parent=root, smooth=False).rotation_euler = (0, 0, math.radians(45))
+    ctx.box((-.3, -.5, 0), (.3, -.28, .02), m('8a8591'), root)
+    ctx.box((-.42, -.56, .5), (-.38, -.5, .66), m('27232f'), root)
+    ctx.box((-.43, -.6, .56), (-.37, -.54, .68), m('f6d67a', 3.0), root)
+    _finish(root, axis)
 
 
 def desk(ctx, tray=0, superior=False):
@@ -454,17 +473,18 @@ def statue(ctx):
     ctx.sphere(.2, (0, .04, z0 + 1.62), st1, scale=(1, 1.05, 1.15))
     ctx.cyl(.15, 0, z0 + 1.7, z0 + 1.98, st1, seg=10, loc=(0, .1))
     ctx.sphere(.12, (0, -.1, z0 + 1.58), m('1a1722'), scale=(1, .6, 1.1))
-    # wings: fanned feather planes behind shoulders, swept up
+    # wings: two swept, scalloped silhouettes in a plane facing the viewer, behind the shoulders
+    wing = [(0, 0), (.25, .25), (.5, .55), (.72, .95), (.82, 1.2), (.7, 1.05), (.74, .82), (.6, .72), (.66, .5),
+            (.5, .42), (.54, .2), (.38, .12), (.4, -.12), (.24, -.08), (.22, -.38), (.1, -.25)]
     for sx in (-1, 1):
-        for i in range(5):
-            L = .95 - i * .12
-            ang = math.radians(20 + i * 14)
-            pts = [(0, 0), (L, .06), (L * .92, .2), (0, .16)]
-            f = ctx.poly_prism(pts, .04, st1 if i % 2 == 0 else st2, name='feather')
-            f.location = (sx * .14, .2, z0 + 1.3 - i * .02)
-            f.rotation_euler = (0, -sx * ang if sx > 0 else math.pi + ang, math.radians(sx * -25))
-            if sx < 0:
-                f.rotation_euler = (0, math.pi + ang, math.radians(25))
+        pts = [(sx * x, z) for x, z in wing]
+        if sx < 0: pts = pts[::-1]
+        wg = ctx.poly_prism(pts, .05, st1, name='wing'); wg.location = (-.08 + sx * .1 * .707, .14 + sx * .1 * .707, z0 + 1.2)
+        wg.rotation_euler = (0, 0, math.radians(45))
+        inner = [(sx * x * .8, z * .85 - .02) for x, z in wing]
+        if sx < 0: inner = inner[::-1]
+        wi = ctx.poly_prism(inner, .05, st2, name='wing2'); wi.location = (-.05 + sx * .1 * .707, .11 + sx * .1 * .707, z0 + 1.2)
+        wi.rotation_euler = (0, 0, math.radians(45))
     # arms + staff + lantern (held out to the viewer's left/front)
     ctx.cyl(.08, .1, z0 + .75, z0 + 1.3, st2, seg=8, loc=(-.3, -.1)).rotation_euler = (math.radians(-20), math.radians(-15), 0)
     ctx.sphere(.07, (-.34, -.22, z0 + .78), st1)

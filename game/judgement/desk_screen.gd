@@ -567,3 +567,10 @@ func open_verdict() -> void:
 	verdict_view.desk = self
 	overlay.add_child(verdict_view)
 	verdict_view.build()
+
+
+signal verdict_done(case_id: String, verdict: String)
+
+
+func verdict_finished(v: String) -> void:
+	verdict_done.emit(case_id, v)

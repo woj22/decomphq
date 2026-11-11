@@ -39,6 +39,8 @@ S('works_hatch_y', 'walls', job='walls', **W)
 for ax in 'xy':
     S(f'wall_kerb_{ax}', 'walls', (64, 48), (32, 32), 'kerb', job='kerbs', solid=True, underlay='floor_flag_0')
 S('wall_kerb_corner', 'walls', (64, 48), (32, 32), 'kerb', job='kerbs', solid=True, underlay='floor_flag_0')
+for ax in 'xy':
+    S(f'wall_kerb_door_{ax}', 'walls', (64, 80), (32, 64), 'door', job='kerbs', underlay='floor_flag_0')
 S('stairs_up', 'walls', (64, 80), (32, 64), 'stair', job='kerbs', height_hu=2)
 
 # ---------------------------------------------------------------- props
@@ -46,7 +48,7 @@ P = dict(kind='prop', solid=True, outline=True)
 S('brazier_0', 'props', (32, 48), (16, 40), job='brazier', frames=4, fps=6, emissive=True, **P)
 S('wall_torch_x', 'props', (32, 48), (37, 66), job='torch', frames=4, fps=6, **dict(P, solid=False))
 S('wall_torch_y', 'props', (32, 48), (-5, 66), job='torch', frames=4, fps=6, **dict(P, solid=False))
-S('banner_red', 'props', (32, 112), (16, 104), job='banner', frames=2, fps=2, **P)
+S('banner_red', 'props', (32, 64), (16, 72), job='banner', frames=2, fps=2, **dict(P, solid=False))
 S('desk_clerk', 'props', (64, 64), (32, 48), job='desks', **P)
 S('desk_clerk_tray1', 'props', (64, 64), (32, 48), job='desks', **P)
 S('desk_clerk_tray2', 'props', (64, 64), (32, 48), job='desks', **P)

@@ -1,0 +1,10 @@
+{"steps":[
+ {"do":"new_game"},
+ {"do":"screenshot","name":"arrival_start"},
+ {"do":"assert","stats":{"queue":24,"purse":12,"order":68},"area":"area_arrival_hall"},
+ {"do":"talk","object":"obj_marrow"},
+ {"do":"screenshot","name":"booths"},
+ {"do":"go_to","object":"obj_wren"},
+ {"do":"drain"},
+ {"do":"screenshot","name":"court"}
+]}
