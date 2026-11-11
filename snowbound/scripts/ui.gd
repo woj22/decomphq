@@ -286,11 +286,11 @@ func _input(e: InputEvent) -> void:
 		var st := e as InputEventScreenTouch
 		if st.pressed:
 			var jr := Rect2(joystick.position - Vector2(30, 30), joystick.size + Vector2(60, 60))
-			if joystick.visible and jr.has_point(st.position / _scale()) and _joy_index < 0:
+			if joystick.visible and jr.has_point(st.position) and _joy_index < 0:
 				_joy_index = st.index
 				_joy_center = joystick.position + joystick.size / 2
-				_joy_update(st.position / _scale())
-			elif _look_index < 0 and not _over_ui(st.position / _scale()):
+				_joy_update(st.position)
+			elif _look_index < 0 and not _over_ui(st.position):
 				_look_index = st.index
 		else:
 			if st.index == _joy_index:
@@ -302,15 +302,15 @@ func _input(e: InputEvent) -> void:
 	elif e is InputEventScreenDrag:
 		var sd := e as InputEventScreenDrag
 		if sd.index == _joy_index:
-			_joy_update(sd.position / _scale())
+			_joy_update(sd.position)
 		elif sd.index == _look_index:
-			player.look_drag(sd.relative / _scale())
+			player.look_drag(sd.relative)
 	elif e is InputEventMouseButton and e.device != InputEvent.DEVICE_ID_EMULATION:
 		var mb := e as InputEventMouseButton
 		if mb.button_index == MOUSE_BUTTON_LEFT:
-			_mouse_look = mb.pressed and not _over_ui(mb.position / _scale())
+			_mouse_look = mb.pressed and not _over_ui(mb.position)
 	elif e is InputEventMouseMotion and _mouse_look and e.device != InputEvent.DEVICE_ID_EMULATION:
-		player.look_drag((e as InputEventMouseMotion).relative / _scale())
+		player.look_drag((e as InputEventMouseMotion).relative)
 
 
 func _scale() -> float:

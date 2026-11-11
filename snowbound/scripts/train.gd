@@ -280,20 +280,8 @@ func _blizzard() -> void:
 		p.process_material = pm
 		var q := QuadMesh.new()
 		q.size = Vector2(0.05, 0.05)
-		var m := StandardMaterial3D.new()
-		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-		var grad := Gradient.new()
-		grad.set_color(0, Color(1, 1, 1, 1))
-		grad.set_color(1, Color(1, 1, 1, 0))
-		var tex := GradientTexture2D.new()
-		tex.gradient = grad
-		tex.fill = GradientTexture2D.FILL_RADIAL
-		tex.fill_from = Vector2(0.5, 0.5)
-		tex.fill_to = Vector2(1, 0.5)
-		m.albedo_texture = tex
-		m.albedo_color = Color(0.85, 0.9, 1.0, 0.9)
+		var m := ShaderMaterial.new()
+		m.shader = preload("res://shaders/snowflake.gdshader")
 		q.material = m
 		p.draw_pass_1 = q
 		p.position = Vector3(side * 11.5, 2.5, 15)

@@ -75,8 +75,7 @@ func sleep() -> void:
 		return
 	story.phase = "morning"
 	ui.set_phase("Morning %d" % story.night)
-	player.position = Vector3(0.0, 0, Layout.compartment_z(1) + 1.1)
-	player.yaw = -PI / 2.0
+	player.put(Vector3(0.0, 0, Layout.compartment_z(1) + 1.1), -PI / 2.0)
 	for n in doors:
 		_set_door(n, true)
 	if res["victim"] != "":
@@ -354,11 +353,26 @@ func _refresh_interactables() -> void:
 	pass
 
 
+func _seat_free(seat: Dictionary) -> bool:
+	for id in people:
+		var p: Person = people[id]
+		if p.visible and p.position.distance_to(seat["pos"]) < 0.25:
+			return false
+	return true
+
+
 func _interactables() -> Array:
 	var out := []
 	if story == null or _busy:
 		return out
 	var phase := story.phase
+	if player.lying:   # in your berth: sleep (when it's time) or get up
+		var fwd := player.camera.global_position + player.forward()
+		if phase in ["evening", "day"]:
+			out.append({"pos": fwd, "label": "Sleep", "fn": sleep})
+		else:
+			out.append({"pos": fwd, "label": "Get up", "fn": player.stand})
+		return out
 	if _in_baggage:
 		out.append({"pos": Layout.baggage_door() + Vector3(0, 1.5, 0.1), "label": "Speak through the door", "fn": _talk_through_door})
 		return out
@@ -378,8 +392,14 @@ func _interactables() -> Array:
 	for c in story.clues:
 		if not c["found"] and clue_nodes.has(c["id"]):
 			out.append({"pos": (clue_nodes[c["id"]] as Node3D).global_position, "label": "Inspect", "fn": func(): _inspect(c)})
-	if phase in ["evening", "day"]:
-		out.append({"pos": Vector3(-0.45, 0.6, Layout.compartment_z(1) + 1.95), "label": "Sleep", "fn": sleep})
+	var own_z := Layout.compartment_z(Cast.compartment_of(Cast.PLAYER))
+	if not player.lying and phase in ["evening", "day", "morning"]:
+		out.append({"pos": Vector3(-0.5, 0.6, own_z + 1.95), "label": "Lie down", "fn": func(): player.lie(Vector3(-1.08, 0, own_z + 1.98), -PI / 2.0)})
+	if not player.seated and not player.lying:
+		out.append({"pos": Vector3(-0.85, 0.55, own_z + 0.35), "label": "Sit", "fn": func(): player.sit(Layout.compartment_seat(Cast.compartment_of(Cast.PLAYER)))})
+		for seat in Layout.dining_seats():
+			if _seat_free(seat):
+				out.append({"pos": (seat["pos"] as Vector3) + Vector3(0, 0.55, 0), "label": "Sit", "fn": func(): player.sit(seat)})
 	if phase == "morning" and _tribunal_pending:
 		out.append({"pos": Vector3(0, 1.2, Layout.DINING_Z + 1.0), "label": "Join the tribunal", "fn": tribunal})
 	if not story.locked.is_empty():
@@ -413,6 +433,8 @@ func _process(_d: float) -> void:
 		if score < best_score:
 			best_score = score
 			best = it
+	if best.is_empty() and player.seated and story.phase != "tribunal":
+		best = {"label": "Stand up", "fn": player.stand}
 	_target = best
 	ui.set_action(str(best.get("label", "")))
 	if _tribunal_pending and player.position.z > Layout.DINING_Z + 0.3 and not _busy:
@@ -547,8 +569,7 @@ func _go_to_baggage() -> void:
 	_in_baggage = true
 	var z0 := Layout.baggage_door().z
 	player.extra_rects = [[-1.2, 1.2, z0 + 0.3, z0 + 3.7]]
-	player.position = Layout.baggage_door() + Vector3(0, 0, 1.2)
-	player.yaw = 0.0
+	player.put(Layout.baggage_door() + Vector3(0, 0, 1.2), 0.0)
 	if not train.has_node("Baggage"):
 		_build_baggage()
 

@@ -96,6 +96,15 @@ func _shots(dir: String) -> void:
 	player.yaw = 0
 	await get_tree().create_timer(0.4).timeout
 	await _snap(dir, "05_own_body")
+	# sitting at a dining table opposite two guests, and lying in your berth
+	player.sit(Layout.dining_seats()[2])
+	player.pitch = -0.15
+	await get_tree().create_timer(0.6).timeout
+	await _snap(dir, "08_sit")
+	player.lie(Vector3(-1.08, 0, Layout.compartment_z(1) + 1.98), -PI / 2.0)
+	await get_tree().create_timer(0.6).timeout
+	await _snap(dir, "09_lie")
+	player.stand()
 	# a conversation (demo lines) and the tribunal
 	player.position = Vector3(0.0, 0, Layout.DINING_Z + 0.9)
 	player.pitch = -0.1

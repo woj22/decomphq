@@ -13,6 +13,8 @@ var pitch := -0.05
 var move := Vector2.ZERO        # from the on-screen joystick, x = strafe, y = forward
 var frozen := false             # during conversations and the tribunal
 var seated := false
+var lying := false
+var _pre := Vector3.ZERO          # where you stood before sitting or lying down
 var _bob := 0.0
 var _look_target: Variant = null
 var blocker := Callable()        # extra collision test (closed doors), set by the game
@@ -58,15 +60,45 @@ func _ok(p: Vector3) -> bool:
 
 
 func sit(spot: Dictionary) -> void:
+	if not seated and not lying:
+		_pre = position
+	lying = false
+	body.visible = true
 	position = spot["pos"]
 	yaw = float(spot["rot"]) + PI   # the model faces +z, the camera looks along -z
 	seated = true
 	body.set_pose("sit")
 
 
-func stand() -> void:
+func lie(head: Vector3, look_yaw: float) -> void:
+	## Lie in a berth: the camera on the pillow, looking along the berth and up at the ceiling.
+	if not seated and not lying:
+		_pre = position
 	seated = false
+	lying = true
+	position = head
+	yaw = look_yaw
+	pitch = 0.45
+	body.visible = false
+
+
+func stand() -> void:
+	if (seated or lying) and _pre != Vector3.ZERO and Layout.walkable(_pre):
+		position = _pre
+	seated = false
+	lying = false
+	body.visible = true
 	body.set_pose("idle")
+
+
+func put(p: Vector3, look_yaw: float) -> void:
+	## Place you standing somewhere (new mornings, the baggage car).
+	seated = false
+	lying = false
+	body.visible = true
+	body.set_pose("idle")
+	position = p
+	yaw = look_yaw
 
 
 func forward() -> Vector3:
@@ -94,7 +126,9 @@ func _process(delta: float) -> void:
 		yaw = lerp_angle(yaw, want_yaw, minf(1.0, delta * 4.0))
 		pitch = lerpf(pitch, want_pitch, minf(1.0, delta * 4.0))
 	var moving := false
-	if not frozen and not seated and m.length() > 0.08:
+	if not frozen and (seated or lying) and m.length() > 0.6:
+		stand()   # push the stick to get up
+	if not frozen and not seated and not lying and m.length() > 0.08:
 		m = m.limit_length(1.0)
 		var fwd := Vector3(-sin(yaw), 0, -cos(yaw))
 		var right := Vector3(cos(yaw), 0, -sin(yaw))
@@ -118,5 +152,7 @@ func _process(delta: float) -> void:
 	rotation.y = yaw
 	body.rotation.y = PI
 	var eye := EYE - (0.45 if seated else 0.0) + (absf(sin(_bob)) * 0.02 if moving else 0.0)
+	if lying:
+		eye = 0.74
 	camera.position = Vector3(0, eye, -0.06)
 	camera.rotation = Vector3(pitch, 0, 0)
