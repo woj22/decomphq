@@ -244,13 +244,63 @@ def nine(kind):
     return im
 
 
+BTN = {'cross': ('7fa7e8', '5a7ab8'), 'circle': ('e85a5a', 'b04040'), 'triangle': ('4fc9a0', '3a9478'),
+       'square': ('e08ad6', 'a8629f')}
+
+
+def face_button(kind, down=False):
+    im, d = canvas(64, 64)
+    sym = rgb(BTN[kind][1 if down else 0])
+    dy = 2 if down else 0
+    if not down:
+        d.ellipse((4, 7, 59, 62), fill=INK)                                   # drop shadow / depth
+    d.ellipse((4, 3 + dy, 59, 58 + dy), fill=EDGE)                            # 2 px rim
+    d.ellipse((6, 5 + dy, 57, 56 + dy), fill=CHAR)
+    if down:
+        d.arc((6, 5 + dy, 57, 56 + dy), 20, 160, fill=rgb('4b4654'), width=2)  # lower highlight when pressed
+    else:
+        d.arc((6, 5 + dy, 57, 56 + dy), 200, 340, fill=rgb('4b4654'), width=2)
+    cx, cy = 31.5, 30.5 + dy
+    if kind == 'cross':
+        for a, b in (((-11, -11), (11, 11)), ((-11, 11), (11, -11))):
+            d.line([(cx + a[0], cy + a[1]), (cx + b[0], cy + b[1])], fill=sym, width=6)
+    elif kind == 'circle':
+        d.ellipse((cx - 13, cy - 13, cx + 13, cy + 13), outline=sym, width=5)
+    elif kind == 'triangle':
+        pts = [(cx, cy - 14), (cx + 14, cy + 10), (cx - 14, cy + 10)]
+        d.line(pts + [pts[0]], fill=sym, width=5, joint='curve')
+    else:
+        d.rectangle((cx - 11, cy - 11, cx + 11, cy + 11), outline=sym, width=5)
+    return im
+
+
+def icon_heart():
+    im, d = canvas(16, 16)
+    d.polygon([(8, 14), (2, 8), (1, 5), (3, 2), (6, 2), (8, 4), (10, 2), (13, 2), (15, 5), (14, 8)], fill=RED)
+    d.point((4, 4), fill=EMBER); d.point((5, 4), fill=EMBER); d.point((4, 5), fill=EMBER)
+    d.line([(9, 12), (13, 8)], fill=RED_D)
+    return outline(im)
+
+
+def icon_mana():
+    im, d = canvas(16, 16)
+    d.polygon([(8, 1), (12, 7), (13, 10), (11, 13), (8, 14), (5, 13), (3, 10), (4, 7)], fill=rgb('6a6ee0'))
+    d.polygon([(8, 4), (10, 8), (10, 11), (8, 12)], fill=rgb('7fa7e8'))
+    d.point((6, 9), fill=rgb('b8c8f4')); d.point((6, 10), fill=rgb('b8c8f4'))
+    return outline(im)
+
+
 UI = {
     'icon_map': icon_map, 'icon_journal': icon_journal, 'icon_pause': icon_pause, 'icon_soul': icon_soul,
     'icon_obol': icon_obol, 'icon_order': icon_order, 'icon_crest_r1': lambda: crest(1), 'icon_crest_r2': lambda: crest(2),
     'pip_full': lambda: pip(True), 'pip_empty': lambda: pip(False), 'icon_link': icon_link, 'icon_halo': icon_halo,
     'icon_flame': icon_flame, 'stamp_heaven': lambda: stamp('heaven'), 'stamp_hell': lambda: stamp('hell'),
     'stamp_rm0': stamp_rm0, 'icon_lamp': icon_lamp, 'icon_key': icon_key, 'icon_quill': icon_quill,
-    'btn_action': btn_action, 'parchment_9': lambda: nine('parchment'), 'panel_9': lambda: nine('panel'),
+    'btn_action': btn_action, 'icon_heart': icon_heart, 'icon_mana': icon_mana,
+    'btn_cross': lambda: face_button('cross'), 'btn_cross_down': lambda: face_button('cross', True),
+    'btn_circle': lambda: face_button('circle'), 'btn_circle_down': lambda: face_button('circle', True),
+    'btn_triangle': lambda: face_button('triangle'), 'btn_triangle_down': lambda: face_button('triangle', True),
+    'btn_square': lambda: face_button('square'), 'btn_square_down': lambda: face_button('square', True), 'parchment_9': lambda: nine('parchment'), 'panel_9': lambda: nine('panel'),
 }
 SLICES = {'parchment_9': [8, 8, 8, 8], 'panel_9': [8, 8, 8, 8]}
 

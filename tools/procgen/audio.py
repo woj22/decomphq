@@ -117,10 +117,71 @@ AMB = {
                                  lambda t, n: ticks(t, n, 3, 14, 900, .04, .02) + lp_fast(noise(n, 15), 20) * .15),
     'amb_records': lambda: loop_bed(8, 16, [(48, .04)], .25, lambda t, n: ticks(t, n, 2, 17, 2400, .05, .003)),
     'amb_booths': lambda: loop_bed(8, 18, [(60, .05), (90, .03)], .4, lambda t, n: ticks(t, n, 1.5, 19, 3000, .04, .002)),
+    'amb_hell': lambda: loop_bed(8, 40, [(36, .1), (54, .06), (72.5, .03)], .9,
+                                 lambda t, n: ticks(t, n, 6, 41, 1500, .06, .006) + ticks(t, n, 3, 42, 400, .08, .03)),
     'amb_chamber': lambda: loop_bed(8, 20, [(41, .07), (61.5, .05), (123, .02)], .3),
 }
+def sfx_jump():
+    t = _t(.22); f = 220 + 600 * t / .22
+    return np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(t), .003, .08) * .6
+
+
+def sfx_lance():
+    t = _t(.35); f = 1400 - 900 * t / .35
+    s = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / .12)
+    return s * .5 + (noise(len(t), 30) - lp_fast(noise(len(t), 30), 4)) * np.exp(-t / .05) * .3
+
+
+def sfx_lance_charged():
+    t = _t(.7); f = 1800 - 1300 * t / .7
+    s = sum(np.sin(2 * np.pi * np.cumsum(f * h) / SR) / h for h in (1, 1.5, 2.01))
+    return s * np.exp(-t / .25) * .4 + lp_fast(noise(len(t), 31), 3) * np.exp(-t / .1) * .3
+
+
+def sfx_nova():
+    t = _t(.9)
+    boom = lp_fast(noise(len(t), 32), 30) * 5 * np.exp(-t / .25)
+    sweep = np.sin(2 * np.pi * np.cumsum(90 + 200 * t) / SR) * np.exp(-t / .4) * .5
+    crack = (noise(len(t), 33) - lp_fast(noise(len(t), 33), 5)) * np.exp(-t / .3) * .3
+    return boom + sweep + crack
+
+
+def sfx_hit():
+    t = _t(.2)
+    return lp_fast(noise(len(t), 34), 6) * 3 * np.exp(-t / .03) + np.sin(2 * np.pi * 140 * t) * np.exp(-t / .06) * .6
+
+
+def sfx_demon_roar():
+    t = _t(1.1)
+    f = 70 + 25 * np.sin(2 * np.pi * 5 * t)
+    s = sum(np.sin(2 * np.pi * np.cumsum(f * h) / SR) / h for h in (1, 2, 3, 4.1))
+    grit = lp_fast(noise(len(t), 35), 8) * 1.5
+    e = np.minimum(1, t / .12) * np.exp(-np.maximum(t - .5, 0) / .25)
+    return (s * (1 + .6 * grit)) * e * .5
+
+
+def sfx_demon_die():
+    t = _t(1.0); f = 160 * np.exp(-t * 1.8) + 40
+    s = sum(np.sin(2 * np.pi * np.cumsum(f * h) / SR) / h for h in (1, 2.02, 3.1))
+    return s * np.exp(-t / .45) * .5 + lp_fast(noise(len(t), 36), 40) * 4 * np.exp(-t / .3)
+
+
+def sfx_player_hurt():
+    t = _t(.3); f = 420 - 200 * t / .3
+    return np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * np.exp(-t / .09) * .3 + lp_fast(noise(len(t), 37), 5) * np.exp(-t / .03)
+
+
+def sfx_night_bell():
+    t = _t(3.0)
+    s = sum(a * np.sin(2 * np.pi * 196 * r * t) * np.exp(-t / d) for r, a, d in
+            ((1, .5, 2.0), (2.0, .2, 1.2), (2.4, .25, .9), (3.0, .1, .6), (.5, .3, 2.6)))
+    return s * np.minimum(1, t / .003)
+
+
 SFX = {'sfx_tap': sfx_tap, 'sfx_page': sfx_page, 'sfx_quill': sfx_quill, 'sfx_door': sfx_door, 'sfx_stamp': sfx_stamp,
-       'sfx_bell': sfx_bell, 'sfx_link': sfx_link}
+       'sfx_bell': sfx_bell, 'sfx_link': sfx_link, 'sfx_jump': sfx_jump, 'sfx_lance': sfx_lance,
+       'sfx_lance_charged': sfx_lance_charged, 'sfx_nova': sfx_nova, 'sfx_hit': sfx_hit, 'sfx_demon_roar': sfx_demon_roar,
+       'sfx_demon_die': sfx_demon_die, 'sfx_player_hurt': sfx_player_hurt, 'sfx_night_bell': sfx_night_bell}
 
 
 def write(path, x, peak=.7):

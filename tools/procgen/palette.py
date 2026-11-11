@@ -14,6 +14,8 @@ assert len(BORDER24) == 24
 EMISSIVE = ['fff3c4', 'f6d67a', 'e8552b']
 SOUL_ONLY = ['cfe0e6', '8fa3b3']
 UI_EXTRA = ['e6d9b8', 'cbb98f', '2a2320', 'ede6d6', 'a59e90', '8b3fd9']  # parchment, shade, ink, text, dim, RM0 violet
+# face-button symbol colours (normal, pressed) + mana drop (UI only; never in world sprites)
+UI_EXTRA += ['7fa7e8', '5a7ab8', 'e85a5a', 'b04040', '4fc9a0', '3a9478', 'e08ad6', 'a8629f', '6a6ee0', 'b8c8f4']
 
 
 def rgb(h):

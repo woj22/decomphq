@@ -603,3 +603,107 @@ def washstand(ctx):
     ctx.box((-.16, -.14, 0), (.16, .14, .5), m('5a3f2e'))
     ctx.cyl(.12, .09, .5, .58, m('b5b0b8'), seg=10)
     ctx.cyl(.05, .04, .58, .74, m('8a8591'), seg=8, loc=(.06, .0))
+
+
+def hell_gate(ctx, opened=False):
+    """Infernal gate on a 3x1 footprint along X (world origin = footprint centre)."""
+    m = ctx.m
+    iron, iron2, iron3 = m('1a1722'), m('27232f'), m('37323f')
+    horn = m('4b4654')
+    hw, spring = .78, 1.5
+    apex = spring + hw * 1.732
+    # arch wall slab between the pillars
+    slab = ctx.box((-1.0, -.2, 0), (1.0, .2, apex + .35), ctx.brick('gatebrick', '27232f', '1a1722', '0d0b12', bw=1 / 3, bh=6 / ZPX, mort=.03))
+    cut = ctx.arch(hw, spring, 1.0, None, name='cut'); ctx.cut(slab, cut)
+    ring = ctx.arch(hw + .12, spring + .05, .5, m('3a0f14'), name='ring')
+    c2 = ctx.arch(hw, spring, 1.2, None, name='c2'); ctx.cut(ring, c2)
+    # glowing maw
+    ctx.arch(hw, spring, .02, m('b3261e', 2.6 if opened else 1.8, 'e8552b'), name='maw').location = (0, .15, 0)
+    core = ctx.arch(hw * (.75 if opened else .5), spring * (.9 if opened else .6), .02,
+                    m('f6d67a' if opened else 'e8552b', 3.5), name='core'); core.location = (0, .13, 0)
+    # portcullis (raised when open)
+    top = apex if not opened else apex
+    z0 = 0 if not opened else spring * .85
+    for i in range(-3, 4):
+        x = i * .2
+        h = spring + (hw - abs(x)) * 1.6
+        if z0 < h:
+            ctx.box((x - .022, -.12, z0), (x + .022, -.08, h), iron)
+            ctx.cyl(.03, 0, z0 - .08, z0, iron3, seg=4, loc=(x, -.1), smooth=False)
+    for zz in (.5, 1.1, 1.7):
+        if zz > z0:
+            ctx.box((-hw, -.13, zz), (hw, -.07, zz + .04), iron)
+    # pillars / towers with horned tops
+    for sx in (-1, 1):
+        x0 = sx * 1.22
+        ctx.box((x0 - .28, -.32, 0), (x0 + .28, .32, 3.3), ctx.brick('gatebrick', '27232f', '1a1722', '0d0b12', bw=1 / 3, bh=6 / ZPX, mort=.03))
+        ctx.box((x0 - .32, -.36, 0), (x0 + .32, .36, .2), iron3)
+        ctx.box((x0 - .32, -.36, 3.3), (x0 + .32, .36, 3.42), iron3)
+        ctx.box((x0 - .06, -.34, 1.5), (x0 + .06, -.32, 2.4), m('b3261e', 2.0, 'e8552b'))   # lava slit
+        ctx.cyl(.26, 0, 3.42, 3.95, iron2, seg=4, loc=(x0, 0), smooth=False).rotation_euler = (0, 0, math.radians(45))
+        h1 = ctx.cyl(.12, .07, 0, .45, horn, seg=8); h1.location = (x0 + sx * .2, -.05, 3.3); h1.rotation_euler = (0, sx * math.radians(55), 0)
+        h2 = ctx.cyl(.07, 0, 0, .45, m('8a8591'), seg=8); h2.location = (x0 + sx * .52, -.05, 3.55); h2.rotation_euler = (0, sx * math.radians(10), 0)
+        # chains hanging from pillar to arch
+        for k in range(9):
+            t = k / 8
+            x = x0 - sx * (.3 + .45 * t)
+            z = 2.7 - .55 * math.sin(math.pi * t) - .2 * t
+            ctx.sphere(.035, (x, -.36, z), iron3, seg=6, rings=4, scale=(1.3 if k % 2 else .6, .6, 1))
+    # keystone skull-horn crown
+    ctx.sphere(.16, (0, -.22, apex + .15), m('4b4654'), scale=(1, .6, 1))
+    for sx in (-1, 1):
+        ctx.sphere(.03, (sx * .06, -.32, apex + .17), m('e8552b', 4.0))
+        hh = ctx.cyl(.06, 0, 0, .35, horn, seg=6); hh.location = (sx * .12, -.22, apex + .22); hh.rotation_euler = (0, sx * math.radians(-35), 0)
+    ctx.box((-1.3, -.4, 0), (1.3, .4, .06), iron3)
+
+
+def chain_post(ctx):
+    m = ctx.m
+    ctx.cyl(.12, .1, 0, .08, m('27232f'), seg=6)
+    ctx.cyl(.045, .04, .08, 1.15, m('37323f'), seg=6)
+    ctx.sphere(.06, (0, 0, 1.18), m('4b4654'))
+    ctx.box((-.02, -.12, 1.02), (.02, 0, 1.06), m('27232f'))
+    for k in range(9):
+        ctx.sphere(.03, (0, -.12, 1.0 - k * .07), m('4b4654'), seg=6, rings=4, scale=(1.2 if k % 2 else .5, .5 if k % 2 else 1.2, 1.2))
+
+
+def brazier_hell(ctx, f):
+    m = ctx.m
+    iron, iron2 = m('27232f'), m('1a1722')
+    ctx.cyl(.15, .06, 0, .06, iron2, seg=8)
+    ctx.cyl(.035, .03, .06, .44, iron, seg=8)
+    for a in range(3):
+        aa = math.radians(120 * a + 15)
+        ctx.cyl(.025, 0, .56, .7, iron, seg=4, loc=(math.cos(aa) * .15, math.sin(aa) * .15), smooth=False)
+    ctx.cyl(.07, .17, .42, .56, iron, seg=10)
+    ctx.cyl(.15, .15, .55, .57, m('74161b', 2.0, 'b3261e'), seg=10)
+    sway = [0, .025, -.01, -.025][f]
+    hgt = [.32, .27, .35, .29][f]
+    fl = ctx.cyl(.13, 0, .56, .56 + hgt, m('b3261e', 2.4, 'b3261e'), seg=7); fl.rotation_euler = (sway * 4, sway * 3, 0)
+    ctx.cyl(.08, 0, .56, .56 + hgt * .7, m('e8552b', 3.5), seg=6, loc=(sway, -.02))
+
+
+def crystal_pedestal(ctx):
+    m = ctx.m
+    ctx.box((-.2, -.2, 0), (.2, .2, .1), m('4b4654'))
+    ctx.box((-.14, -.14, .1), (.14, .14, .62), ctx.brick('pedbrick', '66616e', '4b4654', '27232f', bw=1 / 3, bh=6 / ZPX, mort=.03))
+    ctx.box((-.18, -.18, .62), (.18, .18, .7), m('8a8591'))
+    c1 = ctx.cyl(.1, 0, .9, 1.22, m('cfe0e6', 2.2), seg=6, smooth=False)
+    c2 = ctx.cyl(.1, 0, .9, .72, m('8fa3b3', 1.5), seg=6, smooth=False)
+    ctx.cyl(.04, 0, .74, .9, m('cfe0e6', 2.0), seg=5, loc=(.1, -.04), smooth=False)
+
+
+def cauldron(ctx):
+    m = ctx.m
+    iron, iron2 = m('27232f'), m('1a1722')
+    for a in range(3):
+        aa = math.radians(120 * a + 30)
+        ctx.box((math.cos(aa) * .22 - .03, math.sin(aa) * .22 - .03, 0), (math.cos(aa) * .22 + .03, math.sin(aa) * .22 + .03, .2), iron2)
+    ctx.sphere(.32, (0, 0, .38), iron, scale=(1, 1, .75))
+    ctx.cyl(.28, .28, .52, .56, iron2, seg=16)
+    ctx.cyl(.31, .29, .54, .6, m('37323f'), seg=16)
+    ctx.cyl(.27, .27, .55, .57, m('cfe0e6', 1.6), seg=16)
+    for (x, y, r) in ((.08, -.05, .06), (-.1, .06, .045), (.02, .12, .035)):
+        ctx.sphere(r, (x, y, .58), m('f6d67a', 2.5), scale=(1, 1, .6))
+    for k in range(5):  # embers under
+        ctx.sphere(.04, (-.12 + k * .06, -.05, .04), m('e8552b', 3.0), seg=6, rings=4)

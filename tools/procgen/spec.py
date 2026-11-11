@@ -82,6 +82,17 @@ S('queue_post', 'props', (16, 32), (8, 26), job='rails', **P)
 S('ticket_booth', 'props', (64, 128), (32, 104), job='booth', **P)
 S('statue_first_clerk', 'props', (128, 192), (64, 160), job='statue', footprint=[2, 2], **P)
 
+# combat / new rooms
+S('hell_gate', 'props', (192, 256), (96, 220), job='hell', footprint=[3, 1], **P)
+S('hell_gate_open', 'props', (192, 256), (96, 220), job='hell', footprint=[3, 1], **P)
+S('chain_post', 'props', (32, 64), (16, 56), job='hell', **P)
+S('brazier_hell', 'props', (32, 48), (16, 40), job='hell', frames=4, fps=6, **P)
+S('crystal_pedestal', 'props', (32, 64), (16, 56), job='hell', pal='any', **P)
+S('cauldron', 'props', (64, 56), (32, 42), job='hell', pal='any', **P)
+for i in range(3):
+    S(f'floor_brimstone_{i}', 'tiles', (64, 32), (32, 16), 'floor', 'pil')
+S('rune_circle', 'tiles', (192, 96), (96, 48), 'decal', 'pil', footprint=[3, 3])
+
 # ---------------------------------------------------------------- fx (numpy)
 S('shadow_blob', 'fx', (32, 16), (16, 8), 'fx', 'pil')
 S('select_ring', 'fx', (32, 16), (16, 8), 'fx', 'pil', frames=4, fps=8)
@@ -89,20 +100,30 @@ S('light_pool_gold', 'fx', (192, 96), (96, 48), 'fx', 'pil', additive=True)
 S('light_pool_red', 'fx', (192, 96), (96, 48), 'fx', 'pil', additive=True)
 S('dust_mote', 'fx', (8, 8), (4, 4), 'fx', 'pil', frames=4, fps=6)
 S('tap_marker', 'fx', (16, 8), (8, 4), 'fx', 'pil', frames=4, fps=10)
+S('spell_lance', 'fx', (32, 16), (16, 8), 'fx', 'pil', frames=4, fps=12)
+S('spell_lance_charged', 'fx', (48, 24), (24, 12), 'fx', 'pil', frames=4, fps=12)
+S('spell_nova', 'fx', (128, 64), (64, 32), 'fx', 'pil', frames=6, fps=12, additive=True)
+S('spell_nova_charged', 'fx', (192, 96), (96, 48), 'fx', 'pil', frames=6, fps=12, additive=True)
+S('impact_spark', 'fx', (32, 32), (16, 24), 'fx', 'pil', frames=4, fps=16)
+S('demon_slash', 'fx', (32, 32), (16, 24), 'fx', 'pil', frames=3, fps=12)
+S('hell_glow', 'fx', (192, 96), (96, 48), 'fx', 'pil', additive=True)
 
 # ---------------------------------------------------------------- characters
 CHAR_ANIMS = {
     'std':   [('idle', 2, 2), ('walk', 4, 8), ('work', 2, 2)],
     'guard': [('idle', 2, 2), ('walk', 4, 8), ('attention', 1, 1)],
     'soul':  [('idle', 4, 4), ('walk', 4, 8)],
+    'demon': [('idle', 2, 3), ('walk', 4, 8), ('attack', 3, 10), ('hit', 1, 1)],
+    'brute': [('idle', 2, 3), ('walk', 4, 8), ('attack', 3, 10), ('hit', 1, 1)],
 }
 CHARS = {
     'chr_player': 'std', 'chr_player_r2': 'std', 'chr_clerk_grey': 'std', 'chr_clerk_lilac': 'std',
     'chr_archivist': 'std', 'chr_guard': 'guard',
     'chr_soul_0': 'soul', 'chr_soul_1': 'soul', 'chr_soul_2': 'soul', 'chr_soul_3': 'soul',
+    'chr_guard_night': 'guard', 'chr_sorcerer': 'std', 'chr_demon': 'demon', 'chr_demon_brute': 'brute',
 }
-CHAR_CELL = {'guard': (32, 64)}
-CHAR_ORIGIN = {'guard': (16, 56)}
+CHAR_CELL = {'guard': (32, 64), 'demon': (48, 64), 'brute': (64, 80)}
+CHAR_ORIGIN = {'guard': (16, 56), 'demon': (24, 56), 'brute': (32, 72)}
 
 
 def char_cell(cid):
@@ -116,6 +137,8 @@ EXPRESSIONS = ['neutral', 'distressed', 'relieved']
 PORTRAITS = ['por_marrow', 'por_pell', 'por_wren', 'por_grist', 'por_registrar', 'por_works', 'por_soul', 'por_nan', 'por_oddy']
 
 AUDIO = ['sfx_tap', 'sfx_page', 'sfx_quill', 'sfx_door', 'sfx_stamp', 'sfx_bell', 'sfx_link',
-         'amb_court', 'amb_hall', 'amb_records', 'amb_booths', 'amb_chamber']
+         'amb_court', 'amb_hall', 'amb_records', 'amb_booths', 'amb_chamber',
+         'sfx_jump', 'sfx_lance', 'sfx_lance_charged', 'sfx_nova', 'sfx_hit', 'sfx_demon_roar', 'sfx_demon_die',
+         'sfx_player_hurt', 'sfx_night_bell', 'amb_hell']
 BACKDROPS = {'bg_heaven_sky': (640, 360), 'bg_heaven_skyline': (960, 240), 'bg_hell_sky': (640, 360),
              'bg_hell_skyline': (960, 240), 'bg_void_fog': (256, 128)}

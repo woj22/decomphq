@@ -22,7 +22,7 @@ GAIN = 1.45          # exposure applied with the ambient tint (keeps the cold ti
 # Blender jobs with rough cost (s) for load balancing
 JOBS = [('walls', 3.3), ('windows', 2.1), ('doors', 3.4), ('kerbs', .7), ('brazier', 1.2), ('torch', 1.5),
         ('banner', .6), ('desks', 1.6), ('furn', 2.0), ('shelves', 2.5), ('quarters', 3.0), ('rails', .8), ('booth', .5), ('statue', 1.2),
-        ('busts', 2.0), ('portraits', 2.5)] + [(f'char:{c}', 4.2 if spec.CHARS[c] != 'soul' else 3.3) for c in spec.CHARS]
+        ('busts', 2.0), ('portraits', 2.5), ('hell', 4.0)] + [(f'char:{c}', {'soul': 3.3, 'demon': 7.0, 'brute': 15.0}.get(spec.CHARS[c], 4.2)) for c in spec.CHARS]
 
 
 def run_blender(raw):
@@ -67,6 +67,15 @@ def pil_tiles(_):
     out['light_pool_gold'] = tiles.light_pool('gold'); out['light_pool_red'] = tiles.light_pool('red')
     out['dust_mote'] = np.hstack([tiles.dust_mote(f) for f in range(4)])
     out['tap_marker'] = np.hstack([tiles.tap_marker(f) for f in range(4)])
+    for i in range(3): out[f'floor_brimstone_{i}'] = tiles.brimstone(i)
+    out['rune_circle'] = tiles.rune_circle()
+    out['spell_lance'] = np.hstack([tiles.lance(f, False) for f in range(4)])
+    out['spell_lance_charged'] = np.hstack([tiles.lance(f, True) for f in range(4)])
+    out['spell_nova'] = np.hstack([tiles.nova(f, 128, 64) for f in range(6)])
+    out['spell_nova_charged'] = np.hstack([tiles.nova(f, 192, 96) for f in range(6)])
+    out['impact_spark'] = np.hstack([tiles.spark(f) for f in range(4)])
+    out['demon_slash'] = np.hstack([tiles.slash(f) for f in range(3)])
+    out['hell_glow'] = tiles.light_pool('hell')
     return 'tiles', out
 
 
@@ -78,7 +87,7 @@ def pil_ui(_):
 # ------------------------------------------------------------------ post
 def q_sprite(raw, sid, sp, suffix=''):
     a = post.load(os.path.join(raw, sid + suffix + '.png'))
-    out = post.quantise(a, 'world', outline=False, gain=GAIN)
+    out = post.quantise(a, sp.get('pal', 'world'), outline=False, gain=GAIN)
     if sp.get('outline'):
         if _touch(out, sid):
             raise SystemExit(f'edge contact: {sid}{suffix}')
@@ -324,6 +333,11 @@ def required_ids():
     r += ['brazier_0', 'wall_torch_x', 'wall_torch_y', 'banner_red', 'desk_clerk', 'desk_superior', 'dais', 'stool', 'bench',
           'bench_soul', 'lectern', 'shelf_books', 'shelf_empty', 'counter', 'rope_post', 'queue_rail_x', 'queue_post',
           'ticket_booth', 'statue_first_clerk', 'ivy_bench', 'desk_registrar']
+    r += ['chr_demon', 'chr_demon_brute', 'chr_guard_night', 'chr_sorcerer', 'spell_lance', 'spell_lance_charged',
+          'spell_nova', 'spell_nova_charged', 'impact_spark', 'demon_slash', 'hell_glow', 'hell_gate', 'hell_gate_open',
+          'floor_brimstone_0', 'floor_brimstone_1', 'floor_brimstone_2', 'chain_post', 'brazier_hell', 'rune_circle',
+          'crystal_pedestal', 'cauldron', 'icon_heart', 'icon_mana'] + \
+         [f'btn_{b}{d}' for b in ('cross', 'circle', 'triangle', 'square') for d in ('', '_down')]
     r += ['chr_player', 'chr_player_r2', 'chr_clerk_grey', 'chr_clerk_lilac', 'chr_archivist', 'chr_guard'] + \
          [f'chr_soul_{i}' for i in range(4)]
     r += ['shadow_blob', 'select_ring', 'light_pool_gold', 'light_pool_red', 'dust_mote', 'tap_marker']

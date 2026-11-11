@@ -197,8 +197,10 @@ def light_pool(kind):
     w, h = 192, 96
     d = np.sqrt(ellipse_mask(w, h, 96, 48, 95, 47.5))
     out = np.zeros((h, w, 4), np.uint8)
-    cols = (['3a0f14', '74161b', 'b3261e', 'e8552b'] if kind == 'red' else ['6b4a1e', 'a8742a', 'e0a83e', 'f6d67a'])
+    cols = (['3a0f14', '74161b', 'b3261e', 'e8552b'] if kind in ('red', 'hell') else ['6b4a1e', 'a8742a', 'e0a83e', 'f6d67a'])
     bands = [(1.0, cols[0], 70), (.78, cols[0], 110), (.56, cols[1], 120), (.36, cols[1], 150), (.18, cols[2], 140)]
+    if kind == 'hell':
+        bands = [(1.0, cols[0], 90), (.8, cols[1], 90), (.6, cols[1], 130), (.4, cols[2], 130), (.22, cols[3], 120)]
     for r, c, a in bands:
         m = d < r
         out[m, :3] = rgb(c); out[m, 3] = a
@@ -222,4 +224,134 @@ def tap_marker(f):
     d = np.abs(px + .5 - 8) / 2 + np.abs(py + .5 - 4)
     ring = (d < r / 2 + .5) & (d > r / 2 - .6)
     out[ring, :3] = rgb('f6d67a' if f < 2 else 'e0a83e'); out[ring, 3] = 255
+    return out
+
+
+# ------------------------------------------------------------------ combat / new rooms
+def brimstone(variant):
+    """cracked black stone with thin ember seams (seamless: seams follow slab joints)."""
+    u, v = uv_grid(64, 32, 32, 16)
+    out = flagstone(variant=[2, 1, 3][variant], seed=200 + variant)
+    rgbv = out[..., :3].reshape(-1, 3)
+    remap = {rgb('37323f'): '1a1722', rgb('43325c'): '27232f', rgb('4b4654'): '27232f', rgb('27232f'): '0d0b12',
+             rgb('1a1722'): '3a0f14'}
+    res = out.copy()
+    for src, dst in remap.items():
+        m = (out[..., 0] == src[0]) & (out[..., 1] == src[1]) & (out[..., 2] == src[2])
+        res[m, :3] = rgb(dst)
+    mortar = (out[..., :3] == rgb('1a1722')).all(-1)
+    py, px = np.mgrid[0:32, 0:64]
+    glow = np.vectorize(lambda x, y: _h(x // 3, y // 2, 300 + variant))(px, py)
+    res[mortar & (glow < .45), :3] = rgb('74161b')
+    res[mortar & (glow < .12), :3] = rgb('b3261e')
+    crack = np.abs(np.sin(u * (5 + variant) + v * 3) * .18 + u * .4 - v * .7 + .1 * variant) < .02
+    inside = diamond_mask(u, v) & (np.abs(u) < .42) & (np.abs(v) < .42)
+    res[crack & inside, :3] = rgb('b3261e')
+    res[crack & inside & (glow < .3), :3] = rgb('e8552b')
+    res[~diamond_mask(u, v)] = 0
+    return res
+
+
+def rune_circle():
+    w, h, ox, oy = 192, 96, 96, 48
+    py, px = np.mgrid[0:h, 0:w].astype(float)
+    a, b = (px + .5 - ox) / 32, (py + .5 - oy) / 16
+    gu, gv = (a + b) / 2, (b - a) / 2
+    r = np.sqrt(gu ** 2 + gv ** 2); ang = np.arctan2(gv, gu)
+    out = np.zeros((h, w, 4), np.uint8)
+    t = ang / (2 * np.pi)
+    ring_o = (r > 1.3) & (r < 1.4)
+    ring_i = (r > .92) & (r < .98)
+    glyph = (r > 1.02) & (r < 1.24) & (np.abs(((t * 24) % 1) - .5) > .3) & (np.abs(((t * 72) % 1) - .5) < .18)
+    # inscribed hexagram
+    star = np.zeros_like(r, bool)
+    for k in range(6):
+        th = k * np.pi / 3
+        x0, y0 = .92 * np.cos(th), .92 * np.sin(th)
+        x1, y1 = .92 * np.cos(th + 2 * np.pi / 3), .92 * np.sin(th + 2 * np.pi / 3)
+        dx, dy = x1 - x0, y1 - y0
+        tt = np.clip(((gu - x0) * dx + (gv - y0) * dy) / (dx * dx + dy * dy), 0, 1)
+        star |= np.hypot(gu - x0 - tt * dx, gv - y0 - tt * dy) < .028
+    for m, c in ((ring_o, 'a8742a'), (ring_i, 'a8742a'), (glyph, 'e0a83e'), (star, 'a8742a')):
+        out[m, :3] = rgb(c); out[m, 3] = 255
+    out[(r > 1.33) & (r < 1.36), :3] = rgb('e0a83e')
+    out[(r < .1), :3] = rgb('e0a83e'); out[(r < .1), 3] = 255
+    return out
+
+
+def _paint_d(out, d, stops):
+    for r, c in stops:
+        m = d < r
+        out[m, :3] = rgb(c); out[m, 3] = 255
+
+
+def lance(f, charged):
+    w, h = (48, 24) if charged else (32, 16)
+    out = np.zeros((h, w, 4), np.uint8)
+    py, px = np.mgrid[0:h, 0:w].astype(float)
+    cy = h / 2
+    L = w * .78
+    tipx = w - 2 - [0, 1, 0, 1][f]
+    x = tipx - (px + .5)                     # distance behind the tip
+    rad = (h * .32) * np.clip(x / (L * .35), 0, 1) * np.clip((L - x) / (L * .65), 0, 1)
+    d = np.abs(py + .5 - cy) / np.maximum(rad, 1e-3)
+    body = (x >= 0) & (x <= L) & (d < 1)
+    out[body, :3] = rgb('e0a83e'); out[body, 3] = 255
+    out[body & (d < .65), :3] = rgb('f6d67a')
+    out[body & (d < .3), :3] = rgb('fff3c4')
+    # trailing sparks
+    for k in range(3 + 2 * charged):
+        sx = int(tipx - L - 1 - k * 2 - ((f + k) % 3))
+        sy = int(cy + ((k * 5 + f * 3) % 5) - 2)
+        if 0 <= sx < w and 0 <= sy < h:
+            out[sy, sx] = (*rgb('f6d67a' if k % 2 else 'e0a83e'), 255)
+    if charged:
+        halo = (x >= -2) & (x <= L * .5) & (d >= 1) & (d < 1.5) & (((px + py + f) % 2) == 0)
+        out[halo & (out[..., 3] == 0), :3] = rgb('f6d67a'); out[halo & (out[..., 3] == 0), 3] = 255
+    return out
+
+
+def nova(f, w, h):
+    out = np.zeros((h, w, 4), np.uint8)
+    d = np.sqrt(ellipse_mask(w, h, w / 2, h / 2, w / 2 - 1, h / 2 - .5))
+    r = .2 + .8 * (f + 1) / 6
+    th = .14 + .04 * (f < 2)
+    ring = (d < r) & (d > r - th)
+    inner = d < r - th
+    fade = [255, 230, 200, 170, 130, 90][f]
+    out[inner, :3] = rgb('3a0f14'); out[inner, 3] = int(fade * .5)
+    out[ring, :3] = rgb('b3261e'); out[ring, 3] = fade
+    out[ring & (d > r - th * .55), :3] = rgb('e8552b')
+    out[(d < r * .3) & (f < 3), :3] = rgb('e8552b'); out[(d < r * .3) & (f < 3), 3] = fade
+    return out
+
+
+def spark(f):
+    out = np.zeros((32, 32, 4), np.uint8)
+    cx, cy = 16, 18
+    r = [3, 7, 10, 12][f]
+    py, px = np.mgrid[0:32, 0:32]
+    dx, dy = px + .5 - cx, (py + .5 - cy) * 1.0
+    dist = np.hypot(dx, dy); ang = np.arctan2(dy, dx)
+    rays = (np.abs(((ang / (2 * np.pi) * 8) % 1) - .5) > .42) & (dist < r) & (dist > r * .35 * (f > 0))
+    out[rays, :3] = rgb('f6d67a' if f < 2 else 'e0a83e'); out[rays, 3] = 255
+    core = dist < [3, 2.5, 1.5, 0][f]
+    out[core, :3] = rgb('fff3c4'); out[core, 3] = 255
+    return out
+
+
+def slash(f):
+    out = np.zeros((32, 32, 4), np.uint8)
+    py, px = np.mgrid[0:32, 0:32].astype(float)
+    for k in range(3):
+        cx, cy = 6 + k * 5, 4
+        dd = np.hypot(px + .5 - cx, (py + .5 - cy) * .9)
+        ang = np.arctan2(py + .5 - cy, px + .5 - cx)
+        span = [.5, 1.0, 1.0][f]
+        arc = (np.abs(dd - 16) < [1.2, 1.4, .8][f]) & (ang > .55) & (ang < .55 + span * 1.2)
+        col = ['e8552b', 'e8552b', 'b3261e'][f]
+        out[arc, :3] = rgb(col); out[arc, 3] = 255
+        if f == 1:
+            core = (np.abs(dd - 16) < .5) & (ang > .7) & (ang < 1.5)
+            out[core, :3] = rgb('f6d67a')
     return out

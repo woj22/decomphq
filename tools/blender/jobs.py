@@ -11,7 +11,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'procgen'))
 from lib import Ctx, HU, ZPX  # noqa: E402
 import kit  # noqa: E402
-from rig import Rig, CHARS  # noqa: E402
+from rig import Rig, DemonRig, CHARS  # noqa: E402
 from spec import SPRITES, CHAR_ANIMS, CHARS as CHAR_TYPES, char_cell, CASE_SOULS, PORTRAITS  # noqa: E402
 
 SAMPLES = 64
@@ -99,6 +99,16 @@ def j_quarters(ctx):
         kit.cell_bars_mask(ctx, mk, door=True); shot(ctx, f'cell_door_m{mk}')
 
 
+def j_hell(ctx):
+    kit.hell_gate(ctx); shot(ctx, 'hell_gate')
+    kit.hell_gate(ctx, opened=True); shot(ctx, 'hell_gate_open')
+    kit.chain_post(ctx); shot(ctx, 'chain_post')
+    for f in range(4):
+        kit.brazier_hell(ctx, f); shot(ctx, 'brazier_hell', f'__f{f}')
+    kit.crystal_pedestal(ctx); shot(ctx, 'crystal_pedestal')
+    kit.cauldron(ctx); shot(ctx, 'cauldron')
+
+
 def j_shelves(ctx):
     kit.shelf(ctx); shot(ctx, 'shelf_books')
     kit.shelf(ctx, empty=True); shot(ctx, 'shelf_empty')
@@ -120,7 +130,7 @@ def j_statue(ctx):
 
 def j_char(ctx, cid):
     (cw, ch), origin = char_cell(cid)
-    rig = Rig(ctx, CHARS[cid])
+    rig = (DemonRig if CHARS[cid].get('demon') else Rig)(ctx, CHARS[cid])
     for anim, n, _fps in CHAR_ANIMS[CHAR_TYPES[cid]]:
         for f in range(n):
             rig.pose(anim, f)
