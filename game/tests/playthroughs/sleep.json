@@ -1,0 +1,10 @@
+{"steps": [
+ {"do": "new_game"}, {"do": "drain"},
+ {"do": "talk", "object": "obj_marrow"},
+ {"do": "set_time", "hour": 17},
+ {"do": "assert", "conditions": [{"op": "not", "of": {"op": "is_night"}}]},
+ {"do": "talk", "object": "obj_my_bed", "prefer": ["nightfall"]}, {"do": "drain"}, {"do": "wait", "seconds": 0.5},
+ {"do": "assert", "conditions": [{"op": "is_night"}]},
+ {"do": "talk", "object": "obj_my_bed", "prefer": ["morning"]}, {"do": "drain"}, {"do": "wait", "seconds": 0.5},
+ {"do": "assert", "conditions": [{"op": "not", "of": {"op": "is_night"}}]}
+]}

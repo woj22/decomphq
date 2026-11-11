@@ -157,8 +157,8 @@
    "do": "assert",
    "conditions": [
     {
-     "op": "day_eq",
-     "value": 2
+     "op": "flag",
+     "id": "flag_shift1_closed"
     }
    ]
   },

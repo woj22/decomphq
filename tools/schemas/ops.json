@@ -147,7 +147,9 @@
     "deliver_escort": {
       "cell": "any"
     },
-    "sleep": {},
+    "sleep": {
+      "until": "str"
+    },
     "heal": {},
     "breakout": {
       "count": "int"

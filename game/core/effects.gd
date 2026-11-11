@@ -64,7 +64,7 @@ static func apply_one(e: Dictionary, ctx: Dictionary = {}) -> void:
 		"deliver_escort":
 			World.deliver_escort(JsonUtil.to_vec2i(e.get("cell", [0, 0])))
 		"sleep":
-			Clock.sleep_until_morning()
+			Clock.sleep_until(22 if str(e.get("until", "morning")) == "night" else Content.cfg_i("night_to_hour", 6))
 			Combat.heal_full()
 		"heal":
 			Combat.heal_full()

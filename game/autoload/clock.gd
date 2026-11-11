@@ -17,13 +17,9 @@ func reset() -> void:
 	_was_night = false
 
 
-func start_shift(d: int) -> void:
-	# Same calendar day if it is still morning; otherwise the shift starts the next morning.
-	if d > day:
-		day = d
-	elif hour() >= 12:
-		day += 1
-	minutes = Content.cfg_i("clock_start", 480)
+## A shift starts at whatever time it is now. Time never jumps except when the player sleeps.
+## (`d` is the docket/shift number, tracked by GameState.docket_day; the calendar day is separate.)
+func start_shift(_d: int) -> void:
 	running = true
 	EventBus.clock_ticked.emit(day, minutes)
 
@@ -90,13 +86,17 @@ func _check_night() -> void:
 		night_changed.emit(n)
 
 
-## Sleep until the next 06:00 (dormitory beds).
-func sleep_until_morning() -> void:
-	var wake := Content.cfg_i("night_to_hour", 6) * 60
+## Sleep until the next given hour (dormitory beds): 6 = morning bell, 22 = nightfall.
+func sleep_until(hour_of_day: int) -> void:
+	var wake := hour_of_day * 60
 	var add := wake - minutes
 	if add <= 0:
 		add += 1440
 	tick(add)
+
+
+func sleep_until_morning() -> void:
+	sleep_until(Content.cfg_i("night_to_hour", 6))
 
 
 func overtime() -> bool:

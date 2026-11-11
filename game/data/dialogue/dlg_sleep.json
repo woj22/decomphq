@@ -4,15 +4,19 @@
  "nodes": {
   "n1": {
    "speaker": "narrator",
-   "text": "Your cot. Someone has left a folded note on the pillow: 'Lights out at ten. Rise at six. - The Bursar'",
+   "text": "Your cot. A note on the pillow: 'Lights out at ten. Rise at six. - The Bursar'",
    "next": "n2"
   },
   "n2": {
    "speaker": "player",
    "choices": [
     {
-     "text": "Sleep until morning.",
-     "next": "zz"
+     "text": "Sleep until morning (06:00).",
+     "next": "zz_m"
+    },
+    {
+     "text": "Sleep until nightfall (22:00).",
+     "next": "zz_n"
     },
     {
      "text": "Not yet.",
@@ -20,12 +24,30 @@
     }
    ]
   },
-  "zz": {
+  "zz_m": {
    "speaker": "narrator",
    "text": "You sleep the dreamless sleep of the filed. The morning bell wakes you, mended.",
    "effects": [
     {
-     "op": "sleep"
+     "op": "sleep",
+     "until": "morning"
+    },
+    {
+     "op": "heal"
+    }
+   ],
+   "next": "end"
+  },
+  "zz_n": {
+   "speaker": "narrator",
+   "text": "You doze until the night bell. The corridors empty. Somewhere, a cabinet waits to be moved.",
+   "effects": [
+    {
+     "op": "sleep",
+     "until": "night"
+    },
+    {
+     "op": "heal"
     }
    ],
    "next": "end"

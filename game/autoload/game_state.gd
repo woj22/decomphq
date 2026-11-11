@@ -254,7 +254,7 @@ func shift_summary() -> Dictionary:
 	var processed: int = shift["processed"]
 	var pay := Scoring.pay_value(pay_base(), processed, shift["sound"], shift["unsound"], Content.cfg_i("pay_accuracy_bonus", 3),
 		Content.cfg_f("pay_accuracy_threshold", 0.8))
-	return {"day": Clock.day, "processed": processed, "heaven": shift["heaven"], "hell": shift["hell"], "sound": shift["sound"],
+	return {"day": docket_day if docket_day > 0 else Clock.day, "processed": processed, "heaven": shift["heaven"], "hell": shift["hell"], "sound": shift["sound"],
 		"unsound": shift["unsound"], "overturned": shift["overturned"], "key_found": shift["key_found"], "key_total": shift["key_total"],
 		"pay": pay, "purse_after": get_stat_i("purse") + pay, "order": get_stat_i("order"), "merit": get_stat_i("merit"),
 		"merit_gate": Content.cfg_i("merit_gate", 30), "overturned_total": get_stat_i("overturned")}
@@ -275,7 +275,7 @@ func pay_base() -> int:
 
 func sign_ledger() -> void:
 	var s := last_ledger
-	EventBus.shift_ended.emit(int(s.get("day", Clock.day)), s)
+	EventBus.shift_ended.emit(int(s.get("day", docket_day)), s)
 	SaveGame.autosave("shift_sign")
 
 

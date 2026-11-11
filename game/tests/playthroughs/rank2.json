@@ -170,8 +170,8 @@
    "do": "assert",
    "conditions": [
     {
-     "op": "day_eq",
-     "value": 2
+     "op": "flag",
+     "id": "flag_shift1_closed"
     }
    ]
   },
@@ -408,8 +408,9 @@
    "area": "area_adjudicator_chamber",
    "conditions": [
     {
-     "op": "day_eq",
-     "value": 3
+     "op": "case_state",
+     "case": "case_s005",
+     "value": "pending"
     }
    ]
   },
