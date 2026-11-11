@@ -7,6 +7,7 @@ const COMPARTMENTS := 6
 const BAY := 2.4
 const DINING_Z := 17.6
 const SHADER := preload("res://shaders/baked.gdshader")
+const SHADER_LOW := preload("res://shaders/baked_unshaded.gdshader")   # Low quality: baked light only
 
 # material name -> [albedo, normal, rough, tint, roughness, metallic, specular]
 const TEX := "res://assets/textures/%s"
@@ -65,6 +66,8 @@ func _place(module: String, at: Vector3) -> void:
 				continue
 			inst.set_surface_override_material(s, _glass(src) if glass else _baked(module, src, lm))
 		inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		if module == "compartment":
+			inst.visibility_range_end = 9.0
 	var f := FileAccess.open("res://assets/train/%s_lights.json" % module, FileAccess.READ)
 	for l in JSON.parse_string(f.get_as_text()):
 		var p: Array = l["pos"]
@@ -76,7 +79,7 @@ func _baked(module: String, src: Material, lm: Texture2D) -> Material:
 	if _mat_cache.has(key):
 		return _mat_cache[key]
 	var m := ShaderMaterial.new()
-	m.shader = SHADER
+	m.shader = SHADER_LOW if Quality.level == 0 else SHADER
 	m.set_shader_parameter("lightmap", lm)
 	var name := src.resource_name
 	var base := (src as BaseMaterial3D).albedo_color if src is BaseMaterial3D else Color.WHITE
@@ -163,7 +166,8 @@ func _environment() -> void:
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	env.tonemap_exposure = 0.82
 	env.tonemap_white = 6.0
-	env.glow_enabled = true
+	env.glow_enabled = Quality.level == 2
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
 	env.glow_intensity = 0.55
 	env.glow_bloom = 0.03
 	env.glow_hdr_threshold = 1.2
@@ -201,15 +205,28 @@ func _outside() -> void:
 	ground.layers = 2
 	add_child(ground)
 	var pines := [load("res://assets/outside/pine_a.glb"), load("res://assets/outside/pine_b.glb"), load("res://assets/outside/pine_c.glb")]
-	for i in 220:
+	# 220 pines drawn as three batches (one per shape) instead of 220 separate objects
+	var xforms := [[], [], []]
+	for i in int(Quality.pick(120, 220, 220)):
 		var side := -1.0 if i % 2 == 0 else 1.0
 		var x := side * (5.0 + pow(rng.randf(), 1.4) * 80.0)
-		var t: Node3D = pines[rng.randi() % 3].instantiate()
-		t.position = Vector3(x, -1.3, rng.randf_range(-70, 100))
-		t.rotation.y = rng.randf() * TAU
-		t.scale = Vector3.ONE * rng.randf_range(0.8, 1.7)
-		_set_layer(t, 2)
-		add_child(t)
+		var b := Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * rng.randf_range(0.8, 1.7))
+		xforms[rng.randi() % 3].append(Transform3D(b, Vector3(x, -1.3, rng.randf_range(-70, 100))))
+	for k in 3:
+		var src: Node3D = pines[k].instantiate()
+		var mi: MeshInstance3D = src.find_children("*", "MeshInstance3D", true, false)[0]
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = mi.mesh
+		mm.instance_count = xforms[k].size()
+		for j in xforms[k].size():
+			mm.set_instance_transform(j, xforms[k][j])
+		var mmi := MultiMeshInstance3D.new()
+		mmi.multimesh = mm
+		mmi.layers = 2
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(mmi)
+		src.free()
 	for side in [-1.0, 1.0]:
 		var ridge := MeshInstance3D.new()
 		ridge.mesh = _mountains(rng, side)
@@ -259,7 +276,7 @@ func _mountains(rng: RandomNumberGenerator, side: float) -> ArrayMesh:
 func _blizzard() -> void:
 	for side in [-1.0, 1.0]:
 		var p := GPUParticles3D.new()
-		p.amount = 2600
+		p.amount = int(Quality.pick(500, 1100, 2000))
 		p.lifetime = 3.0
 		p.preprocess = 3.0
 		p.visibility_aabb = AABB(Vector3(-20, -8, -40), Vector3(40, 20, 80))
@@ -290,7 +307,28 @@ func _blizzard() -> void:
 		_snow.append(p)
 
 
+var _cull_t := 0.0
+
+
+func _cull_lights() -> void:
+	## The bake already carries every lamp's light; real-time lamps only add glints and light the characters, so
+	## only the few nearest the camera stay on.
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return
+	var p := cam.global_position
+	var order := lights.duplicate()
+	order.sort_custom(func(a, b): return a.global_position.distance_squared_to(p) < b.global_position.distance_squared_to(p))
+	var keep: int = Quality.pick(3, 6, 10)
+	for i in order.size():
+		(order[i] as OmniLight3D).visible = i < keep
+
+
 func _process(delta: float) -> void:
+	_cull_t -= delta
+	if _cull_t <= 0.0:
+		_cull_t = 0.25
+		_cull_lights()
 	_flicker_t += delta
 	for l in lights:
 		if String(l.get_meta("kind")) == "fire":

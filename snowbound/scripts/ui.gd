@@ -33,6 +33,8 @@ var journal: PanelContainer
 var journal_text: RichTextLabel
 var overlay: Control
 var hint: Label
+var fps_label: Label
+var _fps_t := 0.0
 var _joy_index := -1
 var _look_index := -2
 var _joy_center := Vector2.ZERO
@@ -172,6 +174,8 @@ func _build_hud() -> void:
 	root.add_child(joystick)
 	hint = label("Left thumb: walk    Drag: look", 13, MUTED, false)
 	root.add_child(hint)
+	fps_label = label("", 12, MUTED, false)
+	root.add_child(fps_label)
 	# conversation
 	talk_panel = PanelContainer.new()
 	talk_box = VBoxContainer.new()
@@ -242,6 +246,7 @@ func _layout() -> void:
 	joystick.position = Vector2(m + 18, s.y - 170 - m - 10)
 	action_btn.position = Vector2(s.x - action_btn.size.x - m - 12, s.y - action_btn.size.y - m - 30)
 	hint.position = Vector2(m, s.y - 28)
+	fps_label.position = Vector2(m + 4, m + 44)
 	var kb := 0.0
 	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
 		kb = DisplayServer.virtual_keyboard_get_height() / maxf(1.0, get_window().content_scale_factor)
@@ -254,9 +259,13 @@ func _layout() -> void:
 		_fit_overlay()
 
 
-func _process(_d: float) -> void:
+func _process(d: float) -> void:
 	if talk_panel.visible:
 		_layout()
+	_fps_t -= d
+	if _fps_t <= 0.0:
+		_fps_t = 0.5
+		fps_label.text = "%d fps · %s" % [Engine.get_frames_per_second(), Quality.NAMES[Quality.level]]
 
 
 func set_phase(t: String) -> void:
@@ -567,6 +576,21 @@ func setup_screen(ai: AIClient) -> void:
 	var mdl := LineEdit.new()
 	mdl.text = ai.model
 	v.add_child(mdl)
+	v.add_child(label("Graphics quality", 13, MUTED))
+	var qrow := HBoxContainer.new()
+	qrow.add_theme_constant_override("separation", 8)
+	for i in 3:
+		var qb := button(Quality.NAMES[i], i != Quality.level)
+		qb.custom_minimum_size = Vector2(120, 44)
+		qb.pressed.connect(func():
+			if i == Quality.level:
+				return
+			Quality.level = i
+			Quality.save_setting()
+			get_tree().reload_current_scene())   # materials, lights and snow are built for one quality level
+		qrow.add_child(qb)
+	v.add_child(qrow)
+	v.add_child(label("Low: fastest, baked lighting only. Balanced: recommended for most phones. High: sharper, more lamps, bloom.", 12, MUTED))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
 	var go := button("Board the train")

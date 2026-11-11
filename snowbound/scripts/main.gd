@@ -11,6 +11,8 @@ var game: Game
 
 
 func _ready() -> void:
+	Quality.load_setting()
+	Quality.apply_viewport(get_viewport())
 	_fit_screen()
 	get_window().size_changed.connect(_fit_screen)
 	train = Train.new()
@@ -47,6 +49,10 @@ func _ready() -> void:
 		await get_tree().create_timer(0.5).timeout
 		get_tree().quit()
 		return
+	for a in args:
+		if a == "--bench":
+			_bench()
+			return
 	for a in args:
 		if a.begins_with("--shots="):
 			_shots(a.substr(8))
@@ -144,4 +150,27 @@ func _tour(dir: String) -> void:
 		cam.look_at(v[1])
 		await get_tree().create_timer(0.6).timeout
 		await _snap(dir, name)
+	get_tree().quit()
+
+
+func _bench() -> void:
+	## Frame time, draw calls and triangles from three viewpoints (dining car, corridor, compartment window).
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+	Engine.max_fps = 0
+	ai.demo = true
+	game.autoplay = true
+	await game.start()
+	await get_tree().create_timer(1.0).timeout
+	for v in [["dining", Vector3(0, 0, Layout.DINING_Z + 0.6), PI], ["corridor", Vector3(0.95, 0, -0.8), PI], ["window", Vector3(-0.3, 0, 3.4), PI / 2.0]]:
+		player.put(v[1], v[2])
+		await get_tree().create_timer(0.5).timeout
+		var frames := 0
+		var t0 := Time.get_ticks_usec()
+		while Time.get_ticks_usec() - t0 < 2_000_000:
+			await get_tree().process_frame
+			frames += 1
+		var ms := (Time.get_ticks_usec() - t0) / 1000.0 / frames
+		print("BENCH %s quality=%s ms=%.1f draws=%d prims=%d" % [v[0], Quality.NAMES[Quality.level], ms,
+			RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
+			RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME)])
 	get_tree().quit()
