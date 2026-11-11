@@ -337,6 +337,14 @@ func reopen_case(cid: String) -> void:
 	var applied: Dictionary = res.get("hidden_applied", {})
 	for k: String in applied:
 		add_stat(k, -int(applied[k]))
+	# revert the hidden stats the verdict effects added (favour/conscience)
+	var vd: Variant = Content.case(cid).get("verdicts", {})
+	if vd is Dictionary and (vd as Dictionary).get(str(rec.get("verdict", ""))) is Dictionary:
+		for e: Variant in ((vd as Dictionary)[str(rec["verdict"])] as Dictionary).get("effects", []):
+			if e is Dictionary and str((e as Dictionary).get("op", "")) == "add_stat":
+				var sid := str((e as Dictionary).get("id", ""))
+				if sid in ["favour_gilt", "favour_ember", "conscience"]:
+					add_stat(sid, -float((e as Dictionary).get("value", 0)))
 	rec["state"] = "seated"
 	rec["correction"] = true
 	rec["verdict"] = ""
@@ -355,11 +363,11 @@ func restore_stats(tag: String) -> void:
 	if not snapshots.has(tag):
 		return
 	var snap: Dictionary = (snapshots[tag] as Dictionary).get("stats", {})
-	for k: String in RESTORABLE:
-		if snap.has(k):
+	for k: String in snap:
+		if k != "queue" and k != "order":
 			stats[k] = snap[k]
 	recompute_derived()
-	for k: String in RESTORABLE:
+	for k: String in snap:
 		EventBus.stat_changed.emit(k, stats.get(k, 0), 0)
 
 
@@ -427,14 +435,8 @@ func record_verdict(cid: String, result: Dictionary) -> void:
 	add_stat("sound" if result["sound"] else "unsound", 1)
 	if result["overturned"]:
 		add_stat("overturned", 1)
-	# Hidden favour/conscience (§3.2): applied by the engine unless the case's verdict effects already do it.
-	var authored := _verdict_effect_stats(cid, str(result["verdict"]))
-	var applied := {}
-	for k: String in ["favour_gilt", "favour_ember", "conscience"]:
-		if not authored.has(k) and int(result[k]) != 0:
-			add_stat(k, int(result[k]))
-			applied[k] = int(result[k])
-	result["hidden_applied"] = applied
+	# Hidden favour/conscience are applied by the case's verdict effects (CONTRACT_CHANGES #4), never here.
+	result["hidden_applied"] = {}
 	shift["processed"] = int(shift["processed"]) + 1
 	shift["sound" if result["sound"] else "unsound"] = int(shift["sound" if result["sound"] else "unsound"]) + 1
 	shift[result["verdict"]] = int(shift.get(result["verdict"], 0)) + 1
@@ -447,16 +449,6 @@ func record_verdict(cid: String, result: Dictionary) -> void:
 	if not pending_scored.has(cid):
 		pending_scored.append(cid)
 	EventBus.case_judged.emit(cid, str(result["verdict"]))
-
-
-func _verdict_effect_stats(cid: String, verdict: String) -> Dictionary:
-	var out := {}
-	var v: Variant = Content.case(cid).get("verdicts", {})
-	if v is Dictionary and (v as Dictionary).get(verdict) is Dictionary:
-		for e: Variant in ((v as Dictionary)[verdict] as Dictionary).get("effects", []):
-			if e is Dictionary and str((e as Dictionary).get("op", "")) == "add_stat":
-				out[str((e as Dictionary).get("id", ""))] = true
-	return out
 
 
 ## Emits case_scored for a stamped case once its presentation finished (audit slip dismissed).

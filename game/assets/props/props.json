@@ -1,0 +1,341 @@
+{
+ "atlas": "props",
+ "image": "props.png",
+ "sprites": {
+  "banner_red": {
+   "fps": 2,
+   "frames": 2,
+   "kind": "prop",
+   "origin": [
+    16,
+    104
+   ],
+   "rect": [
+    320,
+    0,
+    32,
+    112
+   ],
+   "solid": true
+  },
+  "bench": {
+   "kind": "prop",
+   "origin": [
+    32,
+    40
+   ],
+   "rect": [
+    832,
+    0,
+    64,
+    56
+   ],
+   "solid": true
+  },
+  "bench_soul": {
+   "kind": "prop",
+   "origin": [
+    32,
+    48
+   ],
+   "rect": [
+    512,
+    0,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "brazier_0": {
+   "fps": 6,
+   "frames": 4,
+   "kind": "prop",
+   "origin": [
+    16,
+    40
+   ],
+   "rect": [
+    992,
+    0,
+    32,
+    48
+   ],
+   "solid": true
+  },
+  "counter": {
+   "kind": "prop",
+   "origin": [
+    32,
+    44
+   ],
+   "rect": [
+    576,
+    0,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "dais": {
+   "height_hu": 1,
+   "kind": "prop",
+   "origin": [
+    32,
+    32
+   ],
+   "rect": [
+    1376,
+    0,
+    64,
+    48
+   ],
+   "solid": true
+  },
+  "desk_clerk": {
+   "kind": "prop",
+   "origin": [
+    32,
+    48
+   ],
+   "rect": [
+    640,
+    0,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "desk_clerk_tray1": {
+   "kind": "prop",
+   "origin": [
+    32,
+    48
+   ],
+   "rect": [
+    704,
+    0,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "desk_clerk_tray2": {
+   "kind": "prop",
+   "origin": [
+    32,
+    48
+   ],
+   "rect": [
+    768,
+    0,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "desk_registrar": {
+   "kind": "prop",
+   "origin": [
+    32,
+    60
+   ],
+   "rect": [
+    384,
+    0,
+    64,
+    80
+   ],
+   "solid": true
+  },
+  "desk_superior": {
+   "kind": "prop",
+   "origin": [
+    32,
+    60
+   ],
+   "rect": [
+    448,
+    0,
+    64,
+    80
+   ],
+   "solid": true
+  },
+  "ivy_bench": {
+   "kind": "prop",
+   "origin": [
+    32,
+    40
+   ],
+   "rect": [
+    896,
+    0,
+    64,
+    56
+   ],
+   "solid": true
+  },
+  "lectern": {
+   "kind": "prop",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    960,
+    0,
+    32,
+    56
+   ],
+   "solid": true
+  },
+  "queue_post": {
+   "kind": "prop",
+   "origin": [
+    8,
+    26
+   ],
+   "rect": [
+    1600,
+    0,
+    16,
+    32
+   ],
+   "solid": true
+  },
+  "queue_rail_x": {
+   "kind": "prop",
+   "origin": [
+    32,
+    34
+   ],
+   "rect": [
+    1440,
+    0,
+    64,
+    48
+   ],
+   "solid": true
+  },
+  "rope_post": {
+   "kind": "prop",
+   "origin": [
+    32,
+    36
+   ],
+   "rect": [
+    1504,
+    0,
+    64,
+    48
+   ],
+   "solid": true
+  },
+  "shelf_books": {
+   "kind": "prop",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    128,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "shelf_empty": {
+   "kind": "prop",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    192,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "statue_first_clerk": {
+   "footprint": [
+    2,
+    2
+   ],
+   "kind": "prop",
+   "origin": [
+    64,
+    160
+   ],
+   "rect": [
+    0,
+    0,
+    128,
+    192
+   ],
+   "solid": true
+  },
+  "stool": {
+   "kind": "prop",
+   "origin": [
+    16,
+    24
+   ],
+   "rect": [
+    1568,
+    0,
+    32,
+    32
+   ],
+   "solid": true
+  },
+  "ticket_booth": {
+   "kind": "prop",
+   "origin": [
+    32,
+    104
+   ],
+   "rect": [
+    256,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_torch_x": {
+   "fps": 6,
+   "frames": 4,
+   "kind": "prop",
+   "origin": [
+    37,
+    66
+   ],
+   "rect": [
+    1120,
+    0,
+    32,
+    48
+   ],
+   "solid": false
+  },
+  "wall_torch_y": {
+   "fps": 6,
+   "frames": 4,
+   "kind": "prop",
+   "origin": [
+    -5,
+    66
+   ],
+   "rect": [
+    1248,
+    0,
+    32,
+    48
+   ],
+   "solid": false
+  }
+ }
+}

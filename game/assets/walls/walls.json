@@ -1,0 +1,272 @@
+{
+ "atlas": "walls",
+ "image": "walls.png",
+ "sprites": {
+  "stairs_up": {
+   "height_hu": 2,
+   "kind": "stair",
+   "origin": [
+    32,
+    64
+   ],
+   "rect": [
+    960,
+    0,
+    64,
+    80
+   ]
+  },
+  "wall_corner": {
+   "kind": "wall",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    0,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_door_ember_x": {
+   "kind": "door",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    64,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_door_ember_y": {
+   "kind": "door",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    128,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_door_gilt_x": {
+   "kind": "door",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    192,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_door_gilt_y": {
+   "kind": "door",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    256,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_door_x": {
+   "kind": "door",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    320,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_door_y": {
+   "kind": "door",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    384,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_kerb_corner": {
+   "kind": "kerb",
+   "origin": [
+    32,
+    32
+   ],
+   "rect": [
+    1024,
+    0,
+    64,
+    48
+   ],
+   "solid": true
+  },
+  "wall_kerb_x": {
+   "kind": "kerb",
+   "origin": [
+    32,
+    32
+   ],
+   "rect": [
+    1088,
+    0,
+    64,
+    48
+   ],
+   "solid": true
+  },
+  "wall_kerb_y": {
+   "kind": "kerb",
+   "origin": [
+    32,
+    32
+   ],
+   "rect": [
+    1152,
+    0,
+    64,
+    48
+   ],
+   "solid": true
+  },
+  "wall_plain_x": {
+   "kind": "wall",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    448,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_plain_y": {
+   "kind": "wall",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    512,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_plaque_x": {
+   "kind": "wall",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    576,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_window_gold_x": {
+   "kind": "wall",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    640,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_window_gold_y": {
+   "kind": "wall",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    704,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_window_red_x": {
+   "kind": "wall",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    768,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_window_red_y": {
+   "kind": "wall",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    832,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "works_hatch_y": {
+   "kind": "wall",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    896,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  }
+ }
+}

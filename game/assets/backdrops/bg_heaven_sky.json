@@ -1,0 +1,20 @@
+{
+ "atlas": "bg_heaven_sky",
+ "image": "bg_heaven_sky.png",
+ "sprites": {
+  "bg_heaven_sky": {
+   "rect": [
+    0,
+    0,
+    640,
+    360
+   ],
+   "origin": [
+    0,
+    0
+   ],
+   "kind": "backdrop",
+   "tileable": false
+  }
+ }
+}

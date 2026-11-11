@@ -120,7 +120,7 @@ BUST_SOULS = {  # case soul -> (variant, accessory)
     's004': (0, 'helmet'), 's007': (0, 'bowler'), 's008': (3, 'kerchief'),
 }
 PORTRAIT_RIGS = {
-    'por_marrow': ('chr_clerk_lilac', dict(trim='e0a83e')), 'por_pell': ('chr_archivist', {}),
+    'por_marrow': ('chr_clerk_lilac', dict(hem='e0a83e')), 'por_pell': ('chr_archivist', {}),
     'por_wren': ('chr_clerk_grey', {}), 'por_grist': ('chr_guard', {}), 'por_registrar': ('chr_clerk_grey', dict(hood='pointed', robe='27232f')),
     'por_works': ('chr_clerk_grey', dict(hem='a8742a')), 'por_soul': ('chr_soul_0', {}),
     'por_nan': ('chr_soul_2', dict(acc='bun')), 'por_oddy': ('chr_soul_1', dict(acc='tophat')),
@@ -154,6 +154,9 @@ def accessory(ctx, rig, acc):
         ctx.sphere(.092, (0, -.025, .0), m1, parent=hd)
 
 
+BUST_TZ = .7
+
+
 def bust_shot(ctx, name, size, zoom):
     # head centre at z~.66 -> place it at ~40% height
     w = h = size
@@ -161,7 +164,7 @@ def bust_shot(ctx, name, size, zoom):
     s.render.resolution_x = w; s.render.resolution_y = h
     from lib import R_VEC, U_VEC, D_VEC, PPU
     s.camera.data.ortho_scale = size / (PPU * zoom)
-    target = (0, 0, .55)
+    target = (0, 0, BUST_TZ)
     from mathutils import Vector
     s.camera.location = Vector(target) + D_VEC * 40 - U_VEC * (0.06)
     s.render.filepath = os.path.join(ctx.outdir, name + '.png')
@@ -175,7 +178,7 @@ def j_busts(ctx):
         rig = Rig(ctx, CHARS[f'chr_soul_{var}'])
         accessory(ctx, rig, acc)
         rig.pose('idle', 0); rig.face(7)
-        bust_shot(ctx, f'bust_case_{cs}', 96, 3.1)
+        bust_shot(ctx, f'bust_case_{cs}', 96, 4.2)
         ctx.new_kit()
 
 
@@ -188,7 +191,7 @@ def j_portraits(ctx):
         if acc:
             accessory(ctx, rig, acc)
         rig.pose('idle', 0); rig.face(7)
-        bust_shot(ctx, pid, 64, 2.1)
+        bust_shot(ctx, pid, 64, 3.0)
         ctx.new_kit()
 
 

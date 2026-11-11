@@ -110,6 +110,8 @@ func cell_solid(c: Vector2i) -> bool:
 		"prop":
 			return bool(d.get("solid", true))
 		_:
+			if float(d.get("h_hu", 0)) != 0.0:
+				return true # raised cells (dais) are not walkable; only stairs allow a height step
 			return bool(d.get("solid", false))
 
 
@@ -137,12 +139,7 @@ func rebuild_nav() -> void:
 			var k := kind_at(c)
 			var soul_ok := not solid or k == "queue" or k == "seat" or k == "door"
 			soul_astar.set_point_solid(c, not soul_ok)
-	# static NPCs block their cell for the player
-	for o: Variant in objects:
-		if o is Dictionary and str((o as Dictionary).get("type", "")) == "npc" and object_visible(o):
-			var c := JsonUtil.to_vec2i((o as Dictionary).get("cell"))
-			if in_bounds(c):
-				astar.set_point_solid(c, true)
+	# NPC cells stay walkable for A* (CONTRACT_CHANGES #8); actors do not block paths.
 
 
 func walkable(c: Vector2i) -> bool:
