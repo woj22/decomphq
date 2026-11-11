@@ -94,6 +94,8 @@ func wait_s(s: float) -> void:
 func drain(prefer: Array = [], effect: String = "", max_steps: int = 400) -> void:
 	for n in max_steps:
 		await frames(1)
+		if World.fading:
+			continue
 		if Dialogue.current_kind == "":
 			if Dialogue.queue.is_empty():
 				return

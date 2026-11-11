@@ -149,8 +149,10 @@ func _build_cells() -> void:
 					var style := str(o.get("style", "plain"))
 					var axis := _wall_axis(c)
 					if near:
-						# near-side doors are openings in the kerb: show floor
+						# near-side doors are openings in the kerb: floor plus an optional low gateway sprite
 						place(_floor_variant(family, c), cv, cv, floor_layer, 0.0, "floor")
+						if Assets.has("wall_kerb_door_" + axis):
+							place("wall_kerb_door_" + axis, cv, cv, sorted, 0.0, "kerb")
 					else:
 						var sid := "wall_door_" + axis if style == "plain" else "wall_door_%s_%s" % [style, axis]
 						place(sid, cv, cv, sorted, 0.0, "wall")
