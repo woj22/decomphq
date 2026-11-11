@@ -5,7 +5,7 @@ extends RefCounted
 const OPS: PackedStringArray = ["set_flag", "add_stat", "set_objective", "start_dialogue", "advance_clock", "give_docket", "start_shift",
 	"end_shift", "call_soul", "give_archive", "give_archive_one", "reopen_case", "snapshot_stats", "restore_stats", "reset_cases",
 	"start_incident", "resolve_incident", "unlock_area", "set_rank", "show_card", "set_npc_line_flag", "buy_item", "teleport",
-	"end_prototype", "set_stat", "clear_flag"]
+	"end_prototype", "set_stat", "clear_flag", "appeal_case"]
 
 static var unknown_logged := {}
 
@@ -59,6 +59,8 @@ static func apply_one(e: Dictionary, ctx: Dictionary = {}) -> void:
 			GameState.give_archive_one(Conditions.resolve_case(e.get("case"), ctx), str(e.get("id", "")))
 		"reopen_case":
 			GameState.reopen_case(Conditions.resolve_case(e.get("case"), ctx))
+		"appeal_case":
+			GameState.appeal_case(Conditions.resolve_case(e.get("case"), ctx), str(e.get("by", "soul")))
 		"snapshot_stats":
 			GameState.snapshot_stats(str(e.get("tag", "default")))
 		"restore_stats":

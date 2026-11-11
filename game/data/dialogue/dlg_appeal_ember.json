@@ -1,0 +1,22 @@
+{
+ "id": "dlg_appeal_ember",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A runner, sweating: 'Appeal from the Ember side, Adjudicator. A Demon Second Class, Debt Recovery, is downstairs.'",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "'The Cinder Dominion contests Verhoek. They say a murderer under a false name is theirs by any Rubric. Hear it.'",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_objective",
+     "id": "obj_ring_bell"
+    }
+   ]
+  }
+ }
+}

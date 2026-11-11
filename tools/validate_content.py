@@ -206,7 +206,7 @@ def walk_effects(where, effs):
         elif name in ("give_archive_one",):
             case_ref(where, e.get("case"))
             REFS.case_items.append(("archive", e.get("case"), e.get("id"), where))
-        elif name == "reopen_case":
+        elif name in ("reopen_case", "appeal_case"):
             case_ref(where, e.get("case"))
         elif name == "reset_cases":
             for cid in e.get("ids", []):
@@ -814,10 +814,11 @@ def main():
         for cid in ids:
             if cid not in cases:
                 err("config.json", "docket %s case %r unknown" % (day, cid))
-            elif cases[cid]["min_rank"] != 1:
+            elif int(day) <= 2 and cases[cid]["min_rank"] != 1:
                 err("config.json", "docket %s case %r has min_rank > 1" % (day, cid))
-    if sorted(c for ids in dockets.values() for c in ids) != sorted(PROTOTYPE_CASES):
-        err("config.json", "dockets must hold exactly the six prototype cases")
+    # Days 1-2 are the rank-1 prototype and must hold exactly its six cases; later days are rank 2+ content.
+    if sorted(c for d, ids in dockets.items() if int(d) <= 2 for c in ids) != sorted(PROTOTYPE_CASES):
+        err("config.json", "dockets for days 1-2 must hold exactly the six prototype cases")
     want = {("clock", "costs"): {"door": 5, "question_general": 10, "question_confront": 5, "archive": 15, "link": 0, "verdict": 20}}
     costs = config.get("clock", {}).get("costs", {})
     for k, v in want[("clock", "costs")].items():

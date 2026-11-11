@@ -239,8 +239,13 @@ func _refresh_booth() -> void:
 	var full := Content.cfg_i("composure", 3)
 	for i in full:
 		pips.add_child(UiKit.icon("pip_full" if i < session.composure() else "pip_empty", Vector2(16, 16)))
+	var appeal: Variant = session.rec().get("appeal")
 	if correction:
 		line_label.text = "Correction: the soul has gone. The file remains."
+	elif appeal is Dictionary and last_line == "":
+		var by := str((appeal as Dictionary).get("by", "soul"))
+		var who: String = str({"soul": "The soul appeals", "gilt": "The Gilt side appeals", "ember": "The Ember side appeals"}.get(by, "Appeal"))
+		line_label.text = "APPEAL. %s your verdict: %s." % [who, str((appeal as Dictionary).get("from", "")).to_upper()]
 	else:
 		line_label.text = ("\"" + last_line + "\"") if last_line != "" else ""
 

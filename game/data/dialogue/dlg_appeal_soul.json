@@ -1,0 +1,22 @@
+{
+ "id": "dlg_appeal_soul",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A runner, out of breath: 'Appeal, Adjudicator. Verhoek. Kell. Whichever. He says the boy never did anything.'",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "'He's asking to be heard again, before the Ember Gate shuts on him for good. It's your stamp. You hear it.'",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_objective",
+     "id": "obj_ring_bell"
+    }
+   ]
+  }
+ }
+}

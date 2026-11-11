@@ -110,15 +110,14 @@ func drain(prefer: Array = [], effect: String = "", max_steps: int = 400) -> voi
 			return  # end-of-prototype summary: leave it on screen for the script to assert/dismiss
 		elif Dialogue.current_kind == "card":
 			# Dismiss title cards with a real tap through the input pipeline, as a player would.
+			var before: Control = main.modal_root
 			await tap_screen(get_viewport().get_visible_rect().size * 0.5)
 			await frames(2)
-			if Dialogue.current_kind == "card":
-				fail("title card did not respond to a tap")
+			if Dialogue.current_kind == "card" and main.modal_root == before and is_instance_valid(before):
+				fail("title card did not respond to a tap: " + str(Dialogue.current_data))
 				main.dismiss_modal()
 		else:
 			main.dismiss_modal()
-			if Dialogue.current_kind != "" and Dialogue.current_kind != "dialogue":
-				Dialogue.modal_done()
 
 
 func _pick(prefer: Array, effect: String) -> int:
@@ -256,7 +255,8 @@ func run_step(s: Dictionary) -> bool:
 				return false
 			await drain([], "give_archive")
 		"sit":
-			if not await interact("obj_player_desk", walk):
+			var desk_id := str(World._desk_object().get("id", "obj_player_desk"))
+			if not await interact(desk_id, walk):
 				return false
 			await frames(2)
 			if main.desk == null:

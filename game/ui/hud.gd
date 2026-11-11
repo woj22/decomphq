@@ -237,7 +237,10 @@ func refresh() -> void:
 	var obj := GameState.objective_text()
 	objective_label.text = ("(!) " + obj) if obj != "" else "(!) Explore"
 	var gate := Content.cfg_i("merit_gate", 30)
-	merit_label.text = "Merit %d/%d" % [GameState.get_stat_i("merit"), gate]
+	if GameState.rank >= 2:
+		merit_label.text = "Merit %d" % GameState.get_stat_i("merit")
+	else:
+		merit_label.text = "Merit %d/%d" % [GameState.get_stat_i("merit"), gate]
 	if objective_expanded:
 		var o := Content.objective(GameState.objective)
 		var tgt: Dictionary = o.get("target", {})

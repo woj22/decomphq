@@ -1,49 +1,297 @@
 {
-  "id": "area_adjudicator_chamber",
-  "name": "Adjudicator's Chamber",
-  "size": [8, 8],
-  "ambience": "amb_chamber",
-  "backdrop": "none",
-  "grid": [
-    "########",
-    "#B....Bk",
-    "#......k",
-    "#..=d=.k",
-    "#..===.k",
-    "#......k",
-    "#......k",
-    "kkkDkkkk"
-  ],
-  "legend": {
-    "#": {"kind": "wall"},
-    "k": {"kind": "kerb"},
-    "D": {"kind": "door"},
-    ".": {"kind": "floor"},
-    "B": {"kind": "prop", "prop": "brazier_0", "solid": true},
-    "=": {"kind": "floor", "floor": "floor_carpet_red"},
-    "d": {"kind": "prop", "prop": "desk_superior", "solid": true}
+ "id": "area_adjudicator_chamber",
+ "name": "Adjudicator's Chamber",
+ "size": [
+  12,
+  10
+ ],
+ "ambience": "amb_chamber",
+ "backdrop": "none",
+ "grid": [
+  "########D###",
+  "#B..S..S..Bk",
+  "p.........Sk",
+  "#.c..w...c.k",
+  "#....d.....k",
+  "D....o.....k",
+  "#........l.k",
+  "#..........k",
+  "#B........Bk",
+  "kkkDkkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
   },
-  "floor": "floor_flag",
-  "windows": [
-    {"cell": [0, 3], "glass": "gold"},
-    {"cell": [4, 0], "glass": "red"}
-  ],
-  "decor": [
-    {"sprite": "light_pool_gold", "cell": [1, 1]},
-    {"sprite": "light_pool_red", "cell": [6, 1]},
-    {"sprite": "light_pool_gold", "cell": [4, 4]},
-    {"sprite": "banner_red", "cell": [2, 0]},
-    {"sprite": "wall_torch_y", "cell": [0, 5]}
-  ],
-  "objects": [
-    {"id": "door_chamber_court", "type": "door", "cell": [3, 7], "use_cell": [3, 6], "style": "plain",
-     "to": {"area": "area_clerks_court", "spawn": "from_chamber"}},
-    {"id": "obj_chamber_desk", "type": "inspect", "cell": [4, 3], "use_cell": [4, 4], "dialogue": "dlg_chamber_desk"}
-  ],
-  "spawns": {
-    "default": [3, 6],
-    "from_court": [3, 6]
+  "k": {
+   "kind": "kerb"
   },
-  "zones": {},
-  "ext": {"note": "Grid authored by Content (PROJECT 10.2 gives only the description). Entering plays the rank title card (triggers.json)."}
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "p": {
+   "kind": "wall",
+   "sprite": "works_hatch_y"
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "w": {
+   "kind": "floor"
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "o": {
+   "kind": "seat",
+   "prop": "stool",
+   "solid": false
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [
+  {
+   "cell": [
+    0,
+    3
+   ],
+   "glass": "gold"
+  },
+  {
+   "cell": [
+    0,
+    7
+   ],
+   "glass": "gold"
+  },
+  {
+   "cell": [
+    4,
+    0
+   ],
+   "glass": "red"
+  },
+  {
+   "cell": [
+    10,
+    0
+   ],
+   "glass": "red"
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    5,
+    3
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    1,
+    5
+   ]
+  },
+  {
+   "sprite": "light_pool_red",
+   "cell": [
+    8,
+    1
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    9,
+    6
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    2,
+    0
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    6,
+    0
+   ]
+  },
+  {
+   "sprite": "wall_torch_y",
+   "cell": [
+    0,
+    4
+   ]
+  },
+  {
+   "sprite": "wall_torch_x",
+   "cell": [
+    5,
+    0
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_chamber_court",
+   "type": "door",
+   "cell": [
+    3,
+    9
+   ],
+   "use_cell": [
+    3,
+    8
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_clerks_court",
+    "spawn": "from_chamber"
+   }
+  },
+  {
+   "id": "soul_door_chamber_gilt",
+   "type": "soul_door",
+   "cell": [
+    0,
+    5
+   ],
+   "use_cell": [
+    1,
+    5
+   ],
+   "style": "gilt",
+   "verdict": "heaven"
+  },
+  {
+   "id": "soul_door_chamber_ember",
+   "type": "soul_door",
+   "cell": [
+    8,
+    0
+   ],
+   "use_cell": [
+    8,
+    1
+   ],
+   "style": "ember",
+   "verdict": "hell"
+  },
+  {
+   "id": "obj_chamber_desk",
+   "type": "desk_player",
+   "cell": [
+    5,
+    4
+   ],
+   "use_cell": [
+    5,
+    3
+   ],
+   "seat": [
+    5,
+    3
+   ],
+   "soul_seat": [
+    5,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "id": "obj_summons_bell",
+   "type": "inspect",
+   "cell": [
+    9,
+    6
+   ],
+   "use_cell": [
+    8,
+    6
+   ],
+   "dialogue": "dlg_chamber_bell"
+  },
+  {
+   "id": "obj_pneumatic_tube",
+   "type": "inspect",
+   "cell": [
+    0,
+    2
+   ],
+   "use_cell": [
+    1,
+    2
+   ],
+   "dialogue": "dlg_chamber_tube"
+  }
+ ],
+ "spawns": {
+  "default": [
+   3,
+   8
+  ],
+  "from_court": [
+   3,
+   8
+  ],
+  "soul_call": [
+   3,
+   8
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [
+   "chr_clerk_lilac",
+   "chr_clerk_grey"
+  ],
+  "staff": [
+   {
+    "sprite": "chr_clerk_grey",
+    "count": 1,
+    "rect": [
+     1,
+     6,
+     10,
+     8
+    ],
+    "pause": [
+     3,
+     8
+    ]
+   }
+  ],
+  "flows": []
+ },
+ "ext": {
+  "note": "Rank 2 office (M2 slice): own desk, summons bell (call_soul), pneumatic tube (give_archive)."
+ }
 }

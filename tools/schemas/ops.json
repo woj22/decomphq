@@ -1,70 +1,249 @@
 {
   "_doc": "Condition/effect op signatures (docs/CONTRACTS.md 3.1-3.2). Arg types: str, int, num, bool, any, list, cond, conds, case (case id or $active_case). Used by tools/validate_content.py; Engine may load it too.",
   "conditions": {
-    "flag": {"id": "str"},
-    "not_flag": {"id": "str"},
-    "stat_gte": {"id": "str", "value": "num"},
-    "stat_lte": {"id": "str", "value": "num"},
-    "rank_gte": {"value": "int"},
-    "day_eq": {"value": "int"},
-    "verdict": {"case": "case", "value": "str"},
-    "case_state": {"case": "case", "value": "str"},
-    "discovered": {"case": "case", "id": "str"},
-    "asked": {"case": "case", "id": "str"},
+    "flag": {
+      "id": "str"
+    },
+    "not_flag": {
+      "id": "str"
+    },
+    "stat_gte": {
+      "id": "str",
+      "value": "num"
+    },
+    "stat_lte": {
+      "id": "str",
+      "value": "num"
+    },
+    "rank_gte": {
+      "value": "int"
+    },
+    "day_eq": {
+      "value": "int"
+    },
+    "verdict": {
+      "case": "case",
+      "value": "str"
+    },
+    "case_state": {
+      "case": "case",
+      "value": "str"
+    },
+    "discovered": {
+      "case": "case",
+      "id": "str"
+    },
+    "asked": {
+      "case": "case",
+      "id": "str"
+    },
     "has_active_case": {},
-    "active_case_eq": {"case": "case"},
+    "active_case_eq": {
+      "case": "case"
+    },
     "docket_empty": {},
-    "holds_archive": {"case": "case", "id": "str"},
+    "holds_archive": {
+      "case": "case",
+      "id": "str"
+    },
     "archive_available": {},
-    "any": {"of": "conds"},
-    "not": {"of": "cond"}
+    "any": {
+      "of": "conds"
+    },
+    "not": {
+      "of": "cond"
+    }
   },
   "effects": {
-    "set_flag": {"id": "str", "value": "any"},
-    "add_stat": {"id": "str", "value": "num"},
-    "set_objective": {"id": "str"},
-    "start_dialogue": {"id": "str"},
-    "advance_clock": {"minutes": "int"},
-    "give_docket": {"day": "int"},
-    "start_shift": {"day": "int"},
+    "set_flag": {
+      "id": "str",
+      "value": "any"
+    },
+    "add_stat": {
+      "id": "str",
+      "value": "num"
+    },
+    "set_objective": {
+      "id": "str"
+    },
+    "start_dialogue": {
+      "id": "str"
+    },
+    "advance_clock": {
+      "minutes": "int"
+    },
+    "give_docket": {
+      "day": "int"
+    },
+    "start_shift": {
+      "day": "int"
+    },
     "end_shift": {},
     "call_soul": {},
     "give_archive": {},
-    "give_archive_one": {"case": "case", "id": "str"},
-    "reopen_case": {"case": "case"},
-    "snapshot_stats": {"tag": "str"},
-    "restore_stats": {"tag": "str"},
-    "reset_cases": {"ids": "list"},
-    "start_incident": {"id": "str"},
-    "resolve_incident": {"id": "str", "resolved": "bool"},
-    "unlock_area": {"id": "str"},
-    "set_rank": {"value": "int"},
-    "show_card": {"title": "str", "text": "str"},
-    "set_npc_line_flag": {"id": "str"},
-    "buy_item": {"id": "str", "price": "int"},
-    "teleport": {"area": "str", "spawn": "str"},
-    "end_prototype": {}
+    "give_archive_one": {
+      "case": "case",
+      "id": "str"
+    },
+    "reopen_case": {
+      "case": "case"
+    },
+    "snapshot_stats": {
+      "tag": "str"
+    },
+    "restore_stats": {
+      "tag": "str"
+    },
+    "reset_cases": {
+      "ids": "list"
+    },
+    "start_incident": {
+      "id": "str"
+    },
+    "resolve_incident": {
+      "id": "str",
+      "resolved": "bool"
+    },
+    "unlock_area": {
+      "id": "str"
+    },
+    "set_rank": {
+      "value": "int"
+    },
+    "show_card": {
+      "title": "str",
+      "text": "str"
+    },
+    "set_npc_line_flag": {
+      "id": "str"
+    },
+    "buy_item": {
+      "id": "str",
+      "price": "int"
+    },
+    "teleport": {
+      "area": "str",
+      "spawn": "str"
+    },
+    "end_prototype": {},
+    "appeal_case": {
+      "case": "case",
+      "by": "str"
+    }
   },
   "enums": {
-    "verdict": ["heaven", "hell"],
-    "case_state": ["pending", "called", "seated", "judged"],
-    "case_type": ["clear", "contested", "ambiguous"],
-    "entry_tag": ["virtue", "sin", "neutral"],
-    "ink": ["black", "violet"],
-    "case_op": ["void", "reweight", "reveal"],
-    "question_kind": ["general", "confront"],
-    "side": ["heaven", "hell"],
-    "guideline": ["heaven", "hell", "abstain"],
-    "legend_kind": ["wall", "kerb", "door", "floor", "prop", "stair", "queue", "seat", "decal"],
-    "object_type": ["door", "npc", "desk_player", "inspect", "hatch", "stair", "soul_door"],
-    "door_style": ["plain", "gilt", "ember"],
-    "glass": ["gold", "red"],
-    "backdrop": ["court", "none"],
-    "facing": ["sw", "w", "nw", "n", "ne", "e", "se", "s"],
+    "verdict": [
+      "heaven",
+      "hell"
+    ],
+    "case_state": [
+      "pending",
+      "called",
+      "seated",
+      "judged"
+    ],
+    "case_type": [
+      "clear",
+      "contested",
+      "ambiguous"
+    ],
+    "entry_tag": [
+      "virtue",
+      "sin",
+      "neutral"
+    ],
+    "ink": [
+      "black",
+      "violet"
+    ],
+    "case_op": [
+      "void",
+      "reweight",
+      "reveal"
+    ],
+    "question_kind": [
+      "general",
+      "confront"
+    ],
+    "side": [
+      "heaven",
+      "hell"
+    ],
+    "guideline": [
+      "heaven",
+      "hell",
+      "abstain"
+    ],
+    "legend_kind": [
+      "wall",
+      "kerb",
+      "door",
+      "floor",
+      "prop",
+      "stair",
+      "queue",
+      "seat",
+      "decal"
+    ],
+    "object_type": [
+      "door",
+      "npc",
+      "desk_player",
+      "inspect",
+      "hatch",
+      "stair",
+      "soul_door"
+    ],
+    "door_style": [
+      "plain",
+      "gilt",
+      "ember"
+    ],
+    "glass": [
+      "gold",
+      "red"
+    ],
+    "backdrop": [
+      "court",
+      "none"
+    ],
+    "facing": [
+      "sw",
+      "w",
+      "nw",
+      "n",
+      "ne",
+      "e",
+      "se",
+      "s"
+    ],
     "trigger_signals": {
-      "area_entered": ["area_id"], "case_scored": ["case_id"], "case_called": ["case_id"],
-      "discovery_made": ["case_id", "discovery_id"], "dialogue_ended": ["dlg_id"], "shift_started": ["day"],
-      "shift_ended": ["day"], "new_game_started": [], "rank_changed": ["rank"]
+      "area_entered": [
+        "area_id"
+      ],
+      "case_scored": [
+        "case_id"
+      ],
+      "case_called": [
+        "case_id"
+      ],
+      "discovery_made": [
+        "case_id",
+        "discovery_id"
+      ],
+      "dialogue_ended": [
+        "dlg_id"
+      ],
+      "shift_started": [
+        "day"
+      ],
+      "shift_ended": [
+        "day"
+      ],
+      "new_game_started": [],
+      "rank_changed": [
+        "rank"
+      ]
     }
   }
 }

@@ -1,0 +1,45 @@
+{
+ "id": "dlg_chamber_tube",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The pneumatic tube to Records. Pell's notes come up it rolled, sealed and faintly resentful.",
+   "conditions": [
+    {
+     "op": "archive_available"
+    }
+   ],
+   "next": "ask",
+   "else": "none"
+  },
+  "ask": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Send for the originals.",
+     "next": "send"
+    },
+    {
+     "text": "Leave it.",
+     "next": "end"
+    }
+   ]
+  },
+  "send": {
+   "speaker": "narrator",
+   "text": "Thunk. A canister. Inside, the originals and a slip: 'Uncreased, please. - O.P.'",
+   "effects": [
+    {
+     "op": "give_archive"
+    }
+   ],
+   "next": "end"
+  },
+  "none": {
+   "speaker": "narrator",
+   "text": "Nothing to send for. The tube hisses quietly to itself.",
+   "next": "end"
+  }
+ }
+}

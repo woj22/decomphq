@@ -11,3 +11,4 @@ Binding rulings from the project owner. These override any proposal that conflic
 | D5 | 2026-11-11 | **Free, personal project for now** — no monetisation, no store work. | Owner, reply to REVIEW Q4 |
 | D6 | 2026-11-11 | **Build an Android APK now** (debug-signed, sideloadable), built in the cloud container. | Owner |
 | D7 | 2026-11-11 | (Pending owner) Mockup vista = Map screen, gameplay camera closer — adopted per QA recommendation unless the owner objects. | REVIEW Q1 |
+| D8 | 2026-11-11 | **No more multi-agent builds.** The orchestrator builds features directly, single-threaded. | Owner |

@@ -1,0 +1,22 @@
+{
+ "id": "dlg_chamber_day3",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "On the desk: a docket in Marrow's hand. Two names, both marked CONTESTED in red, and a note.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "'Juniors stamp the easy ones. You get these. Ring when ready. Appeals come to you now too. - I.M.'",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_objective",
+     "id": "obj_ring_bell"
+    }
+   ]
+  }
+ }
+}

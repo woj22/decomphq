@@ -355,6 +355,23 @@ func reopen_case(cid: String) -> void:
 	EventBus.docket_changed.emit()
 
 
+## Rank 2+: a judged case comes back on appeal. Its earlier score is reverted (re-scored on the new stamp), the investigation
+## so far is kept, Composure is restored, and the soul waits to be called again. `by` = "soul" | "gilt" | "ember".
+func appeal_case(cid: String, by: String = "soul") -> void:
+	if cid == "" or case_state(cid) != "judged":
+		return
+	var prev := case_verdict(cid)
+	reopen_case(cid)
+	var rec := case_rec(cid)
+	rec["state"] = "pending"
+	rec["correction"] = false
+	rec["appeal"] = {"from": prev, "by": by}
+	rec["composure"] = Content.cfg_i("composure", 3)
+	if not docket.has(cid):
+		docket.append(cid)
+	EventBus.docket_changed.emit()
+
+
 func snapshot_stats(tag: String) -> void:
 	snapshots[tag] = {"stats": stats.duplicate(true), "rank": rank}
 
