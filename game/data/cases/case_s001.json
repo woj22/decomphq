@@ -1,0 +1,51 @@
+{
+  "id": "case_s001",
+  "ref": "S-001",
+  "name": "Marta Ellingsen",
+  "age": 79,
+  "era": "1954",
+  "place": "fishing village of Skarvik",
+  "cause": "pneumonia, in her own bed",
+  "summary": "Widow of the Skarvik lighthouse keeper. Kept the lamp after his death without appointment or pay. No dependants living; two foster children, grown.",
+  "portrait": {"seed": 1001, "tags": ["female", "old", "coast"]},
+  "type": "clear",
+  "min_rank": 1,
+  "entries": [
+    {"id": "r1", "tag": "virtue", "weight": 3, "ink": "black", "text": "Kept the Skarvik light burning 31 years after her husband died, unpaid, unasked."},
+    {"id": "r2", "tag": "virtue", "weight": 2, "ink": "black", "text": "Took in two children orphaned by the wreck of the Solveig; raised them as hers."},
+    {"id": "r3", "tag": "sin", "weight": -1, "ink": "black", "text": "Stole coal from the harbour store during the winter of 1941."},
+    {"id": "r4", "tag": "sin", "weight": -1, "ink": "black", "text": "Refused to speak to her sister for forty years over an inheritance of six spoons."},
+    {"id": "r5", "tag": "neutral", "weight": 0, "ink": "black", "text": "Attended no place of worship after 1923."}
+  ],
+  "hidden": [],
+  "archive": [
+    {"id": "arc_001", "title": "Records note: Skarvik", "requires": [], "cards": [
+      "Harbour board minutes, 1923-54: 'the light shown nightly; keeper unpaid.'",
+      "Parish register: the Solveig lost 1925; two infants placed with Mrs Ellingsen.",
+      "Slip in Pell's hand: 'Nothing contradicts the file. Filed as read. O.P.'"
+    ]}
+  ],
+  "discoveries": [],
+  "questions": [
+    {"id": "q1", "kind": "general", "requires": [], "text": "Why keep the light when nobody paid you?",
+     "answer": ["Boats don't stop coming because a man dies. Somebody had to go up the stairs. I had the knees for it then."],
+     "card": "Kept the light because boats kept coming and somebody had to climb."},
+    {"id": "q2", "kind": "general", "requires": [], "text": "The coal?",
+     "answer": ["The lamp room was freezing and the oil was thick as porridge. I took four sacks. I'd take five, knowing what I know."],
+     "card": "Took four sacks of coal so the lamp oil stayed thin enough to burn.",
+     "fact": {"id": "k_coal", "text": "The stolen coal kept the Skarvik lamp burning through the winter of 1941.", "side": "heaven", "key": true}},
+    {"id": "q3", "kind": "general", "requires": [], "text": "Your sister?",
+     "answer": ["They were Mother's spoons and she knew it. ...Is she here? No, don't tell me. Yes, tell me."],
+     "card": "Still sure the spoons were hers. Wants news of her sister, then doesn't."}
+  ],
+  "expected": {"tally_filed": 3, "tally_corrected": 3, "guideline": "heaven"},
+  "epilogue": {
+    "heaven": ["She asks whether there are stairs. Told there are none, she looks faintly disappointed."],
+    "hell": ["The Wardens return her file within the day, marked \"Sent in error?\"", "Marrow leaves it on your desk without comment."]
+  },
+  "verdicts": {
+    "heaven": {"effects": [{"op": "add_stat", "id": "favour_gilt", "value": 1}]},
+    "hell": {"effects": [{"op": "add_stat", "id": "favour_ember", "value": 1}, {"op": "add_stat", "id": "conscience", "value": -1}]}
+  },
+  "ext": {"teaches": "Walk, call, read, stamp, door, slip", "mitigating": "The coal kept the light working; the theft served the virtue."}
+}
