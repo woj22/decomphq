@@ -1,0 +1,11 @@
+{
+ "id": "dlg_pell_nidle",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "Bring me violet. Every forged line is a soul they sold, and a raid they will send to collect it.",
+   "next": "end"
+  }
+ }
+}

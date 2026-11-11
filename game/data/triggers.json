@@ -702,16 +702,79 @@
   "once": true,
   "effects": [
    {
+    "op": "set_flag",
+    "id": "flag_day3_closed",
+    "value": true
+   },
+   {
     "op": "set_objective",
-    "id": "obj_day3_done"
+    "id": "obj_next_docket"
    },
    {
     "op": "show_card",
     "title": "Day 3 Closed",
-    "text": "That is all the fortress has built so far. Your desk will be waiting."
+    "text": "Ring the bell for tomorrow's docket. The dead keep coming; so does the work."
+   }
+  ]
+ },
+ {
+  "id": "trg_gen_shift_end",
+  "on": "case_scored",
+  "match": {},
+  "conditions": [
+   {
+    "op": "flag",
+    "id": "flag_gen_shift"
    },
    {
-    "op": "end_prototype"
+    "op": "docket_empty"
+   }
+  ],
+  "once": false,
+  "effects": [
+   {
+    "op": "set_flag",
+    "id": "flag_gen_shift",
+    "value": false
+   },
+   {
+    "op": "end_shift"
+   },
+   {
+    "op": "set_objective",
+    "id": "obj_next_docket"
+   }
+  ]
+ },
+ {
+  "id": "trg_stakeout",
+  "on": "area_entered",
+  "match": {
+   "area_id": "area_ember_gate"
+  },
+  "conditions": [
+   {
+    "op": "is_night"
+   },
+   {
+    "op": "flag",
+    "id": "flag_story_c3"
+   },
+   {
+    "op": "not_flag",
+    "id": "flag_captain_dead"
+   }
+  ],
+  "once": false,
+  "effects": [
+   {
+    "op": "show_card",
+    "title": "Quota Night",
+    "text": "Quill, at your shoulder: 'Here it comes. Stand with me, Adjudicator.'"
+   },
+   {
+    "op": "spawn_boss",
+    "flag": "flag_captain_dead"
    }
   ]
  }

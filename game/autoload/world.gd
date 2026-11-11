@@ -100,6 +100,9 @@ func load_area(id: String, spawn: String = "default", cell_override: Vector2i = 
 	player.speed = Content.cfg_f("player_speed", 3.0)
 	player.reached_target.connect(_on_reached_target)
 	_spawn_case_soul()
+	var mk := ObjectiveMarker.new()
+	mk.z_index = 50
+	view.add_child(mk)
 	camera = Camera2D.new()
 	camera.name = "Camera"
 	view.add_child(camera)
@@ -254,6 +257,8 @@ func interactable(o: Dictionary) -> bool:
 
 
 func input_locked() -> bool:
+	if Combat.downed:
+		return true
 	return fading or desk_open or ui_blocking > 0 or Dialogue.busy() or player == null or Playtest.driving_input()
 
 

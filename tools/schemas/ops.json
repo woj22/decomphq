@@ -151,6 +151,10 @@
     },
     "buy_upgrade": {
       "id": "str"
+    },
+    "next_docket": {},
+    "spawn_boss": {
+      "flag": "str"
     }
   },
   "enums": {

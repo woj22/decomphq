@@ -21,6 +21,8 @@ var _held := {} # button -> seconds held
 var _breakout_t := 0.0
 var _hostile_cfg: Dictionary = {}
 var invuln := 0.0
+var downed := false
+var healer: Actor
 var rng := RandomNumberGenerator.new()
 
 
@@ -199,15 +201,107 @@ func damage_player(n: float) -> void:
 		_fall()
 
 
-## Falling in combat: dragged back to the Court by the Watch, a fine docked from the purse, healed.
+## Falling in combat: you collapse; an infirmarian runs in from the door to heal you while the guards hold the line.
+## If you are down and every defender of the room is dead, the Gate is lost: Purgatory is overrun (game over).
 func _fall() -> void:
-	var fine := mini(GameState.get_stat_i("purse"), Content.cfg_i("combat_fall_fine", 5))
-	GameState.add_stat("purse", -fine)
+	hp = 0.0
+	downed = true
+	invuln = 999.0
+	World.player.stop()
+	World.player.modulate = Color(0.6, 0.5, 0.6, 0.8)
+	World.player.rotation = 1.2
+	EventBus.notify.emit("You fall. Someone shouts for the infirmarian.")
+	if alive_defenders() == 0 and in_hostile_area():
+		overrun()
+		return
+	if not in_hostile_area():
+		_revive()
+		return
+	_send_healer()
+
+
+func alive_defenders() -> int:
+	var n := 0
+	for g: Variant in defenders:
+		if is_instance_valid(g) and not (g as Defender).down:
+			n += 1
+	return n
+
+
+func defender_died(_g: Defender) -> void:
+	Audio.sfx("sfx_player_hurt")
+	EventBus.notify.emit("A guard falls. %d still stand." % alive_defenders())
+	if downed and alive_defenders() == 0:
+		overrun()
+
+
+func _send_healer() -> void:
+	var m := World.model
+	var door := World.player.cell()
+	for o: Variant in m.objects:
+		if o is Dictionary and str((o as Dictionary).get("type", "")) == "door":
+			door = m.use_cell(o)
+			break
+	healer = Actor.new()
+	healer.actor_id = "healer"
+	World.view.sorted.add_child(healer)
+	healer.setup("chr_clerk_lilac", m, Vector2(door), "ne")
+	healer.speed = 4.0
+	healer.modulate = Color(0.9, 1.0, 0.9)
+	var target := m.nearest_walkable(World.player.cell() + Vector2i(1, 0), World.player.cell())
+	healer.arrived.connect(_healer_arrived, CONNECT_ONE_SHOT)
+	if not healer.go_to(target):
+		_healer_arrived()
+
+
+func _healer_arrived() -> void:
+	if not downed:
+		return
+	if is_instance_valid(healer):
+		healer.face_towards(World.player.gpos)
+		Fx.burst(World.view.decal_layer, "spell_nova", World.player.gpos)
+	await get_tree().create_timer(2.0).timeout
+	if downed and alive_defenders() > 0 or not in_hostile_area():
+		_revive()
+	if is_instance_valid(healer):
+		var h := healer
+		healer = null
+		var tw := h.create_tween()
+		tw.tween_property(h, "modulate:a", 0.0, 0.6)
+		tw.tween_callback(h.queue_free)
+
+
+func _revive() -> void:
+	downed = false
+	invuln = 1.5
 	hp = max_hp()
+	if World.player != null:
+		World.player.rotation = 0.0
+		World.player.modulate = Color.WHITE
 	hp_changed.emit(hp, max_hp())
+	EventBus.notify.emit("The infirmarian patches you up. Back on your feet.")
+
+
+## Every defender is dead and you are down: the demons pour out of the Gate.
+func overrun() -> void:
+	if not downed:
+		return
+	downed = false
 	World.escort_lost()
-	Dialogue.request_modal("card", {"title": "Dragged Back", "text": "The Watch hauls you out by the collar. The infirmary bills you %d obols." % fine})
-	World.request_teleport("area_clerks_court", "default")
+	clear_enemies()
+	Audio.sfx("sfx_demon_roar")
+	Dialogue.request_modal("card", {"title": "Purgatory Overrun", "text":
+		"The last guard falls and the Gate stands open. The fortress burns until morning. (Continue loads your last save.)"})
+	while Dialogue.current_kind != "":
+		await get_tree().create_timer(0.1).timeout
+	if World.player != null:
+		World.player.rotation = 0.0
+		World.player.modulate = Color.WHITE
+	hp = max_hp()
+	var main := get_tree().current_scene
+	if main != null and main.has_method("show_title"):
+		GameState.in_game = false
+		main.call("show_title")
 
 
 func enemy_died(e: Enemy) -> void:
@@ -215,10 +309,16 @@ func enemy_died(e: Enemy) -> void:
 	hostiles_changed.emit(enemies.size())
 	GameState.add_stat("purse", Content.cfg_i("demon_bounty", 2))
 	GameState.add_stat("demons_banished", 1)
+	if e.boss_flag != "":
+		GameState.set_flag(e.boss_flag, true)
+		Dialogue.request_modal("card", {"title": "The Manifest", "text":
+			"The Captain dissolves into ash. Its ledger is bound in violet. Every page is countersigned: C. Thrace, Auditor-General."})
 
 
 # ---------------------------------------------------------------- area hookup
 func _on_area() -> void:
+	downed = false
+	invuln = 0.0
 	enemies.clear()
 	defenders.clear()
 	_held.clear()
@@ -241,11 +341,14 @@ func _spawn_defenders() -> void:
 		var dd: Dictionary = d
 		if bool(dd.get("night_only", false)) and not night:
 			continue
+		if dd.has("flag") and not GameState.flag_true(str(dd["flag"])):
+			continue
 		var g := Defender.new()
 		World.view.sorted.add_child(g)
 		g.setup(str(dd.get("night_sprite", "chr_guard_night")) if night else str(dd.get("sprite", "chr_guard")), World.model,
 			Vector2(JsonUtil.to_vec2i(dd.get("cell"))), str(dd.get("facing", "ne")))
 		g.post = JsonUtil.to_vec2i(dd.get("cell"))
+		g.hp = float(dd.get("hp", 60))
 		defenders.append(g)
 
 
@@ -270,6 +373,27 @@ func breakout(count: int = -1) -> void:
 		Audio.sfx("sfx_demon_roar")
 		EventBus.notify.emit("Demons break from the Gate!")
 		hostiles_changed.emit(enemies.size())
+
+
+## Story: the Reclaimer-Captain steps out of the Gate. Killing it sets `flag`.
+func spawn_boss(flag: String) -> void:
+	if World.model == null or _hostile_cfg.is_empty():
+		return
+	var spawns: Array = _hostile_cfg.get("spawn_cells", [[7, 2]])
+	var e := Enemy.new()
+	World.view.sorted.add_child(e)
+	e.setup("chr_demon_brute", World.model, Vector2(JsonUtil.to_vec2i(spawns[spawns.size() / 2])), "sw")
+	e.configure(true)
+	e.max_hp = 320.0
+	e.hp = e.max_hp
+	e.damage = 22.0
+	e.boss_flag = flag
+	e.self_modulate_base = Color(0.85, 0.6, 1.2)
+	e.modulate = e.self_modulate_base
+	enemies.append(e)
+	Audio.sfx("sfx_demon_roar")
+	hostiles_changed.emit(enemies.size())
+	breakout(2)
 
 
 func clear_enemies() -> void:

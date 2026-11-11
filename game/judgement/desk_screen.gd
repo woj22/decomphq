@@ -231,6 +231,8 @@ func refresh() -> void:
 func _refresh_booth() -> void:
 	var correction := bool(session.rec().get("correction", false))
 	var bid := "bust_%s_%s" % [case_id, expression]
+	if not Assets.has(bid) and session.data.has("bust"):
+		bid = "bust_%s_%s" % [str(session.data["bust"]), expression]
 	bust.texture = Assets.ui_texture(bid, "bust")
 	bust.modulate = Color(1, 1, 1, 0.35) if correction else Color.WHITE
 	name_label.text = str(session.data.get("name", ""))

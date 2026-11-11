@@ -20,8 +20,8 @@ func _ready() -> void:
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", 8)
 	v.add_child(h)
-	for t: String in ["Objectives", "Case notes", "Dialogue"]:
-		var b := UiKit.button(t, Vector2(110, 40))
+	for t: String in ["Objectives", "Case notes", "Character", "Dialogue"]:
+		var b := UiKit.button(t, Vector2(96, 40))
 		b.pressed.connect(func() -> void:
 			tab = t
 			page = 0
@@ -74,6 +74,18 @@ func _lines() -> Array:
 				for f: Dictionary in s.facts():
 					out.append("- " + str(f["text"]))
 				out.append("Documents held: %d" % s.held_archive().size())
+		"Character":
+			out.append("%s    Purse: %d obols" % [Content.rank_title(GameState.rank), GameState.get_stat_i("purse")])
+			out.append("Health %d / %d    Mana %d / %d" % [int(Combat.hp), int(Combat.max_hp()), int(Combat.mana), int(Combat.max_mana())])
+			for id: String in ["lance", "brand", "vitality", "focus"]:
+				var prices := Combat.upgrade_prices(id)
+				var lv := Combat.level(id)
+				var nm := str(((Content.cfg("upgrades", {}) as Dictionary).get(id, {}) as Dictionary).get("name", id))
+				var nxt := "MAX" if lv >= prices.size() else "next grade %d ob" % int(prices[lv])
+				out.append("%s: grade %d of %d  (%s)" % [nm, lv + 1, prices.size() + 1, nxt])
+			out.append("Souls escorted %d    Demons banished %d    Awaiting escort %d" % [GameState.get_stat_i("souls_delivered"),
+				GameState.get_stat_i("demons_banished"), GameState.get_stat_i("escort_pending")])
+			out.append("Violet entries found: %d" % GameState.get_stat_i("violet_evidence"))
 		"Dialogue":
 			for l: Dictionary in GameState.dialogue_log:
 				var sp := str(l.get("speaker", ""))

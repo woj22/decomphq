@@ -1,0 +1,32 @@
+{
+ "id": "dlg_pell_n1",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "Two now. Same hand, same ink. And look: the originals vanish from shelf six on the nights of the raids.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "Something comes up out of the Gate on those nights. It is not looking for clerks. It is looking for files.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_pell",
+   "text": "Talk to the demon at the Gate. Quill. He keeps honest books, for a demon. At night, when the Watch is busy.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_story_c1",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_see_quill"
+    }
+   ]
+  }
+ }
+}

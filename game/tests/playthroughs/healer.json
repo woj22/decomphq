@@ -1,0 +1,10 @@
+{"steps": [
+ {"do": "new_game"}, {"do": "drain"},
+ {"do": "teleport", "area": "area_ember_gate", "spawn": "from_court"},
+ {"do": "hurt", "n": 999},
+ {"do": "assert", "downed": true},
+ {"do": "wait", "seconds": 1.5},
+ {"do": "screenshot", "name": "healer_coming"},
+ {"do": "wait", "seconds": 5.0},
+ {"do": "assert", "downed": false, "area": "area_ember_gate", "in_game": true}
+]}

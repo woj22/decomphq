@@ -1,0 +1,10 @@
+{"steps": [
+ {"do": "new_game"}, {"do": "drain"},
+ {"do": "teleport", "area": "area_ember_gate", "spawn": "from_court"},
+ {"do": "set_time", "hour": 23}, {"do": "drain"},
+ {"do": "breakout", "count": 3},
+ {"do": "kill_defenders"},
+ {"do": "hurt", "n": 999},
+ {"do": "drain"}, {"do": "wait", "seconds": 1.0},
+ {"do": "assert", "in_game": false}
+]}

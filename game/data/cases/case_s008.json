@@ -1,77 +1,259 @@
 {
-  "id": "case_s008",
-  "ref": "S-008",
-  "name": "Bess Tarrow",
-  "age": 34,
-  "era": "1794",
-  "place": "the Lowmarket quarter of Marrowby",
-  "cause": "drowned in the mill race (\"misadventure while intoxicated\")",
-  "summary": "Washerwoman. Surrendered an infant to the Marrowby Foundling House. Convicted of theft from her employer. Known to drink.",
-  "portrait": {"seed": 1008, "tags": ["female", "adult", "washerwoman"]},
-  "type": "contested",
-  "min_rank": 1,
-  "entries": [
-    {"id": "r1", "tag": "sin", "weight": -2, "ink": "black", "text": "Abandoned her infant daughter at the Foundling House."},
-    {"id": "r2", "tag": "sin", "weight": -2, "ink": "violet", "text": "Convicted of theft of linen from her employer."},
-    {"id": "r3", "tag": "sin", "weight": -1, "ink": "black", "text": "Habitual drunkenness."},
-    {"id": "r4", "tag": "virtue", "weight": 1, "ink": "black", "text": "Nursed three neighbouring households through the spotted fever."},
-    {"id": "r5", "tag": "neutral", "weight": 0, "ink": "black", "text": "Could not write; signed with a mark."}
-  ],
-  "hidden": [
-    {"id": "h1", "tag": "virtue", "weight": 3, "text": "Drowned saving a child she did not know."}
-  ],
-  "archive": [
-    {"id": "arc_008a", "title": "Original record (Pell's copy)", "requires": [], "cards": [
-      "Tarrow, B., Lowmarket. Accused of theft of linen. ACQUITTED, Marrowby bench.",
-      "Bench notes: employer found to have withheld a quarter's wages. Costs to him.",
-      "Pell, in pencil: 'Copied before it went upstairs. Came back a different colour.'"
-    ]},
-    {"id": "arc_008b", "title": "Foundling House visitors' ledger", "requires": [], "cards": [
-      "Admitted, famine winter of 1788: female infant, Tarrow. Token: a blue ribbon.",
-      "Visitors: 'B. Tarrow, her mark', every Sunday for six years, without a gap.",
-      "Paid one penny weekly towards keep. Last entry: the week before she drowned."
-    ]},
-    {"id": "arc_008c", "title": "Coroner's note, Marrowby", "requires": [], "cards": [
-      "Body of B. Tarrow taken from the mill race. A child, not hers, pulled out alive.",
-      "Miller's boy: 'She went in after the little one by the wheel. Couldn't swim.'",
-      "Cause entered: 'drowned in the attempt'. The issued file says 'misadventure'."
-    ]}
-  ],
-  "discoveries": [
-    {"id": "d_violet_ink", "key": true,
-     "triggers": [{"link": ["r2", "arc_008a"]}],
-     "ops": [{"op": "void", "entry": "r2"}],
-     "effects": [{"op": "set_flag", "id": "flag_found_violet_ink", "value": true}],
-     "fact": {"text": "The theft entry was amended in violet. The original reads: acquitted.", "side": "heaven"}},
-    {"id": "d_ribbon", "key": true,
-     "triggers": [{"link": ["r1", "arc_008b"]}],
-     "ops": [{"op": "reweight", "entry": "r1", "weight": 0}],
-     "fact": {"text": "She visited her daughter every Sunday for six years and paid for her keep.", "side": "heaven"}},
-    {"id": "d_mill_race", "key": true,
-     "triggers": [{"archive": "arc_008c"}, {"question": "q3"}],
-     "ops": [{"op": "reveal", "entry": "h1"}],
-     "fact": {"text": "She went into the mill race after a stranger's child, who lived.", "side": "heaven"}}
-  ],
-  "questions": [
-    {"id": "q1", "kind": "general", "requires": [], "text": "Tell me about the linen.",
-     "answer": ["I never took it. The magistrate said so himself, out loud. Does it not say?", "I can't read it, sir, you'll have to tell me what it says."],
-     "card": "Swears the magistrate cleared her. Cannot read her own file."},
-    {"id": "q2", "kind": "general", "requires": [], "text": "Your daughter.",
-     "answer": ["There was no bread that winter and they had bread. I went Sundays. She had a blue ribbon they gave her.", "Is that the wrong thing? I've wondered was it the wrong thing."],
-     "card": "Left her in a winter with no bread. Went Sundays. Remembers a blue ribbon."},
-    {"id": "q3", "kind": "general", "requires": [], "text": "How did you drown?",
-     "answer": ["There was a little one in the race, by the wheel. I'd had a drop, yes. I can't swim neither.", "I don't know what I thought I was doing."],
-     "card": "Went into the race after a little one by the wheel. Couldn't swim."}
-  ],
-  "expected": {"tally_filed": -4, "tally_corrected": 3, "guideline": "heaven"},
-  "epilogue": {
-    "heaven": ["She asks you to read her the verdict twice."],
-    "hell": ["The docket clears the Ember Gate in record time."]
+ "id": "case_s008",
+ "ref": "S-008",
+ "name": "Bess Tarrow",
+ "age": 34,
+ "era": "1794",
+ "place": "the Lowmarket quarter of Marrowby",
+ "cause": "drowned in the mill race (\"misadventure while intoxicated\")",
+ "summary": "Washerwoman. Surrendered an infant to the Marrowby Foundling House. Convicted of theft from her employer. Known to drink.",
+ "portrait": {
+  "seed": 1008,
+  "tags": [
+   "female",
+   "adult",
+   "washerwoman"
+  ]
+ },
+ "type": "contested",
+ "min_rank": 1,
+ "entries": [
+  {
+   "id": "r1",
+   "tag": "sin",
+   "weight": -2,
+   "ink": "black",
+   "text": "Abandoned her infant daughter at the Foundling House."
   },
-  "verdicts": {
-    "heaven": {"effects": [{"op": "add_stat", "id": "favour_gilt", "value": 1}]},
-    "hell": {"effects": [{"op": "add_stat", "id": "favour_ember", "value": 1}, {"op": "add_stat", "id": "conscience", "value": -1}]}
+  {
+   "id": "r2",
+   "tag": "sin",
+   "weight": -2,
+   "ink": "violet",
+   "text": "Convicted of theft of linen from her employer."
   },
-  "ext": {"teaches": "Room 0; promotion", "cause_ink": "violet", "stamp_on_discovery": {"d_violet_ink": "stamp_rm0"},
-          "mitigating": "Poverty; illiteracy (she cannot check her own file); every sin on record is either false or a hard choice made well."}
+  {
+   "id": "r3",
+   "tag": "sin",
+   "weight": -1,
+   "ink": "black",
+   "text": "Habitual drunkenness."
+  },
+  {
+   "id": "r4",
+   "tag": "virtue",
+   "weight": 1,
+   "ink": "black",
+   "text": "Nursed three neighbouring households through the spotted fever."
+  },
+  {
+   "id": "r5",
+   "tag": "neutral",
+   "weight": 0,
+   "ink": "black",
+   "text": "Could not write; signed with a mark."
+  }
+ ],
+ "hidden": [
+  {
+   "id": "h1",
+   "tag": "virtue",
+   "weight": 3,
+   "text": "Drowned saving a child she did not know."
+  }
+ ],
+ "archive": [
+  {
+   "id": "arc_008a",
+   "title": "Original record (Pell's copy)",
+   "requires": [],
+   "cards": [
+    "Tarrow, B., Lowmarket. Accused of theft of linen. ACQUITTED, Marrowby bench.",
+    "Bench notes: employer found to have withheld a quarter's wages. Costs to him.",
+    "Pell, in pencil: 'Copied before it went upstairs. Came back a different colour.'"
+   ]
+  },
+  {
+   "id": "arc_008b",
+   "title": "Foundling House visitors' ledger",
+   "requires": [],
+   "cards": [
+    "Admitted, famine winter of 1788: female infant, Tarrow. Token: a blue ribbon.",
+    "Visitors: 'B. Tarrow, her mark', every Sunday for six years, without a gap.",
+    "Paid one penny weekly towards keep. Last entry: the week before she drowned."
+   ]
+  },
+  {
+   "id": "arc_008c",
+   "title": "Coroner's note, Marrowby",
+   "requires": [],
+   "cards": [
+    "Body of B. Tarrow taken from the mill race. A child, not hers, pulled out alive.",
+    "Miller's boy: 'She went in after the little one by the wheel. Couldn't swim.'",
+    "Cause entered: 'drowned in the attempt'. The issued file says 'misadventure'."
+   ]
+  }
+ ],
+ "discoveries": [
+  {
+   "id": "d_violet_ink",
+   "key": true,
+   "triggers": [
+    {
+     "link": [
+      "r2",
+      "arc_008a"
+     ]
+    }
+   ],
+   "ops": [
+    {
+     "op": "void",
+     "entry": "r2"
+    }
+   ],
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_found_violet_ink",
+     "value": true
+    },
+    {
+     "op": "add_stat",
+     "id": "violet_evidence",
+     "value": 1
+    }
+   ],
+   "fact": {
+    "text": "The theft entry was amended in violet. The original reads: acquitted.",
+    "side": "heaven"
+   }
+  },
+  {
+   "id": "d_ribbon",
+   "key": true,
+   "triggers": [
+    {
+     "link": [
+      "r1",
+      "arc_008b"
+     ]
+    }
+   ],
+   "ops": [
+    {
+     "op": "reweight",
+     "entry": "r1",
+     "weight": 0
+    }
+   ],
+   "fact": {
+    "text": "She visited her daughter every Sunday for six years and paid for her keep.",
+    "side": "heaven"
+   }
+  },
+  {
+   "id": "d_mill_race",
+   "key": true,
+   "triggers": [
+    {
+     "archive": "arc_008c"
+    },
+    {
+     "question": "q3"
+    }
+   ],
+   "ops": [
+    {
+     "op": "reveal",
+     "entry": "h1"
+    }
+   ],
+   "fact": {
+    "text": "She went into the mill race after a stranger's child, who lived.",
+    "side": "heaven"
+   }
+  }
+ ],
+ "questions": [
+  {
+   "id": "q1",
+   "kind": "general",
+   "requires": [],
+   "text": "Tell me about the linen.",
+   "answer": [
+    "I never took it. The magistrate said so himself, out loud. Does it not say?",
+    "I can't read it, sir, you'll have to tell me what it says."
+   ],
+   "card": "Swears the magistrate cleared her. Cannot read her own file."
+  },
+  {
+   "id": "q2",
+   "kind": "general",
+   "requires": [],
+   "text": "Your daughter.",
+   "answer": [
+    "There was no bread that winter and they had bread. I went Sundays. She had a blue ribbon they gave her.",
+    "Is that the wrong thing? I've wondered was it the wrong thing."
+   ],
+   "card": "Left her in a winter with no bread. Went Sundays. Remembers a blue ribbon."
+  },
+  {
+   "id": "q3",
+   "kind": "general",
+   "requires": [],
+   "text": "How did you drown?",
+   "answer": [
+    "There was a little one in the race, by the wheel. I'd had a drop, yes. I can't swim neither.",
+    "I don't know what I thought I was doing."
+   ],
+   "card": "Went into the race after a little one by the wheel. Couldn't swim."
+  }
+ ],
+ "expected": {
+  "tally_filed": -4,
+  "tally_corrected": 3,
+  "guideline": "heaven"
+ },
+ "epilogue": {
+  "heaven": [
+   "She asks you to read her the verdict twice."
+  ],
+  "hell": [
+   "The docket clears the Ember Gate in record time."
+  ]
+ },
+ "verdicts": {
+  "heaven": {
+   "effects": [
+    {
+     "op": "add_stat",
+     "id": "favour_gilt",
+     "value": 1
+    }
+   ]
+  },
+  "hell": {
+   "effects": [
+    {
+     "op": "add_stat",
+     "id": "favour_ember",
+     "value": 1
+    },
+    {
+     "op": "add_stat",
+     "id": "conscience",
+     "value": -1
+    }
+   ]
+  }
+ },
+ "ext": {
+  "teaches": "Room 0; promotion",
+  "cause_ink": "violet",
+  "stamp_on_discovery": {
+   "d_violet_ink": "stamp_rm0"
+  },
+  "mitigating": "Poverty; illiteracy (she cannot check her own file); every sin on record is either false or a hard choice made well."
+ }
 }

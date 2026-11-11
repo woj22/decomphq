@@ -5,7 +5,7 @@ extends RefCounted
 const OPS: PackedStringArray = ["set_flag", "add_stat", "set_objective", "start_dialogue", "advance_clock", "give_docket", "start_shift",
 	"end_shift", "call_soul", "give_archive", "give_archive_one", "reopen_case", "snapshot_stats", "restore_stats", "reset_cases",
 	"start_incident", "resolve_incident", "unlock_area", "set_rank", "show_card", "set_npc_line_flag", "buy_item", "teleport",
-	"end_prototype", "set_stat", "clear_flag", "appeal_case", "start_escort", "deliver_escort", "sleep", "heal", "breakout", "buy_upgrade"]
+	"end_prototype", "set_stat", "clear_flag", "appeal_case", "start_escort", "deliver_escort", "sleep", "heal", "breakout", "buy_upgrade", "next_docket", "spawn_boss"]
 
 static var unknown_logged := {}
 
@@ -68,6 +68,10 @@ static func apply_one(e: Dictionary, ctx: Dictionary = {}) -> void:
 			Combat.heal_full()
 		"heal":
 			Combat.heal_full()
+		"next_docket":
+			GameState.next_docket()
+		"spawn_boss":
+			Combat.spawn_boss(str(e.get("flag", "flag_boss_dead")))
 		"buy_upgrade":
 			Combat.buy_upgrade(str(e.get("id", "")))
 		"breakout":

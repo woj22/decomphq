@@ -18,19 +18,15 @@ func take_hit(dmg: float) -> void:
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.2)
 	if hp <= 0.0:
 		down = true
-		_down_t = 8.0
 		path.clear()
-		modulate = Color(0.5, 0.5, 0.6, 0.7)
+		set_anim("idle")
+		modulate = Color(0.45, 0.35, 0.4, 0.55)
+		rotation = 1.2 # fallen
+		Combat.defender_died(self)
 
 
 func _process(delta: float) -> void:
 	if down:
-		_down_t -= delta
-		if _down_t <= 0.0:
-			down = false
-			hp = 60.0
-			modulate = Color.WHITE
-		_animate(delta)
 		return
 	_cd -= delta
 	_repath -= delta

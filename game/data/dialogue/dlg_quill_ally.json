@@ -1,0 +1,32 @@
+{
+ "id": "dlg_quill_ally",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_gatekeeper",
+   "text": "The archivist sent you. Good. Listen. The raiders are Reclaimers: Furnace Guild muscle, not my department.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_gatekeeper",
+   "text": "Someone up here sells them souls in violet ink. Your honest stamps send those souls to Heaven, so the Guild comes to collect by claw.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_gatekeeper",
+   "text": "I recover debts, Adjudicator. Real ones. This is theft with paperwork. When the Captain comes, I'll be standing next to you.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_quill_ally",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_find_violet"
+    }
+   ]
+  }
+ }
+}

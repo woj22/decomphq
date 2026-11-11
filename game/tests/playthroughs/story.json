@@ -1,0 +1,199 @@
+{
+ "steps": [
+  {
+   "do": "new_game"
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "debug_promote"
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "teleport",
+   "area": "area_adjudicator_chamber",
+   "spawn": "from_court"
+  },
+  {
+   "do": "clear_docket"
+  },
+  {
+   "do": "set_flag",
+   "id": "flag_day3_closed"
+  },
+  {
+   "do": "set_flag",
+   "id": "flag_found_violet_ink"
+  },
+  {
+   "do": "talk",
+   "object": "obj_summons_bell",
+   "prefer": [
+    "new docket"
+   ]
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_gen_shift"
+    }
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_summons_bell",
+   "prefer": [
+    "Ring for the next"
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_pneumatic_tube",
+   "prefer": [
+    "Send"
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "solve"
+  },
+  {
+   "do": "tab",
+   "tab": "RECORD"
+  },
+  {
+   "do": "screenshot",
+   "name": "gen_record"
+  },
+  {
+   "do": "stamp",
+   "verdict": "guideline",
+   "ground": "auto"
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "talk",
+   "object": "obj_summons_bell",
+   "prefer": [
+    "Ring for the next"
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_pneumatic_tube",
+   "prefer": [
+    "Send"
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "solve"
+  },
+  {
+   "do": "stamp",
+   "verdict": "guideline",
+   "ground": "auto"
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "talk",
+   "object": "obj_summons_bell",
+   "prefer": [
+    "Ring for the next"
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_pneumatic_tube",
+   "prefer": [
+    "Send"
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "solve"
+  },
+  {
+   "do": "stamp",
+   "verdict": "guideline",
+   "ground": "auto"
+  },
+  {
+   "do": "drain",
+   "prefer": [
+    "Sign"
+   ]
+  },
+  {
+   "do": "assert",
+   "stats": {
+    "cases_processed": 3
+   },
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_gen_shift"
+    }
+   ]
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "not",
+     "of": {
+      "op": "has_active_case"
+     }
+    }
+   ]
+  },
+  {
+   "do": "set_time",
+   "hour": 23
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "talk",
+   "object": "obj_pell_night"
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_night_pact"
+    }
+   ]
+  },
+  {
+   "do": "screenshot",
+   "name": "pell_night"
+  },
+  {
+   "do": "dump_actors"
+  }
+ ]
+}

@@ -99,6 +99,18 @@
    "name": "Demons banished",
    "start": 0,
    "hidden": true
+  },
+  {
+   "id": "violet_evidence",
+   "name": "Violet entries found",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "gen_serial",
+   "name": "Generated files issued",
+   "start": 0,
+   "hidden": true
   }
  ],
  "ranks": [

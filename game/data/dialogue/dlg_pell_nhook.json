@@ -1,0 +1,22 @@
+{
+ "id": "dlg_pell_nhook",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "Not here, Adjudicator. Not in daylight. Not where Marrow's runners can hear.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "My quarters. Through the door behind me. After the night bell.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_objective",
+     "id": "obj_meet_pell"
+    }
+   ]
+  }
+ }
+}

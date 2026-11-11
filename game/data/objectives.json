@@ -1,93 +1,135 @@
 {
-  "obj_report_marrow": {
-    "text": "Report to Ignatia Marrow",
-    "target": {
-      "area": "area_booths",
-      "object": "obj_marrow"
-    }
-  },
-  "obj_call_soul": {
-    "text": "Call your first soul",
-    "target": {
-      "area": "area_arrival_hall",
-      "object": "obj_registrar"
-    }
-  },
-  "obj_call_next": {
-    "text": "Call the next soul",
-    "target": {
-      "area": "area_arrival_hall",
-      "object": "obj_registrar"
-    }
-  },
-  "obj_take_desk": {
-    "text": "Take the soul to your desk",
-    "target": {
-      "area": "area_booths",
-      "object": "obj_player_desk"
-    }
-  },
-  "obj_fetch_pryke": {
-    "text": "Fetch Pryke's originals from Pell",
-    "target": {
-      "area": "area_records_annexe",
-      "object": "obj_pell"
-    }
-  },
-  "obj_ask_pell_garrity": {
-    "text": "Ask Pell about Garrity's last job",
-    "target": {
-      "area": "area_records_annexe",
-      "object": "obj_pell"
-    }
-  },
-  "obj_addendum": {
-    "text": "Ask Pell for the Greywater addendum",
-    "target": {
-      "area": "area_records_annexe",
-      "object": "obj_pell"
-    }
-  },
-  "obj_collect_docket": {
-    "text": "Collect your docket from Marrow",
-    "target": {
-      "area": "area_booths",
-      "object": "obj_marrow"
-    }
-  },
-  "obj_correction": {
-    "text": "File a correction for Bess Tarrow",
-    "target": {
-      "area": "area_booths",
-      "object": "obj_player_desk"
-    }
-  },
-  "obj_climb": {
-    "text": "Climb the stair in Clerk's Court",
-    "target": {
-      "area": "area_clerks_court",
-      "object": "obj_stair"
-    }
-  },
-  "obj_ring_bell": {
-    "text": "Ring the bell for a soul",
-    "target": {
-      "area": "area_adjudicator_chamber",
-      "object": "obj_summons_bell"
-    }
-  },
-  "obj_chamber_desk": {
-    "text": "Take the soul to your desk",
-    "target": {
-      "area": "area_adjudicator_chamber",
-      "object": "obj_chamber_desk"
-    }
-  },
-  "obj_day3_done": {
-    "text": "Day 3 is done. More to come.",
-    "target": {
-      "area": "area_adjudicator_chamber",
-      "object": "obj_chamber_desk"
-    }
+ "obj_report_marrow": {
+  "text": "Report to Ignatia Marrow",
+  "target": {
+   "area": "area_booths",
+   "object": "obj_marrow"
   }
+ },
+ "obj_call_soul": {
+  "text": "Call your first soul",
+  "target": {
+   "area": "area_arrival_hall",
+   "object": "obj_registrar"
+  }
+ },
+ "obj_call_next": {
+  "text": "Call the next soul",
+  "target": {
+   "area": "area_arrival_hall",
+   "object": "obj_registrar"
+  }
+ },
+ "obj_take_desk": {
+  "text": "Take the soul to your desk",
+  "target": {
+   "area": "area_booths",
+   "object": "obj_player_desk"
+  }
+ },
+ "obj_fetch_pryke": {
+  "text": "Fetch Pryke's originals from Pell",
+  "target": {
+   "area": "area_records_annexe",
+   "object": "obj_pell"
+  }
+ },
+ "obj_ask_pell_garrity": {
+  "text": "Ask Pell about Garrity's last job",
+  "target": {
+   "area": "area_records_annexe",
+   "object": "obj_pell"
+  }
+ },
+ "obj_addendum": {
+  "text": "Ask Pell for the Greywater addendum",
+  "target": {
+   "area": "area_records_annexe",
+   "object": "obj_pell"
+  }
+ },
+ "obj_collect_docket": {
+  "text": "Collect your docket from Marrow",
+  "target": {
+   "area": "area_booths",
+   "object": "obj_marrow"
+  }
+ },
+ "obj_correction": {
+  "text": "File a correction for Bess Tarrow",
+  "target": {
+   "area": "area_booths",
+   "object": "obj_player_desk"
+  }
+ },
+ "obj_climb": {
+  "text": "Climb the stair in Clerk's Court",
+  "target": {
+   "area": "area_clerks_court",
+   "object": "obj_stair"
+  }
+ },
+ "obj_ring_bell": {
+  "text": "Ring the bell for a soul",
+  "target": {
+   "area": "area_adjudicator_chamber",
+   "object": "obj_summons_bell"
+  }
+ },
+ "obj_chamber_desk": {
+  "text": "Take the soul to your desk",
+  "target": {
+   "area": "area_adjudicator_chamber",
+   "object": "obj_chamber_desk"
+  }
+ },
+ "obj_day3_done": {
+  "text": "Day 3 is done. More to come.",
+  "target": {
+   "area": "area_adjudicator_chamber",
+   "object": "obj_chamber_desk"
+  }
+ },
+ "obj_next_docket": {
+  "text": "Ring the bell for a new docket",
+  "target": {
+   "area": "area_adjudicator_chamber",
+   "object": "obj_summons_bell"
+  }
+ },
+ "obj_meet_pell": {
+  "text": "Meet Pell in his quarters at night",
+  "target": {
+   "area": "area_pell_quarters",
+   "object": "obj_pell_night"
+  }
+ },
+ "obj_find_violet": {
+  "text": "Find violet-ink forgeries in files",
+  "target": {
+   "area": "area_adjudicator_chamber",
+   "object": "obj_summons_bell"
+  }
+ },
+ "obj_see_quill": {
+  "text": "Speak to Malphas Quill at night",
+  "target": {
+   "area": "area_ember_gate",
+   "object": "obj_gatekeeper"
+  }
+ },
+ "obj_stakeout": {
+  "text": "Stake out the Ember Gate at night",
+  "target": {
+   "area": "area_ember_gate",
+   "object": "obj_hell_gate"
+  }
+ },
+ "obj_report_pell": {
+  "text": "Bring the manifest to Pell, at night",
+  "target": {
+   "area": "area_pell_quarters",
+   "object": "obj_pell_night"
+  }
+ }
 }

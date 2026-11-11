@@ -385,6 +385,37 @@ func residents() -> Array:
 	return out
 
 
+## Rank 2+ endless work: three generated souls and one appeal of an earlier verdict, then a shift begins.
+func next_docket() -> void:
+	if not docket_empty():
+		EventBus.notify.emit("Finish today's docket first.")
+		return
+	var seed_v: Variant = flags.get("world_seed")
+	if seed_v == null:
+		seed_v = randi() % 1000000
+		flags["world_seed"] = seed_v
+	var dd := maxi(docket_day + 1, 4)
+	var ids: Array = []
+	for i in Content.cfg_i("gen_docket_size", 3):
+		add_stat("gen_serial", 1)
+		ids.append("gen_%d_%d" % [int(seed_v), get_stat_i("gen_serial")])
+	docket = ids
+	docket_day = dd
+	for cid: Variant in ids:
+		case_rec(str(cid))
+	# an earlier verdict comes back on appeal
+	var judged: Array = []
+	for cid: String in cases:
+		if case_state(cid) == "judged" and not (case_rec(cid) as Dictionary).has("appeal") and case_verdict(cid) in ["heaven", "hell"]:
+			judged.append(cid)
+	if not judged.is_empty():
+		var a: String = judged[randi() % judged.size()]
+		appeal_case(a, "soul" if case_verdict(a) == "hell" else "ember")
+	set_flag("flag_gen_shift", true)
+	start_shift(dd)
+	EventBus.docket_changed.emit()
+
+
 func snapshot_stats(tag: String) -> void:
 	snapshots[tag] = {"stats": stats.duplicate(true), "rank": rank}
 

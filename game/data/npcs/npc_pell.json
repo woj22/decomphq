@@ -14,6 +14,103 @@
  },
  "dialogue": [
   {
+   "id": "dlg_pell_n0",
+   "conditions": [
+    {
+     "op": "is_night"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_night_pact"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_n1",
+   "conditions": [
+    {
+     "op": "is_night"
+    },
+    {
+     "op": "flag",
+     "id": "flag_night_pact"
+    },
+    {
+     "op": "stat_gte",
+     "id": "violet_evidence",
+     "value": 2
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_story_c1"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_n2",
+   "conditions": [
+    {
+     "op": "is_night"
+    },
+    {
+     "op": "flag",
+     "id": "flag_quill_ally"
+    },
+    {
+     "op": "stat_gte",
+     "id": "violet_evidence",
+     "value": 4
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_story_c3"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_n3",
+   "conditions": [
+    {
+     "op": "is_night"
+    },
+    {
+     "op": "flag",
+     "id": "flag_captain_dead"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_story_c4"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_nidle",
+   "conditions": [
+    {
+     "op": "is_night"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_nhook",
+   "conditions": [
+    {
+     "op": "rank_gte",
+     "value": 2
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_night_pact"
+    },
+    {
+     "op": "not",
+     "of": {
+      "op": "has_active_case"
+     }
+    }
+   ]
+  },
+  {
    "id": "dlg_pell_tarrow",
    "conditions": [
     {

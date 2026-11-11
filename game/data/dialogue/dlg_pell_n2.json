@@ -1,0 +1,32 @@
+{
+ "id": "dlg_pell_n2",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "Four forgeries, one hand, every one countersigned through Room 0.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "Quill says the Reclaimer-Captain comes up in person when the quota runs short. It runs short tonight.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_pell",
+   "text": "Be at the Ember Gate after the night bell. Take the Captain's manifest. And come back alive; I hate re-filing.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_story_c3",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_stakeout"
+    }
+   ]
+  }
+ }
+}

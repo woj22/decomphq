@@ -245,6 +245,18 @@
      4
     ],
     "night_only": true
+   },
+   {
+    "id": "quill",
+    "cell": [
+     7,
+     4
+    ],
+    "sprite": "chr_guard_night",
+    "night_sprite": "chr_guard_night",
+    "flag": "flag_quill_ally",
+    "night_only": true,
+    "hp": 160
    }
   ]
  },

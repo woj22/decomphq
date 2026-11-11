@@ -1,0 +1,32 @@
+{
+ "id": "dlg_pell_n0",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "You came. Shut the door. Quietly; the hinges report to someone.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "The Tarrow file. Violet ink. I have seen it before, and I have watched good clerks stop asking about it.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_pell",
+   "text": "Every new file that comes up to you, read it for violet. Each forged line is a soul somebody sold. Bring me the count.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_night_pact",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_find_violet"
+    }
+   ]
+  }
+ }
+}

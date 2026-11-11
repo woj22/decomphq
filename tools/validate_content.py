@@ -193,6 +193,8 @@ def walk_effects(where, effs):
         check_args(where, e, OPS["effects"][name], "effect")
         if name == "set_flag":
             REFS.flags_written.add(e.get("id"))
+        elif name == "spawn_boss":
+            REFS.flags_written.add(e.get("flag"))
         elif name == "set_npc_line_flag":
             REFS.flags_written.add(e.get("id"))
         elif name == "add_stat":

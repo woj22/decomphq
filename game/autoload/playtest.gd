@@ -288,6 +288,38 @@ func run_step(s: Dictionary) -> bool:
 			main.desk.sel_arc = str(s["arc"])
 			main.desk.do_link()
 			await frames(1)
+		"solve":
+			# At the desk: links every LINK-type discovery through the real desk (archive must be held).
+			var data: Dictionary = main.desk.session.data
+			for d: Dictionary in data.get("discoveries", []):
+				for t: Dictionary in d.get("triggers", []):
+					if t.has("link"):
+						main.desk.sel_entry = str((t["link"] as Array)[0])
+						main.desk.sel_arc = str((t["link"] as Array)[1])
+						main.desk.do_link()
+						await frames(1)
+		"teleport":
+			World._do_transition(str(s["area"]), str(s.get("spawn", "default")), false)
+			await frames(2)
+			await drain()
+		"clear_docket":
+			GameState.docket = []
+			GameState.set_flag("flag_d3_skipped", true)
+		"dump_actors":
+			for c: Node in World.view.sorted.get_children():
+				if c is Actor:
+					_log("actor %s sprite=%s cell=%s" % [(c as Actor).actor_id, (c as Actor).sprite_id, str((c as Actor).cell())])
+		"hurt":
+			Combat.invuln = 0.0
+			Combat.damage_player(float(s.get("n", 999)))
+			await frames(2)
+		"kill_defenders":
+			for g: Variant in Combat.defenders.duplicate():
+				if is_instance_valid(g):
+					(g as Defender).take_hit(9999.0)
+			await frames(2)
+		"set_flag":
+			GameState.set_flag(str(s["id"]), s.get("value", true))
 		"leave_desk":
 			main.desk.leave_desk()
 			await frames(2)
@@ -464,6 +496,12 @@ func check(s: Dictionary) -> bool:
 		if GameState.get_stat_i(k) != int(want):
 			fail("stat %s = %d, want %s" % [k, GameState.get_stat_i(k), str(want)])
 			ok = false
+	if s.has("downed") and Combat.downed != bool(s["downed"]):
+		fail("downed = %s, want %s" % [str(Combat.downed), str(s["downed"])])
+		return false
+	if s.has("in_game") and GameState.in_game != bool(s["in_game"]):
+		fail("in_game = %s, want %s" % [str(GameState.in_game), str(s["in_game"])])
+		return false
 	if s.has("area") and World.area_id != str(s["area"]):
 		fail("area %s, want %s" % [World.area_id, str(s["area"])])
 		ok = false

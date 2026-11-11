@@ -182,6 +182,22 @@
     5
    ],
    "dialogue": "dlg_pell_lectern"
+  },
+  {
+   "id": "obj_pell_night",
+   "type": "npc",
+   "npc": "npc_pell",
+   "cell": [
+    2,
+    2
+   ],
+   "facing": "se",
+   "use_cell": [
+    3,
+    2
+   ],
+   "night": true,
+   "night_only": true
   }
  ],
  "spawns": {

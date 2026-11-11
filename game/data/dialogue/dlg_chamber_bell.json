@@ -20,7 +20,7 @@
     }
    ],
    "next": "ask",
-   "else": "none"
+   "else": "n2"
   },
   "ask": {
    "speaker": "player",
@@ -45,9 +45,57 @@
    ],
    "next": "end"
   },
+  "n2": {
+   "speaker": "narrator",
+   "text": "The docket tray is empty. The runner looks hopeful, which is unusual for a runner.",
+   "conditions": [
+    {
+     "op": "docket_empty"
+    },
+    {
+     "op": "flag",
+     "id": "flag_day3_closed"
+    },
+    {
+     "op": "not",
+     "of": {
+      "op": "is_night"
+     }
+    }
+   ],
+   "next": "ask2",
+   "else": "none"
+  },
+  "ask2": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Ring for a new docket.",
+     "next": "new"
+    },
+    {
+     "text": "Not yet.",
+     "next": "end"
+    }
+   ]
+  },
+  "new": {
+   "speaker": "narrator",
+   "text": "Three files come up the stair, and a fourth with an APPEAL tag. The work never ends.",
+   "effects": [
+    {
+     "op": "next_docket"
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_ring_bell"
+    }
+   ],
+   "next": "end"
+  },
   "none": {
    "speaker": "narrator",
-   "text": "The bell is still. Nobody is waiting, or somebody already is.",
+   "text": "The bell is still. Nobody is waiting, or somebody already is, or the runners are asleep.",
    "next": "end"
   }
  }

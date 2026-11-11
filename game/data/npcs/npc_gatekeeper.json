@@ -6,6 +6,35 @@
  "portrait": "por_grist",
  "dialogue": [
   {
+   "id": "dlg_quill_ally",
+   "conditions": [
+    {
+     "op": "is_night"
+    },
+    {
+     "op": "flag",
+     "id": "flag_story_c1"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_quill_ally"
+    }
+   ]
+  },
+  {
+   "id": "dlg_quill_after",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_captain_dead"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_quill_thanks"
+    }
+   ]
+  },
+  {
    "id": "dlg_gate_active",
    "conditions": [
     {

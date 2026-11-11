@@ -135,6 +135,8 @@ func dialogue(id: String) -> Dictionary:
 
 
 func case(id: String) -> Dictionary:
+	if not _cases.has(id) and id.begins_with("gen_"):
+		_cases[id] = CaseGen.generate(id, cfg_f("violet_chance", 0.3))
 	return _cases.get(id, {})
 
 

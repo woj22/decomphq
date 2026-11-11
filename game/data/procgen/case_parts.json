@@ -1,0 +1,691 @@
+{
+ "first": {
+  "north": [
+   "Agnes",
+   "Bertil",
+   "Sigrid",
+   "Hallvard",
+   "Ingrid",
+   "Torvald",
+   "Ragna",
+   "Eskil",
+   "Liv",
+   "Olaf",
+   "Astrid",
+   "Gunnar",
+   "Signe",
+   "Leif",
+   "Maren",
+   "Knut",
+   "Tove",
+   "Ivar",
+   "Solveig",
+   "Arne"
+  ],
+  "anglo": [
+   "Ada",
+   "Silas",
+   "Martha",
+   "Ezra",
+   "Prudence",
+   "Ambrose",
+   "Hester",
+   "Josiah",
+   "Edith",
+   "Barnaby",
+   "Winifred",
+   "Tobias",
+   "Mabel",
+   "Cuthbert",
+   "Lettice",
+   "Gideon",
+   "Rosamund",
+   "Thaddeus",
+   "Clemency",
+   "Obadiah",
+   "Dorcas",
+   "Jasper",
+   "Temperance",
+   "Absalom"
+  ],
+  "latin": [
+   "Lucia",
+   "Matteo",
+   "Serafina",
+   "Bartolo",
+   "Graziella",
+   "Ottavio",
+   "Benedetta",
+   "Lorenzo",
+   "Rosalia",
+   "Cosimo",
+   "Fiammetta",
+   "Ignazio",
+   "Ottilia",
+   "Sandro",
+   "Vittoria",
+   "Ercole",
+   "Domenica",
+   "Tancredi"
+  ],
+  "frank": [
+   "Margot",
+   "Anselme",
+   "Ysabeau",
+   "Gaspard",
+   "Héloïse",
+   "Thibault",
+   "Clémence",
+   "Rémy",
+   "Aurore",
+   "Bastien",
+   "Odile",
+   "Félix",
+   "Léonie",
+   "Achille",
+   "Perrine",
+   "Lucien"
+  ],
+  "east": [
+   "Anka",
+   "Bogdan",
+   "Zofia",
+   "Miroslav",
+   "Danica",
+   "Radek",
+   "Ludmila",
+   "Oskar",
+   "Halina",
+   "Stanko",
+   "Vesna",
+   "Tomasz",
+   "Jadwiga",
+   "Emil",
+   "Milena",
+   "Kazimir"
+  ],
+  "isles": [
+   "Bridget",
+   "Cormac",
+   "Siobhan",
+   "Fergus",
+   "Niamh",
+   "Eamon",
+   "Orla",
+   "Declan",
+   "Aoife",
+   "Rory",
+   "Maeve",
+   "Padraig",
+   "Grainne",
+   "Lorcan"
+  ]
+ },
+ "surname": {
+  "north": [
+   "Haugen",
+   "Lindqvist",
+   "Brekke",
+   "Solberg",
+   "Dahl",
+   "Nyström",
+   "Rasmussen",
+   "Vik",
+   "Holm",
+   "Ekdal",
+   "Strand",
+   "Berglund",
+   "Aas",
+   "Lund"
+  ],
+  "anglo": [
+   "Thorne",
+   "Pickering",
+   "Ashdown",
+   "Fenwick",
+   "Merriweather",
+   "Crabtree",
+   "Holloway",
+   "Blackmore",
+   "Whitlock",
+   "Dunmore",
+   "Tallis",
+   "Grimshaw",
+   "Oakley",
+   "Pennywhistle",
+   "Hargreave",
+   "Lamb",
+   "Cobb",
+   "Nettleship"
+  ],
+  "latin": [
+   "Ferrante",
+   "Bellini",
+   "Moretti",
+   "Castagna",
+   "Orsini",
+   "Pace",
+   "Villani",
+   "Marchetti",
+   "Lanza",
+   "Serra",
+   "Fontana",
+   "Rizzi"
+  ],
+  "frank": [
+   "Delacroix",
+   "Marchand",
+   "Duval",
+   "Lefèvre",
+   "Rousseau",
+   "Gautier",
+   "Boucher",
+   "Moreau",
+   "Fabre",
+   "Chastain",
+   "Vasseur"
+  ],
+  "east": [
+   "Novak",
+   "Kowalczyk",
+   "Horvat",
+   "Dvořák",
+   "Petrović",
+   "Zieliński",
+   "Kral",
+   "Lisowski",
+   "Maric",
+   "Sobczak",
+   "Havel"
+  ],
+  "isles": [
+   "Callaghan",
+   "Doyle",
+   "Mulcahy",
+   "Keane",
+   "Brennan",
+   "Gallagher",
+   "Furlong",
+   "Quinlan",
+   "Devane",
+   "Hegarty"
+  ]
+ },
+ "towns": {
+  "north": [
+   "Hammerfjord",
+   "Ulvik",
+   "Skarnes",
+   "Trollvik",
+   "Eidsborg",
+   "Kvalsund"
+  ],
+  "anglo": [
+   "Grimsby Wold",
+   "Thistlemere",
+   "Ashcombe",
+   "Hob's Cross",
+   "Little Fettle",
+   "Marrowgate",
+   "Saltash Ferry",
+   "Coldharbour"
+  ],
+  "latin": [
+   "San Ciriaco",
+   "Montevolpe",
+   "Borgo Lume",
+   "Castelfranco Basso",
+   "Valdisotto"
+  ],
+  "frank": [
+   "Saint-Aubin-les-Marais",
+   "Vieux-Clocher",
+   "Beaumaré",
+   "Chantegrue",
+   "Ormeaux"
+  ],
+  "east": [
+   "Zlatna Reka",
+   "Kamienica",
+   "Velky Brod",
+   "Stara Wieś",
+   "Hrastovac"
+  ],
+  "isles": [
+   "Ballykeel",
+   "Inishcarrow",
+   "Kilmore Quay",
+   "Dunmanus",
+   "Glenrae"
+  ]
+ },
+ "trades": [
+  "miller",
+  "schoolmistress",
+  "chandler",
+  "ferryman",
+  "midwife",
+  "bailiff",
+  "glassblower",
+  "rope-maker",
+  "apothecary",
+  "parish clerk",
+  "tanner",
+  "lighthouse keeper",
+  "seamstress",
+  "coal merchant",
+  "cooper",
+  "toll-keeper",
+  "printer",
+  "nurse",
+  "farrier",
+  "organist",
+  "innkeeper",
+  "constable",
+  "harbour master",
+  "milliner",
+  "stonemason",
+  "bookbinder",
+  "lamplighter",
+  "weaver",
+  "undertaker",
+  "grocer",
+  "shepherd",
+  "mayor",
+  "pawnbroker",
+  "laundress",
+  "factory foreman",
+  "tax collector",
+  "surgeon",
+  "bell-ringer",
+  "fishwife",
+  "clockmaker",
+  "railway guard",
+  "beekeeper"
+ ],
+ "causes": [
+  "fever, after a wet harvest",
+  "a fall from a hayloft",
+  "old age, in a chair by the fire",
+  "the cholera of that summer",
+  "a kick from a dray horse",
+  "drowning, at the ford",
+  "heart failure, mid-sentence",
+  "influenza",
+  "a chimney fire",
+  "consumption, slowly",
+  "a carriage overturned on the hill",
+  "a surgeon's error",
+  "exposure, on the moor road",
+  "poisoned mushrooms",
+  "a stroke, at the dinner table",
+  "a rockfall in the quarry",
+  "a duel nobody admits to",
+  "complications of childbirth",
+  "a long illness bravely borne",
+  "choking on a fishbone",
+  "lightning, under an oak",
+  "the bombardment",
+  "a winter with no coal",
+  "an infected cut",
+  "a broken heart, the parish insists"
+ ],
+ "traits": [
+  "Well thought of in the parish.",
+  "Kept to themselves.",
+  "Known for a temper, and for apologising.",
+  "Attended church, mostly.",
+  "Remembered at the inn with a toast.",
+  "Owed money to several people, and was owed by more.",
+  "Wrote long letters to the newspaper.",
+  "Never missed a funeral.",
+  "Known to every child on the street.",
+  "Quarrelled with the vicar for thirty years."
+ ],
+ "virtues": [
+  {
+   "text": "Nursed a neighbour's family through the {year} fever.",
+   "w": 2
+  },
+  {
+   "text": "Gave the winter's coal to the widow next door.",
+   "w": 2
+  },
+  {
+   "text": "Taught {count} children to read, for nothing.",
+   "w": 2
+  },
+  {
+   "text": "Pulled a drowning boy from the {town} millrace.",
+   "w": 3
+  },
+  {
+   "text": "Paid off a dead friend's debts quietly.",
+   "w": 2
+  },
+  {
+   "text": "Took in an orphaned niece and raised her.",
+   "w": 3
+  },
+  {
+   "text": "Kept honest weights all their life.",
+   "w": 1
+  },
+  {
+   "text": "Testified for an innocent man at the assizes.",
+   "w": 2
+  },
+  {
+   "text": "Shared the harvest in the lean year.",
+   "w": 2
+  },
+  {
+   "text": "Visited the gaol every Sunday.",
+   "w": 1
+  },
+  {
+   "text": "Refused a bribe from the landlord's agent.",
+   "w": 2
+  },
+  {
+   "text": "Sat with the dying when no one else would.",
+   "w": 2
+  },
+  {
+   "text": "Forgave a brother who robbed them.",
+   "w": 2
+  },
+  {
+   "text": "Fed travellers at the back door, no questions.",
+   "w": 1
+  },
+  {
+   "text": "Gave evidence against a crooked magistrate.",
+   "w": 3
+  }
+ ],
+ "sins": [
+  {
+   "text": "Struck an apprentice hard enough to deafen him.",
+   "w": -2
+  },
+  {
+   "text": "Cheated at cards, often, and well.",
+   "w": -1
+  },
+  {
+   "text": "Informed on a neighbour for reward.",
+   "w": -2
+  },
+  {
+   "text": "Turned a pregnant servant out in winter.",
+   "w": -3
+  },
+  {
+   "text": "Watered the milk for twenty years.",
+   "w": -1
+  },
+  {
+   "text": "Sold a lame horse as sound.",
+   "w": -1
+  },
+  {
+   "text": "Left a debt unpaid that ruined a family.",
+   "w": -2
+  },
+  {
+   "text": "Lied under oath to save a cousin.",
+   "w": -1
+  },
+  {
+   "text": "Drank the rent money, repeatedly.",
+   "w": -1
+  },
+  {
+   "text": "Let a rival's barn burn and did not raise the alarm.",
+   "w": -3
+  },
+  {
+   "text": "Beat a dog to death in a rage.",
+   "w": -2
+  },
+  {
+   "text": "Stole from the parish poor-box.",
+   "w": -2
+  },
+  {
+   "text": "Abandoned a child to the foundling hospital.",
+   "w": -2
+  },
+  {
+   "text": "Spread a rumour that drove a woman from {town}.",
+   "w": -2
+  }
+ ],
+ "neutral": [
+  "Married twice; outlived both.",
+  "Never left {town} in {age} years.",
+  "Kept bees, badly.",
+  "Sang in the choir, loudly.",
+  "Served in the militia; saw nothing.",
+  "Moved house eleven times.",
+  "Played the fiddle at weddings."
+ ],
+ "twists": {
+  "inflated": [
+   {
+    "entry": "Founded the {town} poor-relief fund.",
+    "w": 3,
+    "title": "Fund accounts, {year}",
+    "cards": [
+     "Subscribers: forty townsfolk. Founder's own gift: nothing.",
+     "Treasurer's salary drawn: {name_s}, every quarter."
+    ],
+    "fact": "The relief fund paid its founder a salary; their own gift was nothing.",
+    "q": "Tell me about the relief fund.",
+    "a": "It was my life's work. Somebody had to manage it.",
+    "conf": "Managing it was work. Work is paid. Ask anyone."
+   },
+   {
+    "entry": "Rebuilt the church roof after the storm.",
+    "w": 3,
+    "title": "Vestry minutes, {year}",
+    "cards": [
+     "Roof repairs: paid by public subscription.",
+     "Contractor engaged: {name_s}, at double the usual rate."
+    ],
+    "fact": "The parish paid for the roof, and paid them double to do it.",
+    "q": "The church roof. Your doing?",
+    "a": "Every slate. You can still see it from the road.",
+    "conf": "Double is what quality costs. The roof did not leak."
+   },
+   {
+    "entry": "Saved the mill workers' jobs in the slump.",
+    "w": 2,
+    "title": "Wage book, {year}",
+    "cards": [
+     "Hands kept on: all. Wages cut: by half.",
+     "Owner's dividend that year: the largest ever paid."
+    ],
+    "fact": "The jobs were kept by halving wages while the dividend grew.",
+    "q": "How did you keep the mill open?",
+    "a": "Sacrifice. Everyone made sacrifices.",
+    "conf": "I said everyone sacrificed. I did not say equally."
+   },
+   {
+    "entry": "Returned a lost purse to its owner, untouched.",
+    "w": 2,
+    "title": "Constable's daybook, {year}",
+    "cards": [
+     "Purse returned by {name_s}: empty but for a button.",
+     "Owner's complaint: eleven shillings missing. Not pursued."
+    ],
+    "fact": "The purse came back empty; eleven shillings were never found.",
+    "q": "The lost purse you returned.",
+    "a": "Honesty is its own reward.",
+    "conf": "It was its own reward. Eleven shillings' worth."
+   }
+  ],
+  "hidden_sin": [
+   {
+    "hidden": "Poisoned a rival's well during the dry summer.",
+    "w": -3,
+    "title": "Coroner's notes, {year}",
+    "cards": [
+     "Three dead at the Hollins farm. Well water: arsenic.",
+     "Purchaser of arsenic that month, per the chemist's book: {name_s}."
+    ],
+    "fact": "They bought the arsenic that killed three at the Hollins farm.",
+    "q": "Did you know the Hollins family?",
+    "a": "Neighbours. Sad business. The water, they said.",
+    "conf": "There was a boundary dispute. There was no longer a boundary dispute."
+   },
+   {
+    "hidden": "Sold the names of hidden refugees to the soldiers.",
+    "w": -3,
+    "title": "Garrison pay ledger, {year}",
+    "cards": [
+     "'Information received' - paid to {name_s}, twelve crowns.",
+     "Same week: nine taken from the {town} cellars."
+    ],
+    "fact": "They were paid for the names of the nine taken from the cellars.",
+    "q": "Where were you the winter the soldiers came?",
+    "a": "At home. Keeping my head down, like everyone.",
+    "conf": "Twelve crowns fed my family. I did not choose the times."
+   },
+   {
+    "hidden": "Let an innocent servant hang for their own theft.",
+    "w": -3,
+    "title": "Assize record, {year}",
+    "cards": [
+     "Servant girl hanged for theft of plate.",
+     "Plate later found pawned. Pawn ticket name: {name_s}."
+    ],
+    "fact": "The plate a servant hanged for was pawned in their name.",
+    "q": "Did you ever lose anything valuable?",
+    "a": "Some silver, once. The girl was caught.",
+    "conf": "The court decided. I only failed to correct it."
+   }
+  ],
+  "slander": [
+   {
+    "entry": "Murdered their business partner.",
+    "w": -3,
+    "title": "Inquest verdict, {year}",
+    "cards": [
+     "Partner's death: accidental, a fall on the ice.",
+     "Accusation lodged anonymously, after the verdict."
+    ],
+    "fact": "The 'murder' was ruled an accident; the charge came anonymously, later.",
+    "q": "What happened to your partner?",
+    "a": "He fell. I have told this story so many times.",
+    "conf": "I did not kill him. I have never once been believed."
+   },
+   {
+    "entry": "Ran a gambling den above the bakery.",
+    "w": -2,
+    "title": "Magistrate's minute, {year}",
+    "cards": [
+     "Raid on the bakery: nothing found but a prayer meeting.",
+     "Complainant: a rival baker. Fined for wasting the court's time."
+    ],
+    "fact": "The 'gambling den' was a prayer meeting; the accuser was fined.",
+    "q": "What went on above the bakery?",
+    "a": "Prayer. Hymns. Bad singing.",
+    "conf": "Bad singing is the only sin up there. I admit to the singing."
+   },
+   {
+    "entry": "Deserted their regiment under fire.",
+    "w": -3,
+    "title": "Regimental muster, {year}",
+    "cards": [
+     "Listed deserter in error; was carrying wounded to the rear.",
+     "Correction issued, never copied to the civil registry."
+    ],
+    "fact": "Not a deserter: they were carrying the wounded. The correction was never copied.",
+    "q": "Tell me about the war.",
+    "a": "I went. I came back. Not everyone did.",
+    "conf": "I carried Sergeant Moss two miles. He lived. Ask him."
+   }
+  ],
+  "hidden_virtue": [
+   {
+    "hidden": "Hid a family from the soldiers for two winters.",
+    "w": 3,
+    "title": "Letter from a survivor, {year}",
+    "cards": [
+     "'Two winters in the root cellar of {name_s}.'",
+     "'They fed us from their own plate and never told a soul.'"
+    ],
+    "fact": "They hid a family for two winters and never told anyone.",
+    "q": "What did you do in the war?",
+    "a": "Nothing worth writing down.",
+    "conf": "It was a cellar and some soup. Anyone would have."
+   },
+   {
+    "hidden": "Paid a stranger's surgeon's bill anonymously.",
+    "w": 2,
+    "title": "Hospital donations book, {year}",
+    "cards": [
+     "Anonymous: settlement of bed 14's account in full.",
+     "Clerk's pencil note: 'it was {name_s}, do not say.'"
+    ],
+    "fact": "They secretly paid for a stranger's surgery.",
+    "q": "Did you ever help someone you didn't know?",
+    "a": "I don't recall.",
+    "conf": "Bed fourteen. A boy with a crushed leg. He walked again."
+   }
+  ],
+  "violet": [
+   {
+    "entry": "Committed arson at the {town} granary.",
+    "w": -3,
+    "title": "Original register, {year}",
+    "cards": [
+     "Original entry for this soul: no charge, no conviction.",
+     "Granary fire: struck by lightning, per the fire warden."
+    ],
+    "fact": "The arson entry is a Room 0 amendment; the original register shows nothing.",
+    "q": "The granary fire.",
+    "a": "Lightning. Everyone saw it. Why is that on my file?",
+    "conf": "I never set any fire. Someone wrote that after I died."
+   },
+   {
+    "entry": "Blasphemed before the bishop and was excommunicated.",
+    "w": -3,
+    "title": "Diocesan register, {year}",
+    "cards": [
+     "No excommunication recorded for this soul.",
+     "Margin: last confession heard {year}; absolution given."
+    ],
+    "fact": "The excommunication is a violet-ink forgery; the diocese records absolution.",
+    "q": "Were you ever excommunicated?",
+    "a": "Excommunicated? I took communion every Sunday.",
+    "conf": "Who wrote that? It isn't true. Who wrote that?"
+   },
+   {
+    "entry": "Drowned an infant in the {town} canal.",
+    "w": -3,
+    "title": "Parish burials, {year}",
+    "cards": [
+     "Infant burial that year: none on this street.",
+     "Canal inquest: no body recovered, no case opened."
+    ],
+    "fact": "The infanticide is a Room 0 entry; no child died and no case was ever opened.",
+    "q": "Tell me about the canal.",
+    "a": "I fished in it. That's all. I swear that's all.",
+    "conf": "There was no baby. There was never a baby. Why would anyone write that?"
+   }
+  ]
+ },
+ "epilogue": {
+  "heaven": [
+   "{name} goes through the Gilt Gate looking back once, as if expecting to be called back.",
+   "{name} is received at the Gilt Gate by someone they did not expect."
+  ],
+  "hell": [
+   "{name} goes to the Ember Gate. The Wardens enter the debt in red.",
+   "{name} is logged in at the Ember Gate. The clerk there does not look up."
+  ]
+ }
+}

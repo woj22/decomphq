@@ -14,6 +14,8 @@ var _repath := 0.0
 var _knock := Vector2.ZERO
 var _hit_t := 0.0
 var bar: ColorRect
+var boss_flag := ""
+var self_modulate_base := Color.WHITE
 
 
 func configure(brute: bool) -> void:
@@ -27,6 +29,10 @@ func configure(brute: bool) -> void:
 		max_hp = 30.0
 		damage = 8.0
 		speed = 2.3
+	if Clock.is_night():
+		max_hp *= Content.cfg_f("night_demon_hp_mult", 1.6)
+		damage *= Content.cfg_f("night_demon_dmg_mult", 1.5)
+		speed *= 1.15
 	hp = max_hp
 	bar = ColorRect.new()
 	bar.color = Color("#e8552b")
@@ -63,10 +69,10 @@ func _die() -> void:
 
 
 func _pick_target() -> void:
-	var best: Actor = World.player
+	var best: Actor = null if Combat.downed else World.player
 	var bd := INF if best == null else gpos.distance_to(best.gpos)
 	for g: Variant in Combat.defenders:
-		if is_instance_valid(g) and not (g as Defender).down and gpos.distance_to((g as Actor).gpos) < bd - 1.5:
+		if is_instance_valid(g) and not (g as Defender).down and (best == null or gpos.distance_to((g as Actor).gpos) < bd - 1.5):
 			best = g
 			bd = gpos.distance_to((g as Actor).gpos)
 	target = best
@@ -78,7 +84,7 @@ func _process(delta: float) -> void:
 	if _hit_t > 0.0:
 		_hit_t -= delta
 		if _hit_t <= 0.0:
-			modulate = Color.WHITE
+			modulate = self_modulate_base
 	if _knock.length() > 0.01:
 		var step := _knock * minf(1.0, delta * 8.0)
 		var ng := gpos + step

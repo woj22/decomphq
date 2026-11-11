@@ -1,0 +1,33 @@
+{
+ "id": "dlg_pell_n3",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "...C. Thrace. Auditor-General. Room 0 is his office. Every one of them, his.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "We cannot take this to Marrow; she signs what Room 0 sends her. Quill knows a door to the Principal's own auditors.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_pell",
+   "text": "It is a door for a Department Supervisor, not an Adjudicator. Rise, and we will open it together.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_story_c4",
+     "value": true
+    },
+    {
+     "op": "show_card",
+     "title": "To Be Continued",
+     "text": "Act III: rise to Department Supervisor and take the manifest higher."
+    }
+   ]
+  }
+ }
+}

@@ -120,6 +120,8 @@ func object_visible(o: Dictionary) -> bool:
 		return false # asleep in the Dormitory
 	if o.has("day_only") and Clock.is_night():
 		return false
+	if bool(o.get("night_only", false)) and not Clock.is_night():
+		return false
 	if o.has("visible_if"):
 		return Conditions.check(o["visible_if"])
 	if str(o.get("type", "")) == "npc" and o.has("conditions"):
@@ -260,7 +262,7 @@ func zone_cells(kind: String) -> Array:
 				var head := JsonUtil.to_vec2i(z.get("head", cells[cells.size() - 1] if cells.size() > 0 else [0, 0]))
 				cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return Vector2(a - head).length() < Vector2(b - head).length())
 			out.append(cells)
-	if out.is_empty():
+	if out.is_empty() and bool(data.get("crowd_from_legend", false)):
 		var legend_kind := "seat" if kind == "bench" else kind
 		var cells: Array = []
 		for y in size.y:
