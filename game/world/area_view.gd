@@ -10,6 +10,7 @@ var sorted: Node2D
 var npcs: Dictionary = {} # object_id -> NpcActor
 var animated: Array = [] # [{sprite, id, frames, fps, t, f}]
 var crowd: Crowd
+var ambient: AmbientLife
 var additive_mat := CanvasItemMaterial.new()
 var sprite_count := 0
 
@@ -37,6 +38,9 @@ func build(m: AreaModel) -> void:
 	crowd = Crowd.new()
 	add_child(crowd)
 	crowd.setup(self, model, sorted)
+	ambient = AmbientLife.new()
+	add_child(ambient)
+	ambient.setup(model, sorted)
 	Sim.presentation_tick.connect(_on_tick)
 	EventBus.sim_soul_adjudicated.connect(_on_adjudicated)
 	EventBus.flag_changed.connect(func(_a: String, _b: Variant) -> void: refresh_npcs())

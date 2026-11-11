@@ -68,3 +68,11 @@ All additions are optional keys; nothing in CONTRACTS.md is removed or renamed. 
 
 ### Integration issues
 - `dlg_marrow_first` n3 says "God and the Devil", against PROJECT §5 language rule (in-fiction text uses Principal/Counterparty only).
+
+## Orchestrator — living world (2026-11-11, owner request)
+- New optional area key `"ambient"` (see header of `game/world/ambient_life.gd`): wandering `staff`, soul `flows`
+  (`pass` = walk A→B and fade; `judged` = walk to a free desk seat, wait, exit by a Gilt/Ember soul door), `desk_clerks`, `max_walkers`.
+  Presentation only — never touches Sim counters, GameState, clock or saves.
+- Every `desk_clerk` prop not claimed by an object (`desk` / `desk_player`) automatically gets a working clerk at (x, y−1) and a soul seat at (x, y+1).
+- `area_booths` enlarged 14×8 → 26×14 (9 extra desks) and `area_records_annexe` 10×8 → 16×8 (2 reading desks). All original cells keep
+  their coordinates; new legend char `w` = floor where a desk clerk stands.

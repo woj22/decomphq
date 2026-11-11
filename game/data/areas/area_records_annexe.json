@@ -1,49 +1,219 @@
 {
-  "id": "area_records_annexe",
-  "name": "Records Annexe",
-  "size": [10, 8],
-  "ambience": "amb_records",
-  "backdrop": "none",
-  "grid": [
-    "##########",
-    "#SSSSSeSSk",
-    "#S.......k",
-    "#S...P...k",
-    "#S.cccc..k",
-    "#S.....xxk",
-    "#......xxk",
-    "kkDkkkkkkk"
-  ],
-  "legend": {
-    "#": {"kind": "wall"},
-    "k": {"kind": "kerb"},
-    "D": {"kind": "door"},
-    ".": {"kind": "floor"},
-    "S": {"kind": "prop", "prop": "shelf_books", "solid": true},
-    "e": {"kind": "prop", "prop": "shelf_empty", "solid": true},
-    "P": {"kind": "floor"},
-    "c": {"kind": "prop", "prop": "counter", "solid": true},
-    "x": {"kind": "prop", "prop": "rope_post", "solid": true}
+ "id": "area_records_annexe",
+ "name": "Records Annexe",
+ "size": [
+  16,
+  8
+ ],
+ "ambience": "amb_records",
+ "backdrop": "none",
+ "grid": [
+  "################",
+  "#SSSSSeSSSSeSSSk",
+  "#S.............k",
+  "#S...P....w..w.k",
+  "#S.cccc...d..d.k",
+  "#S.....xx.o..o.k",
+  "#......xx......k",
+  "kkDkkkkkkkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
   },
-  "floor": "floor_flag",
-  "windows": [],
-  "decor": [
-    {"sprite": "wall_torch_y", "cell": [0, 3]},
-    {"sprite": "wall_torch_y", "cell": [0, 6]},
-    {"sprite": "light_pool_gold", "cell": [5, 5]},
-    {"sprite": "light_pool_gold", "cell": [2, 6]},
-    {"sprite": "lectern", "cell": [8, 2]}
-  ],
-  "objects": [
-    {"id": "door_records_court", "type": "door", "cell": [2, 7], "use_cell": [2, 6], "style": "plain",
-     "to": {"area": "area_clerks_court", "spawn": "from_records"}},
-    {"id": "obj_pell", "type": "npc", "npc": "npc_pell", "cell": [5, 3], "facing": "sw", "use_cell": [5, 5]},
-    {"id": "obj_empty_shelf", "type": "inspect", "cell": [6, 1], "use_cell": [6, 2], "dialogue": "dlg_empty_shelf"}
-  ],
-  "spawns": {
-    "default": [2, 6],
-    "from_court": [2, 6]
+  "k": {
+   "kind": "kerb"
   },
-  "zones": {},
-  "ext": {"note": "Collapsed aisle roped off at (7..8, 5..6). The lectern decor at (8,2) is presentation only."}
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "e": {
+   "kind": "prop",
+   "prop": "shelf_empty",
+   "solid": true
+  },
+  "P": {
+   "kind": "floor"
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "counter",
+   "solid": true
+  },
+  "x": {
+   "kind": "prop",
+   "prop": "rope_post",
+   "solid": true
+  },
+  "w": {
+   "kind": "floor"
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "o": {
+   "kind": "seat",
+   "prop": "stool",
+   "solid": false
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [],
+ "decor": [
+  {
+   "sprite": "wall_torch_y",
+   "cell": [
+    0,
+    3
+   ]
+  },
+  {
+   "sprite": "wall_torch_y",
+   "cell": [
+    0,
+    6
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    5,
+    5
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    2,
+    6
+   ]
+  },
+  {
+   "sprite": "lectern",
+   "cell": [
+    8,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    10,
+    3
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    13,
+    3
+   ]
+  },
+  {
+   "sprite": "wall_torch_x",
+   "cell": [
+    12,
+    0
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_records_court",
+   "type": "door",
+   "cell": [
+    2,
+    7
+   ],
+   "use_cell": [
+    2,
+    6
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_clerks_court",
+    "spawn": "from_records"
+   }
+  },
+  {
+   "id": "obj_pell",
+   "type": "npc",
+   "npc": "npc_pell",
+   "cell": [
+    5,
+    3
+   ],
+   "facing": "sw",
+   "use_cell": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "obj_empty_shelf",
+   "type": "inspect",
+   "cell": [
+    6,
+    1
+   ],
+   "use_cell": [
+    6,
+    2
+   ],
+   "dialogue": "dlg_empty_shelf"
+  }
+ ],
+ "spawns": {
+  "default": [
+   2,
+   6
+  ],
+  "from_court": [
+   2,
+   6
+  ]
+ },
+ "zones": {},
+ "ext": {
+  "note": "Collapsed aisle roped off at (7..8, 5..6). The lectern decor at (8,2) is presentation only."
+ },
+ "ambient": {
+  "desk_clerks": [
+   "chr_archivist",
+   "chr_clerk_grey"
+  ],
+  "staff": [
+   {
+    "sprite": "chr_archivist",
+    "count": 2,
+    "rect": [
+     2,
+     2,
+     14,
+     6
+    ]
+   },
+   {
+    "sprite": "chr_clerk_grey",
+    "count": 1,
+    "rect": [
+     2,
+     2,
+     14,
+     6
+    ]
+   }
+  ],
+  "flows": []
+ }
 }

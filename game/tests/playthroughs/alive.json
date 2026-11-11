@@ -1,0 +1,10 @@
+{"steps": [
+ {"do": "new_game"}, {"do": "drain"},
+ {"do": "wait", "seconds": 5.0}, {"do": "screenshot", "name": "alive_arrival"},
+ {"do": "talk", "object": "obj_marrow"}, {"do": "drain"},
+ {"do": "wait", "seconds": 5.0}, {"do": "screenshot", "name": "alive_booths"},
+ {"do": "go_to", "object": "obj_wren"}, {"do": "drain"},
+ {"do": "wait", "seconds": 4.0}, {"do": "screenshot", "name": "alive_court"},
+ {"do": "go_to", "object": "obj_pell"}, {"do": "drain"},
+ {"do": "wait", "seconds": 3.0}, {"do": "screenshot", "name": "alive_records"}
+]}
