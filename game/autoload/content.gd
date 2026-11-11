@@ -261,6 +261,15 @@ func rank_info(n: int) -> Dictionary:
 	return {}
 
 
+func max_rank() -> int:
+	var m := 1
+	var arr: Variant = ranks.get("ranks", [])
+	if arr is Array:
+		for r: Dictionary in arr:
+			m = maxi(m, int(r.get("rank", 1)))
+	return m
+
+
 func rank_title(n: int) -> String:
 	var r := rank_info(n)
 	if r.has("title"):

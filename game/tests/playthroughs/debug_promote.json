@@ -1,0 +1,7 @@
+{"steps": [
+ {"do": "new_game"}, {"do": "drain"},
+ {"do": "debug_promote"}, {"do": "drain"},
+ {"do": "assert", "rank": 2},
+ {"do": "debug_promote"}, {"do": "drain"},
+ {"do": "assert", "rank": 3}
+]}

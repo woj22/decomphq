@@ -21,6 +21,16 @@ func _ready() -> void:
 		var st := SettingsScreen.new()
 		get_parent().add_child(st))
 	v.add_child(s)
+	if GameState.in_game:
+		var max_rank := Content.max_rank()
+		var dbg := UiKit.button("DEBUG: Promote", Vector2(220, 48))
+		dbg.disabled = GameState.rank >= max_rank
+		dbg.pressed.connect(func() -> void:
+			close()
+			GameState.set_rank(mini(GameState.rank + 1, max_rank))
+			if World.model != null:
+				World.model.rebuild_nav())
+		v.add_child(dbg)
 	var q := UiKit.button("Save & quit", Vector2(220, 48))
 	q.pressed.connect(func() -> void:
 		SaveGame.autosave("quit")

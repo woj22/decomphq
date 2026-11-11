@@ -301,6 +301,21 @@ func run_step(s: Dictionary) -> bool:
 			return check(s)
 		"screenshot":
 			await screenshot(str(s.get("name", "shot")))
+		"debug_promote":
+			# Presses the real Pause-menu button, as the player would.
+			var ps := PauseScreen.new()
+			main.add_child(ps)
+			await frames(2)
+			var btn: Button = null
+			for b: Node in ps.find_children("*", "Button", true, false):
+				if (b as Button).text == "DEBUG: Promote":
+					btn = b
+			if btn == null:
+				fail("no DEBUG: Promote button in Pause")
+				ps.queue_free()
+				return false
+			btn.pressed.emit()
+			await frames(2)
 		"wait":
 			await wait_s(float(s.get("seconds", 0.5)))
 		"buy_lamp":
