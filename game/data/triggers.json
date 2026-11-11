@@ -644,17 +644,17 @@
    {
     "op": "not",
     "of": {
-     "op": "case_state",
+     "op": "verdict",
      "case": "case_s007",
-     "value": "judged"
+     "value": "heaven"
     }
    },
    {
     "op": "not",
     "of": {
-     "op": "case_state",
+     "op": "verdict",
      "case": "case_s007",
-     "value": "pending"
+     "value": "hell"
     }
    }
   ],

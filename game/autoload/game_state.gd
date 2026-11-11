@@ -328,7 +328,9 @@ func reopen_case(cid: String) -> void:
 	var res: Dictionary = rec.get("result", {})
 	add_stat("merit", -int(res.get("merit", 0)))
 	add_stat("cases_processed", -1)
-	if bool(res.get("sound", false)):
+	if bool(res.get("deferred", false)):
+		add_stat("deferred", -1)
+	elif bool(res.get("sound", false)):
 		add_stat("sound", -1)
 	else:
 		add_stat("unsound", -1)
@@ -370,6 +372,15 @@ func appeal_case(cid: String, by: String = "soul") -> void:
 	if not docket.has(cid):
 		docket.append(cid)
 	EventBus.docket_changed.emit()
+
+
+## Souls the player stamped DEFERRED: they stay in the fortress as Residents (shown wandering Clerk's Court).
+func residents() -> Array:
+	var out: Array = []
+	for cid: String in cases:
+		if case_state(cid) == "judged" and case_verdict(cid) == "purgatory":
+			out.append(cid)
+	return out
 
 
 func snapshot_stats(tag: String) -> void:
@@ -449,13 +460,17 @@ func record_verdict(cid: String, result: Dictionary) -> void:
 	rec["result"] = result
 	add_stat("merit", int(result["merit"]))
 	add_stat("cases_processed", 1)
-	add_stat("sound" if result["sound"] else "unsound", 1)
+	if bool(result.get("deferred", false)):
+		add_stat("deferred", 1)
+	else:
+		add_stat("sound" if result["sound"] else "unsound", 1)
 	if result["overturned"]:
 		add_stat("overturned", 1)
 	# Hidden favour/conscience are applied by the case's verdict effects (CONTRACT_CHANGES #4), never here.
 	result["hidden_applied"] = {}
 	shift["processed"] = int(shift["processed"]) + 1
-	shift["sound" if result["sound"] else "unsound"] = int(shift["sound" if result["sound"] else "unsound"]) + 1
+	if not bool(result.get("deferred", false)):
+		shift["sound" if result["sound"] else "unsound"] = int(shift["sound" if result["sound"] else "unsound"]) + 1
 	shift[result["verdict"]] = int(shift.get(result["verdict"], 0)) + 1
 	if result["overturned"]:
 		shift["overturned"] = int(shift["overturned"]) + 1

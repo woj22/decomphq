@@ -168,3 +168,26 @@ func test_sim_counters() -> void:
 	GameState.call_soul("case_s001")
 	assert_eq(GameState.get_stat_i("queue"), q - 1)
 	Dialogue.clear()
+
+
+## DEFERRED (owner request: souls can be trapped in Purgatory): never Overturned, no ground points,
+## -1 on clear/contested, +2 on ambiguous; neither sound nor unsound; the soul becomes a Resident.
+func test_deferred_verdict() -> void:
+	var c1 := Content.case("case_s001")
+	var r := Scoring.score(c1, [], [], "purgatory", "")
+	assert_eq(r["audit"], "deferred", "s001 deferred label")
+	assert_false(bool(r["overturned"]), "deferral is never overturned")
+	assert_eq(r["verdict_pts"], -1, "clear case deferral costs 1")
+	assert_eq(r["ground_pts"], 0, "no ground points when deferring")
+	assert_eq(r["favour_gilt"] + r["favour_ember"], 0, "neither side gains")
+	var c7 := Content.case("case_s007")
+	var r7 := Scoring.score(c7, Scoring.all_discovery_ids(c7), [], "purgatory", "")
+	assert_eq(r7["verdict_pts"], 2, "ambiguous deferral earns 2")
+	assert_eq(r7["merit"], r7["diligence"] + 2, "ambiguous merit")
+	fresh_game()
+	SaveGame.enabled = false
+	var d := DeskDriver.new()
+	d.play("case_s001", [], "purgatory", "")
+	assert_eq(GameState.get_stat_i("deferred"), 1, "deferred stat")
+	assert_eq(GameState.get_stat_i("overturned"), 0, "not overturned")
+	assert_true(GameState.residents().has("case_s001"), "deferred soul is a Resident")

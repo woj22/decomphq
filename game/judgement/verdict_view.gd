@@ -12,6 +12,9 @@ var stage := "choose" # choose | sealed | epilogue | slip | done
 var result: Dictionary = {}
 var heaven_btn: Button
 var hell_btn: Button
+var defer_btn: Button
+const PURGATORY_COL := Color("#9a86ad")
+var defer_mark: Label
 var writ: PanelContainer
 var ground_btn: Button
 var hint: Label
@@ -88,6 +91,13 @@ func build() -> void:
 	ground_btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	ground_btn.pressed.connect(open_chooser)
 	wv.add_child(ground_btn)
+	defer_btn = UiKit.button("DEFERRED - keep the soul in Purgatory", Vector2(0, 48))
+	defer_btn.name = "StampDeferred"
+	defer_btn.add_theme_color_override("font_color", PURGATORY_COL)
+	defer_btn.add_theme_stylebox_override("normal", UiKit.box(Color("#2a1f3d"), PURGATORY_COL.darkened(0.3), 1, 6))
+	defer_btn.add_theme_stylebox_override("pressed", UiKit.box(Color("#43325c"), PURGATORY_COL, 2, 6))
+	defer_btn.pressed.connect(func() -> void: choose("purgatory"))
+	wv.add_child(defer_btn)
 	var holder := CenterContainer.new()
 	holder.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -103,6 +113,10 @@ func build() -> void:
 	imprint.visible = false
 	imprint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	holder.add_child(imprint)
+	defer_mark = UiKit.label("DEFERRED", 24, PURGATORY_COL, "display")
+	defer_mark.visible = false
+	defer_mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(defer_mark)
 	hell_btn = _stamp_button("HELL", "stamp_hell", "Ember Gate", UiKit.HELL)
 	hell_btn.name = "StampHell"
 	hell_btn.pressed.connect(func() -> void: choose("hell"))
@@ -132,8 +146,9 @@ func _stamp_button(word: String, icon_id: String, door: String, col: Color) -> B
 
 
 func _update() -> void:
-	heaven_btn.modulate = Color(1, 1, 1, 1.0 if verdict != "hell" else 0.4)
-	hell_btn.modulate = Color(1, 1, 1, 1.0 if verdict != "heaven" else 0.4)
+	heaven_btn.modulate = Color(1, 1, 1, 1.0 if verdict == "" or verdict == "heaven" else 0.4)
+	hell_btn.modulate = Color(1, 1, 1, 1.0 if verdict == "" or verdict == "hell" else 0.4)
+	defer_btn.modulate = Color(1, 1, 1, 1.0 if verdict == "" or verdict == "purgatory" else 0.4)
 	heaven_btn.position.y = -6 if verdict == "heaven" else 0
 	var gtxt := "No ground"
 	for f: Dictionary in desk.session.facts():
@@ -224,8 +239,13 @@ func seal() -> void:
 	Audio.sfx("sfx_stamp")
 	if Settings.haptics:
 		Input.vibrate_handheld(40)
-	imprint.texture = Assets.ui_texture("stamp_" + verdict)
-	imprint.visible = true
+	if verdict == "purgatory":
+		defer_mark.visible = true
+		defer_mark.pivot_offset = defer_mark.size * 0.5
+		defer_mark.rotation = deg_to_rad(randf_range(-8.0, 8.0))
+	else:
+		imprint.texture = Assets.ui_texture("stamp_" + verdict)
+		imprint.visible = true
 	imprint.pivot_offset = Vector2(32, 32)
 	imprint.rotation = deg_to_rad(randf_range(-6.0, 6.0))
 	ring.visible = false
@@ -245,11 +265,11 @@ func seal() -> void:
 
 func _soul_leaves() -> void:
 	visible = false
-	desk.expression = "relieved" if verdict == "heaven" else "distressed"
+	desk.expression = {"heaven": "relieved", "hell": "distressed"}.get(verdict, "neutral")
 	desk._refresh_booth()
 	Audio.sfx("sfx_door")
 	var tw := desk.create_tween()
-	tw.tween_property(desk.bust, "position:x", -40.0 if verdict == "heaven" else 40.0, 0.6)
+	tw.tween_property(desk.bust, "position:x", {"heaven": -40.0, "hell": 40.0}.get(verdict, 0.0), 0.6)
 	tw.parallel().tween_property(desk.bust, "modulate:a", 0.0, 0.6)
 
 
@@ -315,7 +335,7 @@ func _show_sheet(rows: Array, slip: bool) -> void:
 
 func slip_rows() -> Array:
 	var r := result
-	var audit := {"upheld": "Upheld", "overturned": "Overturned", "noted": "Noted"}
+	var audit := {"upheld": "Upheld", "overturned": "Overturned", "noted": "Noted", "deferred": "Deferred"}
 	var gl := {"sound": "Sound", "unsound": "Unsound", "none": "None"}
 	return [["Diligence", "%d/3" % int(r.get("diligence", 0))],
 		["Verdict", str(audit.get(str(r.get("audit", "")), ""))],

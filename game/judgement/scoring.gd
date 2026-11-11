@@ -4,6 +4,7 @@ extends RefCounted
 
 const HEAVEN := "heaven"
 const HELL := "hell"
+const PURGATORY := "purgatory" ## DEFERRED: the soul stays in the fortress
 const ABSTAIN := "abstain"
 
 
@@ -219,7 +220,12 @@ static func score(case_data: Dictionary, discoveries: Array, asked: Array, verdi
 	var verdict_pts := 0
 	var sound := true
 	var audit := "noted"
-	if ambiguous:
+	var deferred := verdict == PURGATORY
+	if deferred:
+		# Not wrong, never Overturned - but it dodges the call: +2 on an ambiguous case, -1 on a clear/contested one.
+		verdict_pts = 2 if ambiguous else -1
+		audit = "deferred"
+	elif ambiguous:
 		verdict_pts = 4 if ground_side == verdict else 0
 	else:
 		if verdict == g:
@@ -229,20 +235,22 @@ static func score(case_data: Dictionary, discoveries: Array, asked: Array, verdi
 			verdict_pts = -2
 			audit = "overturned"
 			sound = false
-	var ground_pts := 2 if (ground != "" and ground_side == verdict) else 0
+	var ground_pts := 2 if (ground != "" and ground_side == verdict and not deferred) else 0
 	var ground_label := "none"
-	if ground != "":
+	if ground != "" and not deferred:
 		ground_label = "sound" if ground_side == verdict else "unsound"
 	var merit := maxi(0, diligence + verdict_pts + ground_pts)
 	var conscience := 0
-	if ambiguous:
+	if deferred:
+		conscience = 0
+	elif ambiguous:
 		conscience = 1 if verdict == HEAVEN else -1
 	elif verdict != g:
 		conscience = 1 if verdict == HEAVEN else -1
 	return {"guideline": g, "type": ctype, "ambiguous": ambiguous, "key_found": key_found, "key_total": kt,
 		"diligence": diligence, "verdict_pts": verdict_pts, "ground_pts": ground_pts, "merit": merit, "sound": sound,
 		"audit": audit, "ground": ground, "ground_side": ground_side, "ground_label": ground_label, "verdict": verdict,
-		"overturned": audit == "overturned", "favour_gilt": 1 if verdict == HEAVEN else 0,
+		"overturned": audit == "overturned", "deferred": deferred, "favour_gilt": 1 if verdict == HEAVEN else 0,
 		"favour_ember": 1 if verdict == HELL else 0, "conscience": conscience}
 
 

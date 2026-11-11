@@ -231,6 +231,10 @@ func stamp(verdict: String, ground: String) -> Dictionary:
 
 
 func epilogue(verdict: String) -> Array:
+	if verdict == "purgatory" and not ((data.get("epilogue", {}) as Dictionary).has("purgatory")):
+		var nm := str(data.get("name", "The soul"))
+		return ["%s is issued a desk, a pen, and a file stamped DEFERRED." % nm,
+			"Neither Gate will have them now. The Chancery always has room."]
 	var e: Variant = data.get("epilogue", {})
 	if not (e is Dictionary):
 		return []

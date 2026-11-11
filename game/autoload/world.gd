@@ -413,6 +413,11 @@ func soul_exit(cid: String, verdict: String) -> void:
 			var v := str(od.get("verdict", "heaven" if str(od.get("style", "")) == "gilt" else "hell"))
 			if v == verdict:
 				door = JsonUtil.to_vec2i(od.get("cell"))
+	if verdict == "purgatory":
+		for o: Variant in model.objects:
+			if o is Dictionary and str((o as Dictionary).get("type", "")) == "door":
+				door = JsonUtil.to_vec2i((o as Dictionary).get("cell"))
+				break
 	var s := soul
 	soul = null
 	s.mode = "exit"

@@ -34,6 +34,7 @@ func setup(m: AreaModel, parent: Node2D) -> void:
 	_max_walkers = int(cfg.get("max_walkers", 14))
 	_build_desks()
 	_build_staff()
+	_build_residents()
 	for f: Variant in cfg.get("flows", []):
 		_flow_t.append(rng.randf_range(0.3, 2.0))
 	# Pre-warm: a couple of souls already mid-journey so a room never opens empty.
@@ -132,6 +133,28 @@ func _build_staff() -> void:
 				["sw", "se", "nw", "ne"][rng.randi_range(0, 3)])
 			w.speed = rng.randf_range(1.6, 2.4)
 			w._wait = rng.randf_range(0.0, 3.0)
+
+
+## Souls the player stamped DEFERRED drift about this area for good (area key "residents": [x0, y0, x1, y1]).
+func _build_residents() -> void:
+	var r: Variant = cfg.get("residents")
+	if not (r is Array):
+		return
+	var cells := _open_cells(r)
+	if cells.is_empty():
+		return
+	for cid: Variant in GameState.residents():
+		var w := Wanderer.new()
+		w.actor_id = "resident_" + str(cid)
+		w.cells = cells
+		w.rng = rng
+		w.pause_range = Vector2(4.0, 10.0)
+		container.add_child(w)
+		var c := Content.case(str(cid))
+		var seed_v := int((c.get("portrait", {}) as Dictionary).get("seed", str(cid).hash()))
+		w.setup("chr_soul_%d" % (absi(seed_v) % 4), model, Vector2(cells[rng.randi_range(0, cells.size() - 1)]), "sw")
+		w.speed = 0.9
+		w.modulate = Color(0.8, 0.72, 1.0, 0.85) # a faint Purgatory tint marks the Residents
 
 
 # ---------------------------------------------------------------- soul flows

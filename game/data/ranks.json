@@ -51,6 +51,12 @@
       "name": "Conscience",
       "start": 0,
       "hidden": true
+    },
+    {
+      "id": "deferred",
+      "name": "Deferred",
+      "start": 0,
+      "hidden": true
     }
   ],
   "ranks": [

@@ -1,0 +1,13 @@
+{"steps": [
+ {"do": "new_game"},
+ {"do": "talk", "object": "obj_marrow"},
+ {"do": "call_soul"},
+ {"do": "sit"},
+ {"do": "stamp", "verdict": "purgatory", "ground": "auto"},
+ {"do": "drain"},
+ {"do": "assert", "conditions": [{"op": "verdict", "case": "case_s001", "value": "purgatory"}],
+  "stats": {"overturned": 0, "deferred": 1, "cases_processed": 1}},
+ {"do": "go_to", "object": "obj_wren"}, {"do": "drain"},
+ {"do": "wait", "seconds": 3.0},
+ {"do": "screenshot", "name": "court_resident"}
+]}
