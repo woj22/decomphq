@@ -99,7 +99,7 @@ def loop_bed(sec, seed, drone, hiss, extra=None):
     # crossfade tail into head for a seamless loop
     k = int(SR * .25)
     x[:k] = x[:k] * np.linspace(0, 1, k) + x[-k:] * np.linspace(1, 0, k)
-    return x[:-k] if False else x
+    return x[:-k]
 
 
 def ticks(t, n, rate, seed, freq=2000, amp=.05, dec=.004):
