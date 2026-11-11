@@ -47,3 +47,12 @@ All additions are optional keys; nothing in CONTRACTS.md is removed or renamed. 
     ink found and Merit/Overturned/processed fail → "Docket reissued" (`restore_stats shift1` restores ALL stats incl.
     cases_processed, then `reset_cases`, flag cleared, docket 2 given again; no shift-2 ledger on that path); pass → promotion scene →
     `end_shift` (shift-2 ledger) → `set_rank 2`.
+
+## Art (build agent) — M1 asset build
+- **Added optional IDs** `wall_kerb_door_x/_y` (64×80, origin [32,64]): low gateway for `D` cells on the near kerb row/column. The full-storey `wall_door_*` on the near side hides actors behind it. Engine may use these for near-side doors. If it does not, `wall_door_*` still works.
+- **Extra IDs (harmless):** `floor_flag_edge_0..1`, `desk_clerk_tray1/2`.
+- `banner_red` is a **wall-hung** banner (32×64, origin [16,72]) on a bracket at the cell's near corner, because Content places it on wall cells. It works on both `_x` and `_y` walls. It is not solid.
+- Soul character sheets have **75 % alpha baked in** (`"alpha_baked":0.75` in the manifest). Engine must not apply it again.
+- Footprint sprites (`statue_first_clerk` 2×2, `decal_inlay_ring` 4×4) have their origin at the **footprint centre**. Engine must place them at the centre of the footprint, not at the centre of the first cell listed (Content lists decal cell [5,5] with footprint [4,4]).
+- Post-process applies the ambient tint with exposure gain 1.45 (PROJECT §7.4 says plain multiply; plain multiply was too dark to read).
+- Walls are 0.25-BU slabs on the **near** edge of their cell, so actors in row/column 1 stand against the face.

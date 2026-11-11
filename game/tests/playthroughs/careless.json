@@ -1,0 +1,324 @@
+{
+ "profile": "careless",
+ "outcome": "reissue",
+ "steps": [
+  {
+   "do": "new_game"
+  },
+  {
+   "do": "assert",
+   "stats": {
+    "queue": 24,
+    "purse": 12,
+    "order": 68
+   },
+   "area": "area_arrival_hall"
+  },
+  {
+   "do": "talk",
+   "object": "obj_marrow"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_shift1_started"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s001"
+    }
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "stamp",
+   "verdict": "tally",
+   "ground": ""
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s001",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s002"
+    }
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "stamp",
+   "verdict": "tally",
+   "ground": ""
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s002",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s003"
+    }
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "stamp",
+   "verdict": "tally",
+   "ground": ""
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s003",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_marrow"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_shift1_closed"
+    }
+   ],
+   "area": "area_booths"
+  },
+  {
+   "do": "talk",
+   "object": "obj_marrow"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "day_eq",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s004"
+    }
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "stamp",
+   "verdict": "tally",
+   "ground": ""
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s004",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s007"
+    }
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "stamp",
+   "verdict": "tally",
+   "ground": ""
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s007",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s008"
+    }
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "stamp",
+   "verdict": "tally",
+   "ground": ""
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s008",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "assert",
+   "merits": [
+    4,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "stats": {
+    "merit": 4,
+    "overturned": 4,
+    "cases_processed": 6
+   }
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_correction_pending"
+    },
+    {
+     "op": "case_state",
+     "case": "case_s008",
+     "value": "seated"
+    }
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "tab",
+   "tab": "RECORD"
+  },
+  {
+   "do": "link",
+   "entry": "r2",
+   "arc": "arc_008a"
+  },
+  {
+   "do": "stamp",
+   "verdict": "tally",
+   "ground": ""
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_gate_reissue"
+    },
+    {
+     "op": "flag",
+     "id": "flag_found_violet_ink"
+    }
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_marrow"
+  },
+  {
+   "do": "assert",
+   "rank": 1,
+   "stats": {
+    "merit": 4
+   },
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s004",
+     "value": "pending"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_gate_reissue"
+    },
+    {
+     "op": "day_eq",
+     "value": 2
+    }
+   ]
+  }
+ ]
+}

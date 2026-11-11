@@ -1,0 +1,359 @@
+{
+ "profile": "attentive",
+ "outcome": "promoted",
+ "steps": [
+  {
+   "do": "new_game"
+  },
+  {
+   "do": "assert",
+   "stats": {
+    "queue": 24,
+    "purse": 12,
+    "order": 68
+   },
+   "area": "area_arrival_hall"
+  },
+  {
+   "do": "talk",
+   "object": "obj_marrow"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_shift1_started"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s001"
+    }
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "stamp",
+   "verdict": "heaven",
+   "ground": ""
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s001",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s002"
+    }
+   ]
+  },
+  {
+   "do": "pell"
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "tab",
+   "tab": "RECORD"
+  },
+  {
+   "do": "link",
+   "entry": "r1",
+   "arc": "arc_002a"
+  },
+  {
+   "do": "ask_all"
+  },
+  {
+   "do": "stamp",
+   "verdict": "hell",
+   "ground": "auto"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s002",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s003"
+    }
+   ]
+  },
+  {
+   "do": "pell"
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "stamp",
+   "verdict": "heaven",
+   "ground": "auto"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s003",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_marrow"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_shift1_closed"
+    }
+   ],
+   "area": "area_booths"
+  },
+  {
+   "do": "talk",
+   "object": "obj_marrow"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "day_eq",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s004"
+    }
+   ]
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "ask",
+   "q": "q2"
+  },
+  {
+   "do": "stamp",
+   "verdict": "heaven",
+   "ground": "auto"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s004",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s007"
+    }
+   ]
+  },
+  {
+   "do": "pell"
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "tab",
+   "tab": "RECORD"
+  },
+  {
+   "do": "link",
+   "entry": "r4",
+   "arc": "arc_007a"
+  },
+  {
+   "do": "stamp",
+   "verdict": "hell",
+   "ground": "auto"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s007",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s008"
+    }
+   ]
+  },
+  {
+   "do": "pell"
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "tab",
+   "tab": "RECORD"
+  },
+  {
+   "do": "link",
+   "entry": "r2",
+   "arc": "arc_008a"
+  },
+  {
+   "do": "tab",
+   "tab": "RECORD"
+  },
+  {
+   "do": "link",
+   "entry": "r1",
+   "arc": "arc_008b"
+  },
+  {
+   "do": "ask_all"
+  },
+  {
+   "do": "stamp",
+   "verdict": "heaven",
+   "ground": "auto"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s008",
+     "value": "judged"
+    }
+   ]
+  },
+  {
+   "do": "assert",
+   "merits": [
+    4,
+    9,
+    7,
+    7,
+    7,
+    9
+   ],
+   "stats": {
+    "merit": 43,
+    "overturned": 0,
+    "cases_processed": 6
+   }
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_gate_passed"
+    }
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_marrow",
+   "prefer": [
+    "keep his copy"
+   ]
+  },
+  {
+   "do": "assert",
+   "rank": 2,
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_tarrow_file",
+     "value": "kept_copy"
+    }
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_grist"
+  },
+  {
+   "do": "interact",
+   "object": "obj_stair"
+  },
+  {
+   "do": "wait",
+   "seconds": 2.0
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "rank": 2,
+   "area": "area_adjudicator_chamber"
+  }
+ ]
+}
