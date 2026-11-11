@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Last Carriage</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="labels"></div>
+
+<!-- HUD -->
+<div id="hud" class="hidden">
+  <div id="rolecard">
+    <div class="small">You are secretly the human, playing</div>
+    <div id="role-name"></div>
+    <div id="role-desc" class="small"></div>
+  </div>
+  <div id="phasebar"><span id="phase-text"></span><button id="skip-btn" class="ghost hidden">Next ▸</button></div>
+  <button id="log-toggle" class="ghost">Log</button>
+  <div id="log"><div id="log-inner"></div></div>
+  <div id="caption" class="hidden"></div>
+  <div id="panel" class="hidden"></div>
+  <div id="hint">Drag (or arrow keys) to look around</div>
+</div>
+
+<!-- Setup -->
+<div id="setup" class="overlay">
+  <div class="card">
+    <h1>Last Carriage</h1>
+    <p>Midnight. A blizzard has stopped the night train dead in the snow. Four passengers share a table, each claiming to be a figure from history. Three of them are AIs.
+      One is you. Over four rounds everyone says who they think the human is and why, then asks the passenger beside
+      them one yes-or-no question. After round 4, everyone votes. <b>Don't get caught.</b></p>
+    <label>OpenAI API key
+      <input id="api-key" type="password" placeholder="sk-..." autocomplete="off">
+    </label>
+    <label class="row"><input id="remember" type="checkbox"> Remember the key in this browser</label>
+    <details>
+      <summary>Advanced</summary>
+      <label>Model <input id="model" value="gpt-6-luna"></label>
+      <label>API base URL <input id="base-url" value="https://api.openai.com/v1"></label>
+    </details>
+    <div class="buttons">
+      <button id="start-btn">Board the train</button>
+      <button id="demo-btn" class="ghost">Demo without a key</button>
+    </div>
+    <p class="small">The key is sent only to the API base URL above, straight from your browser. It is stored only if you tick "Remember".</p>
+    <p id="setup-error" class="error"></p>
+  </div>
+</div>
+
+<script type="module" src="game.js"></script>
+</body>
+</html>
