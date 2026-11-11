@@ -56,3 +56,15 @@ All additions are optional keys; nothing in CONTRACTS.md is removed or renamed. 
 - Footprint sprites (`statue_first_clerk` 2×2, `decal_inlay_ring` 4×4) have their origin at the **footprint centre**. Engine must place them at the centre of the footprint, not at the centre of the first cell listed (Content lists decal cell [5,5] with footprint [4,4]).
 - Post-process applies the ambient tint with exposure gain 1.45 (PROJECT §7.4 says plain multiply; plain multiply was too dark to read).
 - Walls are 0.25-BU slabs on the **near** edge of their cell, so actors in row/column 1 stand against the face.
+
+## 2026-11-11 — Engine
+
+1. Engine reads Content's nested config (`clock.costs`, `queue.*`, `order.*`, `pay.*`, `promotion.*`, `judgement.composure`,
+   `player.*`) via an alias table in `autoload/content.gd`; flat keys still work. Base pay comes from `ranks.json` `base_pay`.
+2. `case_scored` is emitted when the audit slip is dismissed (after the soul leaves), not at the stamp; stats/autosave happen at the stamp.
+   Stamped-but-unpresented cases are kept in the save (`pending_scored`) and flushed on Continue.
+3. Favour/conscience are NOT computed by the engine (Content #4); `reopen_case` reverts the verdict effects' favour/conscience adds.
+4. Extra engine-only ops accepted (never required): conditions `all`; effects `set_stat`, `clear_flag`; any effect may carry `conditions`.
+
+### Integration issues
+- `dlg_marrow_first` n3 says "God and the Devil", against PROJECT §5 language rule (in-fiction text uses Principal/Counterparty only).

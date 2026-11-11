@@ -414,7 +414,7 @@ func check(s: Dictionary) -> bool:
 		var got: Array = []
 		for cid: String in DeskDriver.ORDER:
 			got.append(int((GameState.cases.get(cid, {}) as Dictionary).get("merit", -1)))
-		if JSON.stringify(got) != JSON.stringify(s["merits"]):
+		if JSON.stringify(got) != JSON.stringify(GameState.normalize(s["merits"])):
 			fail("merits %s, want %s" % [str(got), str(s["merits"])])
 			ok = false
 	if s.has("modal") and Dialogue.current_kind != str(s["modal"]):

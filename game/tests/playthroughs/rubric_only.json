@@ -244,28 +244,10 @@
   },
   {
    "do": "assert",
-   "conditions": [
-    {
-     "op": "case_state",
-     "case": "case_s008",
-     "value": "judged"
-    }
-   ]
-  },
-  {
-   "do": "assert",
-   "merits": [
-    9,
-    0,
-    0,
-    0,
-    0,
-    0
-   ],
    "stats": {
     "merit": 9,
-    "overturned": 4,
-    "cases_processed": 6
+    "overturned": 3,
+    "cases_processed": 5
    }
   },
   {

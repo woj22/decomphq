@@ -1,0 +1,19 @@
+{"steps":[
+ {"do":"new_game"},
+ {"do":"screenshot","name":"02_arrival_hall"},
+ {"do":"talk","object":"obj_marrow"},
+ {"do":"go_to","object":"obj_wren"},
+ {"do":"drain"},
+ {"do":"tap_cell","cell":[7,10]},
+ {"do":"screenshot","name":"01_clerks_court_hud"},
+ {"do":"call_soul"},
+ {"do":"go_to","object":"obj_pell"},
+ {"do":"pell"},
+ {"do":"sit"},
+ {"do":"tab","tab":"RECORD"},
+ {"do":"screenshot","name":"03_desk_record"},
+ {"do":"verdict_view","verdict":"heaven","ground":"auto"},
+ {"do":"screenshot","name":"04_verdict_view"},
+ {"do":"stamp","verdict":"heaven","ground":"auto"},
+ {"do":"screenshot","name":"06_booths_after"}
+]}

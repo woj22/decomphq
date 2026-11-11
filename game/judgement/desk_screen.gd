@@ -5,7 +5,7 @@ extends Control
 signal closed()
 
 const TABS := ["FILE", "RECORD", "ARCHIVE", "TALK", "NOTES"]
-const PER_PAGE := 4
+const PER_PAGE := 3
 
 var case_id := ""
 var session: JudgementSession
@@ -91,7 +91,7 @@ func _build_header(v: VBoxContainer) -> void:
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", 8)
 	v.add_child(h)
-	var leave := UiKit.button("< Leave desk", Vector2(120, 40))
+	var leave := UiKit.button("< Leave desk", Vector2(120, 36))
 	leave.name = "LeaveDesk"
 	leave.pressed.connect(leave_desk)
 	h.add_child(leave)
@@ -311,7 +311,7 @@ func _page_file() -> void:
 	var d := session.data
 	doc_title.text = "FILE  %s" % str(d.get("ref", ""))
 	var lines := [
-		"[b]%s[/b], %s" % [str(d.get("name", "")), str(d.get("age", ""))],
+		"[b]%s[/b], %s" % [str(d.get("name", "")), str(GameState.normalize(d.get("age", "")))],
 		"%s, %s" % [str(d.get("era", "")), str(d.get("place", ""))],
 		"Cause: %s" % str(d.get("cause", "")),
 		str(d.get("summary", "")),

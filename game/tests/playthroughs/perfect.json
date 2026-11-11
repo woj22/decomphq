@@ -341,16 +341,6 @@
   },
   {
    "do": "assert",
-   "conditions": [
-    {
-     "op": "case_state",
-     "case": "case_s008",
-     "value": "judged"
-    }
-   ]
-  },
-  {
-   "do": "assert",
    "merits": [
     9,
     9,

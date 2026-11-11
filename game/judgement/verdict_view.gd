@@ -77,7 +77,7 @@ func build() -> void:
 	var d := desk.session.data
 	var s := desk.session
 	var arc_total := (d.get("archive", []) as Array).size()
-	for t: String in ["%s, %s" % [str(d.get("name", "")), str(d.get("age", ""))],
+	for t: String in ["%s, %s" % [str(d.get("name", "")), str(GameState.normalize(d.get("age", "")))],
 			"Discoveries: %d    Facts: %d" % [s.discoveries().size(), s.facts().size()],
 			"Archive consulted: %d of %d" % [s.held_archive().size(), arc_total]]:
 		var l := UiKit.wrap_label(t, 16, UiKit.INK)
@@ -268,6 +268,7 @@ func show_epilogue() -> void:
 
 func _show_sheet(rows: Array, slip: bool) -> void:
 	for c in content.get_children():
+		content.remove_child(c)
 		c.queue_free()
 	var cc := CenterContainer.new()
 	cc.size_flags_vertical = Control.SIZE_EXPAND_FILL
