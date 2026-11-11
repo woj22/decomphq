@@ -1,0 +1,73 @@
+{
+  "id": "area_booths",
+  "name": "Judgement Booths",
+  "size": [14, 8],
+  "ambience": "amb_booths",
+  "backdrop": "none",
+  "grid": [
+    "###p######D###",
+    "#....=M=.....k",
+    "D....=d=.....k",
+    "#..1...2..P..k",
+    "#..d...d..d..k",
+    "D..o...o..o..k",
+    "#bbbbbbbbbbbbk",
+    "kkkkkkkkkkkkkk"
+  ],
+  "legend": {
+    "#": {"kind": "wall"},
+    "k": {"kind": "kerb"},
+    "D": {"kind": "door"},
+    ".": {"kind": "floor"},
+    "p": {"kind": "wall", "sprite": "wall_plaque_x"},
+    "=": {"kind": "floor", "floor": "floor_carpet_red", "h_hu": 1, "prop": "dais"},
+    "M": {"kind": "floor", "floor": "floor_carpet_red", "h_hu": 1, "prop": "dais"},
+    "d": {"kind": "prop", "prop": "desk_clerk", "solid": true},
+    "1": {"kind": "floor"},
+    "2": {"kind": "floor"},
+    "P": {"kind": "floor"},
+    "o": {"kind": "seat", "prop": "stool", "solid": false},
+    "b": {"kind": "seat", "prop": "bench_soul", "solid": true}
+  },
+  "overrides": [
+    {"cell": [6, 2], "kind": "prop", "prop": "desk_superior", "solid": true, "h_hu": 1}
+  ],
+  "floor": "floor_flag",
+  "windows": [
+    {"cell": [0, 3], "glass": "gold"},
+    {"cell": [0, 6], "glass": "gold"},
+    {"cell": [8, 0], "glass": "red"},
+    {"cell": [12, 0], "glass": "red"}
+  ],
+  "decor": [
+    {"sprite": "banner_red", "cell": [6, 0]},
+    {"sprite": "wall_torch_x", "cell": [5, 0]},
+    {"sprite": "wall_torch_x", "cell": [7, 0]},
+    {"sprite": "wall_torch_y", "cell": [0, 4]},
+    {"sprite": "light_pool_gold", "cell": [6, 3]},
+    {"sprite": "light_pool_gold", "cell": [10, 3]},
+    {"sprite": "light_pool_gold", "cell": [3, 3]},
+    {"sprite": "light_pool_gold", "cell": [1, 2]},
+    {"sprite": "light_pool_red", "cell": [10, 1]}
+  ],
+  "objects": [
+    {"id": "door_booths_court", "type": "door", "cell": [0, 5], "use_cell": [1, 5], "style": "plain",
+     "to": {"area": "area_clerks_court", "spawn": "from_booths"}},
+    {"id": "soul_door_gilt", "type": "soul_door", "cell": [0, 2], "use_cell": [1, 2], "style": "gilt", "verdict": "heaven"},
+    {"id": "soul_door_ember", "type": "soul_door", "cell": [10, 0], "use_cell": [10, 1], "style": "ember", "verdict": "hell"},
+    {"id": "obj_marrow", "type": "npc", "npc": "npc_marrow", "cell": [6, 1], "facing": "sw", "use_cell": [6, 3]},
+    {"id": "obj_marrow_desk", "type": "inspect", "cell": [6, 2], "use_cell": [6, 3], "npc": "npc_marrow"},
+    {"id": "obj_clerk_a", "type": "npc", "npc": "npc_clerk_a", "cell": [3, 3], "facing": "sw", "use_cell": [2, 3], "desk": [3, 4], "soul_seat": [3, 5]},
+    {"id": "obj_clerk_b", "type": "npc", "npc": "npc_clerk_b", "cell": [7, 3], "facing": "sw", "use_cell": [8, 3], "desk": [7, 4], "soul_seat": [7, 5]},
+    {"id": "obj_player_desk", "type": "desk_player", "cell": [10, 4], "use_cell": [10, 3], "seat": [10, 3], "soul_seat": [10, 5], "facing": "sw"},
+    {"id": "obj_rubric_plaque", "type": "inspect", "cell": [3, 0], "use_cell": [3, 1], "dialogue": "dlg_rubric_plaque"}
+  ],
+  "spawns": {
+    "default": [1, 5],
+    "from_court": [1, 5]
+  },
+  "zones": {
+    "zone_bench_j": {"kind": "bench", "cells": [[1, 6], [2, 6], [3, 6], [4, 6], [5, 6], [6, 6], [7, 6], [8, 6], [9, 6], [10, 6], [11, 6], [12, 6]]}
+  },
+  "ext": {"note": "Marrow's desk (6,2) is desk_superior via overrides; the docket soul sits on stool (10,5)."}
+}

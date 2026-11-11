@@ -1,0 +1,60 @@
+{
+  "id": "case_s005",
+  "ref": "S-005",
+  "name": "Odile Brennagh",
+  "age": 44,
+  "era": "1832",
+  "place": "port town of Saint-Varre, the cholera year",
+  "cause": "the same fever, in the ward she ran",
+  "summary": "Infirmary nurse, formerly of a nursing order. Remained in the fever ward when the physicians left. Gave fatal doses of laudanum to nine patients she judged past saving.",
+  "portrait": {"seed": 1005, "tags": ["female", "adult", "nurse"]},
+  "type": "ambiguous",
+  "min_rank": 2,
+  "entries": [
+    {"id": "r1", "tag": "virtue", "weight": 3, "ink": "black", "text": "Nursed some three hundred through the epidemic after the physicians fled."},
+    {"id": "r2", "tag": "sin", "weight": -3, "ink": "black", "text": "Ended nine lives with laudanum, without their consent or anyone's authority."},
+    {"id": "r3", "tag": "sin", "weight": -1, "ink": "black", "text": "Lied to the magistrate's inquest about the nine."},
+    {"id": "r4", "tag": "virtue", "weight": 1, "ink": "black", "text": "Gave her wages to the children of the dead."},
+    {"id": "r5", "tag": "neutral", "weight": 0, "ink": "black", "text": "Left her order in 1829; reason not recorded."}
+  ],
+  "hidden": [
+    {"id": "h1", "tag": "sin", "weight": -1, "text": "One of the nine was recovering; she misjudged him."}
+  ],
+  "archive": [
+    {"id": "arc_005", "title": "Ward physician's last daybook", "requires": [], "cards": [
+      "Dr. Hallam, Saint-Varre infirmary: last entry before he left the town.",
+      "Bed 7, Anselm Roche, carter: 'fever broken, will live.'",
+      "The nurse's list of the nine, found later: Roche is the seventh name."
+    ]}
+  ],
+  "discoveries": [
+    {"id": "d_roche", "key": true,
+     "triggers": [{"archive": "arc_005"}],
+     "ops": [{"op": "reveal", "entry": "h1"}],
+     "fact": {"text": "Anselm Roche, the seventh of her nine, was recovering.", "side": "hell"}}
+  ],
+  "questions": [
+    {"id": "q1", "kind": "general", "requires": [], "text": "Why those nine?",
+     "answer": ["Because I had sat with the other three hundred. I knew what the last day looked like.", "I would not make them have it."],
+     "card": "Knew what the last day looked like; would not make them have it.",
+     "fact": {"id": "f_mercy", "text": "She spared the dying a last day she had watched three hundred times.", "side": "heaven", "key": true}},
+    {"id": "q2", "kind": "general", "requires": [], "text": "Did any of them ask you to?",
+     "answer": ["Two did. The rest could not speak. I decided for them.", "I have never pretended otherwise, except to the magistrate."],
+     "card": "Two asked. She decided for the other seven.",
+     "fact": {"id": "f_decided", "text": "Seven of the nine never asked; she decided for them.", "side": "hell", "key": true}},
+    {"id": "q3", "kind": "confront", "requires": [{"op": "discovered", "case": "case_s005", "id": "d_roche"}], "text": "Anselm Roche was getting better.",
+     "answer": ["...No. He was grey. He was... the daybook says that?", "Then I killed a man who would have gone home. Write that down exactly as I said it."],
+     "card": "Accepts she killed a man who would have gone home. Asks it be written.",
+     "fact": {"id": "f_accepts", "text": "Accepted the charge the moment she saw the daybook.", "side": "heaven", "key": false}}
+  ],
+  "expected": {"tally_filed": 0, "tally_corrected": -1, "guideline": "hell"},
+  "epilogue": {
+    "heaven": ["Anselm Roche is already there. He has asked not to be seated near her.", "Some time later, he asks where she is."],
+    "hell": ["She asks the Warden whether Roche's family was ever told.", "It is the first question the Warden has not had a form for."]
+  },
+  "verdicts": {
+    "heaven": {"effects": [{"op": "add_stat", "id": "favour_gilt", "value": 1}, {"op": "add_stat", "id": "conscience", "value": 1}]},
+    "hell": {"effects": [{"op": "add_stat", "id": "favour_ember", "value": 1}, {"op": "add_stat", "id": "conscience", "value": -1}]}
+  },
+  "ext": {"mitigating": "Alone, unsupported, no physician to consult; acted to spare suffering; accepts the charge the moment she sees it."}
+}

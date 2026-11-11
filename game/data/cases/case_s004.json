@@ -1,0 +1,66 @@
+{
+  "id": "case_s004",
+  "ref": "S-004",
+  "name": "Cpl. Wim Daelmans",
+  "age": 23,
+  "era": "1917",
+  "place": "the trenches at Varn Ridge",
+  "cause": "firing squad, for desertion of post",
+  "summary": "Conscript corporal. Left his listening post during a bombardment; convicted by field court-martial. The file attributes the loss of the post and eleven men to his absence.",
+  "portrait": {"seed": 1004, "tags": ["male", "young", "soldier"]},
+  "type": "contested",
+  "min_rank": 1,
+  "entries": [
+    {"id": "r1", "tag": "sin", "weight": -2, "ink": "black", "text": "Deserted his post under fire, in breach of his oath."},
+    {"id": "r2", "tag": "sin", "weight": -3, "ink": "black", "text": "Post No. 9 overrun in his absence; eleven men killed."},
+    {"id": "r3", "tag": "sin", "weight": -1, "ink": "black", "text": "Stole rations from the company store."},
+    {"id": "r4", "tag": "virtue", "weight": 1, "ink": "black", "text": "Wrote letters home for comrades who could not write."},
+    {"id": "r5", "tag": "neutral", "weight": 0, "ink": "black", "text": "Conscripted at nineteen; did not volunteer."}
+  ],
+  "hidden": [
+    {"id": "h1", "tag": "virtue", "weight": 3, "text": "Left his post to carry a wounded enemy boy to the aid station."}
+  ],
+  "archive": [
+    {"id": "arc_004a", "title": "Court-martial minutes, Varn Ridge", "requires": [], "cards": [
+      "3 March, 4 p.m.: Cpl. W. Daelmans placed under arrest, pending field court.",
+      "5 March, dawn: Post No. 9 overrun. Held by Pte. Aske and ten relief men.",
+      "Finding: desertion of post, 3 March. Sentence: death. Minuted after lunch."
+    ]},
+    {"id": "arc_004b", "title": "Aid-station admission book", "requires": [], "cards": [
+      "No. 3 Aid Station, 3 March, 2.40 p.m.: one enemy soldier, aged about fifteen.",
+      "Shrapnel, left thigh. 'Carried in by Cpl Daelmans, who would not give his post.'",
+      "Remarks: patient survived; sent to the prisoners' hospital, 9 March."
+    ]}
+  ],
+  "discoveries": [
+    {"id": "d_in_custody", "key": true,
+     "triggers": [{"link": ["r2", "arc_004a"]}],
+     "ops": [{"op": "void", "entry": "r2"}],
+     "fact": {"text": "He was under arrest two days before Post No. 9 fell.", "side": "heaven"}},
+    {"id": "d_enemy_boy", "key": true,
+     "triggers": [{"archive": "arc_004b"}, {"question": "q2"}],
+     "ops": [{"op": "reveal", "entry": "h1"}],
+     "fact": {"text": "He left the post to carry a wounded enemy boy to the aid station.", "side": "heaven"}}
+  ],
+  "questions": [
+    {"id": "q1", "kind": "general", "requires": [], "text": "Why did you leave the post?",
+     "answer": ["I said at the trial. Nobody wrote it down. They'd already had lunch."],
+     "card": "Says he explained at the trial; nobody wrote it down."},
+    {"id": "q2", "kind": "general", "requires": [], "text": "Say it again. I'm writing.",
+     "answer": ["There was a lad in the wire. Theirs. Calling for his mother. Same word, near enough.", "I couldn't listen to it for another hour, so I went and got him."],
+     "card": "Went into the wire for an enemy lad calling for his mother."},
+    {"id": "q3", "kind": "general", "requires": [], "text": "Eleven men died at your post.",
+     "answer": ["Two days after they locked me up. I knew eight of them.", "I've done the sum every way there is. I still don't know if I'd have made it twelve or none."],
+     "card": "Knew eight of the eleven. Can't say if he'd have made it twelve or none."}
+  ],
+  "expected": {"tally_filed": -5, "tally_corrected": 1, "guideline": "heaven"},
+  "epilogue": {
+    "heaven": ["A man of about thirty-five, with a limp and a foreign accent, keeps a standing enquiry at the Gilt Gate.", "It asks after a corporal. It is finally closed."],
+    "hell": ["The Wardens accept him for the oath alone.", "The eleven are struck from his account; nobody thinks to tell him."]
+  },
+  "verdicts": {
+    "heaven": {"effects": [{"op": "add_stat", "id": "favour_gilt", "value": 1}]},
+    "hell": {"effects": [{"op": "add_stat", "id": "favour_ember", "value": 1}, {"op": "add_stat", "id": "conscience", "value": -1}]}
+  },
+  "ext": {"teaches": "Two routes to one fact", "mitigating": "Age; conscription; the deaths charged to him happened while he was in custody."}
+}

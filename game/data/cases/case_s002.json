@@ -1,0 +1,66 @@
+{
+  "id": "case_s002",
+  "ref": "S-002",
+  "name": "Aldous Pryke",
+  "age": 58,
+  "era": "1887",
+  "place": "mill town of Harrowgate",
+  "cause": "apoplexy, at his counting desk",
+  "summary": "Moneylender and churchwarden. Founder of the Pryke Almshouse for the destitute of Harrowgate. Described in his obituary, which he drafted, as \"a friend to the poor\".",
+  "portrait": {"seed": 1002, "tags": ["male", "old", "merchant"]},
+  "type": "contested",
+  "min_rank": 1,
+  "entries": [
+    {"id": "r1", "tag": "virtue", "weight": 3, "ink": "black", "text": "Endowed the Pryke Almshouse \"from his own purse\"."},
+    {"id": "r2", "tag": "virtue", "weight": 1, "ink": "black", "text": "Served twenty years as churchwarden."},
+    {"id": "r3", "tag": "virtue", "weight": 1, "ink": "black", "text": "Paid for his nephew's schooling."},
+    {"id": "r4", "tag": "sin", "weight": -2, "ink": "black", "text": "Foreclosed on forty households in the mill closure of 1879 (\"lawful recovery\")."},
+    {"id": "r5", "tag": "sin", "weight": -1, "ink": "black", "text": "Sharp practice in the drafting of loan terms."}
+  ],
+  "hidden": [
+    {"id": "h1", "tag": "sin", "weight": -3, "text": "Falsified his ledgers to double the debts of those he then foreclosed."}
+  ],
+  "archive": [
+    {"id": "arc_002a", "title": "Almshouse deed, 1881", "requires": [], "cards": [
+      "Deed of gift: the Pryke Almshouse, raised on Plots 1-40, Mill Lane, Harrowgate.",
+      "Schedule: said plots 'recovered by A. Pryke from defaulting tenants, 1879'.",
+      "Rule 4: each inmate to pay 2d. weekly 'towards the founder's outlay'."
+    ]},
+    {"id": "arc_002b", "title": "Pryke's private ledger", "requires": [], "cards": [
+      "Two ledgers, one hand. The bank's copy dates the loans 1877. His own: 1875.",
+      "Interest run from the earlier dates doubles every debt on the Mill Lane book.",
+      "Last page, in pencil: 'Forty accounts closed. Plots clear for the almshouse.'"
+    ]}
+  ],
+  "discoveries": [
+    {"id": "d_almshouse", "key": true,
+     "triggers": [{"link": ["r1", "arc_002a"]}],
+     "ops": [{"op": "reweight", "entry": "r1", "weight": 0}],
+     "fact": {"text": "The almshouse stands on the forty foreclosed plots and charged its inmates rent.", "side": "hell"}},
+    {"id": "d_two_ledgers", "key": true,
+     "triggers": [{"archive": "arc_002b"}],
+     "ops": [{"op": "reveal", "entry": "h1"}],
+     "fact": {"text": "Two sets of books: he doubled the debts of the households he foreclosed.", "side": "hell"}}
+  ],
+  "questions": [
+    {"id": "q1", "kind": "general", "requires": [], "text": "Who paid for the almshouse?",
+     "answer": ["I did. Every brick. I have the receipts. I always have the receipts."],
+     "card": "Says he paid for every brick, and has the receipts."},
+    {"id": "q2", "kind": "confront", "requires": [{"op": "discovered", "case": "case_s002", "id": "d_almshouse"}], "text": "The inmates paid rent.",
+     "answer": ["A modest contribution teaches thrift. You will find it was all perfectly legal."],
+     "card": "Calls the inmates' rent 'a modest contribution'. Insists it was legal."},
+    {"id": "q3", "kind": "confront", "requires": [{"op": "discovered", "case": "case_s002", "id": "d_two_ledgers"}], "text": "There are two ledgers.",
+     "answer": ["...A man keeps a working copy. I should like to speak to whoever is senior to you."],
+     "card": "Calls the second ledger 'a working copy'. Asks for your superior."}
+  ],
+  "expected": {"tally_filed": 2, "tally_corrected": -4, "guideline": "hell"},
+  "epilogue": {
+    "heaven": ["A week later the Bright Ministries query the admission, politely, in triplicate.", "Your Order rating takes the dent."],
+    "hell": ["The Wardens open an account in his name. He asks for the terms in writing and is given them. All of them."]
+  },
+  "verdicts": {
+    "heaven": {"effects": [{"op": "add_stat", "id": "favour_gilt", "value": 1}, {"op": "add_stat", "id": "conscience", "value": 1}]},
+    "hell": {"effects": [{"op": "add_stat", "id": "favour_ember", "value": 1}]}
+  },
+  "ext": {"teaches": "Records trip; LINK", "mitigating": "Raised in a debtors' prison himself; he knew exactly what he was doing to them."}
+}

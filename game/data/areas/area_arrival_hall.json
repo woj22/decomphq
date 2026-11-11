@@ -1,0 +1,69 @@
+{
+  "id": "area_arrival_hall",
+  "name": "Arrival Hall",
+  "size": [12, 10],
+  "ambience": "amb_hall",
+  "backdrop": "none",
+  "grid": [
+    "############",
+    "#.......t..k",
+    "#qqqqqqqq..k",
+    "#rrrrrrr...k",
+    "#qqqqqqqqdRk",
+    "#rrrrrrr...D",
+    "#qqqqqqqq..k",
+    "#rrrrrrr...k",
+    "#qqqqqqqq.nk",
+    "kkkkkkkkkkkk"
+  ],
+  "legend": {
+    "#": {"kind": "wall"},
+    "k": {"kind": "kerb"},
+    "D": {"kind": "door"},
+    ".": {"kind": "floor"},
+    "q": {"kind": "queue", "walkable": true},
+    "r": {"kind": "prop", "prop": "queue_rail_x", "solid": true},
+    "t": {"kind": "prop", "prop": "ticket_booth", "solid": true},
+    "d": {"kind": "prop", "prop": "desk_registrar", "solid": true},
+    "R": {"kind": "floor"},
+    "n": {"kind": "prop", "prop": "ivy_bench", "solid": true}
+  },
+  "floor": "floor_flag",
+  "windows": [
+    {"cell": [0, 3], "glass": "gold"},
+    {"cell": [0, 6], "glass": "gold"},
+    {"cell": [3, 0], "glass": "red"},
+    {"cell": [7, 0], "glass": "red"}
+  ],
+  "decor": [
+    {"sprite": "wall_torch_x", "cell": [5, 0]},
+    {"sprite": "wall_torch_x", "cell": [10, 0]},
+    {"sprite": "wall_torch_y", "cell": [0, 1]},
+    {"sprite": "wall_torch_y", "cell": [0, 8]},
+    {"sprite": "light_pool_gold", "cell": [9, 5]},
+    {"sprite": "light_pool_gold", "cell": [9, 1]},
+    {"sprite": "light_pool_gold", "cell": [4, 1]},
+    {"sprite": "queue_post", "cell": [8, 3]},
+    {"sprite": "queue_post", "cell": [8, 5]},
+    {"sprite": "queue_post", "cell": [8, 7]}
+  ],
+  "objects": [
+    {"id": "door_arrival_court", "type": "door", "cell": [11, 5], "use_cell": [10, 5], "style": "plain",
+     "to": {"area": "area_clerks_court", "spawn": "from_arrival"}},
+    {"id": "obj_registrar", "type": "npc", "npc": "npc_registrar", "cell": [10, 4], "facing": "w", "use_cell": [9, 5]},
+    {"id": "obj_nan", "type": "npc", "npc": "npc_nan", "cell": [1, 8], "facing": "ne", "use_cell": [2, 8]},
+    {"id": "obj_oddy", "type": "npc", "npc": "npc_oddy", "cell": [8, 2], "facing": "se", "use_cell": [9, 2]}
+  ],
+  "spawns": {
+    "default": [10, 6],
+    "from_court": [10, 5],
+    "soul_call": [8, 5]
+  },
+  "zones": {
+    "zone_queue_1": {"kind": "queue", "cells": [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]], "head": [8, 2]},
+    "zone_queue_2": {"kind": "queue", "cells": [[1, 4], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4]], "head": [8, 4]},
+    "zone_queue_3": {"kind": "queue", "cells": [[1, 6], [2, 6], [3, 6], [4, 6], [5, 6], [6, 6], [7, 6], [8, 6]], "head": [8, 6]},
+    "zone_queue_4": {"kind": "queue", "cells": [[1, 8], [2, 8], [3, 8], [4, 8], [5, 8], [6, 8], [7, 8], [8, 8]], "head": [8, 8]}
+  },
+  "ext": {"note": "4 lanes x 8 slots = 32. Nan holds slot (1,8), Oddy slot (8,2); crowd fills the rest. Docket souls appear at spawn soul_call."}
+}

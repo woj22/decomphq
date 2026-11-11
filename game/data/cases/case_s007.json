@@ -1,0 +1,74 @@
+{
+  "id": "case_s007",
+  "ref": "S-007",
+  "name": "\"Tomas Verhoek\"",
+  "age": 67,
+  "era": "1961",
+  "place": "mining town of Altenbruck",
+  "cause": "heart failure, in his classroom after hours",
+  "summary": "Schoolmaster of Altenbruck for thirty-seven years, much loved. Ran free evening classes for miners. Earlier records \"lost in the registry fire of 1923\".",
+  "portrait": {"seed": 1007, "tags": ["male", "old", "teacher"]},
+  "type": "ambiguous",
+  "min_rank": 1,
+  "entries": [
+    {"id": "r1", "tag": "virtue", "weight": 2, "ink": "black", "text": "Taught the children of Altenbruck for thirty-seven years."},
+    {"id": "r2", "tag": "virtue", "weight": 2, "ink": "black", "text": "Ran free reading classes for miners, at his own cost, two nights a week."},
+    {"id": "r3", "tag": "virtue", "weight": 1, "ink": "black", "text": "Sheltered a family of six in the schoolhouse through the flood of 1947."},
+    {"id": "r4", "tag": "neutral", "weight": 0, "ink": "black", "text": "No entries before 1924."}
+  ],
+  "hidden": [
+    {"id": "h1", "tag": "sin", "weight": -3, "text": "Swore false evidence that hanged three innocent men."},
+    {"id": "h2", "tag": "sin", "weight": -1, "text": "Took a dead child's name and lived under it."},
+    {"id": "h3", "tag": "sin", "weight": -1, "text": "Never confessed; let the verdicts stand."},
+    {"id": "h4", "tag": "virtue", "weight": 1, "text": "Sent money, unsigned, to the three widows every quarter for thirty-seven years."}
+  ],
+  "archive": [
+    {"id": "arc_007a", "title": "Altenbruck parish register", "requires": [], "cards": [
+      "Baptisms, 1894: Tomas, son of Pieter and Anna Verhoek, carter.",
+      "Burials, 1898: Tomas Verhoek, aged four years. Diphtheria.",
+      "Margin, later hand: 'Stone moved for road widening, 1923.'"
+    ]},
+    {"id": "arc_007b", "title": "Assize record: the Greywater strike",
+     "requires": [{"op": "discovered", "case": "case_s007", "id": "d_kell"}], "cards": [
+      "Greywater Assize, 1922: three strike leaders hanged on one witness's oath.",
+      "The witness: Josef Kell, clerk to the Greywater Coal Co. Housed by the company.",
+      "Clipped in: widows' relief book, 1924-61. Quarterly, unsigned, posted Altenbruck."
+    ]}
+  ],
+  "discoveries": [
+    {"id": "d_false_name", "key": true,
+     "triggers": [{"link": ["r4", "arc_007a"]}],
+     "ops": [{"op": "reveal", "entry": "h2"}],
+     "fact": {"text": "Tomas Verhoek died aged four. The man in the booth took his name.", "side": "hell"}},
+    {"id": "d_kell", "key": true,
+     "triggers": [{"question": "q3"}],
+     "ops": [{"op": "reveal", "entry": "h1"}, {"op": "reveal", "entry": "h3"}],
+     "fact": {"text": "He is Josef Kell, whose false oath hanged three strike leaders in 1922.", "side": "hell"}},
+    {"id": "d_widows", "key": true,
+     "triggers": [{"archive": "arc_007b"}],
+     "ops": [{"op": "reveal", "entry": "h4"}],
+     "fact": {"text": "Paid the three widows, unsigned, every quarter for thirty-seven years.", "side": "heaven"}}
+  ],
+  "questions": [
+    {"id": "q1", "kind": "general", "requires": [], "text": "Tell me about before Altenbruck.",
+     "answer": ["There was a fire at the registry. I'm afraid I have always been rather a man without a past.", "The children found it romantic."],
+     "card": "Blames the registry fire. Calls himself a man without a past."},
+    {"id": "q2", "kind": "confront", "requires": [{"op": "discovered", "case": "case_s007", "id": "d_false_name"}], "text": "Tomas Verhoek died aged four.",
+     "answer": ["Yes. I chose him from the churchyard. I picked a child because a child hadn't done anything.", "I thought I might borrow that."],
+     "card": "Chose a dead child's name because a child hadn't done anything."},
+    {"id": "q3", "kind": "confront", "requires": [{"op": "asked", "case": "case_s007", "id": "q2"}], "text": "Who are you?",
+     "answer": ["Josef Kell. I was twenty-eight and the company promised me a house. I said what they wrote for me.", "Three men were hanged in the yard at Greywater. Every miner I taught to read, I was teaching one of theirs.", "It doesn't come out even. I kept count anyway."],
+     "card": "Josef Kell. Swore the company's words; three men hanged. Kept count.",
+     "fact": {"id": "f_confessed", "text": "Confessed everything the moment a single thread was pulled.", "side": "heaven", "key": false}}
+  ],
+  "expected": {"tally_filed": 5, "tally_corrected": 1, "guideline": "heaven"},
+  "epilogue": {
+    "heaven": ["His file is admitted under the name Josef Kell.", "The three widows' enquiries, open since 1922, are answered with it."],
+    "hell": ["He nods, and asks only that the name on the docket be corrected first: \"The boy never did anything.\""]
+  },
+  "verdicts": {
+    "heaven": {"effects": [{"op": "add_stat", "id": "favour_gilt", "value": 1}, {"op": "add_stat", "id": "conscience", "value": 1}]},
+    "hell": {"effects": [{"op": "add_stat", "id": "favour_ember", "value": 1}, {"op": "add_stat", "id": "conscience", "value": -1}]}
+  },
+  "ext": {"teaches": "Addendum trip; grounds on either side", "mitigating": "A lifetime of deliberate, costly repair; confesses fully once a single thread is pulled. Against that: he chose the repair that never required him to be caught."}
+}

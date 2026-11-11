@@ -1,0 +1,49 @@
+{
+  "id": "area_adjudicator_chamber",
+  "name": "Adjudicator's Chamber",
+  "size": [8, 8],
+  "ambience": "amb_chamber",
+  "backdrop": "none",
+  "grid": [
+    "########",
+    "#B....Bk",
+    "#......k",
+    "#..=d=.k",
+    "#..===.k",
+    "#......k",
+    "#......k",
+    "kkkDkkkk"
+  ],
+  "legend": {
+    "#": {"kind": "wall"},
+    "k": {"kind": "kerb"},
+    "D": {"kind": "door"},
+    ".": {"kind": "floor"},
+    "B": {"kind": "prop", "prop": "brazier_0", "solid": true},
+    "=": {"kind": "floor", "floor": "floor_carpet_red"},
+    "d": {"kind": "prop", "prop": "desk_superior", "solid": true}
+  },
+  "floor": "floor_flag",
+  "windows": [
+    {"cell": [0, 3], "glass": "gold"},
+    {"cell": [4, 0], "glass": "red"}
+  ],
+  "decor": [
+    {"sprite": "light_pool_gold", "cell": [1, 1]},
+    {"sprite": "light_pool_red", "cell": [6, 1]},
+    {"sprite": "light_pool_gold", "cell": [4, 4]},
+    {"sprite": "banner_red", "cell": [2, 0]},
+    {"sprite": "wall_torch_y", "cell": [0, 5]}
+  ],
+  "objects": [
+    {"id": "door_chamber_court", "type": "door", "cell": [3, 7], "use_cell": [3, 6], "style": "plain",
+     "to": {"area": "area_clerks_court", "spawn": "from_chamber"}},
+    {"id": "obj_chamber_desk", "type": "inspect", "cell": [4, 3], "use_cell": [4, 4], "dialogue": "dlg_chamber_desk"}
+  ],
+  "spawns": {
+    "default": [3, 6],
+    "from_court": [3, 6]
+  },
+  "zones": {},
+  "ext": {"note": "Grid authored by Content (PROJECT 10.2 gives only the description). Entering plays the rank title card (triggers.json)."}
+}

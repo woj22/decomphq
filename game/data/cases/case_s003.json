@@ -1,0 +1,58 @@
+{
+  "id": "case_s003",
+  "ref": "S-003",
+  "name": "Ned \"Nails\" Garrity",
+  "age": 39,
+  "era": "1931",
+  "place": "Coldharbour docks",
+  "cause": "shot by a night watchman while leaving a house",
+  "summary": "Housebreaker by trade, some sixty burglaries known. Sole support of a mother and three sisters. Shot in Tanner's Row with nothing on him.",
+  "portrait": {"seed": 1003, "tags": ["male", "adult", "docks"]},
+  "type": "contested",
+  "min_rank": 1,
+  "entries": [
+    {"id": "r1", "tag": "sin", "weight": -2, "ink": "black", "text": "Some sixty burglaries over nineteen years."},
+    {"id": "r2", "tag": "sin", "weight": -1, "ink": "black", "text": "Beat a receiver of stolen goods who had cheated him."},
+    {"id": "r3", "tag": "sin", "weight": -1, "ink": "black", "text": "Informed on his partner to shorten his own sentence."},
+    {"id": "r4", "tag": "virtue", "weight": 1, "ink": "black", "text": "Kept his mother and three sisters housed and fed, by the only trade he had."},
+    {"id": "r5", "tag": "virtue", "weight": 1, "ink": "black", "text": "Returned a stolen wedding ring through a letterbox after reading the inscription."}
+  ],
+  "hidden": [
+    {"id": "h1", "tag": "virtue", "weight": 3, "text": "Abandoned the job to carry an old man from a gas-filled house; killed doing it."}
+  ],
+  "archive": [
+    {"id": "arc_003", "title": "Watchman's statement; gas report", "requires": [], "cards": [
+      "Watchman Coyle: 'Man come out the FRONT door carrying the old gent. I fired.'",
+      "Coldharbour Gas Co.: main fractured under No. 14 Tanner's Row; house full by 2am.",
+      "Householder Abel Penhallow, 81, revived on the step: 'Somebody carried me.'"
+    ]}
+  ],
+  "discoveries": [
+    {"id": "d_gas_rescue", "key": true,
+     "triggers": [{"archive": "arc_003"}],
+     "ops": [{"op": "reveal", "entry": "h1"}],
+     "fact": {"text": "Shot carrying the unconscious householder out of a gas-filled house.", "side": "heaven"}}
+  ],
+  "questions": [
+    {"id": "q1", "kind": "general", "requires": [], "text": "Why was there nothing on you?",
+     "answer": ["Bad night. Nothing worth lifting. Write that down and let's get on."],
+     "card": "Claims it was a bad night with nothing worth lifting."},
+    {"id": "q2", "kind": "general", "requires": [], "text": "Did you ever hurt anyone in a house?",
+     "answer": ["Never once. You go in quiet, you go out quiet. Out the back. Always out the back."],
+     "card": "Never hurt anyone in a house. Always left by the back."},
+    {"id": "q3", "kind": "confront", "requires": [{"op": "discovered", "case": "case_s003", "id": "d_gas_rescue"}], "text": "You went out the front. Carrying him.",
+     "answer": ["Stupidest thing I ever did. Twenty years out the back and the one time I use the front door...", "He was just lying there. What was I meant to do, step over him?"],
+     "card": "Calls the rescue the stupidest thing he ever did. Wouldn't step over him.",
+     "fact": {"id": "k_front_door", "text": "Broke his one rule, the front door, to carry the old man out.", "side": "heaven", "key": true}}
+  ],
+  "expected": {"tally_filed": -2, "tally_corrected": 1, "guideline": "heaven"},
+  "epilogue": {
+    "heaven": ["He is seen at the Gilt Gate checking the hinges out of habit, then, visibly, deciding not to."],
+    "hell": ["The old man from Tanner's Row arrives in the queue eleven days later.", "He asks every clerk in the hall where the burglar went."]
+  },
+  "verdicts": {
+    "heaven": {"effects": [{"op": "add_stat", "id": "favour_gilt", "value": 1}]},
+    "hell": {"effects": [{"op": "add_stat", "id": "favour_ember", "value": 1}, {"op": "add_stat", "id": "conscience", "value": -1}]}
+  },
+  "ext": {"teaches": "Archive reverses the file; interview", "mitigating": "Hides his one great deed because he is ashamed of it as bad workmanship."}
+}
