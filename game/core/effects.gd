@@ -5,7 +5,7 @@ extends RefCounted
 const OPS: PackedStringArray = ["set_flag", "add_stat", "set_objective", "start_dialogue", "advance_clock", "give_docket", "start_shift",
 	"end_shift", "call_soul", "give_archive", "give_archive_one", "reopen_case", "snapshot_stats", "restore_stats", "reset_cases",
 	"start_incident", "resolve_incident", "unlock_area", "set_rank", "show_card", "set_npc_line_flag", "buy_item", "teleport",
-	"end_prototype", "set_stat", "clear_flag", "appeal_case"]
+	"end_prototype", "set_stat", "clear_flag", "appeal_case", "start_escort", "deliver_escort", "sleep", "heal", "breakout", "buy_upgrade"]
 
 static var unknown_logged := {}
 
@@ -59,6 +59,19 @@ static func apply_one(e: Dictionary, ctx: Dictionary = {}) -> void:
 			GameState.give_archive_one(Conditions.resolve_case(e.get("case"), ctx), str(e.get("id", "")))
 		"reopen_case":
 			GameState.reopen_case(Conditions.resolve_case(e.get("case"), ctx))
+		"start_escort":
+			World.start_escort()
+		"deliver_escort":
+			World.deliver_escort(JsonUtil.to_vec2i(e.get("cell", [0, 0])))
+		"sleep":
+			Clock.sleep_until_morning()
+			Combat.heal_full()
+		"heal":
+			Combat.heal_full()
+		"buy_upgrade":
+			Combat.buy_upgrade(str(e.get("id", "")))
+		"breakout":
+			Combat.breakout(int(e.get("count", -1)))
 		"appeal_case":
 			GameState.appeal_case(Conditions.resolve_case(e.get("case"), ctx), str(e.get("by", "soul")))
 		"snapshot_stats":

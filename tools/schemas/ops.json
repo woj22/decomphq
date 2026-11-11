@@ -52,6 +52,16 @@
     },
     "not": {
       "of": "cond"
+    },
+    "is_night": {},
+    "escort_active": {},
+    "escort_ready": {},
+    "escort_near": {
+      "cell": "any",
+      "radius": "num"
+    },
+    "upgrade_below_max": {
+      "id": "str"
     }
   },
   "effects": {
@@ -129,6 +139,18 @@
     "appeal_case": {
       "case": "case",
       "by": "str"
+    },
+    "start_escort": {},
+    "deliver_escort": {
+      "cell": "any"
+    },
+    "sleep": {},
+    "heal": {},
+    "breakout": {
+      "count": "int"
+    },
+    "buy_upgrade": {
+      "id": "str"
     }
   },
   "enums": {

@@ -45,6 +45,9 @@ func advance_game(m: int) -> void:
 	var hell_share := Content.cfg_f("adjudicator_hell_share", 0.6)
 	for i in m:
 		var t := start + i
+		var h := (t / 60) % 24
+		if h >= Content.cfg_i("night_from_hour", 22) or h < Content.cfg_i("night_to_hour", 6):
+			continue # the fortress sleeps
 		acc_arrival += (early if t < switch_at else late) / 60.0
 		while acc_arrival >= 1.0:
 			acc_arrival -= 1.0

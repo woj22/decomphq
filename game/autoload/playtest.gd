@@ -3,6 +3,8 @@ extends Node
 ## Issues high-level actions and asserts outcomes. Real UI is driven where it matters (desk, verdict view, modals).
 
 var active := false
+var combat_enabled := true
+var realtime_clock := false # playthroughs keep the clock action-driven (deterministic)
 var script_path := ""
 var shots_dir := ""
 var main: Node
@@ -301,6 +303,40 @@ func run_step(s: Dictionary) -> bool:
 			return check(s)
 		"screenshot":
 			await screenshot(str(s.get("name", "shot")))
+		"button":
+			# Presses a face button for `hold` seconds (0 = tap), as the player would.
+			var b := str(s.get("b", "square"))
+			Combat.press(b)
+			var hold := float(s.get("hold", 0.0))
+			if hold > 0.0:
+				await wait_s(hold)
+			else:
+				await frames(1)
+			Combat.release(b)
+			await frames(2)
+		"fight":
+			# Casts at whatever is there until the hall is clear (or `seconds` run out).
+			var until := Time.get_ticks_msec() + int(float(s.get("seconds", 20.0)) * 1000.0)
+			var k := 0
+			while not Combat.enemies.is_empty() and Time.get_ticks_msec() < until:
+				Combat.mana = Combat.max_mana()
+				var b := "circle" if k % 3 == 2 else "triangle"
+				Combat.press(b)
+				await wait_s(0.4 if k % 2 == 0 else 0.05)
+				Combat.release(b)
+				await wait_s(0.35)
+				k += 1
+		"set_time":
+			# Winds the clock forward (real-time path) to the given hour of day.
+			var target := int(s.get("hour", 22)) * 60
+			var add := target - Clock.minutes
+			if add <= 0:
+				add += 1440
+			Clock.tick(add)
+			await frames(3)
+		"breakout":
+			Combat.breakout(int(s.get("count", 2)))
+			await frames(2)
 		"debug_promote":
 			# Presses the real Pause-menu button, as the player would.
 			var ps := PauseScreen.new()

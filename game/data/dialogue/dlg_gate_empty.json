@@ -1,0 +1,11 @@
+{
+ "id": "dlg_gate_empty",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_gatekeeper",
+   "text": "Pen's empty. Stamp a few more of them HELL and I'll have work for you. Four obols a head, paid by the Exchequer.",
+   "next": "end"
+  }
+ }
+}

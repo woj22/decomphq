@@ -213,6 +213,11 @@ func cfg_i(key: String, fallback: int = 0) -> int:
 	return int(v) if (v is int or v is float) else fallback
 
 
+func cfg_s(key: String, fallback: String = "") -> String:
+	var v: Variant = cfg(key, fallback)
+	return str(v)
+
+
 func cfg_f(key: String, fallback: float = 0.0) -> float:
 	var v: Variant = cfg(key, fallback)
 	return float(v) if (v is int or v is float) else fallback

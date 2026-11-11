@@ -1,0 +1,34 @@
+{
+ "id": "dlg_sleep",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "Your cot. Someone has left a folded note on the pillow: 'Lights out at ten. Rise at six. - The Bursar'",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Sleep until morning.",
+     "next": "zz"
+    },
+    {
+     "text": "Not yet.",
+     "next": "end"
+    }
+   ]
+  },
+  "zz": {
+   "speaker": "narrator",
+   "text": "You sleep the dreamless sleep of the filed. The morning bell wakes you, mended.",
+   "effects": [
+    {
+     "op": "sleep"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

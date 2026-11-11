@@ -12,6 +12,7 @@ var view: AreaView
 var model: AreaModel
 var player: Player
 var soul: SoulActor
+var escort: SoulActor # a Hell-bound soul being led to the Ember Gate (combat area)
 var camera: Camera2D
 var backdrop: Backdrop
 var area_id := ""
@@ -42,11 +43,13 @@ func _ready() -> void:
 	_fade_layer.add_child(_fade)
 	_setup_input_map()
 	EventBus.case_called.connect(_on_case_called)
+	Clock.night_changed.connect(_on_night_changed)
 
 
 func _setup_input_map() -> void:
 	var keys := {"move_up": [KEY_W, KEY_UP], "move_down": [KEY_S, KEY_DOWN], "move_left": [KEY_A, KEY_LEFT],
-		"move_right": [KEY_D, KEY_RIGHT], "interact": [KEY_E, KEY_ENTER, KEY_SPACE], "cancel": [KEY_ESCAPE]}
+		"move_right": [KEY_D, KEY_RIGHT], "interact": [KEY_E, KEY_ENTER], "cancel": [KEY_ESCAPE],
+		"jump": [KEY_SPACE], "spell_triangle": [KEY_Q], "spell_circle": [KEY_R]}
 	for action: String in keys:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
@@ -211,6 +214,7 @@ func transition_to(id: String, spawn: String, charge_clock: bool = true) -> void
 func _do_transition(id: String, spawn: String, charge_clock: bool) -> void:
 	if charge_clock:
 		Clock.advance(Content.clock_cost("door"), "door")
+	escort_lost()
 	load_area(id, spawn)
 	EventBus.area_entered.emit(id)
 	SaveGame.autosave("area")
@@ -228,6 +232,8 @@ func door_allowed(o: Dictionary) -> bool:
 
 # ---------------------------------------------------------------- interaction
 func verb_for(o: Dictionary) -> String:
+	if o.has("verb"):
+		return str(o["verb"])
 	match str(o.get("type", "")):
 		"npc", "hatch":
 			return "Talk"
@@ -545,6 +551,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") and not input_locked():
 		interact_focused()
 		return
+	if event.is_action_pressed("jump"):
+		Combat.press("cross")
+		return
+	for pair: Array in [["spell_triangle", "triangle"], ["spell_circle", "circle"]]:
+		if event.is_action_pressed(str(pair[0])) and not event.is_echo():
+			Combat.press(str(pair[1]))
+			return
+		if event.is_action_released(str(pair[0])):
+			Combat.release(str(pair[1]))
+			return
 	if event is InputEventScreenTouch:
 		var t: InputEventScreenTouch = event
 		if t.pressed:
@@ -625,3 +641,76 @@ func tap_cell(c: Vector2i) -> void:
 func to_dict() -> Dictionary:
 	var c := player.cell() if player != null else Vector2i.ZERO
 	return {"area": area_id, "cell": [c.x, c.y], "facing": player.facing if player != null else "s"}
+
+
+# ---------------------------------------------------------------- escort duty (Ember Gate)
+func start_escort() -> void:
+	if escort != null or player == null or GameState.get_stat_i("escort_pending") <= 0:
+		return
+	GameState.add_stat("escort_pending", -1)
+	var at := model.nearest_walkable(player.cell() + Vector2i(0, 1), player.cell())
+	escort = SoulActor.new()
+	escort.case_id = ""
+	escort.actor_id = "escort"
+	escort.mode = "follow"
+	escort.follow = player
+	view.sorted.add_child(escort)
+	escort.setup("chr_soul_%d" % randi_range(0, 3), model, Vector2(at), "ne")
+	escort.modulate = Color(1.0, 0.75, 0.7, 0.9)
+	EventBus.notify.emit("A Hell-bound soul follows you. Take it to the Gate.")
+
+
+func escort_near(cell_c: Vector2i, radius: float = 3.0) -> bool:
+	return escort != null and escort.gpos.distance_to(Vector2(cell_c)) <= radius
+
+
+## Hand the soul to the Gate: it walks into the maw. Pays the escort fee.
+func deliver_escort(gate: Vector2i) -> void:
+	if escort == null:
+		return
+	var e := escort
+	escort = null
+	e.mode = "exit"
+	e.follow = null
+	var p := model.soul_path(e.cell(), gate)
+	var finish := func() -> void:
+		var tw := e.create_tween()
+		tw.tween_property(e, "modulate", Color(1, 0.3, 0.1, 0), 0.6)
+		tw.tween_callback(e.queue_free)
+	if p.is_empty():
+		finish.call()
+	else:
+		e.arrived.connect(finish, CONNECT_ONE_SHOT)
+		e.walk_path(p)
+	GameState.add_stat("purse", Content.cfg_i("escort_fee", 4))
+	GameState.add_stat("souls_delivered", 1)
+	Audio.sfx("sfx_door")
+
+
+## The soul slips back to the pen (player fell or left the hall).
+func escort_lost() -> void:
+	if escort != null:
+		escort.queue_free()
+		escort = null
+		GameState.add_stat("escort_pending", 1)
+
+
+# ---------------------------------------------------------------- night
+func _on_night_changed(night: bool) -> void:
+	if player == null or model == null or not GameState.in_game:
+		return
+	Audio.sfx("sfx_night_bell")
+	Dialogue.request_modal("card", {"title": "Night Falls" if night else "Morning", "text":
+		"The night bell. Desks close, the Arrival Hall is barred, and the Watch takes the Ember Gate." if night else
+		"The morning bell. Desks open and the queue begins to move again."})
+	reload_area()
+
+
+## Rebuilds the current area in place (keeps the player's cell), e.g. when night falls.
+func reload_area() -> void:
+	if model == null or player == null:
+		return
+	var c := player.cell()
+	var f := player.facing
+	escort_lost()
+	load_area(area_id, "default", c, f)

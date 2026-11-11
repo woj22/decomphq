@@ -54,6 +54,13 @@ static func facing_from_grid(d: Vector2) -> String:
 
 
 ## Height offset (in HU) to pixel offset.
+## Unit grid-space vector for an 8-way facing name (inverse of facing_from_grid).
+static func grid_dir(facing: String) -> Vector2:
+	var m := {"se": Vector2(1, 0), "sw": Vector2(0, 1), "nw": Vector2(-1, 0), "ne": Vector2(0, -1),
+		"s": Vector2(1, 1), "w": Vector2(-1, 1), "n": Vector2(-1, -1), "e": Vector2(1, -1)}
+	return (m.get(facing, Vector2(1, 1)) as Vector2).normalized()
+
+
 static func height_offset(h_hu: float) -> Vector2:
 	return Vector2(0, -h_hu * HU)
 

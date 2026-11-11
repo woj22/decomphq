@@ -8,6 +8,7 @@ var move_vec := Vector2.ZERO # grid-space direction from joystick/keyboard
 var target_object := ""
 var trail: Array[Vector2i] = []
 var locked := false
+var jumping := false
 const RADIUS := 0.3
 
 
@@ -94,3 +95,20 @@ func follow_cell() -> Vector2i:
 	if trail.size() >= 2:
 		return trail[trail.size() - 2]
 	return cell()
+
+
+## X button: a short hop (visual arc on the sprite; Combat grants i-frames meanwhile).
+func jump() -> void:
+	if jumping or body == null:
+		return
+	jumping = true
+	var base := body.position
+	var tw := create_tween()
+	tw.tween_property(body, "position", base + Vector2(0, -18), 0.18).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	tw.tween_property(body, "position", base, 0.18).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	tw.tween_callback(func() -> void: jumping = false)
+
+
+func flash() -> void:
+	modulate = Color(2.0, 0.6, 0.6, 1)
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)

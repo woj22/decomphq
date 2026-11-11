@@ -32,6 +32,10 @@ func build(m: AreaModel) -> void:
 	sorted.y_sort_enabled = true
 	add_child(sorted)
 	y_sort_enabled = true
+	if Clock.is_night():
+		var cm := CanvasModulate.new()
+		cm.color = Color(Content.cfg_s("night_tint", "#8f8ab8"))
+		add_child(cm)
 	_build_cells()
 	_build_decor()
 	_build_npcs()
@@ -175,6 +179,8 @@ func _build_cells() -> void:
 func _place_prop(prop: String, c: Vector2i, d: Dictionary) -> void:
 	if prop.begins_with("cell_bars_") or prop.begins_with("cell_door_"):
 		prop = _bars_variant(prop, c)
+	if prop == "bed" and Clock.is_night() and (c.x + c.y) % 4 != 0:
+		prop = "bed_sleeper" # night: the staff are in bed
 	var fp := JsonUtil.to_vec2i(d.get("footprint", Assets.info(prop).get("footprint", [1, 1])), Vector2i.ONE)
 	var ch := model.char_at(c)
 	if fp != Vector2i.ONE:

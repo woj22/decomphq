@@ -4,7 +4,7 @@ extends RefCounted
 
 const OPS: PackedStringArray = ["flag", "not_flag", "stat_gte", "stat_lte", "rank_gte", "day_eq", "verdict", "case_state",
 	"discovered", "asked", "has_active_case", "active_case_eq", "docket_empty", "holds_archive", "archive_available", "any", "not",
-	"all"]
+	"all", "is_night", "escort_active", "escort_ready", "escort_near", "upgrade_below_max"]
 
 static var unknown_logged := {}
 
@@ -48,6 +48,16 @@ static func check_one(c: Dictionary, ctx: Dictionary = {}) -> bool:
 			return GameState.rank >= int(c.get("value", 0))
 		"day_eq":
 			return Clock.day == int(c.get("value", 0))
+		"upgrade_below_max":
+			return GameState.get_stat_i("up_" + str(c.get("id", ""))) < Combat.upgrade_prices(str(c.get("id", ""))).size()
+		"is_night":
+			return Clock.is_night()
+		"escort_active":
+			return World.escort != null
+		"escort_ready":
+			return World.escort == null and GameState.get_stat_i("escort_pending") > 0
+		"escort_near":
+			return World.escort_near(JsonUtil.to_vec2i(c.get("cell", [0, 0])), float(c.get("radius", 3.0)))
 		"verdict":
 			return GameState.case_verdict(resolve_case(c.get("case"), ctx)) == str(c.get("value", ""))
 		"case_state":

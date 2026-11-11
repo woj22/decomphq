@@ -1,176 +1,218 @@
 {
-  "id": "ranks",
-  "stats": [
+ "id": "ranks",
+ "stats": [
+  {
+   "id": "merit",
+   "name": "Merit",
+   "start": 0
+  },
+  {
+   "id": "order",
+   "name": "Order",
+   "start": 68,
+   "min": 0,
+   "max": 100
+  },
+  {
+   "id": "purse",
+   "name": "Obols",
+   "start": 12
+  },
+  {
+   "id": "queue",
+   "name": "Queue",
+   "start": 24,
+   "derived": true
+  },
+  {
+   "id": "overturned",
+   "name": "Overturned",
+   "start": 0
+  },
+  {
+   "id": "cases_processed",
+   "name": "Processed",
+   "start": 0
+  },
+  {
+   "id": "favour_gilt",
+   "name": "Gilt favour",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "favour_ember",
+   "name": "Ember favour",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "conscience",
+   "name": "Conscience",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "deferred",
+   "name": "Deferred",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "up_lance",
+   "name": "Gilt Lance grade",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "up_brand",
+   "name": "Ember Brand grade",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "up_vitality",
+   "name": "Vitality",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "up_focus",
+   "name": "Focus",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "escort_pending",
+   "name": "Souls awaiting escort",
+   "start": 3,
+   "hidden": true
+  },
+  {
+   "id": "souls_delivered",
+   "name": "Souls delivered",
+   "start": 0,
+   "hidden": true
+  },
+  {
+   "id": "demons_banished",
+   "name": "Demons banished",
+   "start": 0,
+   "hidden": true
+  }
+ ],
+ "ranks": [
+  {
+   "rank": 1,
+   "id": "rank_junior_clerk",
+   "title": "Junior Processing Clerk",
+   "auto": false,
+   "sprite": "chr_player",
+   "crest": "icon_crest_r1",
+   "base_pay": 8,
+   "requires": [],
+   "on_reach": [],
+   "privileges": []
+  },
+  {
+   "rank": 2,
+   "id": "rank_senior_adjudicator",
+   "title": "Senior Adjudicator",
+   "auto": false,
+   "sprite": "chr_player_r2",
+   "crest": "icon_crest_r2",
+   "base_pay": 12,
+   "motto": "The file is a claim. You are now the second opinion.",
+   "requires": [
     {
-      "id": "merit",
-      "name": "Merit",
-      "start": 0
+     "op": "stat_gte",
+     "id": "cases_processed",
+     "value": 6
     },
     {
-      "id": "order",
-      "name": "Order",
-      "start": 68,
-      "min": 0,
-      "max": 100
+     "op": "flag",
+     "id": "flag_found_violet_ink"
     },
     {
-      "id": "purse",
-      "name": "Obols",
-      "start": 12
+     "op": "stat_gte",
+     "id": "merit",
+     "value": 30
     },
     {
-      "id": "queue",
-      "name": "Queue",
-      "start": 24,
-      "derived": true
-    },
-    {
-      "id": "overturned",
-      "name": "Overturned",
-      "start": 0
-    },
-    {
-      "id": "cases_processed",
-      "name": "Processed",
-      "start": 0
-    },
-    {
-      "id": "favour_gilt",
-      "name": "Gilt favour",
-      "start": 0,
-      "hidden": true
-    },
-    {
-      "id": "favour_ember",
-      "name": "Ember favour",
-      "start": 0,
-      "hidden": true
-    },
-    {
-      "id": "conscience",
-      "name": "Conscience",
-      "start": 0,
-      "hidden": true
-    },
-    {
-      "id": "deferred",
-      "name": "Deferred",
-      "start": 0,
-      "hidden": true
+     "op": "stat_lte",
+     "id": "overturned",
+     "value": 2
     }
-  ],
-  "ranks": [
+   ],
+   "on_reach": [],
+   "privileges": [
     {
-      "rank": 1,
-      "id": "rank_junior_clerk",
-      "title": "Junior Processing Clerk",
-      "auto": false,
-      "sprite": "chr_player",
-      "crest": "icon_crest_r1",
-      "base_pay": 8,
-      "requires": [],
-      "on_reach": [],
-      "privileges": []
+     "icon": "icon_key",
+     "text": "The stair in Clerk's Court is open to you"
     },
     {
-      "rank": 2,
-      "id": "rank_senior_adjudicator",
-      "title": "Senior Adjudicator",
-      "auto": false,
-      "sprite": "chr_player_r2",
-      "crest": "icon_crest_r2",
-      "base_pay": 12,
-      "motto": "The file is a claim. You are now the second opinion.",
-      "requires": [
-        {
-          "op": "stat_gte",
-          "id": "cases_processed",
-          "value": 6
-        },
-        {
-          "op": "flag",
-          "id": "flag_found_violet_ink"
-        },
-        {
-          "op": "stat_gte",
-          "id": "merit",
-          "value": 30
-        },
-        {
-          "op": "stat_lte",
-          "id": "overturned",
-          "value": 2
-        }
-      ],
-      "on_reach": [],
-      "privileges": [
-        {
-          "icon": "icon_key",
-          "text": "The stair in Clerk's Court is open to you"
-        },
-        {
-          "icon": "icon_quill",
-          "text": "Appeals may now be heard"
-        },
-        {
-          "icon": "icon_obol",
-          "text": "Base pay 8 -> 12 obols"
-        }
-      ]
+     "icon": "icon_quill",
+     "text": "Appeals may now be heard"
     },
     {
-      "rank": 3,
-      "id": "rank_department_supervisor",
-      "title": "Department Supervisor",
-      "auto": false,
-      "sprite": "chr_player_r2",
-      "crest": "icon_crest_r2",
-      "base_pay": 16,
-      "motto": "You no longer judge souls. You judge the people who judge them.",
-      "requires": [],
-      "on_reach": [],
-      "privileges": [
-        {
-          "icon": "icon_key",
-          "text": "(Not yet built - planned for a later milestone)"
-        }
-      ]
-    },
-    {
-      "rank": 4,
-      "id": "rank_chief_commissioner",
-      "title": "Chief Commissioner of the Border",
-      "auto": false,
-      "sprite": "chr_player_r2",
-      "crest": "icon_crest_r2",
-      "base_pay": 24,
-      "motto": "Heaven and Hell will now lie to you in person.",
-      "requires": [],
-      "on_reach": [],
-      "privileges": [
-        {
-          "icon": "icon_key",
-          "text": "(Not yet built - planned for a later milestone)"
-        }
-      ]
-    },
-    {
-      "rank": 5,
-      "id": "rank_high_chancellor",
-      "title": "High Chancellor of Purgatory",
-      "auto": false,
-      "sprite": "chr_player_r2",
-      "crest": "icon_crest_r2",
-      "base_pay": 40,
-      "motto": "God and the Devil both have your number. Neither will use it kindly.",
-      "requires": [],
-      "on_reach": [],
-      "privileges": [
-        {
-          "icon": "icon_key",
-          "text": "(Not yet built - planned for a later milestone)"
-        }
-      ]
+     "icon": "icon_obol",
+     "text": "Base pay 8 -> 12 obols"
     }
-  ]
+   ]
+  },
+  {
+   "rank": 3,
+   "id": "rank_department_supervisor",
+   "title": "Department Supervisor",
+   "auto": false,
+   "sprite": "chr_player_r2",
+   "crest": "icon_crest_r2",
+   "base_pay": 16,
+   "motto": "You no longer judge souls. You judge the people who judge them.",
+   "requires": [],
+   "on_reach": [],
+   "privileges": [
+    {
+     "icon": "icon_key",
+     "text": "(Not yet built - planned for a later milestone)"
+    }
+   ]
+  },
+  {
+   "rank": 4,
+   "id": "rank_chief_commissioner",
+   "title": "Chief Commissioner of the Border",
+   "auto": false,
+   "sprite": "chr_player_r2",
+   "crest": "icon_crest_r2",
+   "base_pay": 24,
+   "motto": "Heaven and Hell will now lie to you in person.",
+   "requires": [],
+   "on_reach": [],
+   "privileges": [
+    {
+     "icon": "icon_key",
+     "text": "(Not yet built - planned for a later milestone)"
+    }
+   ]
+  },
+  {
+   "rank": 5,
+   "id": "rank_high_chancellor",
+   "title": "High Chancellor of Purgatory",
+   "auto": false,
+   "sprite": "chr_player_r2",
+   "crest": "icon_crest_r2",
+   "base_pay": 40,
+   "motto": "God and the Devil both have your number. Neither will use it kindly.",
+   "requires": [],
+   "on_reach": [],
+   "privileges": [
+    {
+     "icon": "icon_key",
+     "text": "(Not yet built - planned for a later milestone)"
+    }
+   ]
+  }
+ ]
 }

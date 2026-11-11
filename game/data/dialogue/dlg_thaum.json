@@ -1,0 +1,140 @@
+{
+ "id": "dlg_thaum",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_thaumaturge",
+   "text": "Sorcery is paperwork with consequences. The Chancery issues it in grades. Grades cost obols. Obols cost souls.",
+   "next": "menu"
+  },
+  "menu": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Teach me spells.",
+     "next": "spells"
+    },
+    {
+     "text": "Strengthen me.",
+     "next": "body"
+    },
+    {
+     "text": "Goodbye.",
+     "next": "end"
+    }
+   ]
+  },
+  "spells": {
+   "speaker": "npc_thaumaturge",
+   "text": "Gilt Lance or Ember Brand. Each grade costs more: 20, then 45, then 90 obols.",
+   "next": "spells_c"
+  },
+  "spells_c": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Raise the Gilt Lance (TRIANGLE).",
+     "next": "bought_lance",
+     "conditions": [
+      {
+       "op": "upgrade_below_max",
+       "id": "lance"
+      }
+     ],
+     "effects": [
+      {
+       "op": "buy_upgrade",
+       "id": "lance"
+      }
+     ]
+    },
+    {
+     "text": "Raise the Ember Brand (CIRCLE).",
+     "next": "bought_brand",
+     "conditions": [
+      {
+       "op": "upgrade_below_max",
+       "id": "brand"
+      }
+     ],
+     "effects": [
+      {
+       "op": "buy_upgrade",
+       "id": "brand"
+      }
+     ]
+    },
+    {
+     "text": "Something else.",
+     "next": "menu"
+    }
+   ]
+  },
+  "body": {
+   "speaker": "npc_thaumaturge",
+   "text": "Vitality for the claws, Focus for the mana. 15, then 35, then 70 obols.",
+   "next": "body_c"
+  },
+  "body_c": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Vitality: more health.",
+     "next": "bought_vitality",
+     "conditions": [
+      {
+       "op": "upgrade_below_max",
+       "id": "vitality"
+      }
+     ],
+     "effects": [
+      {
+       "op": "buy_upgrade",
+       "id": "vitality"
+      }
+     ]
+    },
+    {
+     "text": "Focus: more mana, faster.",
+     "next": "bought_focus",
+     "conditions": [
+      {
+       "op": "upgrade_below_max",
+       "id": "focus"
+      }
+     ],
+     "effects": [
+      {
+       "op": "buy_upgrade",
+       "id": "focus"
+      }
+     ]
+    },
+    {
+     "text": "Something else.",
+     "next": "menu"
+    }
+   ]
+  },
+  "bought_lance": {
+   "speaker": "npc_thaumaturge",
+   "text": "There. Point it at things you dislike. Not at me.",
+   "next": "menu"
+  },
+  "bought_brand": {
+   "speaker": "npc_thaumaturge",
+   "text": "Hotter now. Do not use it in the Records Annexe. Pell has a list.",
+   "next": "menu"
+  },
+  "bought_vitality": {
+   "speaker": "npc_thaumaturge",
+   "text": "Your soul is a little harder to tear. Congratulations, I suppose.",
+   "next": "menu"
+  },
+  "bought_focus": {
+   "speaker": "npc_thaumaturge",
+   "text": "Breathe in. You do not need to, being dead. Do it anyway. Better.",
+   "next": "menu"
+  }
+ }
+}

@@ -1,0 +1,11 @@
+{
+ "id": "dlg_gate_active",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_gatekeeper",
+   "text": "Up to the Gate with it. Keep it behind you and keep your spells handy.",
+   "next": "end"
+  }
+ }
+}

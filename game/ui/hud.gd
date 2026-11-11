@@ -18,7 +18,7 @@ var merit_label: Label
 var objective_panel: PanelContainer
 var objective_expanded := false
 var minimap: Minimap
-var action_btn: Button
+var action_btn: FaceButtons
 var bar: HBoxContainer
 var joy: JoystickView
 var tooltip: Label
@@ -180,26 +180,14 @@ func _build_bottom(root: Control) -> void:
 				b.pressed.connect(func() -> void: open_pause.emit())
 		b.pressed.connect(func() -> void: Audio.sfx("sfx_tap"))
 	World.touch_blockers.append(bar)
-	action_btn = Button.new()
-	action_btn.name = "ContextButton"
-	action_btn.focus_mode = Control.FOCUS_NONE
-	action_btn.custom_minimum_size = Vector2(64, 64)
-	action_btn.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	action_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	action_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	action_btn.add_theme_font_size_override("font_size", 16)
-	action_btn.add_theme_stylebox_override("normal", UiKit.box(Color("#27232f"), UiKit.BORDER_GOLD, 1, 4))
-	action_btn.add_theme_stylebox_override("hover", UiKit.box(Color("#37323f"), UiKit.BORDER_GOLD, 1, 4))
-	action_btn.add_theme_stylebox_override("pressed", UiKit.box(Color("#43325c"), UiKit.BORDER_GOLD, 1, 4))
-	action_btn.visible = false
-	action_btn.pressed.connect(func() -> void: World.interact_focused())
+	action_btn = FaceButtons.new()
+	action_btn.name = "FaceButtons"
 	root.add_child(action_btn)
 	World.touch_blockers.append(action_btn)
 
 
 func _on_focus(_oid: String, verb: String) -> void:
-	action_btn.visible = verb != ""
-	action_btn.text = verb.to_upper()
+	action_btn.set_verb(verb)
 
 
 func _show_tooltip(t: String) -> void:

@@ -1,0 +1,18 @@
+{"steps": [
+ {"do": "new_game"}, {"do": "drain"},
+ {"do": "interact", "object": "door_arrival_court"}, {"do": "wait", "seconds": 1.0}, {"do": "drain"},
+ {"do": "set_time", "hour": 22}, {"do": "drain"}, {"do": "wait", "seconds": 0.5},
+ {"do": "assert", "area": "area_clerks_court", "conditions": [{"op": "is_night"}]},
+ {"do": "screenshot", "name": "night_court"},
+ {"do": "interact", "object": "door_court_arrival"}, {"do": "wait", "seconds": 1.0}, {"do": "drain"},
+ {"do": "assert", "area": "area_clerks_court"},
+ {"do": "interact", "object": "door_court_booths"}, {"do": "wait", "seconds": 1.0}, {"do": "drain"},
+ {"do": "assert", "area": "area_booths"},
+ {"do": "screenshot", "name": "night_booths"},
+ {"do": "interact", "object": "door_booths_court"}, {"do": "wait", "seconds": 1.0}, {"do": "drain"},
+ {"do": "interact", "object": "door_court_dorm"}, {"do": "wait", "seconds": 1.0}, {"do": "drain"},
+ {"do": "screenshot", "name": "night_dorm"},
+ {"do": "talk", "object": "obj_my_bed", "prefer": ["Sleep until"]},
+ {"do": "drain"}, {"do": "wait", "seconds": 0.5},
+ {"do": "assert", "area": "area_dormitory", "conditions": [{"op": "not", "of": {"op": "is_night"}}]}
+]}

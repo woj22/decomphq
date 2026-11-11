@@ -8,14 +8,14 @@
  "ambience": "amb_court",
  "backdrop": "none",
  "grid": [
-  "####D#####D###",
+  "####D##D##D###",
   "#B.sss.....B.k",
   "#..sss.......k",
   "#...G........k",
   "p............D",
   "#....gggg....k",
   "#....gTTg....k",
-  "#....gTTg....k",
+  "#....gTTg....D",
   "D....ggggW...k",
   "#............D",
   "D............k",
@@ -98,13 +98,6 @@
   {
    "cell": [
     2,
-    0
-   ],
-   "glass": "red"
-  },
-  {
-   "cell": [
-    7,
     0
    ],
    "glass": "red"
@@ -216,7 +209,16 @@
    "to": {
     "area": "area_arrival_hall",
     "spawn": "from_court"
-   }
+   },
+   "conditions": [
+    {
+     "op": "not",
+     "of": {
+      "op": "is_night"
+     }
+    }
+   ],
+   "locked_dialogue": "dlg_night_locked"
   },
   {
    "id": "door_court_records",
@@ -451,6 +453,40 @@
     "area": "area_dormitory",
     "spawn": "from_court"
    }
+  },
+  {
+   "id": "door_court_ember",
+   "type": "door",
+   "cell": [
+    7,
+    0
+   ],
+   "use_cell": [
+    7,
+    1
+   ],
+   "style": "ember",
+   "to": {
+    "area": "area_ember_gate",
+    "spawn": "from_court"
+   }
+  },
+  {
+   "id": "door_court_sorcery",
+   "type": "door",
+   "cell": [
+    13,
+    7
+   ],
+   "use_cell": [
+    12,
+    7
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_thaumaturgy",
+    "spawn": "from_court"
+   }
   }
  ],
  "spawns": {
@@ -481,6 +517,14 @@
   "from_dorm": [
    12,
    4
+  ],
+  "from_ember": [
+   7,
+   1
+  ],
+  "from_sorcery": [
+   12,
+   7
   ]
  },
  "zones": {
@@ -588,6 +632,21 @@
      12,
      4
     ]
+   },
+   {
+    "sprite": "chr_guard_night",
+    "count": 3,
+    "rect": [
+     1,
+     3,
+     12,
+     12
+    ],
+    "pause": [
+     4,
+     9
+    ],
+    "night": true
    }
   ],
   "flows": [

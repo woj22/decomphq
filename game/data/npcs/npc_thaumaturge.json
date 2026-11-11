@@ -1,0 +1,12 @@
+{
+ "id": "npc_thaumaturge",
+ "name": "Ysolde Vane",
+ "title": "Thaumaturge (Grade: Unaudited)",
+ "sprite": "chr_sorcerer",
+ "portrait": "por_marrow",
+ "dialogue": [
+  {
+   "id": "dlg_thaum"
+  }
+ ]
+}

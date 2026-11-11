@@ -1,0 +1,290 @@
+{
+ "id": "area_ember_gate",
+ "name": "The Ember Gate",
+ "size": [
+  16,
+  12
+ ],
+ "ambience": "amb_hell",
+ "backdrop": "none",
+ "grid": [
+  "################",
+  "#B..x.HHH.x..B.k",
+  "#..............k",
+  "#..............k",
+  "#..............k",
+  "#..............k",
+  "#..x........x..k",
+  "#..............k",
+  "#rrrrr.........k",
+  "#.....r........k",
+  "#..............k",
+  "kkkkkkkkDkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_hell",
+   "solid": true
+  },
+  "x": {
+   "kind": "prop",
+   "prop": "chain_post",
+   "solid": true
+  },
+  "H": {
+   "kind": "prop",
+   "prop": "hell_gate",
+   "solid": true
+  },
+  "r": {
+   "kind": "prop",
+   "prop": "queue_rail_x",
+   "solid": true
+  }
+ },
+ "floor": "floor_brimstone",
+ "windows": [
+  {
+   "cell": [
+    0,
+    4
+   ],
+   "glass": "red"
+  },
+  {
+   "cell": [
+    0,
+    8
+   ],
+   "glass": "red"
+  },
+  {
+   "cell": [
+    3,
+    0
+   ],
+   "glass": "red"
+  },
+  {
+   "cell": [
+    12,
+    0
+   ],
+   "glass": "red"
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "hell_glow",
+   "cell": [
+    7,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_red",
+   "cell": [
+    3,
+    6
+   ]
+  },
+  {
+   "sprite": "light_pool_red",
+   "cell": [
+    12,
+    6
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    5,
+    0
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    10,
+    0
+   ]
+  },
+  {
+   "sprite": "wall_torch_y",
+   "cell": [
+    0,
+    6
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_ember_court",
+   "type": "door",
+   "cell": [
+    8,
+    11
+   ],
+   "use_cell": [
+    8,
+    10
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_clerks_court",
+    "spawn": "from_ember"
+   }
+  },
+  {
+   "id": "obj_hell_gate",
+   "type": "inspect",
+   "cell": [
+    7,
+    1
+   ],
+   "use_cell": [
+    7,
+    2
+   ],
+   "dialogue": "dlg_hell_gate",
+   "verb": "Deliver"
+  },
+  {
+   "id": "obj_gatekeeper",
+   "type": "npc",
+   "npc": "npc_gatekeeper",
+   "cell": [
+    6,
+    9
+   ],
+   "facing": "ne",
+   "use_cell": [
+    7,
+    9
+   ],
+   "night": true
+  }
+ ],
+ "spawns": {
+  "default": [
+   8,
+   10
+  ],
+  "from_court": [
+   8,
+   10
+  ]
+ },
+ "zones": {},
+ "hostiles": {
+  "spawn_cells": [
+   [
+    6,
+    2
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    8,
+    2
+   ]
+  ],
+  "breakout_every": [
+   28,
+   48
+  ],
+  "brute_chance": 0.25,
+  "max_enemies": 6,
+  "defenders": [
+   {
+    "cell": [
+     3,
+     3
+    ],
+    "sprite": "chr_guard"
+   },
+   {
+    "cell": [
+     12,
+     3
+    ],
+    "sprite": "chr_guard"
+   },
+   {
+    "cell": [
+     11,
+     8
+    ],
+    "sprite": "chr_guard"
+   },
+   {
+    "cell": [
+     5,
+     4
+    ],
+    "night_only": true
+   },
+   {
+    "cell": [
+     10,
+     4
+    ],
+    "night_only": true
+   }
+  ]
+ },
+ "ambient": {
+  "desk_clerks": [],
+  "staff": [
+   {
+    "sprite": "chr_soul_2",
+    "count": 2,
+    "rect": [
+     1,
+     9,
+     5,
+     10
+    ],
+    "pause": [
+     5,
+     12
+    ],
+    "always": true
+   },
+   {
+    "sprite": "chr_soul_0",
+    "count": 1,
+    "rect": [
+     1,
+     9,
+     5,
+     10
+    ],
+    "pause": [
+     5,
+     12
+    ],
+    "always": true
+   }
+  ],
+  "flows": []
+ },
+ "ext": {
+  "note": "Owner request: escort Hell-bound souls to the Gate past heavy guard; demons break back out and attack. Night: the Night Watch doubles the guard."
+ }
+}

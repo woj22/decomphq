@@ -1,0 +1,28 @@
+{
+ "id": "npc_gatekeeper",
+ "name": "Malphas Quill",
+ "title": "Demon Second Class (Escort & Debt Recovery)",
+ "sprite": "chr_guard_night",
+ "portrait": "por_grist",
+ "dialogue": [
+  {
+   "id": "dlg_gate_active",
+   "conditions": [
+    {
+     "op": "escort_active"
+    }
+   ]
+  },
+  {
+   "id": "dlg_gate_take",
+   "conditions": [
+    {
+     "op": "escort_ready"
+    }
+   ]
+  },
+  {
+   "id": "dlg_gate_empty"
+  }
+ ]
+}

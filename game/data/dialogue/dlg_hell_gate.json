@@ -1,0 +1,58 @@
+{
+ "id": "dlg_hell_gate",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The Ember Gate. Heat comes off it like a held breath.",
+   "conditions": [
+    {
+     "op": "escort_near",
+     "cell": [
+      7,
+      2
+     ],
+     "radius": 3.0
+    }
+   ],
+   "next": "give",
+   "else": "none"
+  },
+  "give": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Hand the soul through.",
+     "next": "done"
+    },
+    {
+     "text": "Wait.",
+     "next": "end"
+    }
+   ]
+  },
+  "done": {
+   "speaker": "narrator",
+   "text": "The soul goes in without looking back. Something on the other side signs for it.",
+   "effects": [
+    {
+     "op": "deliver_escort",
+     "cell": [
+      7,
+      1
+     ]
+    },
+    {
+     "op": "breakout",
+     "count": 2
+    }
+   ],
+   "next": "end"
+  },
+  "none": {
+   "speaker": "narrator",
+   "text": "The Gate does not open for clerks. Bring a soul from the pen, and keep it close.",
+   "next": "end"
+  }
+ }
+}

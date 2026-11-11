@@ -201,6 +201,20 @@
     4
    ],
    "dialogue": "dlg_dorm_washstand"
+  },
+  {
+   "id": "obj_my_bed",
+   "type": "inspect",
+   "cell": [
+    3,
+    1
+   ],
+   "use_cell": [
+    3,
+    2
+   ],
+   "dialogue": "dlg_sleep",
+   "verb": "Sleep"
   }
  ],
  "spawns": {

@@ -1,0 +1,162 @@
+{
+ "id": "area_thaumaturgy",
+ "name": "The Thaumaturgy",
+ "size": [
+  10,
+  9
+ ],
+ "ambience": "amb_chamber",
+ "backdrop": "none",
+ "grid": [
+  "##########",
+  "#S.c.S.c.k",
+  "#........k",
+  "#........k",
+  "D........k",
+  "#........k",
+  "#.u......k",
+  "#l......Sk",
+  "kkkkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "crystal_pedestal",
+   "solid": true
+  },
+  "u": {
+   "kind": "prop",
+   "prop": "cauldron",
+   "solid": true
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [
+  {
+   "cell": [
+    4,
+    0
+   ],
+   "glass": "gold"
+  },
+  {
+   "cell": [
+    0,
+    2
+   ],
+   "glass": "gold"
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "rune_circle",
+   "cell": [
+    4,
+    4
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    3,
+    1
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    7,
+    1
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    2,
+    6
+   ]
+  },
+  {
+   "sprite": "wall_torch_y",
+   "cell": [
+    0,
+    6
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_sorcery_court",
+   "type": "door",
+   "cell": [
+    0,
+    4
+   ],
+   "use_cell": [
+    1,
+    4
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_clerks_court",
+    "spawn": "from_sorcery"
+   }
+  },
+  {
+   "id": "obj_thaumaturge",
+   "type": "npc",
+   "npc": "npc_thaumaturge",
+   "cell": [
+    6,
+    5
+   ],
+   "facing": "sw",
+   "use_cell": [
+    5,
+    5
+   ],
+   "night": true
+  }
+ ],
+ "spawns": {
+  "default": [
+   1,
+   4
+  ],
+  "from_court": [
+   1,
+   4
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "staff": [],
+  "flows": []
+ },
+ "ext": {
+  "note": "Owner request: upgrade spells and attacks with obols earned at the desk."
+ }
+}

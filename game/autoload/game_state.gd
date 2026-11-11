@@ -328,6 +328,8 @@ func reopen_case(cid: String) -> void:
 	var res: Dictionary = rec.get("result", {})
 	add_stat("merit", -int(res.get("merit", 0)))
 	add_stat("cases_processed", -1)
+	if str(rec.get("verdict", "")) == "hell" and get_stat_i("escort_pending") > 0:
+		add_stat("escort_pending", -1)
 	if bool(res.get("deferred", false)):
 		add_stat("deferred", -1)
 	elif bool(res.get("sound", false)):
@@ -460,6 +462,8 @@ func record_verdict(cid: String, result: Dictionary) -> void:
 	rec["result"] = result
 	add_stat("merit", int(result["merit"]))
 	add_stat("cases_processed", 1)
+	if str(result["verdict"]) == "hell":
+		add_stat("escort_pending", 1)
 	if bool(result.get("deferred", false)):
 		add_stat("deferred", 1)
 	else:

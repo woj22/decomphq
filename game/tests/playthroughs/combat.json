@@ -1,0 +1,167 @@
+{
+ "steps": [
+  {
+   "do": "new_game"
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "interact",
+   "object": "door_arrival_court"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.0
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "interact",
+   "object": "door_court_ember"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.0
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "area": "area_ember_gate",
+   "stats": {
+    "escort_pending": 3
+   }
+  },
+  {
+   "do": "button",
+   "b": "cross"
+  },
+  {
+   "do": "talk",
+   "object": "obj_gatekeeper",
+   "prefer": [
+    "Bring me"
+   ]
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "escort_active"
+    }
+   ],
+   "stats": {
+    "escort_pending": 2
+   }
+  },
+  {
+   "do": "breakout",
+   "count": 3
+  },
+  {
+   "do": "wait",
+   "seconds": 1.2
+  },
+  {
+   "do": "screenshot",
+   "name": "combat_breakout"
+  },
+  {
+   "do": "button",
+   "b": "triangle",
+   "hold": 0.5
+  },
+  {
+   "do": "wait",
+   "seconds": 0.3
+  },
+  {
+   "do": "screenshot",
+   "name": "combat_lance"
+  },
+  {
+   "do": "fight",
+   "seconds": 25
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "escort_active"
+    }
+   ]
+  },
+  {
+   "do": "talk",
+   "object": "obj_hell_gate",
+   "prefer": [
+    "Hand the soul"
+   ],
+   "walk": true
+  },
+  {
+   "do": "wait",
+   "seconds": 1.0
+  },
+  {
+   "do": "fight",
+   "seconds": 25
+  },
+  {
+   "do": "assert",
+   "stats": {
+    "souls_delivered": 1
+   }
+  },
+  {
+   "do": "interact",
+   "object": "door_ember_court"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.0
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "interact",
+   "object": "door_court_sorcery"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.0
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "area": "area_thaumaturgy"
+  },
+  {
+   "do": "screenshot",
+   "name": "thaumaturgy"
+  },
+  {
+   "do": "talk",
+   "object": "obj_thaumaturge",
+   "prefer": [
+    "Strengthen me",
+    "Focus"
+   ]
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "stats": {
+    "up_focus": 1
+   }
+  }
+ ]
+}

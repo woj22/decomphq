@@ -59,7 +59,7 @@ func _claimed_desks() -> Dictionary:
 
 func _build_desks() -> void:
 	var sprites: Array = cfg.get("desk_clerks", ["chr_clerk_grey", "chr_clerk_lilac", "chr_clerk_grey"])
-	if sprites.is_empty():
+	if sprites.is_empty() or (Clock.is_night() and not bool(cfg.get("desks_at_night", false))):
 		return
 	var claimed := _claimed_desks()
 	var n := 0
@@ -118,6 +118,9 @@ func _build_staff() -> void:
 		if not (s is Dictionary):
 			continue
 		var sd: Dictionary = s
+		var night := Clock.is_night()
+		if (night and not bool(sd.get("night", false)) and not bool(sd.get("always", false))) or (not night and bool(sd.get("night", false))):
+			continue
 		var cells := _open_cells(sd.get("rect", []))
 		if cells.is_empty():
 			continue
@@ -221,6 +224,8 @@ func _spawn_flow(i: int, prewarm: bool) -> void:
 	if walkers.size() >= _max_walkers:
 		return
 	var f: Dictionary = (cfg.get("flows", []) as Array)[i]
+	if Clock.is_night() and not bool(f.get("night", false)):
+		return # the queue sleeps
 	var start := _pick(f.get("from", []))
 	if start.x < 0:
 		return

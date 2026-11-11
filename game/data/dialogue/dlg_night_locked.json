@@ -1,0 +1,11 @@
+{
+ "id": "dlg_night_locked",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "Barred for the night. A notice: 'ARRIVALS RESUME AT SIX. THE DEAD CAN WAIT. THEY ARE GOOD AT IT.'",
+   "next": "end"
+  }
+ }
+}

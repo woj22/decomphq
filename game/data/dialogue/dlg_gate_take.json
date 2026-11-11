@@ -1,0 +1,34 @@
+{
+ "id": "dlg_gate_take",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_gatekeeper",
+   "text": "Adjudicator. The pen's got your Hell-stamps in it, waiting. The Gate won't take them unless one of you walks them up.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Bring me the next one.",
+     "next": "go"
+    },
+    {
+     "text": "Not yet.",
+     "next": "end"
+    }
+   ]
+  },
+  "go": {
+   "speaker": "npc_gatekeeper",
+   "text": "Mind the Gate. Things come back out of it. My cousins, mostly. Don't take it personally. They don't.",
+   "effects": [
+    {
+     "op": "start_escort"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}
