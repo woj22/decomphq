@@ -12,13 +12,13 @@
   "#B.sss.....B.k",
   "#..sss.......k",
   "#...G........k",
-  "p............k",
+  "p............D",
   "#....gggg....k",
   "#....gTTg....k",
   "#....gTTg....k",
   "D....ggggW...k",
   "#............D",
-  "#............k",
+  "D............k",
   "#B..........Bk",
   "#............k",
   "kkkkkkkkkkkkkk"
@@ -417,6 +417,40 @@
     8
    ],
    "dialogue": "dlg_statue"
+  },
+  {
+   "id": "door_court_cells",
+   "type": "door",
+   "cell": [
+    0,
+    10
+   ],
+   "use_cell": [
+    1,
+    10
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_deferral_cells",
+    "spawn": "from_court"
+   }
+  },
+  {
+   "id": "door_court_dorm",
+   "type": "door",
+   "cell": [
+    13,
+    4
+   ],
+   "use_cell": [
+    12,
+    4
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_dormitory",
+    "spawn": "from_court"
+   }
   }
  ],
  "spawns": {
@@ -438,6 +472,14 @@
   ],
   "from_chamber": [
    4,
+   4
+  ],
+  "from_cells": [
+   1,
+   10
+  ],
+  "from_dorm": [
+   12,
    4
   ]
  },
@@ -588,12 +630,6 @@
     ]
    }
   ],
-  "max_walkers": 14,
-  "residents": [
-   1,
-   3,
-   12,
-   12
-  ]
+  "max_walkers": 14
  }
 }

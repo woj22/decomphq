@@ -136,25 +136,34 @@ func _build_staff() -> void:
 
 
 ## Souls the player stamped DEFERRED drift about this area for good (area key "residents": [x0, y0, x1, y1]).
+## Or, with "resident_cells": [[x0, y0, x1, y1], ...], each Resident is locked in its own cell (round-robin).
 func _build_residents() -> void:
+	var rc: Variant = cfg.get("resident_cells")
 	var r: Variant = cfg.get("residents")
-	if not (r is Array):
+	if not (rc is Array) and not (r is Array):
 		return
-	var cells := _open_cells(r)
-	if cells.is_empty():
-		return
-	for cid: Variant in GameState.residents():
-		var w := Wanderer.new()
-		w.actor_id = "resident_" + str(cid)
-		w.cells = cells
-		w.rng = rng
-		w.pause_range = Vector2(4.0, 10.0)
-		container.add_child(w)
-		var c := Content.case(str(cid))
-		var seed_v := int((c.get("portrait", {}) as Dictionary).get("seed", str(cid).hash()))
-		w.setup("chr_soul_%d" % (absi(seed_v) % 4), model, Vector2(cells[rng.randi_range(0, cells.size() - 1)]), "sw")
-		w.speed = 0.9
-		w.modulate = Color(0.8, 0.72, 1.0, 0.85) # a faint Purgatory tint marks the Residents
+	var list := GameState.residents()
+	for i in list.size():
+		var cid: String = str(list[i])
+		var rect: Array = (rc as Array)[i % (rc as Array).size()] if rc is Array and not (rc as Array).is_empty() else (r as Array)
+		var cells := _open_cells(rect)
+		if cells.is_empty():
+			continue
+		_spawn_resident(cid, cells)
+
+
+func _spawn_resident(cid: String, cells: Array) -> void:
+	var w := Wanderer.new()
+	w.actor_id = "resident_" + str(cid)
+	w.cells = cells
+	w.rng = rng
+	w.pause_range = Vector2(4.0, 10.0)
+	container.add_child(w)
+	var c := Content.case(str(cid))
+	var seed_v := int((c.get("portrait", {}) as Dictionary).get("seed", str(cid).hash()))
+	w.setup("chr_soul_%d" % (absi(seed_v) % 4), model, Vector2(cells[rng.randi_range(0, cells.size() - 1)]), "sw")
+	w.speed = 0.9
+	w.modulate = Color(0.8, 0.72, 1.0, 0.85) # a faint Purgatory tint marks the Residents
 
 
 # ---------------------------------------------------------------- soul flows

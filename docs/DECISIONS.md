@@ -12,3 +12,6 @@ Binding rulings from the project owner. These override any proposal that conflic
 | D6 | 2026-11-11 | **Build an Android APK now** (debug-signed, sideloadable), built in the cloud container. | Owner |
 | D7 | 2026-11-11 | (Pending owner) Mockup vista = Map screen, gameplay camera closer — adopted per QA recommendation unless the owner objects. | REVIEW Q1 |
 | D8 | 2026-11-11 | **No more multi-agent builds.** The orchestrator builds features directly, single-threaded. | Owner |
+| D9 | 2026-11-11 | **Backdrop:** use the Chamber's dark void backdrop everywhere, not the Gilt/Ember split behind Clerk's Court. | Owner |
+| D10 | 2026-11-11 | **DEFERRED verdict:** souls may be trapped in Purgatory (third stamp); they become Residents held in the Deferral Cells. | Owner idea |
+| D11 | 2026-11-11 | **Living quarters:** cells for the Residents, a dormitory for the workers, and private quarters for Pell. | Owner |

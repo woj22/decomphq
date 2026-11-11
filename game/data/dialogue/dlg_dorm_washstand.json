@@ -1,0 +1,16 @@
+{
+ "id": "dlg_dorm_washstand",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A rota pinned above the washstands: 'Water for the living-shift. Silence for the dead-shift.'",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "Somebody has added underneath, in pencil: 'We are ALL the dead shift, Gerald.'",
+   "next": "end"
+  }
+ }
+}

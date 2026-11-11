@@ -1,0 +1,16 @@
+{
+ "id": "dlg_pell_lectern",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "An open ledger of Pell's own life. One entry, mid-page, has been scraped out and rewritten.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "You know that ink. You decide, for now, not to know it.",
+   "next": "end"
+  }
+ }
+}

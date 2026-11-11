@@ -498,3 +498,60 @@ def statue(ctx):
     # other hand holds a ledger to the chest
     ctx.box((.06, -.36, z0 + .85), (.34, -.2, z0 + 1.15), st1)
     ctx.sphere(.07, (.2, -.36, z0 + 1.0), st2)
+
+
+# ---------------------------------------------------------------- living quarters & cells (owner request)
+def bed(ctx, sleeper=False, soul=False):
+    """A narrow cot along the x axis: iron frame, straw mattress, purple blanket, pillow at +x."""
+    m = ctx.m
+    iron = m('27232f')
+    for sx in (-.42, .42):
+        for sy in (-.19, .19):
+            ctx.box((sx - .025, sy - .025, 0), (sx + .025, sy + .025, .22), iron)
+    ctx.box((.40, -.21, .1), (.45, .21, .42), iron)  # headboard
+    ctx.box((-.45, -.21, .12), (-.40, .21, .30), iron)  # footboard
+    ctx.box((-.42, -.2, .16), (.42, .2, .21), m('5a3f2e'))
+    ctx.box((-.40, -.18, .21), (.40, .18, .28), m('8a8591'))  # mattress
+    ctx.box((-.40, -.185, .27), (.12, .185, .31), m('43325c'))  # blanket
+    ctx.box((.20, -.13, .28), (.37, .13, .35), m('b5b0b8'))  # pillow
+    if sleeper or soul:
+        body = m('cfe0e6', .35) if soul else m('43325c')
+        ctx.box((-.36, -.13, .28), (.16, .13, .40), body)  # a shape under the blanket
+        ctx.sphere(.08, (.27, 0, .40), m('cfe0e6', .35) if soul else m('8a8591'))
+
+
+def cell_bars(ctx, axis='x'):
+    """A row of iron bars across one cell edge, with top and bottom rails."""
+    m = ctx.m
+    iron, rail = m('27232f'), m('37323f')
+    along_x = axis == 'x'
+    def bx(a0, a1, z0, z1, t=.025):
+        if along_x:
+            return ctx.box((a0, -t, z0), (a1, t, z1), iron)
+        return ctx.box((-t, a0, z0), (t, a1, z1), iron)
+    for i in range(7):
+        a = -.45 + i * .15
+        bx(a - .014, a + .014, 0, 1.15, .014)
+    if along_x:
+        ctx.box((-.5, -.035, 1.1), (.5, .035, 1.18), rail)
+        ctx.box((-.5, -.035, 0), (.5, .035, .06), rail)
+    else:
+        ctx.box((-.035, -.5, 1.1), (.035, .5, 1.18), rail)
+        ctx.box((-.035, -.5, 0), (.035, .5, .06), rail)
+
+
+def cell_door(ctx, axis='x'):
+    """Barred cell door: bars plus a heavy lock plate."""
+    cell_bars(ctx, axis)
+    m = ctx.m
+    if axis == 'x':
+        ctx.box((.12, -.05, .5), (.26, .05, .66), m('a8742a'))
+    else:
+        ctx.box((-.05, .12, .5), (.05, .26, .66), m('a8742a'))
+
+
+def washstand(ctx):
+    m = ctx.m
+    ctx.box((-.16, -.14, 0), (.16, .14, .5), m('5a3f2e'))
+    ctx.cyl(.12, .09, .5, .58, m('b5b0b8'), seg=10)
+    ctx.cyl(.05, .04, .58, .74, m('8a8591'), seg=8, loc=(.06, .0))

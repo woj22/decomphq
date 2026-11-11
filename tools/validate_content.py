@@ -735,8 +735,9 @@ def main():
     for aid in ("area_clerks_court", "area_arrival_hall", "area_records_annexe", "area_booths", "area_adjudicator_chamber"):
         if aid not in areas:
             err("areas", "missing %s" % aid)
-    if "area_clerks_court" in areas and areas["area_clerks_court"].get("backdrop") != "court":
-        err("areas/area_clerks_court", "backdrop must be 'court'")
+    for aid, a in areas.items():  # owner (D9): the void backdrop everywhere; "court" (Gilt/Ember split) stays available
+        if a.get("backdrop", "none") not in ("none", "court"):
+            err("areas/" + aid, "backdrop must be 'none' or 'court'")
     # door round trips
     for aid, a in areas.items():
         for o in a.get("objects", []):

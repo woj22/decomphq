@@ -1,0 +1,16 @@
+{
+ "id": "dlg_pell_diary",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "Pell's daybook. Every file he has handed over, cross-referenced to the quarter-hour.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "The last page, in a smaller hand: 'Shelf six again. Someone takes from shelf six and signs for it in violet.'",
+   "next": "end"
+  }
+ }
+}

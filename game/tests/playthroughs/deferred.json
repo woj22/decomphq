@@ -1,13 +1,157 @@
-{"steps": [
- {"do": "new_game"},
- {"do": "talk", "object": "obj_marrow"},
- {"do": "call_soul"},
- {"do": "sit"},
- {"do": "stamp", "verdict": "purgatory", "ground": "auto"},
- {"do": "drain"},
- {"do": "assert", "conditions": [{"op": "verdict", "case": "case_s001", "value": "purgatory"}],
-  "stats": {"overturned": 0, "deferred": 1, "cases_processed": 1}},
- {"do": "go_to", "object": "obj_wren"}, {"do": "drain"},
- {"do": "wait", "seconds": 3.0},
- {"do": "screenshot", "name": "court_resident"}
-]}
+{
+ "steps": [
+  {
+   "do": "new_game"
+  },
+  {
+   "do": "talk",
+   "object": "obj_marrow"
+  },
+  {
+   "do": "call_soul"
+  },
+  {
+   "do": "sit"
+  },
+  {
+   "do": "stamp",
+   "verdict": "purgatory",
+   "ground": "auto"
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "conditions": [
+    {
+     "op": "verdict",
+     "case": "case_s001",
+     "value": "purgatory"
+    }
+   ],
+   "stats": {
+    "overturned": 0,
+    "deferred": 1,
+    "cases_processed": 1
+   }
+  },
+  {
+   "do": "go_to",
+   "object": "obj_wren"
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "wait",
+   "seconds": 3.0
+  },
+  {
+   "do": "interact",
+   "object": "door_court_cells"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.5
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "area": "area_deferral_cells"
+  },
+  {
+   "do": "wait",
+   "seconds": 2.0
+  },
+  {
+   "do": "screenshot",
+   "name": "cells"
+  },
+  {
+   "do": "interact",
+   "object": "door_cells_court"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.5
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "interact",
+   "object": "door_court_dorm"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.5
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "area": "area_dormitory"
+  },
+  {
+   "do": "wait",
+   "seconds": 2.0
+  },
+  {
+   "do": "screenshot",
+   "name": "dorm"
+  },
+  {
+   "do": "interact",
+   "object": "door_dorm_court"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.5
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "interact",
+   "object": "door_court_records"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.5
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "interact",
+   "object": "door_records_pell"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.5
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "assert",
+   "area": "area_pell_quarters"
+  },
+  {
+   "do": "talk",
+   "object": "obj_pell_diary"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.0
+  },
+  {
+   "do": "screenshot",
+   "name": "pell"
+  }
+ ]
+}

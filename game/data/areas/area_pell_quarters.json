@@ -1,0 +1,206 @@
+{
+ "id": "area_pell_quarters",
+ "name": "Pell's Quarters",
+ "size": [
+  9,
+  7
+ ],
+ "ambience": "amb_records",
+ "backdrop": "none",
+ "grid": [
+  "#########",
+  "#SSS.SS.k",
+  "#.......k",
+  "D..d.n..k",
+  "#..o.w..k",
+  "#S.....lk",
+  "kkkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "n": {
+   "kind": "prop",
+   "prop": "bed",
+   "solid": true
+  },
+  "z": {
+   "kind": "prop",
+   "prop": "bed_sleeper",
+   "solid": true
+  },
+  "y": {
+   "kind": "prop",
+   "prop": "bed_soul",
+   "solid": true
+  },
+  "w": {
+   "kind": "prop",
+   "prop": "washstand",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "o": {
+   "kind": "seat",
+   "prop": "stool",
+   "solid": false
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  },
+  "c": {
+   "kind": "floor"
+  },
+  "=": {
+   "kind": "prop",
+   "prop": "cell_bars_x",
+   "solid": true
+  },
+  "|": {
+   "kind": "prop",
+   "prop": "cell_bars_y",
+   "solid": true
+  },
+  "G": {
+   "kind": "prop",
+   "prop": "cell_door_x",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [
+  {
+   "cell": [
+    4,
+    0
+   ],
+   "glass": "gold"
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "wall_torch_y",
+   "cell": [
+    0,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    3,
+    4
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    6,
+    5
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_pell_records",
+   "type": "door",
+   "cell": [
+    0,
+    3
+   ],
+   "use_cell": [
+    1,
+    3
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_records_annexe",
+    "spawn": "from_pell"
+   }
+  },
+  {
+   "id": "obj_pell_diary",
+   "type": "inspect",
+   "cell": [
+    3,
+    3
+   ],
+   "use_cell": [
+    3,
+    4
+   ],
+   "dialogue": "dlg_pell_diary"
+  },
+  {
+   "id": "obj_pell_bed",
+   "type": "inspect",
+   "cell": [
+    5,
+    3
+   ],
+   "use_cell": [
+    5,
+    2
+   ],
+   "dialogue": "dlg_pell_bed"
+  },
+  {
+   "id": "obj_pell_lectern",
+   "type": "inspect",
+   "cell": [
+    7,
+    5
+   ],
+   "use_cell": [
+    6,
+    5
+   ],
+   "dialogue": "dlg_pell_lectern"
+  }
+ ],
+ "spawns": {
+  "default": [
+   1,
+   3
+  ],
+  "from_records": [
+   1,
+   3
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "staff": [],
+  "flows": []
+ },
+ "ext": {
+  "note": "Owner request: a room for the Under-Archivist, Osric Pell."
+ }
+}

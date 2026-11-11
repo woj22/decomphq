@@ -21,7 +21,7 @@ GAIN = 1.45          # exposure applied with the ambient tint (keeps the cold ti
 
 # Blender jobs with rough cost (s) for load balancing
 JOBS = [('walls', 3.3), ('windows', 2.1), ('doors', 3.4), ('kerbs', .7), ('brazier', 1.2), ('torch', 1.5),
-        ('banner', .6), ('desks', 1.6), ('furn', 2.0), ('shelves', 2.5), ('rails', .8), ('booth', .5), ('statue', 1.2),
+        ('banner', .6), ('desks', 1.6), ('furn', 2.0), ('shelves', 2.5), ('quarters', 1.2), ('rails', .8), ('booth', .5), ('statue', 1.2),
         ('busts', 2.0), ('portraits', 2.5)] + [(f'char:{c}', 4.2 if spec.CHARS[c] != 'soul' else 3.3) for c in spec.CHARS]
 
 

@@ -85,6 +85,16 @@ def j_furn(ctx):
     kit.counter(ctx); shot(ctx, 'counter')
 
 
+def j_quarters(ctx):
+    kit.bed(ctx); shot(ctx, 'bed')
+    kit.bed(ctx, sleeper=True); shot(ctx, 'bed_sleeper')
+    kit.bed(ctx, soul=True); shot(ctx, 'bed_soul')
+    kit.washstand(ctx); shot(ctx, 'washstand')
+    for ax in 'xy':
+        kit.cell_bars(ctx, ax); shot(ctx, f'cell_bars_{ax}')
+        kit.cell_door(ctx, ax); shot(ctx, f'cell_door_{ax}')
+
+
 def j_shelves(ctx):
     kit.shelf(ctx); shot(ctx, 'shelf_books')
     kit.shelf(ctx, empty=True); shot(ctx, 'shelf_empty')

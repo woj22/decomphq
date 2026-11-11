@@ -1,0 +1,16 @@
+{
+ "id": "dlg_cells_register",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The warden's register. Each line is a soul nobody would take. The newest entries are in your handwriting.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "A note pinned to the cover: 'DEFERRED is not a verdict. It is a waiting room with a lock. - Warden, Night Shift'",
+   "next": "end"
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "id": "dlg_pell_bed",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A narrow bed, made with archival precision. The corners are folded at exactly forty-five degrees.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "Under the pillow: a pressed flower, labelled and dated, filed under P for Private.",
+   "next": "end"
+  }
+ }
+}

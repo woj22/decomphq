@@ -14,7 +14,7 @@
   "#S...P....w..w.k",
   "#S.cccc...d..d.k",
   "#S.....xx.o..o.k",
-  "#......xx......k",
+  "D......xx......k",
   "kkDkkkkkkkkkkkkk"
  ],
  "legend": {
@@ -171,6 +171,23 @@
     2
    ],
    "dialogue": "dlg_empty_shelf"
+  },
+  {
+   "id": "door_records_pell",
+   "type": "door",
+   "cell": [
+    0,
+    6
+   ],
+   "use_cell": [
+    1,
+    6
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_pell_quarters",
+    "spawn": "from_records"
+   }
   }
  ],
  "spawns": {
@@ -180,6 +197,10 @@
   ],
   "from_court": [
    2,
+   6
+  ],
+  "from_pell": [
+   1,
    6
   ]
  },
