@@ -1,0 +1,11 @@
+{
+ "id": "dlg_registrar_refuse",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_registrar",
+   "text": "Your docket's empty, or a soul is already following you. One at a time; it says so on the statue.",
+   "next": "end"
+  }
+ }
+}

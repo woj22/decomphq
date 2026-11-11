@@ -1,0 +1,16 @@
+{
+ "id": "dlg_empty_shelf",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "Shelf Ae. A label in Pell's hand: DEFERRED, STAFF. Every slot holds a file but one.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "The tag on the empty slot bears your name.",
+   "next": "end"
+  }
+ }
+}

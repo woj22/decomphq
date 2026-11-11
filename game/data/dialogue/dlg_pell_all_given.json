@@ -1,0 +1,11 @@
+{
+ "id": "dlg_pell_all_given",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "You have everything I hold on this one. The rest is in the soul, and souls don't file.",
+   "next": "end"
+  }
+ }
+}

@@ -1,0 +1,104 @@
+{
+ "id": "dlg_marrow_promotion",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_marrow",
+   "text": "Sit. No, stand; it's that sort of occasion. Six souls, and you checked the last one against the archive when the file told you not to.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_marrow",
+   "text": "This arrived from the Auditor-General's office within the hour. It \"commends your vigilance\".",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_marrow",
+   "text": "It confirms your elevation to Senior Adjudicator, effective now, and asks that the Tarrow file be forwarded to the Office of Reconciliation.",
+   "next": "n4"
+  },
+  "n4": {
+   "speaker": "npc_marrow",
+   "text": "Room 0. For \"safekeeping\".",
+   "next": "n5"
+  },
+  "n5": {
+   "speaker": "npc_marrow",
+   "text": "I have worked here three hundred years. I have never been commended within the hour for anything.",
+   "next": "n6"
+  },
+  "n6": {
+   "speaker": "narrator",
+   "text": "She unpins the grey cuffs from your sleeves and sets down a pair edged in gold and red.",
+   "next": "n7"
+  },
+  "n7": {
+   "speaker": "npc_marrow",
+   "text": "Senior Adjudicators hear appeals. That means souls somebody else already judged, and files somebody else already touched.",
+   "next": "n8"
+  },
+  "n8": {
+   "speaker": "npc_marrow",
+   "text": "The stair in the court is open to you. Grist will pretend he never stopped you.",
+   "next": "n9"
+  },
+  "n9": {
+   "speaker": "npc_marrow",
+   "text": "As for the Tarrow file. I am required to tell you to send it up. I have now told you.",
+   "next": "choice"
+  },
+  "choice": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Forward the file to Room 0.",
+     "next": "close",
+     "effects": [
+      {
+       "op": "set_flag",
+       "id": "flag_tarrow_file",
+       "value": "forwarded"
+      }
+     ]
+    },
+    {
+     "text": "Forward it, but ask Pell to keep his copy.",
+     "next": "close",
+     "effects": [
+      {
+       "op": "set_flag",
+       "id": "flag_tarrow_file",
+       "value": "kept_copy"
+      }
+     ]
+    },
+    {
+     "text": "\"I seem to have misfiled it.\"",
+     "next": "close",
+     "effects": [
+      {
+       "op": "set_flag",
+       "id": "flag_tarrow_file",
+       "value": "misfiled"
+      }
+     ]
+    }
+   ]
+  },
+  "close": {
+   "speaker": "npc_marrow",
+   "text": "Noted. Or rather, not noted. Go on. One at a time.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_promotion_done",
+     "value": true
+    },
+    {
+     "op": "end_shift"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

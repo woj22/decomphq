@@ -260,8 +260,9 @@ func shift_summary() -> Dictionary:
 
 func pay_base() -> int:
 	var r := Content.rank_info(rank)
-	if r.has("pay_base"):
-		return int(r["pay_base"])
+	for k: String in ["base_pay", "pay_base"]:
+		if r.has(k):
+			return int(r[k])
 	var by_rank: Variant = Content.cfg("pay_base_by_rank")
 	if by_rank is Dictionary and (by_rank as Dictionary).has(str(rank)):
 		return int((by_rank as Dictionary)[str(rank)])

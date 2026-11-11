@@ -1,0 +1,12 @@
+{
+  "obj_report_marrow": {"text": "Report to Ignatia Marrow", "target": {"area": "area_booths", "object": "obj_marrow"}},
+  "obj_call_soul": {"text": "Call your first soul", "target": {"area": "area_arrival_hall", "object": "obj_registrar"}},
+  "obj_call_next": {"text": "Call the next soul", "target": {"area": "area_arrival_hall", "object": "obj_registrar"}},
+  "obj_take_desk": {"text": "Take the soul to your desk", "target": {"area": "area_booths", "object": "obj_player_desk"}},
+  "obj_fetch_pryke": {"text": "Fetch Pryke's originals from Pell", "target": {"area": "area_records_annexe", "object": "obj_pell"}},
+  "obj_ask_pell_garrity": {"text": "Ask Pell about Garrity's last job", "target": {"area": "area_records_annexe", "object": "obj_pell"}},
+  "obj_addendum": {"text": "Ask Pell for the Greywater addendum", "target": {"area": "area_records_annexe", "object": "obj_pell"}},
+  "obj_collect_docket": {"text": "Collect your docket from Marrow", "target": {"area": "area_booths", "object": "obj_marrow"}},
+  "obj_correction": {"text": "File a correction for Bess Tarrow", "target": {"area": "area_booths", "object": "obj_player_desk"}},
+  "obj_climb": {"text": "Climb the stair in Clerk's Court", "target": {"area": "area_clerks_court", "object": "obj_stair"}}
+}

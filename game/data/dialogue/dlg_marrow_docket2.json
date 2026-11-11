@@ -1,0 +1,35 @@
+{
+ "id": "dlg_marrow_docket2",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_marrow",
+   "text": "Day two. Three souls. You know where Pell is and you know where the doors are. I shan't walk you there again.",
+   "effects": [
+    {
+     "op": "give_docket",
+     "day": 2
+    },
+    {
+     "op": "start_shift",
+     "day": 2
+    },
+    {
+     "op": "set_flag",
+     "id": "flag_shift2_started",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_call_next"
+    }
+   ],
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_marrow",
+   "text": "One more thing. If a file looks too tidy, it was tidied by somebody.",
+   "next": "end"
+  }
+ }
+}

@@ -1,0 +1,88 @@
+{
+ "id": "npc_wren",
+ "name": "Tobias Wren",
+ "title": "Junior Processing Clerk",
+ "sprite": "chr_clerk_grey",
+ "portrait": "por_wren",
+ "home": {
+  "area": "area_clerks_court",
+  "cell": [
+   9,
+   8
+  ],
+  "facing": "w"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_wren_promoted",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_promoted"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_wren_l6"
+    }
+   ]
+  },
+  {
+   "id": "dlg_wren_after_s007",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s007",
+     "value": "judged"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_wren_l5"
+    }
+   ]
+  },
+  {
+   "id": "dlg_wren_after_s004",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s004",
+     "value": "judged"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_wren_l4"
+    }
+   ]
+  },
+  {
+   "id": "dlg_wren_after_s003",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s003",
+     "value": "judged"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_wren_l3"
+    }
+   ]
+  },
+  {
+   "id": "dlg_wren_intro",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_met_wren"
+    }
+   ]
+  },
+  {
+   "id": "dlg_wren_idle",
+   "conditions": []
+  }
+ ],
+ "ext": {
+  "secret": "Someone tells him the verdicts in advance."
+ }
+}

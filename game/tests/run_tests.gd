@@ -6,6 +6,10 @@ var _started := false
 
 func _initialize() -> void:
 	process_frame.connect(_run_once)
+	# Watchdog: a script error must never hang CI.
+	create_timer(600.0).timeout.connect(func() -> void:
+		print("UNIT TESTS: watchdog timeout")
+		quit(2))
 
 
 func _run_once() -> void:
@@ -25,6 +29,10 @@ func _run_once() -> void:
 			continue
 		var script := load(f) as GDScript
 		if script == null:
+			print("LOAD FAIL ", f)
+			failed += 1
+			continue
+		if not script.can_instantiate():
 			print("LOAD FAIL ", f)
 			failed += 1
 			continue

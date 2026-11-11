@@ -1,0 +1,39 @@
+{
+ "id": "npc_oddy",
+ "name": "Percival Oddy",
+ "title": "Certain there has been a mistake",
+ "sprite": "chr_soul_2",
+ "portrait": "por_oddy",
+ "home": {
+  "area": "area_arrival_hall",
+  "cell": [
+   8,
+   2
+  ],
+  "facing": "se"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_oddy_1",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_oddy_1"
+    }
+   ]
+  },
+  {
+   "id": "dlg_oddy_2",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_oddy_2"
+    }
+   ]
+  },
+  {
+   "id": "dlg_oddy_3",
+   "conditions": []
+  }
+ ]
+}

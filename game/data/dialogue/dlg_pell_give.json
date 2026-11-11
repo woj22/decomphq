@@ -1,0 +1,16 @@
+{
+ "id": "dlg_pell_give",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "There. The original, in the hand of whoever was standing nearest when it happened. Bring it back uncreased.",
+   "effects": [
+    {
+     "op": "give_archive"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "id": "dlg_incident_soul",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_incident_soul",
+   "text": "Is this the way up? A man in the queue said if you climb, they have to see you sooner.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_incident_soul",
+   "text": "I've been waiting since the old king. I only want to ask someone if I'm still on the list.",
+   "next": "end"
+  }
+ }
+}

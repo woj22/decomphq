@@ -1,0 +1,21 @@
+{
+ "id": "npc_incident_soul",
+ "name": "A wandering soul",
+ "title": "Out of the queue",
+ "sprite": "chr_soul_3",
+ "portrait": "por_soul",
+ "home": {
+  "area": "area_clerks_court",
+  "cell": [
+   5,
+   4
+  ],
+  "facing": "n"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_incident_soul",
+   "conditions": []
+  }
+ ]
+}

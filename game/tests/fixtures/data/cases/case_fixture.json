@@ -1,0 +1,16 @@
+{"id":"case_fixture","ref":"F-001","name":"Test Soul","age":40,"era":"1900","place":"Nowhere","cause":"testing",
+ "summary":"A small case for engine tests.","portrait":{"seed":1,"tags":[]},"type":"contested","min_rank":1,
+ "entries":[{"id":"r1","tag":"virtue","weight":2,"ink":"black","text":"Did a good thing."},
+            {"id":"r2","tag":"sin","weight":-1,"ink":"violet","text":"Did a bad thing."}],
+ "hidden":[{"id":"h1","tag":"sin","weight":-3,"text":"Did a worse thing."}],
+ "archive":[{"id":"arc_f1","title":"Ledger","requires":[],"cards":["The good thing was a lie."]},
+            {"id":"arc_f2","title":"Report","requires":[{"op":"discovered","case":"case_fixture","id":"d_lie"}],"cards":["The worse thing."]}],
+ "discoveries":[
+   {"id":"d_lie","key":true,"triggers":[{"link":["r1","arc_f1"]}],"ops":[{"op":"void","entry":"r1"}],"fact":{"text":"The good thing never happened."}},
+   {"id":"d_worse","key":true,"triggers":[{"archive":"arc_f2"},{"question":"q2"}],"ops":[{"op":"reveal","entry":"h1"}],"fact":{"text":"A worse thing."}}],
+ "questions":[
+   {"id":"q1","kind":"general","requires":[],"text":"Why?","answer":["Because."],"card":"Because.","fact":{"id":"f_because","text":"He says: because.","side":"heaven","key":false}},
+   {"id":"q2","kind":"confront","requires":[{"op":"discovered","case":"$active_case","id":"d_lie"}],"text":"It was a lie.","answer":["Fine. And worse."],"card":"Admits worse."}],
+ "expected":{"tally_filed":1,"tally_corrected":-4,"guideline":"hell"},
+ "epilogue":{"heaven":["Up he goes."],"hell":["Down he goes."]},
+ "verdicts":{"heaven":{"effects":[]},"hell":{"effects":[]}},"ext":{}}

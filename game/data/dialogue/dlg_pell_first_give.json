@@ -1,0 +1,28 @@
+{
+ "id": "dlg_pell_first_give",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "Records annexe, shelves A through Ae. Don't lick your fingers. State the soul's docket number and what you doubt.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_met_pell",
+     "value": true
+    }
+   ],
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "There. The original, in the hand of whoever was standing nearest when it happened. Bring it back uncreased.",
+   "effects": [
+    {
+     "op": "give_archive"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

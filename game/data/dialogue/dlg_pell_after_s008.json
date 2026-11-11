@@ -1,0 +1,18 @@
+{
+ "id": "dlg_pell_after_s008",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "Black ink is what happened. Violet ink is what somebody needed to have happened. You didn't hear the distinction from me.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_pell_l6",
+     "value": true
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

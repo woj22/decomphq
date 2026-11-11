@@ -1,0 +1,16 @@
+{
+ "id": "dlg_rubric_plaque",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "THE RUBRIC. Add the weights of the record. Above nothing: the Gilt Gate. Below nothing: the Ember Gate.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "Nothing: the Rubric abstains. Beneath, scratched small: 'the file is a claim'.",
+   "next": "end"
+  }
+ }
+}

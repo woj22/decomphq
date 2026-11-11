@@ -1,0 +1,10 @@
+{"id":"area_fixture_room","name":"Fixture Room","size":[8,6],"ambience":"amb_booths","backdrop":"none",
+ "grid":["####D###","#......k","#..c...k","#......k","#....d.k","kkkkkkkk"],
+ "legend":{"#":{"kind":"wall"},"k":{"kind":"kerb"},"D":{"kind":"door"},".":{"kind":"floor"},
+   "c":{"kind":"prop","prop":"counter","solid":true},"d":{"kind":"prop","prop":"desk_clerk","solid":true}},
+ "floor":"floor_flag","windows":[{"cell":[2,0],"glass":"gold"}],"decor":[{"sprite":"light_pool_gold","cell":[2,2]}],
+ "objects":[
+   {"id":"door_fixture_self","type":"door","cell":[4,0],"use_cell":[4,1],"style":"plain","to":{"area":"area_fixture_room","spawn":"default"}},
+   {"id":"obj_fixture_clerk","type":"npc","npc":"npc_fixture_clerk","cell":[3,3],"facing":"s","use_cell":[3,4]},
+   {"id":"obj_player_desk","type":"desk_player","cell":[5,4],"use_cell":[5,3],"seat":[5,3],"soul_seat":[6,4]}],
+ "spawns":{"default":[2,4]},"zones":{}}

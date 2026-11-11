@@ -14,7 +14,7 @@
     {"id": "r1", "tag": "virtue", "weight": 3, "ink": "black", "text": "Kept the Skarvik light burning 31 years after her husband died, unpaid, unasked."},
     {"id": "r2", "tag": "virtue", "weight": 2, "ink": "black", "text": "Took in two children orphaned by the wreck of the Solveig; raised them as hers."},
     {"id": "r3", "tag": "sin", "weight": -1, "ink": "black", "text": "Stole coal from the harbour store during the winter of 1941."},
-    {"id": "r4", "tag": "sin", "weight": -1, "ink": "black", "text": "Refused to speak to her sister for forty years over an inheritance of six spoons."},
+    {"id": "r4", "tag": "sin", "weight": -1, "ink": "black", "text": "Refused to speak to her sister for forty years over a legacy of six spoons."},
     {"id": "r5", "tag": "neutral", "weight": 0, "ink": "black", "text": "Attended no place of worship after 1923."}
   ],
   "hidden": [],

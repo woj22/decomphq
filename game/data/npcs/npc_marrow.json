@@ -1,0 +1,138 @@
+{
+ "id": "npc_marrow",
+ "name": "Ignatia Marrow",
+ "title": "Senior Adjudicator",
+ "sprite": "chr_clerk_lilac",
+ "portrait": "por_marrow",
+ "home": {
+  "area": "area_booths",
+  "cell": [
+   6,
+   1
+  ],
+  "facing": "sw"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_marrow_promotion",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_gate_passed"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_promotion_done"
+    }
+   ]
+  },
+  {
+   "id": "dlg_marrow_reissue",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_gate_reissue"
+    }
+   ]
+  },
+  {
+   "id": "dlg_marrow_correction_wait",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_correction_pending"
+    }
+   ]
+  },
+  {
+   "id": "dlg_marrow_first",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_shift1_started"
+    }
+   ]
+  },
+  {
+   "id": "dlg_marrow_close1",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s003",
+     "value": "judged"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_shift1_closed"
+    }
+   ]
+  },
+  {
+   "id": "dlg_marrow_docket2",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_shift1_closed"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_shift2_started"
+    }
+   ]
+  },
+  {
+   "id": "dlg_marrow_brief_s002",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s001",
+     "value": "judged"
+    },
+    {
+     "op": "case_state",
+     "case": "case_s002",
+     "value": "pending"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_marrow_brief_s002"
+    }
+   ]
+  },
+  {
+   "id": "dlg_marrow_after_s002",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s002",
+     "value": "judged"
+    },
+    {
+     "op": "case_state",
+     "case": "case_s003",
+     "value": "pending"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_marrow_brief_s003"
+    }
+   ]
+  },
+  {
+   "id": "dlg_marrow_after_promotion",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_promotion_done"
+    }
+   ]
+  },
+  {
+   "id": "dlg_marrow_idle",
+   "conditions": []
+  }
+ ],
+ "ext": {
+  "secret": "Keeps one file in her desk: a soul she sent the wrong way."
+ }
+}

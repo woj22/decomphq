@@ -1,0 +1,18 @@
+{
+ "id": "dlg_nan_2",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_nan",
+   "text": "You get to know your neighbours in a queue. Him in front was a pirate. Lovely manners.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_nan_2",
+     "value": true
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

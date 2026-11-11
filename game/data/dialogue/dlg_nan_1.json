@@ -1,0 +1,18 @@
+{
+ "id": "dlg_nan_1",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_nan",
+   "text": "Don't fret about me, dear. I've only been waiting a little while. Since the old Queen, about.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_nan_1",
+     "value": true
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

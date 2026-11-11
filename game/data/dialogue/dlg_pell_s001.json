@@ -1,0 +1,35 @@
+{
+ "id": "dlg_pell_s001",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "Records annexe, shelves A through Ae. Don't lick your fingers.",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_met_pell"
+    }
+   ],
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_met_pell",
+     "value": true
+    }
+   ],
+   "next": "n2",
+   "else": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "Nothing contradicts your file. That does happen. Try not to look disappointed.",
+   "effects": [
+    {
+     "op": "give_archive"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

@@ -1,0 +1,59 @@
+{
+ "id": "dlg_works_offer",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_works_hatch",
+   "text": "Works Office. One desk lamp, twenty obols. Shows you where a file's thin. Requisition takes a century; cash takes a moment.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Buy the lamp (20 ob).",
+     "next": "sold",
+     "conditions": [
+      {
+       "op": "stat_gte",
+       "id": "purse",
+       "value": 20
+      }
+     ],
+     "effects": [
+      {
+       "op": "buy_item",
+       "id": "item_desk_lamp",
+       "price": 20
+      },
+      {
+       "op": "set_flag",
+       "id": "flag_bought_lamp",
+       "value": true
+      }
+     ]
+    },
+    {
+     "text": "I can't afford it.",
+     "next": "end",
+     "conditions": [
+      {
+       "op": "stat_lte",
+       "id": "purse",
+       "value": 19
+      }
+     ]
+    },
+    {
+     "text": "Not today.",
+     "next": "end"
+    }
+   ]
+  },
+  "sold": {
+   "speaker": "npc_works_hatch",
+   "text": "Lamp's yours. Don't read by the flame; read by what the flame shows you.",
+   "next": "end"
+  }
+ }
+}

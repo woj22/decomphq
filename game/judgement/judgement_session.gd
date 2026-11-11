@@ -201,7 +201,7 @@ func discover(did: String) -> bool:
 
 ## Lamp: the first file entry of a not-yet-found link pair (PROJECT §6 sink).
 func lamp_entry() -> String:
-	if not GameState.items.has("item_lamp") and not GameState.items.has("lamp"):
+	if not GameState.items.has("item_desk_lamp") and not GameState.items.has("item_lamp"):
 		return ""
 	for d: Dictionary in data.get("discoveries", []):
 		if discoveries().has(str(d.get("id", ""))):

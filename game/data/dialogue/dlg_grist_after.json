@@ -1,0 +1,11 @@
+{
+ "id": "dlg_grist_after",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_grist",
+   "text": "Fourth step, sir. Still reported.",
+   "next": "end"
+  }
+ }
+}

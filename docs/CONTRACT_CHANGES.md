@@ -1,0 +1,49 @@
+# Contract changes
+
+Append-only log of deviations from `CONTRACTS.md` (who, what, why).
+
+## 2026-11-11 — Content (game/data, tools/validate_content.py, tools/schemas, tools/scoring_ref.py)
+
+All additions are optional keys; nothing in CONTRACTS.md is removed or renamed. Engine readers should treat them as described.
+
+1. **Discoveries may carry `effects`** (list of §3.2 effect ops), run once when the discovery is made, after its `ops`.
+   Used by `case_s008` `d_violet_ink` → `set_flag flag_found_violet_ink true` (the promotion gate flag).
+2. **Fact `side` is always authored** on discovery facts (§8.5 marks it optional). The validator fails if it disagrees with the
+   sign of the ops' tally change, so Engine may read it directly instead of recomputing.
+3. **`epilogue.heaven` / `epilogue.hell` are arrays of 1–2 boxes** (≤140 chars each), like `answer`.
+4. **Verdict effects carry the hidden stats.** `verdicts.<side>.effects` add `favour_gilt`/`favour_ember` (+1 to the receiving side) and
+   `conscience` (+1 Heaven-against-G or ambiguous Heaven, −1 the reverse). Engine must NOT also compute these in scoring.gd
+   (Merit/Order/Overturned/cases_processed stay Engine-computed).
+5. **Area objects may carry `conditions`** (§3.1 list; object hidden/inactive while false): the incident soul
+   (`flag_incident_active`), the stair and the chamber door (`rank_gte 2`). A locked stair shows `locked_dialogue`.
+6. **Stair object fields**: `cells` (the 6 `s` cells), `climb` (3 cells walked in the scripted climb), `climb_h_hu` ([0,2,4]), `to`.
+   Legend `s` carries `solid_until` (a condition). The chamber door (4,0) has `"via":"obj_stair"`: it is reached only by the climb.
+7. **Area `overrides`**: `[{cell, kind, prop, solid, h_hu}]` replaces the legend for one cell (Marrow's desk (6,2) is `desk_superior`
+   while the other booth `d` cells are `desk_clerk`).
+8. **Legend extras**: `h_hu` (dais height; non-zero cells are not walkable since only stairs allow Δh), `floor` (floor family for that
+   cell), `sprite` (wall sprite for `p` cells: `works_hatch_y`, `wall_plaque_x`), `walkable` on `q` (queue cells ARE walkable by the
+   player — Nan at (1,8) is only reachable through her lane), `footprint` on multi-cell props (`T` statue 2×2: draw once at the block's
+   min cell). Decor entries may carry `footprint` too (`decal_inlay_ring` at its min cell (5,5), footprint [4,4]).
+   Stools `o` are `seat` with `solid:false` and NPC letter cells are floor (actors do not block A*): otherwise the booths grid has no
+   path from the door to the player's desk (column 7 is dais/NPC/desk/stool/bench).
+9. **Object extras**: `facing` on npc objects; `desk_player` has `seat` and `soul_seat`; NPC clerks have `desk` + `soul_seat`;
+   `soul_door` has `verdict`; `inspect` may name an `npc` instead of a `dialogue` (Marrow's desk = talk to Marrow).
+   Arrival Hall spawn `soul_call` [8,5] is where `call_soul` materialises the docket soul.
+10. **config.json extras**: `incidents.inc_stair_soul` (npc/area/cell/object/resolver), `ledger_notes.{day}` = list of
+    `{conditions, text}` (first passing = Marrow's ledger note), `items.item_desk_lamp`, `start`, `promotion` (gate numbers; the
+    validator checks `trg_gate_pass` uses the same values).
+11. **ranks.json**: each rank has `auto:false` (Engine must not auto-promote on `requires`; the rank is set by `set_rank` in
+    `trg_shift2_ended_promote` after the promotion scene and shift-2 ledger), plus `base_pay`, `sprite`, `crest`, `privileges`, `motto`.
+12. **Trigger `match` argument names**: `area_entered{area_id}`, `case_called{case_id}`, `case_scored{case_id}`,
+    `discovery_made{case_id, discovery_id}`, `dialogue_ended{dlg_id}`, `shift_started{day}`, `shift_ended{day}`, `rank_changed{rank}`.
+    Several triggers may match one event; they are written to be mutually exclusive, so evaluation order does not matter.
+    `once:false` triggers re-fire (the S-008 gate re-runs after a correction or reissue).
+13. `set_flag.value` may be a string (`flag_tarrow_file` = `forwarded | kept_copy | misfiled`). `give_docket.day` / `start_shift.day`
+    are ints; `config.dockets` keys are the same numbers as strings.
+14. **Reference scoring oracle** `tools/scoring_ref.py` (stdlib; owned by Content per the M1 brief): reproduces every §3.3 row and the
+    §10.8 playthroughs from the real case data. `judgement/scoring.gd` must match it. `tools/schemas/ops.json` lists every allowed op
+    with argument types; Engine may load it.
+15. Gate order when S-008 is scored: violet ink missing → Pell correction (repeats on every re-stamp until the ink is linked);
+    ink found and Merit/Overturned/processed fail → "Docket reissued" (`restore_stats shift1` restores ALL stats incl.
+    cases_processed, then `reset_cases`, flag cleared, docket 2 given again; no shift-2 ledger on that path); pass → promotion scene →
+    `end_shift` (shift-2 ledger) → `set_rank 2`.

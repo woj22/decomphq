@@ -1,0 +1,28 @@
+{
+ "id": "dlg_wren_after_s004",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_wren",
+   "text": "They say the High Chancellor's chair has been empty since before the east wing. The Lord Provost just signs 'on behalf of'.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_wren_l4",
+     "value": true
+    }
+   ],
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_wren",
+   "text": "On behalf of whom, nobody likes to ask.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_wren",
+   "text": "And the Dominion's sent a demon over. Demon Second Class, Debt Recovery. Lovely manners. Takes notes on everyone.",
+   "next": "end"
+  }
+ }
+}

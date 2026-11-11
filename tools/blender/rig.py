@@ -23,6 +23,9 @@ for i in range(4):
     CHARS[f'chr_soul_{i}'] = dict(soul=True, variant=i)
 
 
+SLEEVE = {'43325c': '6a5484', '37323f': '4b4654', '5a3f2e': '6b4a1e', '27232f': '37323f'}
+
+
 class Rig:
     def __init__(self, ctx, spec, extra=None):
         self.ctx, self.p = ctx, dict(spec)
@@ -40,38 +43,39 @@ class Rig:
         soul = p.get('soul')
         if soul:
             return self.build_soul()
-        robe = self.mat(p['robe']); hem = self.mat(p['hem']); face = self.mat(p['face'])
+        robe = self.mat(p['robe']); hem = self.mat(p['hem']); face = self.mat(p['face'], .55)
+        sleeve = self.mat(p.get('sleeve') or SLEEVE.get(p['robe'], p['robe']))
         b = self.body
         k = 0.92 if p.get('hunch') else 1.0
         self.k = k
         # robe: flared cone, slightly elliptical; hem band; belt
-        c.cyl(.175, .10, 0, .55 * k, robe, seg=16, scale=(1, .86), parent=b)
-        c.cyl(.182, .17, 0, .075, hem, seg=16, scale=(1, .86), parent=b)
+        c.cyl(.165, .085, 0, .53 * k, robe, seg=16, scale=(1, .86), parent=b)
+        c.cyl(.172, .163, 0, .05, hem, seg=16, scale=(1, .86), parent=b)
         if p.get('tabard'):
             tab = self.mat(p['tabard'])
             c.cyl(.18, .108, .08, .52 * k, tab, seg=16, scale=(.62, .9), loc=(0, -.006), parent=b)
             c.box((-.03, -.18, .30), (.03, -.10, .36), self.mat('e0a83e'), parent=b)
-        c.cyl(.128, .124, .33 * k, .36 * k, self.mat(p['belt']), seg=12, scale=(1, .86), parent=b)
+        c.cyl(.122, .118, .31 * k, .34 * k, self.mat(p['belt']), seg=12, scale=(1, .86), parent=b)
         # shoulders / yoke
-        c.sphere(.15, (0, .01, .52 * k), robe, scale=(1.08, .72, .52), parent=b)
+        c.sphere(.14, (0, .01, .49 * k), robe, scale=(1.08, .72, .45), parent=b)
         # head group (hunched figures lean forward)
-        self.head = c.empty('head', (0, 0, .62 * k), parent=b)
+        self.head = c.empty('head', (0, 0, .64 * k), parent=b)
         hd = self.head
         if p.get('hunch'):
             hd.location = (0, -.05, .60 * k)
         hood = p['hood']
         if hood == 'helmet':
             c.sphere(.105, (0, .015, .02), self.mat('37323f'), scale=(1, 1, 1.05), parent=hd)       # mail coif
-            c.sphere(.074, (0, -.05, .015), face, scale=(.95, .7, 1.05), parent=hd)
+            c.sphere(.078, (0, -.055, .015), face, scale=(.95, .7, 1.05), parent=hd)
             c.sphere(.11, (0, 0, .085), self.mat('66616e'), scale=(1, 1, .72), parent=hd)           # kettle hat
             c.cyl(.165, .15, .07, .09, self.mat('4b4654'), seg=14, parent=hd)                        # brim
             c.cyl(.012, 0, .14, .2, self.mat('e0a83e'), seg=4, parent=hd)
         else:
             tm = self.mat(p.get('trim') or p['robe'])
-            c.sphere(.128, (0, .025, .04), robe, scale=(1, 1.05, 1.08), parent=hd)
-            c.sphere(.112, (0, -.03, .03), tm if p.get('trim') else robe, scale=(1.02, .8, 1.05), parent=hd)  # cowl rim
-            c.sphere(.09, (0, -.05, .03), self.mat('1a1722'), scale=(.95, .7, 1.05), parent=hd)     # shadowed opening
-            c.sphere(.062, (0, -.085, .015), face, scale=(.92, .6, 1.0), parent=hd)
+            c.sphere(.138, (0, .025, .045), robe, scale=(1, 1.05, 1.08), parent=hd)
+            c.sphere(.118, (0, -.035, .03), tm if p.get('trim') else sleeve, scale=(1.02, .8, 1.05), parent=hd)  # cowl rim
+            c.sphere(.096, (0, -.06, .025), self.mat('0d0b12'), scale=(.95, .7, 1.05), parent=hd)     # shadowed opening
+            c.sphere(.07, (0, -.1, .01), face, scale=(.9, .55, .95), parent=hd)
             if hood == 'pointed':
                 tip = c.cyl(.085, 0, 0, .22, robe, seg=10, loc=(0, 0), parent=hd)
                 tip.location = (0, .07, .2); tip.rotation_euler = (math.radians(28), 0, 0)
@@ -80,15 +84,15 @@ class Rig:
                 tip.location = (0, .06, .15); tip.rotation_euler = (math.radians(20), 0, 0)
             if p.get('specs'):
                 for sx in (-.03, .03):
-                    c.sphere(.019, (sx, -.13, .03), self.mat('fff3c4', 3.0), parent=hd)
+                    c.sphere(.02, (sx, -.145, .03), self.mat('fff3c4', 3.0), parent=hd)
         # arms: pivot at shoulder, sleeve hangs along -Z
         self.arms = []
         for sx in (-1, 1):
-            pv = c.empty('arm', (sx * .155, .0, .5 * k), parent=b)
-            c.cyl(.062, .042, -.27, 0, robe, seg=10, parent=pv)
+            pv = c.empty('arm', (sx * .165, .0, .5 * k), parent=b)
+            c.cyl(.064, .044, -.27, 0, sleeve, seg=10, parent=pv)
             if p.get('cuffs'):
                 c.cyl(.064, .06, -.27, -.235, self.mat(p['cuffs']), seg=10, parent=pv)
-            c.sphere(.032, (0, -.005, -.295), face, parent=pv)
+            c.sphere(.036, (0, -.005, -.295), face, parent=pv)
             self.arms.append(pv)
         # feet
         self.feet = []
@@ -110,9 +114,9 @@ class Rig:
             self.prop = g
         elif pr == 'book':
             g = c.empty('book', (0, 0, 0), parent=b)
-            c.box((-.12, -.27, .26), (.12, -.15, .5), self.mat('74161b'), parent=g)
-            c.box((-.11, -.28, .27), (.11, -.27, .49), self.mat('b5b0b8'), parent=g)
-            c.box((-.12, -.275, .36), (.12, -.265, .39), self.mat('e0a83e'), parent=g)
+            c.box((-.12, -.27, .16), (.12, -.15, .38), self.mat('74161b'), parent=g)
+            c.box((-.11, -.28, .17), (.11, -.27, .37), self.mat('b5b0b8'), parent=g)
+            c.box((-.12, -.275, .25), (.12, -.265, .28), self.mat('e0a83e'), parent=g)
             self.prop = g
         elif pr == 'spear':
             g = c.empty('spear', (0, 0, 0), parent=self.root)

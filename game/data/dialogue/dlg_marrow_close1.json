@@ -1,0 +1,34 @@
+{
+ "id": "dlg_marrow_close1",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_marrow",
+   "text": "You went against the Rubric. That's permitted. I'll want the reason in the margin, and I'll want it to be a reason.",
+   "conditions": [
+    {
+     "op": "verdict",
+     "case": "case_s003",
+     "value": "hell"
+    }
+   ],
+   "next": "n2",
+   "else": "n2"
+  },
+  "n2": {
+   "speaker": "npc_marrow",
+   "text": "That's your docket. Three souls, three doors, and nobody sent anywhere by accident. That I know of.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_marrow",
+   "text": "Sign the ledger and go and be dead somewhere quiet until morning.",
+   "effects": [
+    {
+     "op": "end_shift"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

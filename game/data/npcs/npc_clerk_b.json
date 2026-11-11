@@ -1,0 +1,24 @@
+{
+ "id": "npc_clerk_b",
+ "name": "Adjudicator",
+ "title": "Junior Processing Clerk",
+ "sprite": "chr_clerk_grey",
+ "portrait": "",
+ "home": {
+  "area": "area_booths",
+  "cell": [
+   7,
+   3
+  ],
+  "facing": "sw"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_clerk_busy",
+   "conditions": []
+  }
+ ],
+ "ext": {
+  "role": "bench_adjudicator"
+ }
+}

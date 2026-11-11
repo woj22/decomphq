@@ -1,0 +1,11 @@
+{
+ "id": "dlg_pell_addendum_hint",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "The Altenbruck boxes have an assize addendum filed under a name I haven't got. Bring me the name and I'll bring you the box.",
+   "next": "end"
+  }
+ }
+}

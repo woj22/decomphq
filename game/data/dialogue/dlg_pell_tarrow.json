@@ -1,0 +1,28 @@
+{
+ "id": "dlg_pell_tarrow",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "Lower your voice. ...That file went upstairs to be 'reconciled' and came back a different colour.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_met_pell",
+     "value": true
+    }
+   ],
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "I happened to keep a copy of what it said before. I happen to keep quite a lot of copies.",
+   "effects": [
+    {
+     "op": "give_archive"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

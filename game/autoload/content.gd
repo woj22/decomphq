@@ -165,11 +165,43 @@ func objective(id: String) -> Dictionary:
 	return o if o is Dictionary else {}
 
 
+## Engine key -> paths tried in config.json (Content's layout first).
+const ALIASES := {
+	"composure": ["judgement.composure"],
+	"player_speed": ["player.speed_cells_per_s", "player.speed"],
+	"interaction_radius": ["player.interaction_radius_cells"],
+	"clock_start": ["clock.day_start_minutes", "start.minutes"],
+	"overtime_after": ["clock.overtime_from_minutes"],
+	"queue_arrival_start": ["queue.arrival_start"],
+	"queue_bench_start": ["queue.bench_start"],
+	"queue_bench_cap": ["queue.bench_cap"],
+	"arrival_rate_early": ["queue.arrival_rate_per_h_before"],
+	"arrival_rate_late": ["queue.arrival_rate_per_h_after"],
+	"arrival_rate_switch": ["queue.arrival_rate_switch_minutes"],
+	"registrar_rate": ["queue.registrar_rate_per_h"],
+	"adjudicator_rate": ["queue.adjudicator_rate_per_h_total"],
+	"adjudicator_hell_share": ["queue.npc_hell_share"],
+	"order_start": ["order.start"],
+	"order_queue_free": ["order.queue_threshold"],
+	"purse_start": ["pay.purse_start"],
+	"pay_accuracy_bonus": ["pay.accuracy_bonus"],
+	"pay_accuracy_threshold": ["pay.accuracy_threshold"],
+	"lamp_price": ["items.item_desk_lamp.price"],
+	"merit_gate": ["promotion.merit_min"],
+	"overturned_max": ["promotion.overturned_max"],
+	"sim_seed": ["seed"],
+}
+
+
 ## Config lookup with engine defaults. Accepts dotted paths ("clock_costs.door") and a few aliases.
 func cfg(key: String, fallback: Variant = null) -> Variant:
 	var v: Variant = _lookup(config, key)
 	if v != null:
 		return v
+	for alt: String in ALIASES.get(key, []):
+		v = _lookup(config, alt)
+		if v != null:
+			return v
 	v = _lookup(DEFAULTS, key)
 	if v != null:
 		return v
@@ -203,8 +235,8 @@ func clock_cost(reason: String) -> int:
 	var aliases := {"door": ["door", "area_transition", "transition"], "question_general": ["question_general", "general_question", "question"],
 		"question_confront": ["question_confront", "confront_question", "confrontation"], "archive": ["archive", "archive_request"],
 		"verdict": ["verdict", "stamp"]}
-	for src: String in ["clock_costs", "clock", "clock_minutes", "costs"]:
-		var c: Variant = config.get(src)
+	for src: String in ["clock_costs", "clock.costs", "clock", "clock_minutes", "costs"]:
+		var c: Variant = _lookup(config, src)
 		if c is Dictionary:
 			for k: String in aliases.get(reason, [reason]):
 				if (c as Dictionary).has(k) and ((c as Dictionary)[k] is int or (c as Dictionary)[k] is float):

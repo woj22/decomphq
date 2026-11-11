@@ -1,0 +1,11 @@
+{
+ "id": "dlg_works_sold",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_works_hatch",
+   "text": "One lamp per clerk. Stores says so, and Stores has never once been wrong in writing.",
+   "next": "end"
+  }
+ }
+}

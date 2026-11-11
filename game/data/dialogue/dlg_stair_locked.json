@@ -1,0 +1,11 @@
+{
+ "id": "dlg_stair_locked",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The stair to the Judgement Chambers. Sergeant Grist is watching your cuffs.",
+   "next": "end"
+  }
+ }
+}

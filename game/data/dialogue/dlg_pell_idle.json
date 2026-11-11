@@ -1,0 +1,11 @@
+{
+ "id": "dlg_pell_idle",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "No soul, no shelf-mark. Bring me a docket number and a doubt.",
+   "next": "end"
+  }
+ }
+}

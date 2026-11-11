@@ -1,0 +1,33 @@
+{
+ "id": "npc_works_hatch",
+ "name": "Works Office",
+ "title": "Hatch clerk, Office of Works",
+ "sprite": "",
+ "portrait": "por_works",
+ "home": {
+  "area": "area_clerks_court",
+  "cell": [
+   0,
+   4
+  ],
+  "facing": "se"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_works_sold",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_bought_lamp"
+    }
+   ]
+  },
+  {
+   "id": "dlg_works_offer",
+   "conditions": []
+  }
+ ],
+ "ext": {
+  "note": "A hand in a hatch; no world sprite."
+ }
+}

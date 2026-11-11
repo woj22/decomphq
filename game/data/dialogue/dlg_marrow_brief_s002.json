@@ -1,0 +1,50 @@
+{
+ "id": "dlg_marrow_brief_s002",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_marrow",
+   "text": "You went against the Rubric. That's permitted. I'll want the reason in the margin, and I'll want it to be a reason.",
+   "conditions": [
+    {
+     "op": "verdict",
+     "case": "case_s001",
+     "value": "hell"
+    }
+   ],
+   "next": "n2",
+   "else": "n2"
+  },
+  "n2": {
+   "speaker": "npc_marrow",
+   "text": "This one comes with a glowing summary. Summaries are written by somebody.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_marrow",
+   "text": "Walk to the Records annexe, ask Pell for the originals, and see whether the file survives the trip.",
+   "next": "n4"
+  },
+  "n4": {
+   "speaker": "npc_marrow",
+   "text": "If a record and an original disagree, select both at your desk and LINK them. Only if they truly disagree; guessing costs.",
+   "next": "n5"
+  },
+  "n5": {
+   "speaker": "npc_marrow",
+   "text": "And when you stamp, cite one ground from your notes. A verdict without a reason is a coin toss with ink.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_marrow_brief_s002",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_call_next"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

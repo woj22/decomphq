@@ -1,0 +1,2 @@
+{"id":"npc_fixture_clerk","name":"Fixture Clerk","title":"Test clerk","sprite":"chr_clerk_grey","portrait":"por_wren",
+ "dialogue":[{"id":"dlg_fixture_hello","conditions":[]}]}

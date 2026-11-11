@@ -15,7 +15,7 @@
     {"id": "r2", "tag": "sin", "weight": -1, "ink": "black", "text": "Beat a receiver of stolen goods who had cheated him."},
     {"id": "r3", "tag": "sin", "weight": -1, "ink": "black", "text": "Informed on his partner to shorten his own sentence."},
     {"id": "r4", "tag": "virtue", "weight": 1, "ink": "black", "text": "Kept his mother and three sisters housed and fed, by the only trade he had."},
-    {"id": "r5", "tag": "virtue", "weight": 1, "ink": "black", "text": "Returned a stolen wedding ring through a letterbox after reading the inscription."}
+    {"id": "r5", "tag": "virtue", "weight": 1, "ink": "black", "text": "Returned a stolen wedding ring through a letterbox, having read the inscription."}
   ],
   "hidden": [
     {"id": "h1", "tag": "virtue", "weight": 3, "text": "Abandoned the job to carry an old man from a gas-filled house; killed doing it."}
@@ -23,7 +23,7 @@
   "archive": [
     {"id": "arc_003", "title": "Watchman's statement; gas report", "requires": [], "cards": [
       "Watchman Coyle: 'Man come out the FRONT door carrying the old gent. I fired.'",
-      "Coldharbour Gas Co.: main fractured under No. 14 Tanner's Row; house full by 2am.",
+      "Coldharbour Gas Co.: main burst under 14 Tanner's Row; the house full by 2 a.m.",
       "Householder Abel Penhallow, 81, revived on the step: 'Somebody carried me.'"
     ]}
   ],

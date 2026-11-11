@@ -1,0 +1,32 @@
+{
+  "id": "ranks",
+  "stats": [
+    {"id": "merit", "name": "Merit", "start": 0},
+    {"id": "order", "name": "Order", "start": 68, "min": 0, "max": 100},
+    {"id": "purse", "name": "Obols", "start": 12},
+    {"id": "queue", "name": "Queue", "start": 24, "derived": true},
+    {"id": "overturned", "name": "Overturned", "start": 0},
+    {"id": "cases_processed", "name": "Processed", "start": 0},
+    {"id": "favour_gilt", "name": "Gilt favour", "start": 0, "hidden": true},
+    {"id": "favour_ember", "name": "Ember favour", "start": 0, "hidden": true},
+    {"id": "conscience", "name": "Conscience", "start": 0, "hidden": true}
+  ],
+  "ranks": [
+    {"rank": 1, "id": "rank_junior_clerk", "title": "Junior Processing Clerk", "auto": false,
+     "sprite": "chr_player", "crest": "icon_crest_r1", "base_pay": 8,
+     "requires": [], "on_reach": [], "privileges": []},
+    {"rank": 2, "id": "rank_senior_adjudicator", "title": "Senior Adjudicator", "auto": false,
+     "sprite": "chr_player_r2", "crest": "icon_crest_r2", "base_pay": 12,
+     "motto": "The file is a claim. You are now the second opinion.",
+     "requires": [
+       {"op": "stat_gte", "id": "cases_processed", "value": 6},
+       {"op": "flag", "id": "flag_found_violet_ink"},
+       {"op": "stat_gte", "id": "merit", "value": 30},
+       {"op": "stat_lte", "id": "overturned", "value": 2}],
+     "on_reach": [],
+     "privileges": [
+       {"icon": "icon_key", "text": "The stair in Clerk's Court is open to you"},
+       {"icon": "icon_quill", "text": "Appeals may now be heard"},
+       {"icon": "icon_obol", "text": "Base pay 8 -> 12 obols"}]}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+ "id": "dlg_wren_idle",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_wren",
+   "text": "Marrow has you walking to Records for every file? Bless you.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_wren",
+   "text": "Some of us find the answer's usually on the first page, if you know how to read it.",
+   "next": "end"
+  }
+ }
+}

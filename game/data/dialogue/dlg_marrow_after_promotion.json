@@ -1,0 +1,11 @@
+{
+ "id": "dlg_marrow_after_promotion",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_marrow",
+   "text": "The stair, Adjudicator. It won't climb itself, and Grist won't carry you.",
+   "next": "end"
+  }
+ }
+}

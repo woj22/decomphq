@@ -1,0 +1,50 @@
+{
+ "id": "npc_registrar",
+ "name": "Dorcas Ferrule",
+ "title": "Registrar of Arrivals",
+ "sprite": "chr_clerk_grey",
+ "portrait": "por_registrar",
+ "home": {
+  "area": "area_arrival_hall",
+  "cell": [
+   10,
+   4
+  ],
+  "facing": "w"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_registrar_welcome",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_shift1_started"
+    }
+   ]
+  },
+  {
+   "id": "dlg_registrar_call",
+   "conditions": [
+    {
+     "op": "not",
+     "of": {
+      "op": "has_active_case"
+     }
+    },
+    {
+     "op": "not",
+     "of": {
+      "op": "docket_empty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "dlg_registrar_refuse",
+   "conditions": []
+  }
+ ],
+ "ext": {
+  "note": "Name supplied by Content (PROJECT 10.7)."
+ }
+}

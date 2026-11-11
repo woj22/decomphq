@@ -1,0 +1,18 @@
+{
+ "id": "dlg_grist_salute",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_grist",
+   "text": "Senior Adjudicator. Cuffs check out. Up you go, sir. Mind the fourth step, it's been reported.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_grist_saluted",
+     "value": true
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

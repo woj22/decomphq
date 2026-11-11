@@ -1,0 +1,38 @@
+{
+ "id": "dlg_grist_incident",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_grist",
+   "text": "Clerk. One of yours is having a go at my stair. Watch this; it's the only part of the job I'm good at.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_grist",
+   "text": "Not this way, love. Back to the hall, follow the candles. Nobody's forgotten you, it's just slow.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "narrator",
+   "text": "The soul looks at the stair, then at Grist, and drifts back toward the Arrival Hall.",
+   "effects": [
+    {
+     "op": "resolve_incident",
+     "id": "inc_stair_soul",
+     "resolved": true
+    },
+    {
+     "op": "set_flag",
+     "id": "flag_incident_active",
+     "value": false
+    },
+    {
+     "op": "set_flag",
+     "id": "flag_incident_resolved",
+     "value": true
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

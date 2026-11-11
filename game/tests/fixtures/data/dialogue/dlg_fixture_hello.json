@@ -1,0 +1,7 @@
+{"id":"dlg_fixture_hello","start":"n1","nodes":{
+  "n1":{"speaker":"npc_fixture_clerk","text":"A docket for you. One soul.","next":"n2",
+        "effects":[{"op":"give_docket","day":1},{"op":"start_shift","day":1}]},
+  "n2":{"speaker":"player","choices":[
+     {"text":"Call the soul.","next":"end","effects":[{"op":"call_soul"}],"conditions":[{"op":"not","of":{"op":"has_active_case"}}]},
+     {"text":"Archive, please.","next":"end","effects":[{"op":"give_archive"}],"conditions":[{"op":"archive_available"}]},
+     {"text":"Goodbye.","next":"end"}]}}}

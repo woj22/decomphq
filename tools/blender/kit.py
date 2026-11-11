@@ -55,12 +55,12 @@ def wall(ctx, axis='x', opening=None, glass='gold', door=None, plaque=False, hat
         ctx.box((lo_x, Y0 - .12, 0.86), (hi_x, Y0 - .06, 0.9 + 3 / ZPX), trim, root)  # weathering
     cx = 0.0
     if opening == 'window':
-        hw, base, spring = 0.15, 0.70, 0.74
-        cutter = ctx.arch(hw, spring, 0.6, None, parent=None, name='cut'); cutter.location = (cx, Y0, base)
+        hw, base, spring = 0.17, 0.62, 0.92
+        cutter = ctx.arch(hw, spring, 0.6, None, parent=root, name='cut'); cutter.location = (cx, Y0, base)
         ctx.cut(slab, cutter)
         # chamfered surround
         sur = ctx.arch(hw + .045, spring + .02, 0.05, trim, parent=root, name='surround'); sur.location = (cx, Y0 - .01, base - .02)
-        cut2 = ctx.arch(hw, spring, 0.3, None, name='cut2'); cut2.location = (cx, Y0, base)
+        cut2 = ctx.arch(hw, spring, 0.3, None, parent=root, name='cut2'); cut2.location = (cx, Y0, base)
         ctx.cut(sur, cut2)
         gcol, gcore = ('e0a83e', 'fff3c4') if glass == 'gold' else ('b3261e', 'e8552b')
         g = ctx.arch(hw, spring, 0.02, m(gcol, 2.2, 'f6d67a' if glass == 'gold' else 'e8552b'), parent=root, name='glass')
@@ -74,14 +74,14 @@ def wall(ctx, axis='x', opening=None, glass='gold', door=None, plaque=False, hat
         ctx.box((cx - hw - .05, Y0 - .06, base - .07), (cx + hw + .05, Y0 + .02, base), trim, root)   # sill
     if opening == 'door':
         hw, spring = 0.27, 0.86
-        cutter = ctx.arch(hw, spring, 0.8, None, name='cut'); cutter.location = (cx, Y0, 0)
+        cutter = ctx.arch(hw, spring, 0.8, None, parent=root, name='cut'); cutter.location = (cx, Y0, 0)
         ctx.cut(slab, cutter)
         for p in parts:
-            c = ctx.arch(hw, spring, 0.8, None, name='cutp'); c.location = (cx, Y0, 0); ctx.cut(p, c)
+            c = ctx.arch(hw, spring, 0.8, None, parent=root, name='cutp'); c.location = (cx, Y0, 0); ctx.cut(p, c)
         style = door or 'plain'
         ring_m = {'plain': trim, 'gilt': m('e0a83e', 0.25, 'e0a83e'), 'ember': m('74161b')}[style]
         ring = ctx.arch(hw + .07, spring + .03, 0.07, ring_m, parent=root, name='ring'); ring.location = (cx, Y0 - .02, 0)
-        c3 = ctx.arch(hw, spring, 0.4, None, name='cut3'); c3.location = (cx, Y0, 0); ctx.cut(ring, c3)
+        c3 = ctx.arch(hw, spring, 0.4, None, parent=root, name='cut3'); c3.location = (cx, Y0, 0); ctx.cut(ring, c3)
         back_y = Y0 + T - .03
         if style == 'plain':
             wood = ctx.brick('planks', '5a3f2e', '5a3f2e', '27232f', bw=0.09, bh=4.0, mort=0.08, wall=True)
@@ -119,7 +119,7 @@ def wall(ctx, axis='x', opening=None, glass='gold', door=None, plaque=False, hat
             ctx.box((cx - .15, Y0 - .05, zz), (cx + .15 - (i % 2) * .06, Y0 - .04, zz + .025), m('8a8591'), root)
         ctx.sphere(.05, (cx, Y0 - .05, 1.46), m('e0a83e'), parent=root, scale=(1, .4, 1))
     if hatch:
-        cutter = ctx.box((cx - .26, Y0 - .2, .62), (cx + .26, Y0 + .6, 1.18), None, name='cut'); ctx.cut(slab, cutter)
+        cutter = ctx.box((cx - .26, Y0 - .2, .62), (cx + .26, Y0 + .6, 1.18), None, root, name='cut'); ctx.cut(slab, cutter)
         ctx.box((cx - .26, Y0 + T - .05, .62), (cx + .26, Y0 + T - .03, 1.18), m('e0a83e', 1.4, 'f6d67a'), root)
         ctx.box((cx - .32, Y0 - .14, .58), (cx + .32, Y0 + .02, .64), m('5a3f2e'), root)        # counter shelf
         ctx.box((cx - .3, Y0 - .03, 1.18), (cx + .3, Y0, 1.24), trim, root)
@@ -395,7 +395,6 @@ def ticket_booth(ctx):
     ctx.box((-.42, -.38, 0), (.42, .42, 1.5), ctx.brick('boothplank', '5a3f2e', '5a3f2e', '27232f', bw=.12, bh=4, mort=.06))
     ctx.box((-.46, -.42, 0), (.46, .46, .08), m('27232f'))
     # window with counter
-    cutter = ctx.box((-.28, -.6, .62), (.28, .0, 1.12), None, name='cut')
     ctx.box((-.28, -.33, .62), (.28, -.31, 1.12), m('e0a83e', 1.3, 'f6d67a'))
     ctx.box((-.34, -.48, .56), (.34, -.36, .62), m('6b4a1e'))
     for x in (-.1, .1):

@@ -1,0 +1,22 @@
+{
+ "id": "dlg_registrar_welcome",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_registrar",
+   "text": "Staff go through the Court to the Booths. Souls go nowhere until a clerk calls them. You're staff, I'm told. Go on, then.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_met_registrar",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_report_marrow"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

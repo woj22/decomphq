@@ -1,0 +1,16 @@
+{
+ "id": "dlg_statue",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The First Clerk: hooded, winged, lantern raised. Nobody knows which side it came from. Both embassies have filed claims.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "The plinth reads: EACH ONE. EVERY ONE. ONE AT A TIME.",
+   "next": "end"
+  }
+ }
+}

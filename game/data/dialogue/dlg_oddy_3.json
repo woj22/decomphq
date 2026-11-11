@@ -1,0 +1,11 @@
+{
+ "id": "dlg_oddy_3",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_oddy",
+   "text": "I've been told my number is 'coming up'. I was told that in what I believe was 1911.",
+   "next": "end"
+  }
+ }
+}

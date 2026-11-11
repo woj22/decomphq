@@ -1,0 +1,11 @@
+{
+ "id": "dlg_clerk_busy",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The clerk does not look up. A soul's file is open on the desk; the stamp hovers.",
+   "next": "end"
+  }
+ }
+}

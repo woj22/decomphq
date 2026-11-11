@@ -1,0 +1,18 @@
+{
+ "id": "dlg_wren_promoted",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_wren",
+   "text": "Senior Adjudicator, already? Well. Somebody upstairs has noticed you. I'd find out which somebody, if I were you.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_wren_l6",
+     "value": true
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

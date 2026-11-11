@@ -1,0 +1,139 @@
+{
+ "id": "npc_pell",
+ "name": "Osric Pell",
+ "title": "Under-Archivist",
+ "sprite": "chr_archivist",
+ "portrait": "por_pell",
+ "home": {
+  "area": "area_records_annexe",
+  "cell": [
+   5,
+   3
+  ],
+  "facing": "sw"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_pell_tarrow",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s008"
+    },
+    {
+     "op": "archive_available"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_s001",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s001"
+    },
+    {
+     "op": "archive_available"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_first_give",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_met_pell"
+    },
+    {
+     "op": "archive_available"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_give",
+   "conditions": [
+    {
+     "op": "archive_available"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_addendum_hint",
+   "conditions": [
+    {
+     "op": "active_case_eq",
+     "case": "case_s007"
+    },
+    {
+     "op": "holds_archive",
+     "case": "case_s007",
+     "id": "arc_007a"
+    },
+    {
+     "op": "not",
+     "of": {
+      "op": "discovered",
+      "case": "case_s007",
+      "id": "d_kell"
+     }
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_after_s008",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_found_violet_ink"
+    },
+    {
+     "op": "case_state",
+     "case": "case_s008",
+     "value": "judged"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_pell_l6"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_all_given",
+   "conditions": [
+    {
+     "op": "has_active_case"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_after_s002",
+   "conditions": [
+    {
+     "op": "case_state",
+     "case": "case_s002",
+     "value": "judged"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_pell_l4"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_first",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_met_pell"
+    }
+   ]
+  },
+  {
+   "id": "dlg_pell_idle",
+   "conditions": []
+  }
+ ],
+ "ext": {
+  "secret": "Has been copying original records before they are reconciled."
+ }
+}

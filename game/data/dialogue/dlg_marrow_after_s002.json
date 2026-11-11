@@ -1,0 +1,57 @@
+{
+ "id": "dlg_marrow_after_s002",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_marrow",
+   "text": "You went against the Rubric. That's permitted. I'll want the reason in the margin, and I'll want it to be a reason.",
+   "conditions": [
+    {
+     "op": "verdict",
+     "case": "case_s002",
+     "value": "heaven"
+    }
+   ],
+   "next": "n2",
+   "else": "n2"
+  },
+  "n2": {
+   "speaker": "npc_marrow",
+   "text": "Now you know the second rule. The file is a claim. The archive is evidence. The soul is a witness.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_marrow",
+   "text": "You need two of the three to agree before you stamp.",
+   "next": "n4"
+  },
+  "n4": {
+   "speaker": "npc_marrow",
+   "text": "Interview them. Ask what the file can't tell you. They will lie, mostly to look better. Watch for the ones who lie to look worse.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_marrow_brief_s003",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_call_next"
+    }
+   ],
+   "next": "n5"
+  },
+  "n5": {
+   "speaker": "npc_marrow",
+   "text": "And Grist reports a soul loose at the stair in the Court. If you pass him, lend him a word.",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_incident_active"
+    }
+   ],
+   "next": "end",
+   "else": "end"
+  }
+ }
+}

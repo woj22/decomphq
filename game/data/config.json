@@ -1,0 +1,92 @@
+{
+  "id": "config",
+  "seed": 1922,
+  "start": {"area": "area_arrival_hall", "spawn": "default", "day": 1, "minutes": 480, "clock_frozen_until_shift": true},
+  "player": {"speed_cells_per_s": 3.0, "interaction_radius_cells": 1.5},
+  "transition_fade_s": 0.25,
+  "clock": {
+    "day_start_minutes": 480,
+    "overtime_from_minutes": 1080,
+    "costs": {"door": 5, "question_general": 10, "question_confront": 5, "archive": 15, "link": 0, "reading": 0, "dialogue": 0, "verdict": 20}
+  },
+  "judgement": {
+    "composure": 3,
+    "composure_cost": {"question_general": 1, "question_confront": 0, "wrong_link": 1},
+    "max_visible_questions": 4,
+    "max_key_facts": 3
+  },
+  "scoring": {
+    "diligence_max": 3,
+    "verdict_upheld": 4,
+    "verdict_overturned": -2,
+    "verdict_ambiguous_ground_match": 4,
+    "ground_match": 2,
+    "merit_floor": 0,
+    "merit_max_per_case": 9
+  },
+  "queue": {
+    "arrival_start": 16,
+    "bench_start": 8,
+    "bench_cap": 12,
+    "arrival_rate_per_h_before": 3.0,
+    "arrival_rate_per_h_after": 2.0,
+    "arrival_rate_switch_minutes": 600,
+    "registrar_rate_per_h": 2.4,
+    "adjudicator_desks": 2,
+    "adjudicator_rate_per_h_total": 1.2,
+    "npc_hell_share": 0.6,
+    "call_decrement": 1,
+    "lanes": 4,
+    "slots_per_lane": 8
+  },
+  "order": {
+    "start": 68, "min": 0, "max": 100,
+    "per_sound": 2, "per_unsound": -5,
+    "queue_threshold": 30, "per_queue_over": -1,
+    "per_resolved": 4, "per_unresolved": -4,
+    "display_ease_pts_per_s": 1
+  },
+  "pay": {
+    "purse_start": 12,
+    "per_processed": 1, "per_sound": 1, "per_unsound": -2,
+    "accuracy_bonus": 3, "accuracy_threshold": 0.8,
+    "note": "base pay per rank lives in ranks.json (base_pay)"
+  },
+  "items": {
+    "item_desk_lamp": {"name": "Desk lamp", "price": 20, "icon": "icon_lamp",
+                       "effect": "lamp_lit_hint", "text": "On later cases one not-yet-found link pair's file entry gets a lamp-lit edge."}
+  },
+  "promotion": {
+    "from_rank": 1, "to_rank": 2,
+    "cases_processed": 6,
+    "merit_min": 30, "merit_max": 54,
+    "overturned_max": 2,
+    "flag": "flag_found_violet_ink",
+    "correction_case": "case_s008",
+    "reissue_cases": ["case_s004", "case_s007", "case_s008"],
+    "reissue_snapshot": "shift1"
+  },
+  "dockets": {
+    "1": ["case_s001", "case_s002", "case_s003"],
+    "2": ["case_s004", "case_s007", "case_s008"]
+  },
+  "incidents": {
+    "inc_stair_soul": {
+      "npc": "npc_incident_soul", "area": "area_clerks_court", "cell": [5, 4], "object": "obj_incident_soul",
+      "resolver_npc": "npc_grist", "start_after": "case_s002", "deadline_case": "case_s003",
+      "title": "A soul at the stair"
+    }
+  },
+  "ledger_notes": {
+    "1": [
+      {"conditions": [{"op": "stat_lte", "id": "overturned", "value": 0}],
+       "text": "Adequate. You walked to Records when told and not before. Tomorrow nobody will tell you. - I.M."},
+      {"conditions": [],
+       "text": "The audit disagreed with you. It is sometimes wrong. Not usually. Read the whole file tomorrow. - I.M."}
+    ],
+    "2": [
+      {"conditions": [],
+       "text": "Six souls. You read the last one in the light. Somebody upstairs has now read you. - I.M."}
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+ "id": "dlg_grist_repeat",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_grist",
+   "text": "No. Same stair, same cuffs, same answer. I admire the persistence.",
+   "next": "ask"
+  },
+  "ask": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "What's up there?",
+     "next": "up"
+    },
+    {
+     "text": "Who comes down it?",
+     "next": "down"
+    },
+    {
+     "text": "Fine weather.",
+     "next": "weather"
+    },
+    {
+     "text": "Good day, Sergeant.",
+     "next": "end"
+    }
+   ]
+  },
+  "up": {
+   "speaker": "npc_grist",
+   "text": "Appeals. Envoys. Carpets. I've not been up myself. I guard the bottom of it.",
+   "next": "end"
+  },
+  "down": {
+   "speaker": "npc_grist",
+   "text": "Envoys. Last week an angel, Seraph-Grade Assessor, Third Choir. Asked me to sign for her halo.",
+   "next": "down2"
+  },
+  "down2": {
+   "speaker": "npc_grist",
+   "text": "I don't sign for things I can't count.",
+   "next": "end"
+  },
+  "weather": {
+   "speaker": "npc_grist",
+   "text": "Gilt side's bright today. Hurts the eyes. I prefer it when there's cloud.",
+   "next": "end"
+  }
+ }
+}

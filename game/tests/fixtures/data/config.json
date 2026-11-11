@@ -1,0 +1,5 @@
+{"composure":3,"player_speed":3.0,"interaction_radius":1.5,
+ "clock_costs":{"door":5,"question_general":10,"question_confront":5,"archive":15,"verdict":20,"link":0},
+ "queue_arrival_start":16,"queue_bench_start":8,"queue_bench_cap":12,"order_start":68,"purse_start":12,"pay_base":8,
+ "lamp_price":20,"merit_gate":30,"overturned_max":2,
+ "dockets":{"1":["case_fixture"]}}

@@ -1,0 +1,64 @@
+{
+ "id": "npc_grist",
+ "name": "Sgt. Hob Grist",
+ "title": "Border Guard, stair post",
+ "sprite": "chr_guard",
+ "portrait": "por_grist",
+ "home": {
+  "area": "area_clerks_court",
+  "cell": [
+   4,
+   3
+  ],
+  "facing": "s"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_grist_salute",
+   "conditions": [
+    {
+     "op": "rank_gte",
+     "value": 2
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_grist_saluted"
+    }
+   ]
+  },
+  {
+   "id": "dlg_grist_incident",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_incident_active"
+    }
+   ]
+  },
+  {
+   "id": "dlg_grist_after",
+   "conditions": [
+    {
+     "op": "rank_gte",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "id": "dlg_grist_first",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_met_grist"
+    }
+   ]
+  },
+  {
+   "id": "dlg_grist_repeat",
+   "conditions": []
+  }
+ ],
+ "ext": {
+  "secret": "A Dominion conscript (Demon Third Class, Haulage) who walked across and never went back."
+ }
+}

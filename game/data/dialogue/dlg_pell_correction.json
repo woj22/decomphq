@@ -1,0 +1,41 @@
+{
+ "id": "dlg_pell_correction",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "That evening Pell lays a sheet on your desk: the Tarrow original, black ink, uncreased. The Wardens, to their credit, have sent her back.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "Linen. Accused, acquitted, wages withheld. That's what happened. What you stamped is what somebody needed to have happened.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_pell",
+   "text": "The case is open again and the original is in it. Link the two and file your correction. I was never here.",
+   "effects": [
+    {
+     "op": "reopen_case",
+     "case": "case_s008"
+    },
+    {
+     "op": "give_archive_one",
+     "case": "case_s008",
+     "id": "arc_008a"
+    },
+    {
+     "op": "set_flag",
+     "id": "flag_correction_pending",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_correction"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

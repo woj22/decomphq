@@ -1,0 +1,11 @@
+{
+ "id": "dlg_nan_3",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_nan",
+   "text": "When it's my turn, will it be you? Only I'd like it to be someone who reads the whole thing.",
+   "next": "end"
+  }
+ }
+}

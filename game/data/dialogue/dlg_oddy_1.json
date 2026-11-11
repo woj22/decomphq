@@ -1,0 +1,18 @@
+{
+ "id": "dlg_oddy_1",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_oddy",
+   "text": "Excuse me. I'm not meant to be here. I had a dental appointment on Thursday.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_oddy_1",
+     "value": true
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

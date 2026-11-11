@@ -1,0 +1,102 @@
+[
+  {"id": "trg_new_game", "on": "new_game_started", "match": {}, "conditions": [], "once": true,
+   "effects": [
+     {"op": "show_card", "title": "Day 1, 08:00", "text": "The Arrival Hall"},
+     {"op": "set_objective", "id": "obj_report_marrow"},
+     {"op": "start_dialogue", "id": "dlg_registrar_welcome"}]},
+
+  {"id": "trg_court_first_visit", "on": "area_entered", "match": {"area_id": "area_clerks_court"},
+   "conditions": [{"op": "not_flag", "id": "flag_met_wren"}], "once": true,
+   "effects": [{"op": "start_dialogue", "id": "dlg_wren_intro"}]},
+
+  {"id": "trg_called_s001", "on": "case_called", "match": {"case_id": "case_s001"}, "conditions": [], "once": false,
+   "effects": [{"op": "set_objective", "id": "obj_take_desk"}]},
+  {"id": "trg_called_s002", "on": "case_called", "match": {"case_id": "case_s002"}, "conditions": [], "once": false,
+   "effects": [{"op": "set_objective", "id": "obj_fetch_pryke"}]},
+  {"id": "trg_called_s003", "on": "case_called", "match": {"case_id": "case_s003"}, "conditions": [], "once": false,
+   "effects": [{"op": "set_objective", "id": "obj_ask_pell_garrity"}]},
+  {"id": "trg_called_s004", "on": "case_called", "match": {"case_id": "case_s004"}, "conditions": [], "once": false,
+   "effects": [{"op": "set_objective", "id": "obj_take_desk"}]},
+  {"id": "trg_called_s007", "on": "case_called", "match": {"case_id": "case_s007"}, "conditions": [], "once": false,
+   "effects": [{"op": "set_objective", "id": "obj_take_desk"}]},
+  {"id": "trg_called_s008", "on": "case_called", "match": {"case_id": "case_s008"}, "conditions": [], "once": false,
+   "effects": [{"op": "set_objective", "id": "obj_take_desk"}]},
+
+  {"id": "trg_disc_s002_ledgers", "on": "discovery_made", "match": {"case_id": "case_s002", "discovery_id": "d_two_ledgers"},
+   "conditions": [], "once": false, "effects": [{"op": "set_objective", "id": "obj_take_desk"}]},
+  {"id": "trg_disc_s003_gas", "on": "discovery_made", "match": {"case_id": "case_s003", "discovery_id": "d_gas_rescue"},
+   "conditions": [], "once": false, "effects": [{"op": "set_objective", "id": "obj_take_desk"}]},
+  {"id": "trg_disc_s007_kell", "on": "discovery_made", "match": {"case_id": "case_s007", "discovery_id": "d_kell"},
+   "conditions": [], "once": false, "effects": [{"op": "set_objective", "id": "obj_addendum"}]},
+  {"id": "trg_disc_s007_widows", "on": "discovery_made", "match": {"case_id": "case_s007", "discovery_id": "d_widows"},
+   "conditions": [], "once": false, "effects": [{"op": "set_objective", "id": "obj_take_desk"}]},
+
+  {"id": "trg_scored_s001", "on": "case_scored", "match": {"case_id": "case_s001"}, "conditions": [], "once": true,
+   "effects": [{"op": "set_objective", "id": "obj_report_marrow"}]},
+  {"id": "trg_scored_s002_incident", "on": "case_scored", "match": {"case_id": "case_s002"}, "conditions": [], "once": true,
+   "effects": [
+     {"op": "start_incident", "id": "inc_stair_soul"},
+     {"op": "set_flag", "id": "flag_incident_active", "value": true},
+     {"op": "set_objective", "id": "obj_report_marrow"}]},
+  {"id": "trg_scored_s003", "on": "case_scored", "match": {"case_id": "case_s003"}, "conditions": [], "once": true,
+   "effects": [{"op": "set_objective", "id": "obj_report_marrow"}]},
+  {"id": "trg_incident_unresolved", "on": "case_scored", "match": {"case_id": "case_s003"},
+   "conditions": [{"op": "flag", "id": "flag_incident_active"}], "once": true,
+   "effects": [
+     {"op": "resolve_incident", "id": "inc_stair_soul", "resolved": false},
+     {"op": "set_flag", "id": "flag_incident_active", "value": false},
+     {"op": "set_flag", "id": "flag_incident_unresolved", "value": true}]},
+  {"id": "trg_scored_s004", "on": "case_scored", "match": {"case_id": "case_s004"}, "conditions": [], "once": false,
+   "effects": [{"op": "set_objective", "id": "obj_call_next"}]},
+  {"id": "trg_scored_s007", "on": "case_scored", "match": {"case_id": "case_s007"}, "conditions": [], "once": false,
+   "effects": [{"op": "set_objective", "id": "obj_call_next"}]},
+
+  {"id": "trg_shift1_ended", "on": "shift_ended", "match": {"day": 1}, "conditions": [], "once": true,
+   "effects": [
+     {"op": "set_flag", "id": "flag_shift1_closed", "value": true},
+     {"op": "snapshot_stats", "tag": "shift1"},
+     {"op": "show_card", "title": "Day 2, 08:00", "text": "The Judgement Booths"},
+     {"op": "teleport", "area": "area_booths", "spawn": "from_court"},
+     {"op": "set_objective", "id": "obj_collect_docket"}]},
+
+  {"id": "trg_gate_correction", "on": "case_scored", "match": {"case_id": "case_s008"},
+   "conditions": [{"op": "not_flag", "id": "flag_found_violet_ink"}], "once": false,
+   "effects": [{"op": "start_dialogue", "id": "dlg_pell_correction"}]},
+  {"id": "trg_gate_pass", "on": "case_scored", "match": {"case_id": "case_s008"},
+   "conditions": [
+     {"op": "flag", "id": "flag_found_violet_ink"},
+     {"op": "stat_gte", "id": "cases_processed", "value": 6},
+     {"op": "stat_gte", "id": "merit", "value": 30},
+     {"op": "stat_lte", "id": "overturned", "value": 2},
+     {"op": "not_flag", "id": "flag_gate_passed"}], "once": false,
+   "effects": [
+     {"op": "set_flag", "id": "flag_gate_passed", "value": true},
+     {"op": "set_flag", "id": "flag_correction_pending", "value": false},
+     {"op": "set_objective", "id": "obj_report_marrow"}]},
+  {"id": "trg_gate_reissue", "on": "case_scored", "match": {"case_id": "case_s008"},
+   "conditions": [
+     {"op": "flag", "id": "flag_found_violet_ink"},
+     {"op": "not_flag", "id": "flag_gate_passed"},
+     {"op": "any", "of": [
+       {"op": "stat_lte", "id": "cases_processed", "value": 5},
+       {"op": "stat_lte", "id": "merit", "value": 29},
+       {"op": "stat_gte", "id": "overturned", "value": 3}]}], "once": false,
+   "effects": [
+     {"op": "set_flag", "id": "flag_gate_reissue", "value": true},
+     {"op": "set_flag", "id": "flag_correction_pending", "value": false},
+     {"op": "set_objective", "id": "obj_report_marrow"}]},
+
+  {"id": "trg_shift2_ended_promote", "on": "shift_ended", "match": {"day": 2},
+   "conditions": [{"op": "flag", "id": "flag_gate_passed"}], "once": true,
+   "effects": [{"op": "set_rank", "value": 2}]},
+  {"id": "trg_rank2", "on": "rank_changed", "match": {"rank": 2}, "conditions": [], "once": true,
+   "effects": [
+     {"op": "set_flag", "id": "flag_promoted", "value": true},
+     {"op": "unlock_area", "id": "area_adjudicator_chamber"},
+     {"op": "set_objective", "id": "obj_climb"}]},
+  {"id": "trg_chamber_title", "on": "area_entered", "match": {"area_id": "area_adjudicator_chamber"},
+   "conditions": [{"op": "rank_gte", "value": 2}], "once": true,
+   "effects": [
+     {"op": "show_card", "title": "SENIOR ADJUDICATOR", "text": "The file is a claim. You are now the second opinion."},
+     {"op": "end_prototype"}]}
+]

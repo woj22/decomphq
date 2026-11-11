@@ -1,0 +1,36 @@
+{
+ "id": "dlg_grist_first",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_grist",
+   "text": "Halt. Judgement Chambers, Senior Adjudicators and above. You are a Junior Processing Clerk. I can tell by the cuffs.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_met_grist",
+     "value": true
+    }
+   ],
+   "next": "ask"
+  },
+  "ask": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "What's up there?",
+     "next": "up"
+    },
+    {
+     "text": "Understood, Sergeant.",
+     "next": "end"
+    }
+   ]
+  },
+  "up": {
+   "speaker": "npc_grist",
+   "text": "Appeals. Envoys. Carpets. I've not been up myself. I guard the bottom of it.",
+   "next": "end"
+  }
+ }
+}

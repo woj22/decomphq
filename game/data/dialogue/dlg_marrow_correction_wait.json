@@ -1,0 +1,11 @@
+{
+ "id": "dlg_marrow_correction_wait",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_marrow",
+   "text": "Pell has left something on your desk. I'd look at it before I looked at me.",
+   "next": "end"
+  }
+ }
+}

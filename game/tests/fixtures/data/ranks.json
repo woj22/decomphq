@@ -1,0 +1,5 @@
+{"stats":[{"id":"merit","name":"Merit","start":0},{"id":"order","name":"Order","start":68,"min":0,"max":100},
+          {"id":"purse","name":"Obols","start":12},{"id":"overturned","name":"Overturned","start":0},
+          {"id":"cases_processed","name":"Processed","start":0}],
+ "ranks":[{"rank":1,"id":"rank_junior_clerk","title":"Junior Processing Clerk","pay_base":8},
+          {"rank":2,"id":"rank_senior_adjudicator","title":"Senior Adjudicator","pay_base":12}]}

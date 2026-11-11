@@ -1,0 +1,18 @@
+{
+ "id": "dlg_wren_intro",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_wren",
+   "text": "New face! Tobias Wren, booth four. I'd shake hands but I've just finished my docket and I'm resting them.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_met_wren",
+     "value": true
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

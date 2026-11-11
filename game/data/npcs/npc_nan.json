@@ -1,0 +1,39 @@
+{
+ "id": "npc_nan",
+ "name": "Nan Whitlow",
+ "title": "Queueing since 1702",
+ "sprite": "chr_soul_1",
+ "portrait": "por_nan",
+ "home": {
+  "area": "area_arrival_hall",
+  "cell": [
+   1,
+   8
+  ],
+  "facing": "ne"
+ },
+ "dialogue": [
+  {
+   "id": "dlg_nan_1",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_nan_1"
+    }
+   ]
+  },
+  {
+   "id": "dlg_nan_2",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_nan_2"
+    }
+   ]
+  },
+  {
+   "id": "dlg_nan_3",
+   "conditions": []
+  }
+ ]
+}

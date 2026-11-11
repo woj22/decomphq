@@ -1,0 +1,2 @@
+[{"id":"t_fixture_start","on":"new_game_started","effects":[{"op":"set_objective","id":"obj_fixture_talk"}],"once":true},
+ {"id":"t_fixture_scored","on":"case_scored","match":{"case_id":"case_fixture"},"effects":[{"op":"set_flag","id":"flag_fixture_done","value":true}],"once":true}]

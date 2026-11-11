@@ -1,0 +1,29 @@
+{
+ "id": "dlg_registrar_call",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Call next.",
+     "next": "call"
+    },
+    {
+     "text": "Not yet.",
+     "next": "end"
+    }
+   ]
+  },
+  "call": {
+   "speaker": "npc_registrar",
+   "text": "Next on your docket. Name, file, soul. Sign here. Do keep hold of all three.",
+   "effects": [
+    {
+     "op": "call_soul"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

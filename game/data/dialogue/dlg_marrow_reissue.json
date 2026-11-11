@@ -1,0 +1,57 @@
+{
+ "id": "dlg_marrow_reissue",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_marrow",
+   "text": "Docket reissued. Your figures for the day did not survive the audit, and neither, I'm afraid, does the day.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_marrow",
+   "text": "Same three souls. Same files. Read them as if nobody had read them before, because, it seems, nobody has.",
+   "effects": [
+    {
+     "op": "restore_stats",
+     "tag": "shift1"
+    },
+    {
+     "op": "reset_cases",
+     "ids": [
+      "case_s004",
+      "case_s007",
+      "case_s008"
+     ]
+    },
+    {
+     "op": "set_flag",
+     "id": "flag_found_violet_ink",
+     "value": false
+    },
+    {
+     "op": "set_flag",
+     "id": "flag_gate_reissue",
+     "value": false
+    },
+    {
+     "op": "set_flag",
+     "id": "flag_correction_pending",
+     "value": false
+    },
+    {
+     "op": "give_docket",
+     "day": 2
+    },
+    {
+     "op": "start_shift",
+     "day": 2
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_call_next"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "id": "dlg_wren_after_s003",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_wren",
+   "text": "Ever notice the figures come out the same every week? So many up, so many down. As if someone decided beforehand.",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_wren_l3",
+     "value": true
+    }
+   ],
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_wren",
+   "text": "Lucky coincidence, I always say.",
+   "next": "end"
+  }
+ }
+}
