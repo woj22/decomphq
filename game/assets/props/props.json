@@ -1,0 +1,817 @@
+{
+ "atlas": "props",
+ "image": "props.png",
+ "sprites": {
+  "banner_red": {
+   "fps": 2,
+   "frames": 2,
+   "kind": "prop",
+   "origin": [
+    16,
+    72
+   ],
+   "rect": [
+    192,
+    256,
+    32,
+    64
+   ],
+   "solid": false
+  },
+  "bed": {
+   "kind": "prop",
+   "origin": [
+    32,
+    40
+   ],
+   "rect": [
+    640,
+    256,
+    64,
+    56
+   ],
+   "solid": true
+  },
+  "bed_sleeper": {
+   "kind": "prop",
+   "origin": [
+    32,
+    40
+   ],
+   "rect": [
+    704,
+    256,
+    64,
+    56
+   ],
+   "solid": true
+  },
+  "bed_soul": {
+   "kind": "prop",
+   "origin": [
+    32,
+    40
+   ],
+   "rect": [
+    768,
+    256,
+    64,
+    56
+   ],
+   "solid": true
+  },
+  "bench": {
+   "kind": "prop",
+   "origin": [
+    32,
+    40
+   ],
+   "rect": [
+    832,
+    256,
+    64,
+    56
+   ],
+   "solid": true
+  },
+  "bench_soul": {
+   "kind": "prop",
+   "origin": [
+    32,
+    48
+   ],
+   "rect": [
+    256,
+    256,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "brazier_0": {
+   "fps": 6,
+   "frames": 4,
+   "kind": "prop",
+   "origin": [
+    16,
+    40
+   ],
+   "rect": [
+    1056,
+    256,
+    32,
+    48
+   ],
+   "solid": true
+  },
+  "brazier_hell": {
+   "fps": 6,
+   "frames": 4,
+   "kind": "prop",
+   "origin": [
+    16,
+    40
+   ],
+   "rect": [
+    1184,
+    256,
+    32,
+    48
+   ],
+   "solid": true
+  },
+  "cauldron": {
+   "kind": "prop",
+   "origin": [
+    32,
+    42
+   ],
+   "rect": [
+    896,
+    256,
+    64,
+    56
+   ],
+   "solid": true
+  },
+  "cell_bars_m0": {
+   "kind": "prop",
+   "mask": 0,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    704,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m1": {
+   "kind": "prop",
+   "mask": 1,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    768,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m10": {
+   "kind": "prop",
+   "mask": 10,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    832,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m11": {
+   "kind": "prop",
+   "mask": 11,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    896,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m12": {
+   "kind": "prop",
+   "mask": 12,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    960,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m13": {
+   "kind": "prop",
+   "mask": 13,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1024,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m14": {
+   "kind": "prop",
+   "mask": 14,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1088,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m15": {
+   "kind": "prop",
+   "mask": 15,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1152,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m2": {
+   "kind": "prop",
+   "mask": 2,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1216,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m3": {
+   "kind": "prop",
+   "mask": 3,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1280,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m4": {
+   "kind": "prop",
+   "mask": 4,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1344,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m5": {
+   "kind": "prop",
+   "mask": 5,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1408,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m6": {
+   "kind": "prop",
+   "mask": 6,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1472,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m7": {
+   "kind": "prop",
+   "mask": 7,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1536,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m8": {
+   "kind": "prop",
+   "mask": 8,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1600,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_m9": {
+   "kind": "prop",
+   "mask": 9,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1664,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_x": {
+   "kind": "prop",
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1728,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_bars_y": {
+   "kind": "prop",
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1792,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_door_m10": {
+   "kind": "prop",
+   "mask": 10,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1856,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_door_m5": {
+   "kind": "prop",
+   "mask": 5,
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1920,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_door_x": {
+   "kind": "prop",
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    1984,
+    0,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "cell_door_y": {
+   "kind": "prop",
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    0,
+    256,
+    64,
+    96
+   ],
+   "solid": true
+  },
+  "chain_post": {
+   "kind": "prop",
+   "origin": [
+    16,
+    56
+   ],
+   "rect": [
+    576,
+    256,
+    32,
+    64
+   ],
+   "solid": true
+  },
+  "counter": {
+   "kind": "prop",
+   "origin": [
+    32,
+    44
+   ],
+   "rect": [
+    320,
+    256,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "crystal_pedestal": {
+   "kind": "prop",
+   "origin": [
+    16,
+    56
+   ],
+   "rect": [
+    608,
+    256,
+    32,
+    64
+   ],
+   "solid": true
+  },
+  "dais": {
+   "height_hu": 1,
+   "kind": "prop",
+   "origin": [
+    32,
+    32
+   ],
+   "rect": [
+    1568,
+    256,
+    64,
+    48
+   ],
+   "solid": true
+  },
+  "desk_clerk": {
+   "kind": "prop",
+   "origin": [
+    32,
+    48
+   ],
+   "rect": [
+    384,
+    256,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "desk_clerk_tray1": {
+   "kind": "prop",
+   "origin": [
+    32,
+    48
+   ],
+   "rect": [
+    448,
+    256,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "desk_clerk_tray2": {
+   "kind": "prop",
+   "origin": [
+    32,
+    48
+   ],
+   "rect": [
+    512,
+    256,
+    64,
+    64
+   ],
+   "solid": true
+  },
+  "desk_registrar": {
+   "kind": "prop",
+   "origin": [
+    32,
+    60
+   ],
+   "rect": [
+    64,
+    256,
+    64,
+    80
+   ],
+   "solid": true
+  },
+  "desk_superior": {
+   "kind": "prop",
+   "origin": [
+    32,
+    60
+   ],
+   "rect": [
+    128,
+    256,
+    64,
+    80
+   ],
+   "solid": true
+  },
+  "hell_gate": {
+   "footprint": [
+    3,
+    1
+   ],
+   "kind": "prop",
+   "origin": [
+    96,
+    220
+   ],
+   "rect": [
+    0,
+    0,
+    192,
+    256
+   ],
+   "solid": true
+  },
+  "hell_gate_open": {
+   "footprint": [
+    3,
+    1
+   ],
+   "kind": "prop",
+   "origin": [
+    96,
+    220
+   ],
+   "rect": [
+    192,
+    0,
+    192,
+    256
+   ],
+   "solid": true
+  },
+  "ivy_bench": {
+   "kind": "prop",
+   "origin": [
+    32,
+    40
+   ],
+   "rect": [
+    960,
+    256,
+    64,
+    56
+   ],
+   "solid": true
+  },
+  "lectern": {
+   "kind": "prop",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    1024,
+    256,
+    32,
+    56
+   ],
+   "solid": true
+  },
+  "queue_post": {
+   "kind": "prop",
+   "origin": [
+    8,
+    26
+   ],
+   "rect": [
+    1824,
+    256,
+    16,
+    32
+   ],
+   "solid": true
+  },
+  "queue_rail_x": {
+   "kind": "prop",
+   "origin": [
+    32,
+    34
+   ],
+   "rect": [
+    1632,
+    256,
+    64,
+    48
+   ],
+   "solid": true
+  },
+  "rope_post": {
+   "kind": "prop",
+   "origin": [
+    32,
+    36
+   ],
+   "rect": [
+    1696,
+    256,
+    64,
+    48
+   ],
+   "solid": true
+  },
+  "shelf_books": {
+   "kind": "prop",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    512,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "shelf_empty": {
+   "kind": "prop",
+   "origin": [
+    32,
+    112
+   ],
+   "rect": [
+    576,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "statue_first_clerk": {
+   "footprint": [
+    2,
+    2
+   ],
+   "kind": "prop",
+   "origin": [
+    64,
+    160
+   ],
+   "rect": [
+    384,
+    0,
+    128,
+    192
+   ],
+   "solid": true
+  },
+  "stool": {
+   "kind": "prop",
+   "origin": [
+    16,
+    24
+   ],
+   "rect": [
+    1792,
+    256,
+    32,
+    32
+   ],
+   "solid": true
+  },
+  "ticket_booth": {
+   "kind": "prop",
+   "origin": [
+    32,
+    104
+   ],
+   "rect": [
+    640,
+    0,
+    64,
+    128
+   ],
+   "solid": true
+  },
+  "wall_torch_x": {
+   "fps": 6,
+   "frames": 4,
+   "kind": "prop",
+   "origin": [
+    37,
+    66
+   ],
+   "rect": [
+    1312,
+    256,
+    32,
+    48
+   ],
+   "solid": false
+  },
+  "wall_torch_y": {
+   "fps": 6,
+   "frames": 4,
+   "kind": "prop",
+   "origin": [
+    -5,
+    66
+   ],
+   "rect": [
+    1440,
+    256,
+    32,
+    48
+   ],
+   "solid": false
+  },
+  "washstand": {
+   "kind": "prop",
+   "origin": [
+    16,
+    38
+   ],
+   "rect": [
+    1760,
+    256,
+    32,
+    48
+   ],
+   "solid": true
+  }
+ }
+}

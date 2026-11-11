@@ -1,0 +1,434 @@
+{
+ "atlas": "ui",
+ "image": "ui.png",
+ "sprites": {
+  "btn_action": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    0,
+    0,
+    64,
+    64
+   ]
+  },
+  "btn_circle": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    64,
+    0,
+    64,
+    64
+   ]
+  },
+  "btn_circle_down": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    128,
+    0,
+    64,
+    64
+   ]
+  },
+  "btn_cross": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    192,
+    0,
+    64,
+    64
+   ]
+  },
+  "btn_cross_down": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    256,
+    0,
+    64,
+    64
+   ]
+  },
+  "btn_square": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    320,
+    0,
+    64,
+    64
+   ]
+  },
+  "btn_square_down": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    384,
+    0,
+    64,
+    64
+   ]
+  },
+  "btn_triangle": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    448,
+    0,
+    64,
+    64
+   ]
+  },
+  "btn_triangle_down": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    512,
+    0,
+    64,
+    64
+   ]
+  },
+  "icon_crest_r1": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    768,
+    0,
+    32,
+    32
+   ]
+  },
+  "icon_crest_r2": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    800,
+    0,
+    32,
+    32
+   ]
+  },
+  "icon_flame": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    832,
+    0,
+    24,
+    24
+   ]
+  },
+  "icon_halo": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    856,
+    0,
+    24,
+    24
+   ]
+  },
+  "icon_heart": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1096,
+    0,
+    16,
+    16
+   ]
+  },
+  "icon_journal": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    880,
+    0,
+    24,
+    24
+   ]
+  },
+  "icon_key": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    904,
+    0,
+    24,
+    24
+   ]
+  },
+  "icon_lamp": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    928,
+    0,
+    24,
+    24
+   ]
+  },
+  "icon_link": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    952,
+    0,
+    24,
+    24
+   ]
+  },
+  "icon_mana": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1112,
+    0,
+    16,
+    16
+   ]
+  },
+  "icon_map": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    976,
+    0,
+    24,
+    24
+   ]
+  },
+  "icon_obol": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1128,
+    0,
+    16,
+    16
+   ]
+  },
+  "icon_order": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1144,
+    0,
+    16,
+    16
+   ]
+  },
+  "icon_pause": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1000,
+    0,
+    24,
+    24
+   ]
+  },
+  "icon_quill": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1024,
+    0,
+    24,
+    24
+   ]
+  },
+  "icon_soul": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1160,
+    0,
+    16,
+    16
+   ]
+  },
+  "panel_9": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1048,
+    0,
+    24,
+    24
+   ],
+   "slice": [
+    8,
+    8,
+    8,
+    8
+   ]
+  },
+  "parchment_9": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1072,
+    0,
+    24,
+    24
+   ],
+   "slice": [
+    8,
+    8,
+    8,
+    8
+   ]
+  },
+  "pip_empty": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1176,
+    0,
+    16,
+    16
+   ]
+  },
+  "pip_full": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    1192,
+    0,
+    16,
+    16
+   ]
+  },
+  "stamp_heaven": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    576,
+    0,
+    64,
+    64
+   ]
+  },
+  "stamp_hell": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    640,
+    0,
+    64,
+    64
+   ]
+  },
+  "stamp_rm0": {
+   "kind": "ui",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    704,
+    0,
+    64,
+    32
+   ]
+  }
+ }
+}

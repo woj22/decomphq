@@ -1,0 +1,222 @@
+{
+ "atlas": "tiles",
+ "image": "tiles.png",
+ "sprites": {
+  "decal_inlay_ring": {
+   "footprint": [
+    4,
+    4
+   ],
+   "kind": "decal",
+   "origin": [
+    128,
+    64
+   ],
+   "rect": [
+    0,
+    0,
+    256,
+    128
+   ]
+  },
+  "floor_brimstone_0": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    576,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_brimstone_1": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    640,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_brimstone_2": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    704,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_carpet_red_0": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    768,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_carpet_red_1": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    832,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_carpet_red_2": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    896,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_flag_0": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    960,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_flag_1": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    1024,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_flag_2": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    1088,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_flag_3": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    1152,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_flag_edge_0": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    448,
+    0,
+    64,
+    48
+   ]
+  },
+  "floor_flag_edge_1": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    512,
+    0,
+    64,
+    48
+   ]
+  },
+  "floor_goldseam_0": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    1216,
+    0,
+    64,
+    32
+   ]
+  },
+  "floor_goldseam_1": {
+   "kind": "floor",
+   "origin": [
+    32,
+    16
+   ],
+   "rect": [
+    1280,
+    0,
+    64,
+    32
+   ]
+  },
+  "rune_circle": {
+   "footprint": [
+    3,
+    3
+   ],
+   "kind": "decal",
+   "origin": [
+    96,
+    48
+   ],
+   "rect": [
+    256,
+    0,
+    192,
+    96
+   ]
+  }
+ }
+}

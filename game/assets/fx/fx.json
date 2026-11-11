@@ -1,0 +1,198 @@
+{
+ "atlas": "fx",
+ "image": "fx.png",
+ "sprites": {
+  "demon_slash": {
+   "fps": 12,
+   "frames": 3,
+   "kind": "fx",
+   "origin": [
+    16,
+    24
+   ],
+   "rect": [
+    896,
+    96,
+    32,
+    32
+   ]
+  },
+  "dust_mote": {
+   "fps": 6,
+   "frames": 4,
+   "kind": "fx",
+   "origin": [
+    4,
+    4
+   ],
+   "rect": [
+    1536,
+    96,
+    8,
+    8
+   ]
+  },
+  "hell_glow": {
+   "additive": true,
+   "kind": "fx",
+   "origin": [
+    96,
+    48
+   ],
+   "rect": [
+    1152,
+    0,
+    192,
+    96
+   ]
+  },
+  "impact_spark": {
+   "fps": 16,
+   "frames": 4,
+   "kind": "fx",
+   "origin": [
+    16,
+    24
+   ],
+   "rect": [
+    768,
+    96,
+    32,
+    32
+   ]
+  },
+  "light_pool_gold": {
+   "additive": true,
+   "kind": "fx",
+   "origin": [
+    96,
+    48
+   ],
+   "rect": [
+    1344,
+    0,
+    192,
+    96
+   ]
+  },
+  "light_pool_red": {
+   "additive": true,
+   "kind": "fx",
+   "origin": [
+    96,
+    48
+   ],
+   "rect": [
+    1536,
+    0,
+    192,
+    96
+   ]
+  },
+  "select_ring": {
+   "fps": 8,
+   "frames": 4,
+   "kind": "fx",
+   "origin": [
+    16,
+    8
+   ],
+   "rect": [
+    1184,
+    96,
+    32,
+    16
+   ]
+  },
+  "shadow_blob": {
+   "kind": "fx",
+   "origin": [
+    16,
+    8
+   ],
+   "rect": [
+    1440,
+    96,
+    32,
+    16
+   ]
+  },
+  "spell_lance": {
+   "fps": 12,
+   "frames": 4,
+   "kind": "fx",
+   "origin": [
+    16,
+    8
+   ],
+   "rect": [
+    1312,
+    96,
+    32,
+    16
+   ]
+  },
+  "spell_lance_charged": {
+   "fps": 12,
+   "frames": 4,
+   "kind": "fx",
+   "origin": [
+    24,
+    12
+   ],
+   "rect": [
+    992,
+    96,
+    48,
+    24
+   ]
+  },
+  "spell_nova": {
+   "additive": true,
+   "fps": 12,
+   "frames": 6,
+   "kind": "fx",
+   "origin": [
+    64,
+    32
+   ],
+   "rect": [
+    0,
+    96,
+    128,
+    64
+   ]
+  },
+  "spell_nova_charged": {
+   "additive": true,
+   "fps": 12,
+   "frames": 6,
+   "kind": "fx",
+   "origin": [
+    96,
+    48
+   ],
+   "rect": [
+    0,
+    0,
+    192,
+    96
+   ]
+  },
+  "tap_marker": {
+   "fps": 10,
+   "frames": 4,
+   "kind": "fx",
+   "origin": [
+    8,
+    4
+   ],
+   "rect": [
+    1472,
+    96,
+    16,
+    8
+   ]
+  }
+ }
+}

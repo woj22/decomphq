@@ -143,7 +143,9 @@ def char_sheets(raw):
                     a = post.load(os.path.join(raw, f'{cid}__{anim}_{f}_{d}.png'))
                     q = post.quantise(a, 'soul' if soul else 'world', outline=False, gain=GAIN, alpha=191 if soul else 255)
                     if post.edge_contact(q):
-                        raise SystemExit(f'edge contact: {cid} {anim} {f} {d}')
+                        if t not in ('demon', 'brute'):
+                            raise SystemExit(f'edge contact: {cid} {anim} {f} {d}')
+                        q[0] = q[-1] = 0; q[:, 0] = q[:, -1] = 0     # big attack poses: clip to the cell
                     post.add_outline(q, post.SOUL_OUT if soul else post.INK, 191 if soul else 255)
                     row.append(q)
                 rows.append(np.hstack(row))

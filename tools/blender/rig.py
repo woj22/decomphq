@@ -269,7 +269,7 @@ class DemonRig:
         c, p = self.ctx, self.p
         m = c.m
         brute = p.get('brute')
-        S = 1.42 if brute else 1.0
+        S = 1.3 if brute else .92
         self.S = S
         skin, skin_d, skin_l = m('74161b'), m('3a0f14'), m('b3261e')
         iron, iron2 = m('27232f'), m('37323f')
@@ -337,11 +337,11 @@ class DemonRig:
         self.tail = c.empty('tail', (0, .1 * S, .45 * S), parent=self.root)
         prev = self.tail
         for i in range(4):
-            sg = c.empty('tseg', (0, .1 * S if i else 0, -.03 * S if i else 0), parent=prev)
-            c.cyl(.03 * S * (1 - i * .18), .025 * S * (1 - i * .18), 0, .12 * S, skin_d, seg=6, parent=sg).rotation_euler = (math.radians(-80), 0, 0)
+            sg = c.empty('tseg', (0, .075 * S if i else 0, -.04 * S if i else 0), parent=prev)
+            c.cyl(.03 * S * (1 - i * .18), .025 * S * (1 - i * .18), 0, .09 * S, skin_d, seg=6, parent=sg).rotation_euler = (math.radians(-80), 0, 0)
             prev = sg
         tip = c.poly_prism([(-.05 * S, 0), (.05 * S, 0), (0, .12 * S)], .02, skin_l, parent=prev)
-        tip.location = (0, .13 * S, 0); tip.rotation_euler = (math.radians(-70), 0, 0)
+        tip.location = (0, .1 * S, 0); tip.rotation_euler = (math.radians(-70), 0, 0)
         self.tsegs = [o for o in prev.children_recursive] if False else None
 
     def pose(self, anim, f):
@@ -360,7 +360,7 @@ class DemonRig:
             tail = .25 * sw; lean = .32
         elif anim == 'attack':
             lean = [.15, .5, .4][f]
-            armR = [1.3, -1.6, -1.0][f]
+            armR = [1.0, -1.35, -0.8][f]
             armL = [-.5, .4, .1][f]
             legL, legR = [(-.2, .3), (.45, -.35), (.3, -.25)][f]
             tail = [-.3, .4, .2][f]

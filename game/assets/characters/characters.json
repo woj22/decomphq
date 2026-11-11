@@ -1,0 +1,616 @@
+{
+ "atlas": "characters",
+ "image": "characters.png",
+ "sprites": {
+  "chr_archivist": {
+   "anims": {
+    "idle": {
+     "fps": 2,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    },
+    "work": {
+     "fps": 2,
+     "frames": 2,
+     "row": 6
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    896,
+    0,
+    256,
+    448
+   ]
+  },
+  "chr_clerk_grey": {
+   "anims": {
+    "idle": {
+     "fps": 2,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    },
+    "work": {
+     "fps": 2,
+     "frames": 2,
+     "row": 6
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    1152,
+    0,
+    256,
+    448
+   ]
+  },
+  "chr_clerk_lilac": {
+   "anims": {
+    "idle": {
+     "fps": 2,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    },
+    "work": {
+     "fps": 2,
+     "frames": 2,
+     "row": 6
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    1408,
+    0,
+    256,
+    448
+   ]
+  },
+  "chr_demon": {
+   "anims": {
+    "attack": {
+     "fps": 10,
+     "frames": 3,
+     "row": 6
+    },
+    "hit": {
+     "fps": 1,
+     "frames": 1,
+     "row": 9
+    },
+    "idle": {
+     "fps": 3,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    }
+   },
+   "cell": [
+    48,
+    64
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    24,
+    56
+   ],
+   "rect": [
+    512,
+    0,
+    384,
+    640
+   ]
+  },
+  "chr_demon_brute": {
+   "anims": {
+    "attack": {
+     "fps": 10,
+     "frames": 3,
+     "row": 6
+    },
+    "hit": {
+     "fps": 1,
+     "frames": 1,
+     "row": 9
+    },
+    "idle": {
+     "fps": 3,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    }
+   },
+   "cell": [
+    64,
+    80
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    32,
+    72
+   ],
+   "rect": [
+    0,
+    0,
+    512,
+    800
+   ]
+  },
+  "chr_guard": {
+   "anims": {
+    "attention": {
+     "fps": 1,
+     "frames": 1,
+     "row": 6
+    },
+    "idle": {
+     "fps": 2,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    }
+   },
+   "cell": [
+    32,
+    64
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    56
+   ],
+   "rect": [
+    1664,
+    0,
+    256,
+    448
+   ]
+  },
+  "chr_guard_night": {
+   "anims": {
+    "attention": {
+     "fps": 1,
+     "frames": 1,
+     "row": 6
+    },
+    "idle": {
+     "fps": 2,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    }
+   },
+   "cell": [
+    32,
+    64
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    56
+   ],
+   "rect": [
+    0,
+    800,
+    256,
+    448
+   ]
+  },
+  "chr_player": {
+   "anims": {
+    "idle": {
+     "fps": 2,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    },
+    "work": {
+     "fps": 2,
+     "frames": 2,
+     "row": 6
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    256,
+    800,
+    256,
+    448
+   ]
+  },
+  "chr_player_r2": {
+   "anims": {
+    "idle": {
+     "fps": 2,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    },
+    "work": {
+     "fps": 2,
+     "frames": 2,
+     "row": 6
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    512,
+    800,
+    256,
+    448
+   ]
+  },
+  "chr_sorcerer": {
+   "anims": {
+    "idle": {
+     "fps": 2,
+     "frames": 2,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 2
+    },
+    "work": {
+     "fps": 2,
+     "frames": 2,
+     "row": 6
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    768,
+    800,
+    256,
+    448
+   ]
+  },
+  "chr_soul_0": {
+   "alpha_baked": 0.75,
+   "anims": {
+    "idle": {
+     "fps": 4,
+     "frames": 4,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 4
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    1024,
+    800,
+    256,
+    448
+   ]
+  },
+  "chr_soul_1": {
+   "alpha_baked": 0.75,
+   "anims": {
+    "idle": {
+     "fps": 4,
+     "frames": 4,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 4
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    1280,
+    800,
+    256,
+    448
+   ]
+  },
+  "chr_soul_2": {
+   "alpha_baked": 0.75,
+   "anims": {
+    "idle": {
+     "fps": 4,
+     "frames": 4,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 4
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    1536,
+    800,
+    256,
+    448
+   ]
+  },
+  "chr_soul_3": {
+   "alpha_baked": 0.75,
+   "anims": {
+    "idle": {
+     "fps": 4,
+     "frames": 4,
+     "row": 0
+    },
+    "walk": {
+     "fps": 8,
+     "frames": 4,
+     "row": 4
+    }
+   },
+   "cell": [
+    32,
+    56
+   ],
+   "dirs": [
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s"
+   ],
+   "kind": "character",
+   "origin": [
+    16,
+    48
+   ],
+   "rect": [
+    1792,
+    800,
+    256,
+    448
+   ]
+  }
+ }
+}
