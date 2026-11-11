@@ -242,6 +242,14 @@ func _refresh_booth() -> void:
 	for i in full:
 		pips.add_child(UiKit.icon("pip_full" if i < session.composure() else "pip_empty", Vector2(16, 16)))
 	var appeal: Variant = session.rec().get("appeal")
+	var prior: Variant = session.data.get("prior")
+	if correction:
+		pass
+	elif appeal is Dictionary and str((appeal as Dictionary).get("by", "")) == "cells" and last_line == "":
+		line_label.text = "FROM THE CELLS. You stamped this soul DEFERRED. Decide it now."
+	elif prior is Dictionary and not (appeal is Dictionary) and last_line == "":
+		var word: String = str({"heaven": "HEAVEN", "hell": "HELL", "purgatory": "DEFERRED"}.get(str((prior as Dictionary).get("verdict", "")), "?"))
+		line_label.text = "REVIEW. %s stamped %s. Uphold or overturn." % [str((prior as Dictionary).get("by", "A junior")), word]
 	if correction:
 		line_label.text = "Correction: the soul has gone. The file remains."
 	elif appeal is Dictionary and last_line == "":

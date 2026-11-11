@@ -150,4 +150,11 @@ static func generate(id: String, violet_chance: float = 0.3) -> Dictionary:
 	var g := Scoring.guideline(data)
 	data["type"] = "ambiguous" if corrected == 0 else ("contested" if Scoring.side_of(filed) != g else "clear")
 	data["expected"] = {"tally_filed": filed, "tally_corrected": corrected, "guideline": g}
+	# Rank 2 review: a junior clerk has already stamped it. Right ~55%, wrong ~30%, deferred ~15%.
+	var juniors := ["Hob Tanner", "Edwina Pratt", "Lemuel Oakes", "Peg Dalloway", "Cyril Mott", "Agatha Quail", "Wilf Bramble",
+		"Tamsin Reeve", "Ezekiel Gaunt", "Molly Crane", "Ned Pocock", "Ursula Fane"]
+	var roll := rng.randf()
+	var gv := g if g != "abstain" else ("heaven" if rng.randf() < 0.5 else "hell")
+	var pv := gv if roll < 0.55 else ("purgatory" if roll >= 0.85 else ("hell" if gv == "heaven" else "heaven"))
+	data["prior"] = {"verdict": pv, "by": "Junior clerk " + str(_pick(rng, juniors))}
 	return data

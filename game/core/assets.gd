@@ -167,6 +167,11 @@ static func font(role: String) -> Font:
 	var found: Font = null
 	var files: PackedStringArray = JsonUtil.list_files("res://assets/fonts", ".ttf")
 	files.append_array(JsonUtil.list_files("res://assets/fonts", ".otf"))
+	# Exported builds (APK) do not list the original font files, only their .import sidecars.
+	for imp: String in JsonUtil.list_files("res://assets/fonts", ".import"):
+		var orig := imp.trim_suffix(".import")
+		if (orig.ends_with(".ttf") or orig.ends_with(".otf")) and not files.has(orig):
+			files.append(orig)
 	for key: String in wanted.get(role, []):
 		for f: String in files:
 			var n := f.get_file().to_lower().replace(" ", "")
@@ -174,7 +179,7 @@ static func font(role: String) -> Font:
 				if role == "body" and n.find("bold") >= 0:
 					continue
 				var ff := FontFile.new()
-				if ff.load_dynamic_font(ProjectSettings.globalize_path(f)) == OK or ResourceLoader.exists(f):
+				if ResourceLoader.exists(f) or ff.load_dynamic_font(ProjectSettings.globalize_path(f)) == OK:
 					if ResourceLoader.exists(f):
 						var loaded := load(f) as FontFile
 						if loaded != null:

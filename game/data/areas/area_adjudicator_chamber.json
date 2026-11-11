@@ -251,6 +251,44 @@
     2
    ],
    "dialogue": "dlg_chamber_tube"
+  },
+  {
+   "id": "obj_secret_cabinet",
+   "type": "inspect",
+   "cell": [
+    7,
+    1
+   ],
+   "use_cell": [
+    7,
+    2
+   ],
+   "dialogue": "dlg_secret_cabinet",
+   "verb": "Search"
+  },
+  {
+   "id": "door_chamber_back_room",
+   "type": "door",
+   "cell": [
+    7,
+    1
+   ],
+   "use_cell": [
+    7,
+    2
+   ],
+   "style": "plain",
+   "via": "obj_secret_cabinet",
+   "conditions": [
+    {
+     "op": "is_night"
+    }
+   ],
+   "to": {
+    "area": "area_back_room",
+    "spawn": "from_chamber"
+   },
+   "secret": true
   }
  ],
  "spawns": {
@@ -265,6 +303,10 @@
   "soul_call": [
    3,
    8
+  ],
+  "from_secret": [
+   7,
+   2
   ]
  },
  "zones": {},

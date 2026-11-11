@@ -1,0 +1,11 @@
+{
+ "id": "dlg_quill_back_after",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_gatekeeper",
+   "text": "The Guild knows our faces now. Good. Let them fear the clerks for once.",
+   "next": "end"
+  }
+ }
+}

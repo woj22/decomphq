@@ -121,7 +121,12 @@ func build() -> void:
 	hell_btn.name = "StampHell"
 	hell_btn.pressed.connect(func() -> void: choose("hell"))
 	row.add_child(hell_btn)
-	hint = UiKit.label("Choose a stamp, then %s the writ to seal." % ("tap" if Settings.tap_stamp else "hold it on"), 16, UiKit.TEXT_DIM)
+	var hint_text := "Choose a stamp, then %s the writ to seal." % ("tap" if Settings.tap_stamp else "hold it on")
+	var prior: Variant = desk.session.data.get("prior")
+	if prior is Dictionary:
+		var w: String = str({"heaven": "HEAVEN", "hell": "HELL", "purgatory": "DEFERRED"}.get(str((prior as Dictionary).get("verdict", "")), "?"))
+		hint_text = "Junior's stamp: %s. Same stamp upholds; any other overturns." % w
+	hint = UiKit.label(hint_text, 16, UiKit.TEXT_DIM)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	content.add_child(hint)
 	_update()
@@ -340,8 +345,8 @@ func slip_rows() -> Array:
 	return [["Diligence", "%d/3" % int(r.get("diligence", 0))],
 		["Verdict", str(audit.get(str(r.get("audit", "")), ""))],
 		["Ground", str(gl.get(str(r.get("ground_label", "none")), "None"))],
-		["Merit", "+%d" % int(r.get("merit", 0))],
-		["Order", "%+d" % int(r.get("order_delta", 0))]]
+		["Merit", "+%d" % int(r.get("merit", 0)) + (" (incl. +2 caught a junior's error)" if int(r.get("review_pts", 0)) > 0 else "")],
+		["Order", "%+d" % int(r.get("order_delta", 0))]] + ([["Junior's verdict", str(r.get("review", "")).capitalize()]] if str(r.get("review", "")) != "" else [])
 
 
 func show_slip() -> void:

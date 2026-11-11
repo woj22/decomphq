@@ -1,64 +1,232 @@
 {
-  "id": "case_s006",
-  "ref": "S-006",
-  "name": "Hesper Quillon",
-  "age": 51,
-  "era": "1640s",
-  "place": "the Margravate of Dunmere",
-  "cause": "hanged for the murder of her master",
-  "summary": "Cook to the Margrave of Dunmere for twenty years. Poisoned his supper on the eve of his burning three villages for unpaid tithe. The household's taster, a page aged twelve, died with him.",
-  "portrait": {"seed": 1006, "tags": ["female", "adult", "cook"]},
-  "type": "ambiguous",
-  "min_rank": 2,
-  "entries": [
-    {"id": "r1", "tag": "sin", "weight": -3, "ink": "black", "text": "Poisoned the Margrave of Dunmere at his own table."},
-    {"id": "r2", "tag": "sin", "weight": -2, "ink": "black", "text": "Caused the death of the page Lutz, taster to the household (\"unintended\")."},
-    {"id": "r3", "tag": "virtue", "weight": 3, "ink": "black", "text": "The burnings were never carried out; some four hundred villagers were spared."},
-    {"id": "r4", "tag": "virtue", "weight": 2, "ink": "black", "text": "Fed beggars at the kitchen door for twenty years, against orders."},
-    {"id": "r5", "tag": "virtue", "weight": 1, "ink": "black", "text": "Confessed at once so the kitchen staff would not be put to the question."}
-  ],
-  "hidden": [
-    {"id": "h1", "tag": "sin", "weight": -1, "text": "Lied to this tribunal about the boy."}
-  ],
-  "archive": [
-    {"id": "arc_006", "title": "Dunmere kitchen roster", "requires": [], "cards": [
-      "Tasting rota, week of the tithe court, in the cook's own hand.",
-      "Taster: Lutz, page, aged 12. Struck through: Brandt, taster thirty years.",
-      "Beside Brandt: 'to the stables, by order of Cook.'"
-    ]}
-  ],
-  "discoveries": [
-    {"id": "d_rota", "key": true,
-     "triggers": [{"link": ["r2", "arc_006"]}],
-     "ops": [{"op": "reweight", "entry": "r2", "weight": -3}],
-     "fact": {"text": "She wrote the tasting rota herself and put the boy on it.", "side": "hell"}},
-    {"id": "d_lie", "key": true,
-     "triggers": [{"question": "q3"}],
-     "ops": [{"op": "reveal", "entry": "h1"}],
-     "fact": {"text": "She told this tribunal she did not know. She wrote the rota.", "side": "hell"}}
-  ],
-  "questions": [
-    {"id": "q1", "kind": "general", "requires": [], "text": "Why poison him?",
-     "answer": ["Because he'd have done it. He'd burnt Asher's Ford the year before and laughed at supper.", "I had the pot and nobody else had anything."],
-     "card": "He'd burnt Asher's Ford the year before. She had the pot.",
-     "fact": {"id": "f_ford", "text": "The Margrave had burned Asher's Ford the year before; the threat was real.", "side": "heaven", "key": true}},
-    {"id": "q2", "kind": "general", "requires": [], "text": "Did you know the boy would taste it?",
-     "answer": ["No. It should have been old Brandt. God's teeth, do you think I'd have... no. I did not know."],
-     "card": "Says it should have been old Brandt. Denies knowing."},
-    {"id": "q3", "kind": "confront", "requires": [{"op": "discovered", "case": "case_s006", "id": "d_rota"}, {"op": "asked", "case": "case_s006", "id": "q2"}], "text": "You wrote the rota.",
-     "answer": ["...Brandt had tasted for him thirty years and could smell a bad egg through a wall. Lutz couldn't.", "If Brandt tasted, the Margrave lived and three villages burned.", "I weighed a boy against four hundred. I'd like to tell you it was hard."],
-     "card": "Put Lutz on the rota because Brandt would have smelled it. Weighed him.",
-     "fact": {"id": "f_weighed", "text": "She weighed one boy against four hundred villagers, and says so plainly.", "side": "heaven", "key": false}}
-  ],
-  "expected": {"tally_filed": 1, "tally_corrected": -1, "guideline": "hell"},
-  "epilogue": {
-    "heaven": ["Lutz, admitted long ago, is asked whether he objects. He asks whether the villages are still there.", "Told yes, he says he would like to think about it."],
-    "hell": ["The Wardens log one debt, owed to Lutz.", "The Margrave, already in their keeping, is told his cook has arrived, and is reported to be unsettled."]
+ "id": "case_s006",
+ "ref": "S-006",
+ "name": "Hesper Quillon",
+ "age": 51,
+ "era": "1640s",
+ "place": "the Margravate of Dunmere",
+ "cause": "hanged for the murder of her master",
+ "summary": "Cook to the Margrave of Dunmere for twenty years. Poisoned his supper on the eve of his burning three villages for unpaid tithe. The household's taster, a page aged twelve, died with him.",
+ "portrait": {
+  "seed": 1006,
+  "tags": [
+   "female",
+   "adult",
+   "cook"
+  ]
+ },
+ "type": "ambiguous",
+ "min_rank": 2,
+ "entries": [
+  {
+   "id": "r1",
+   "tag": "sin",
+   "weight": -3,
+   "ink": "black",
+   "text": "Poisoned the Margrave of Dunmere at his own table."
   },
-  "verdicts": {
-    "heaven": {"effects": [{"op": "add_stat", "id": "favour_gilt", "value": 1}, {"op": "add_stat", "id": "conscience", "value": 1}]},
-    "hell": {"effects": [{"op": "add_stat", "id": "favour_ember", "value": 1}, {"op": "add_stat", "id": "conscience", "value": -1}]}
+  {
+   "id": "r2",
+   "tag": "sin",
+   "weight": -2,
+   "ink": "black",
+   "text": "Caused the death of the page Lutz, taster to the household (\"unintended\")."
   },
-  "ext": {"mitigating": "No lawful remedy existed against the Margrave; she acted alone and accepted the rope to shield others.",
-          "note": "C31 resolved in data: q3 requires q2 asked, so the lie (h1) only exists if she told it; G is computed on the full -1 record."}
+  {
+   "id": "r3",
+   "tag": "virtue",
+   "weight": 3,
+   "ink": "black",
+   "text": "The burnings were never carried out; some four hundred villagers were spared."
+  },
+  {
+   "id": "r4",
+   "tag": "virtue",
+   "weight": 2,
+   "ink": "black",
+   "text": "Fed beggars at the kitchen door for twenty years, against orders."
+  },
+  {
+   "id": "r5",
+   "tag": "virtue",
+   "weight": 1,
+   "ink": "black",
+   "text": "Confessed at once so the kitchen staff would not be put to the question."
+  }
+ ],
+ "hidden": [
+  {
+   "id": "h1",
+   "tag": "sin",
+   "weight": -1,
+   "text": "Lied to this tribunal about the boy."
+  }
+ ],
+ "archive": [
+  {
+   "id": "arc_006",
+   "title": "Dunmere kitchen roster",
+   "requires": [],
+   "cards": [
+    "Tasting rota, week of the tithe court, in the cook's own hand.",
+    "Taster: Lutz, page, aged 12. Struck through: Brandt, taster thirty years.",
+    "Beside Brandt: 'to the stables, by order of Cook.'"
+   ]
+  }
+ ],
+ "discoveries": [
+  {
+   "id": "d_rota",
+   "key": true,
+   "triggers": [
+    {
+     "link": [
+      "r2",
+      "arc_006"
+     ]
+    }
+   ],
+   "ops": [
+    {
+     "op": "reweight",
+     "entry": "r2",
+     "weight": -3
+    }
+   ],
+   "fact": {
+    "text": "She wrote the tasting rota herself and put the boy on it.",
+    "side": "hell"
+   }
+  },
+  {
+   "id": "d_lie",
+   "key": true,
+   "triggers": [
+    {
+     "question": "q3"
+    }
+   ],
+   "ops": [
+    {
+     "op": "reveal",
+     "entry": "h1"
+    }
+   ],
+   "fact": {
+    "text": "She told this tribunal she did not know. She wrote the rota.",
+    "side": "hell"
+   }
+  }
+ ],
+ "questions": [
+  {
+   "id": "q1",
+   "kind": "general",
+   "requires": [],
+   "text": "Why poison him?",
+   "answer": [
+    "Because he'd have done it. He'd burnt Asher's Ford the year before and laughed at supper.",
+    "I had the pot and nobody else had anything."
+   ],
+   "card": "He'd burnt Asher's Ford the year before. She had the pot.",
+   "fact": {
+    "id": "f_ford",
+    "text": "The Margrave had burned Asher's Ford the year before; the threat was real.",
+    "side": "heaven",
+    "key": true
+   }
+  },
+  {
+   "id": "q2",
+   "kind": "general",
+   "requires": [],
+   "text": "Did you know the boy would taste it?",
+   "answer": [
+    "No. It should have been old Brandt. God's teeth, do you think I'd have... no. I did not know."
+   ],
+   "card": "Says it should have been old Brandt. Denies knowing."
+  },
+  {
+   "id": "q3",
+   "kind": "confront",
+   "requires": [
+    {
+     "op": "discovered",
+     "case": "case_s006",
+     "id": "d_rota"
+    },
+    {
+     "op": "asked",
+     "case": "case_s006",
+     "id": "q2"
+    }
+   ],
+   "text": "You wrote the rota.",
+   "answer": [
+    "...Brandt had tasted for him thirty years and could smell a bad egg through a wall. Lutz couldn't.",
+    "If Brandt tasted, the Margrave lived and three villages burned.",
+    "I weighed a boy against four hundred. I'd like to tell you it was hard."
+   ],
+   "card": "Put Lutz on the rota because Brandt would have smelled it. Weighed him.",
+   "fact": {
+    "id": "f_weighed",
+    "text": "She weighed one boy against four hundred villagers, and says so plainly.",
+    "side": "heaven",
+    "key": false
+   }
+  }
+ ],
+ "expected": {
+  "tally_filed": 1,
+  "tally_corrected": -1,
+  "guideline": "hell"
+ },
+ "epilogue": {
+  "heaven": [
+   "Lutz, admitted long ago, is asked whether he objects. He asks whether the villages are still there.",
+   "Told yes, he says he would like to think about it."
+  ],
+  "hell": [
+   "The Wardens log one debt, owed to Lutz.",
+   "The Margrave, already in their keeping, is told his cook has arrived, and is reported to be unsettled."
+  ]
+ },
+ "verdicts": {
+  "heaven": {
+   "effects": [
+    {
+     "op": "add_stat",
+     "id": "favour_gilt",
+     "value": 1
+    },
+    {
+     "op": "add_stat",
+     "id": "conscience",
+     "value": 1
+    }
+   ]
+  },
+  "hell": {
+   "effects": [
+    {
+     "op": "add_stat",
+     "id": "favour_ember",
+     "value": 1
+    },
+    {
+     "op": "add_stat",
+     "id": "conscience",
+     "value": -1
+    }
+   ]
+  }
+ },
+ "ext": {
+  "mitigating": "No lawful remedy existed against the Margrave; she acted alone and accepted the rope to shield others.",
+  "note": "C31 resolved in data: q3 requires q2 asked, so the lie (h1) only exists if she told it; G is computed on the full -1 record."
+ },
+ "prior": {
+  "verdict": "hell",
+  "by": "Junior clerk Hob Tanner"
+ }
 }

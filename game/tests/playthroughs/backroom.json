@@ -1,0 +1,15 @@
+{"steps": [
+ {"do": "new_game"}, {"do": "drain"},
+ {"do": "debug_promote"}, {"do": "drain"},
+ {"do": "teleport", "area": "area_adjudicator_chamber", "spawn": "from_court"}, {"do": "clear_docket"},
+ {"do": "set_flag", "id": "flag_night_pact"}, {"do": "set_flag", "id": "flag_quill_ally"},
+ {"do": "talk", "object": "obj_secret_cabinet"}, {"do": "drain"},
+ {"do": "assert", "area": "area_adjudicator_chamber"},
+ {"do": "set_time", "hour": 23}, {"do": "drain"},
+ {"do": "talk", "object": "obj_secret_cabinet", "prefer": ["Slide"]}, {"do": "drain"}, {"do": "wait", "seconds": 1.0},
+ {"do": "assert", "area": "area_back_room"},
+ {"do": "wait", "seconds": 0.5},
+ {"do": "screenshot", "name": "back_room"},
+ {"do": "talk", "object": "obj_quill_back"}, {"do": "drain"},
+ {"do": "talk", "object": "obj_pell_back"}, {"do": "drain"}
+]}

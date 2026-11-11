@@ -6,6 +6,28 @@
  "portrait": "por_grist",
  "dialogue": [
   {
+   "id": "dlg_quill_back_after",
+   "conditions": [
+    {
+     "op": "in_area",
+     "id": "area_back_room"
+    },
+    {
+     "op": "flag",
+     "id": "flag_captain_dead"
+    }
+   ]
+  },
+  {
+   "id": "dlg_quill_back",
+   "conditions": [
+    {
+     "op": "in_area",
+     "id": "area_back_room"
+    }
+   ]
+  },
+  {
    "id": "dlg_quill_ally",
    "conditions": [
     {

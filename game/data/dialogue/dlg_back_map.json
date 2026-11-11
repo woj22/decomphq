@@ -1,0 +1,11 @@
+{
+ "id": "dlg_back_map",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A plan of the fortress. Pins mark every raid. Thread runs from each pin to one door: Room 0.",
+   "next": "end"
+  }
+ }
+}

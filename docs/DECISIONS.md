@@ -15,3 +15,9 @@ Binding rulings from the project owner. These override any proposal that conflic
 | D9 | 2026-11-11 | **Backdrop:** use the Chamber's dark void backdrop everywhere, not the Gilt/Ember split behind Clerk's Court. | Owner |
 | D10 | 2026-11-11 | **DEFERRED verdict:** souls may be trapped in Purgatory (third stamp); they become Residents held in the Deferral Cells. | Owner idea |
 | D11 | 2026-11-11 | **Living quarters:** cells for the Residents, a dormitory for the workers, and private quarters for Pell. | Owner |
+| D12 | 2026-11-11 | **Combat & controls:** PlayStation-style face buttons (SQUARE interact, CROSS jump, TRIANGLE/CIRCLE spells, hold = charged). | Owner |
+| D13 | 2026-11-11 | **Ember Gate escorts, Thaumaturgy upgrades, 24-hour day with night locks and a Night Watch.** | Owner |
+| D14 | 2026-11-11 | **Generated cases** from large pools, with a corruption storyline (violet ink -> Room 0 -> Reclaimer raids) uncovered with Pell and **Malphas Quill as an ally**. | Owner |
+| D15 | 2026-11-11 | **Nights are deadlier;** guards die; a healer revives the player; if every defender dies Purgatory is overrun (game over). | Owner |
+| D16 | 2026-11-11 | **Senior Adjudicator reviews** junior verdicts (right, wrong or deferred) and souls from the Deferral Cells, rather than judging fresh. | Owner |
+| D17 | 2026-11-11 | **The Back Room:** a secret room behind the Chamber's cabinet for night meetings with Pell and Quill. | Owner |

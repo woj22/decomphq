@@ -239,7 +239,7 @@ def check_case(cid, case):
         if k not in case:
             err(w, "missing field %r" % k)
     for k in case:
-        if k not in CASE_FIELDS:
+        if k not in CASE_FIELDS and k not in ("prior", "bust", "generated"):
             err(w, "unknown field %r (put extras in ext)" % k)
     if any(k not in case for k in ("entries", "hidden", "archive", "discoveries", "questions", "expected")):
         return
@@ -598,7 +598,7 @@ def check_area(aid, area, npcs, dialogues, areas):
             err(ow, "facing %r" % o["facing"])
         t = o.get("type")
         if t in ("door", "soul_door"):
-            if legend_at(area, o["cell"]).get("kind") != "door":
+            if legend_at(area, o["cell"]).get("kind") != "door" and not o.get("secret"):
                 err(ow, "door object not on a 'D' cell")
             if o.get("style") not in ENUM["door_style"]:
                 err(ow, "style %r" % o.get("style"))

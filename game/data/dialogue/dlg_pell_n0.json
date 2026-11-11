@@ -14,7 +14,7 @@
   },
   "n3": {
    "speaker": "npc_pell",
-   "text": "Every new file that comes up to you, read it for violet. Each forged line is a soul somebody sold. Bring me the count.",
+   "text": "Not here again. Behind the second cabinet in your Chamber is a room nobody ever filed. We meet there, at night.",
    "next": "end",
    "effects": [
     {

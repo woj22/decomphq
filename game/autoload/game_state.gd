@@ -403,6 +403,10 @@ func next_docket() -> void:
 	docket_day = dd
 	for cid: Variant in ids:
 		case_rec(str(cid))
+	# a soul you trapped in the Deferral Cells comes up for a final decision
+	var res := residents()
+	if not res.is_empty():
+		appeal_case(str(res[randi() % res.size()]), "cells")
 	# an earlier verdict comes back on appeal
 	var judged: Array = []
 	for cid: String in cases:

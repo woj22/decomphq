@@ -126,10 +126,17 @@
   }
  },
  "obj_report_pell": {
-  "text": "Bring the manifest to Pell, at night",
+  "text": "Bring the manifest to the Back Room",
   "target": {
-   "area": "area_pell_quarters",
-   "object": "obj_pell_night"
+   "area": "area_adjudicator_chamber",
+   "object": "obj_secret_cabinet"
+  }
+ },
+ "obj_back_room": {
+  "text": "Meet in the Back Room at night",
+  "target": {
+   "area": "area_adjudicator_chamber",
+   "object": "obj_secret_cabinet"
   }
  }
 }

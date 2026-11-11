@@ -1,0 +1,167 @@
+{
+ "id": "area_back_room",
+ "name": "The Back Room",
+ "size": [
+  8,
+  7
+ ],
+ "ambience": "amb_records",
+ "backdrop": "none",
+ "grid": [
+  "########",
+  "#S..B.Sk",
+  "D......k",
+  "#..d...k",
+  "#......k",
+  "#l....Bk",
+  "kkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [],
+ "decor": [
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    3,
+    3
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    4,
+    1
+   ]
+  },
+  {
+   "sprite": "wall_torch_y",
+   "cell": [
+    0,
+    4
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_back_room_chamber",
+   "type": "door",
+   "cell": [
+    0,
+    2
+   ],
+   "use_cell": [
+    1,
+    2
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_adjudicator_chamber",
+    "spawn": "from_secret"
+   }
+  },
+  {
+   "id": "obj_pell_back",
+   "type": "npc",
+   "npc": "npc_pell",
+   "cell": [
+    2,
+    3
+   ],
+   "facing": "se",
+   "use_cell": [
+    2,
+    4
+   ],
+   "night": true,
+   "night_only": true
+  },
+  {
+   "id": "obj_quill_back",
+   "type": "npc",
+   "npc": "npc_gatekeeper",
+   "cell": [
+    4,
+    3
+   ],
+   "facing": "sw",
+   "use_cell": [
+    4,
+    4
+   ],
+   "night": true,
+   "night_only": true,
+   "visible_if": [
+    {
+     "op": "flag",
+     "id": "flag_quill_ally"
+    }
+   ]
+  },
+  {
+   "id": "obj_back_map",
+   "type": "inspect",
+   "cell": [
+    1,
+    5
+   ],
+   "use_cell": [
+    2,
+    5
+   ],
+   "dialogue": "dlg_back_map"
+  }
+ ],
+ "spawns": {
+  "default": [
+   1,
+   2
+  ],
+  "from_chamber": [
+   1,
+   2
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "staff": [],
+  "flows": []
+ },
+ "ext": {
+  "note": "Owner request: a secret room behind the Chamber's record cabinet, for night meetings with your companions."
+ }
+}

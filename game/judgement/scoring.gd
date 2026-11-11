@@ -239,7 +239,15 @@ static func score(case_data: Dictionary, discoveries: Array, asked: Array, verdi
 	var ground_label := "none"
 	if ground != "" and not deferred:
 		ground_label = "sound" if ground_side == verdict else "unsound"
-	var merit := maxi(0, diligence + verdict_pts + ground_pts)
+	var review := ""
+	var review_pts := 0
+	var prior: Variant = case_data.get("prior")
+	if prior is Dictionary:
+		var pv := str((prior as Dictionary).get("verdict", ""))
+		review = "upheld" if verdict == pv else "overturned"
+		if not ambiguous and pv != g and verdict == g:
+			review_pts = 2 # caught a junior's mistake
+	var merit := maxi(0, diligence + verdict_pts + ground_pts + review_pts)
 	var conscience := 0
 	if deferred:
 		conscience = 0
@@ -250,7 +258,7 @@ static func score(case_data: Dictionary, discoveries: Array, asked: Array, verdi
 	return {"guideline": g, "type": ctype, "ambiguous": ambiguous, "key_found": key_found, "key_total": kt,
 		"diligence": diligence, "verdict_pts": verdict_pts, "ground_pts": ground_pts, "merit": merit, "sound": sound,
 		"audit": audit, "ground": ground, "ground_side": ground_side, "ground_label": ground_label, "verdict": verdict,
-		"overturned": audit == "overturned", "deferred": deferred, "favour_gilt": 1 if verdict == HEAVEN else 0,
+		"overturned": audit == "overturned", "deferred": deferred, "review": review, "review_pts": review_pts, "favour_gilt": 1 if verdict == HEAVEN else 0,
 		"favour_ember": 1 if verdict == HELL else 0, "conscience": conscience}
 
 

@@ -62,6 +62,9 @@
     },
     "upgrade_below_max": {
       "id": "str"
+    },
+    "in_area": {
+      "id": "str"
     }
   },
   "effects": {

@@ -1,0 +1,16 @@
+{
+ "id": "dlg_quill_back",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_gatekeeper",
+   "text": "Nice little room. No windows, one door, a lot of paper. Very like home.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_gatekeeper",
+   "text": "Keep finding the violet ones. Every forgery is a soul the Guild thinks it owns.",
+   "next": "end"
+  }
+ }
+}

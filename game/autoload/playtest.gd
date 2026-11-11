@@ -318,6 +318,10 @@ func run_step(s: Dictionary) -> bool:
 				if is_instance_valid(g):
 					(g as Defender).take_hit(9999.0)
 			await frames(2)
+		"log_fonts":
+			for r: String in ["display", "body", "mono", "large"]:
+				var f: Font = Assets.font(r)
+				_log("font %s -> %s" % [r, f.get_font_name() if f != null else "NULL"])
 		"set_flag":
 			GameState.set_flag(str(s["id"]), s.get("value", true))
 		"leave_desk":
