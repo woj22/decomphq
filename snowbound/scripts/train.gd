@@ -265,14 +265,16 @@ func _blizzard() -> void:
 		p.visibility_aabb = AABB(Vector3(-20, -8, -40), Vector3(40, 20, 80))
 		var pm := ParticleProcessMaterial.new()
 		pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-		pm.emission_box_extents = Vector3(8, 4, 26)
-		pm.direction = Vector3(side * 0.1, -0.3, -1.0)
+		pm.emission_box_extents = Vector3(7, 4, 26)
+		pm.direction = Vector3(side * 0.15, -0.3, -1.0)   # blown along the train and away from it
 		pm.spread = 14
 		pm.initial_velocity_min = 7.0
 		pm.initial_velocity_max = 12.0
 		pm.gravity = Vector3(0, -1.5, 0)
 		pm.turbulence_enabled = true
-		pm.turbulence_noise_strength = 1.4
+		pm.turbulence_noise_strength = 0.4
+		pm.turbulence_influence_min = 0.05
+		pm.turbulence_influence_max = 0.15
 		pm.scale_min = 0.5
 		pm.scale_max = 1.5
 		p.process_material = pm
@@ -294,7 +296,7 @@ func _blizzard() -> void:
 		m.albedo_color = Color(0.85, 0.9, 1.0, 0.9)
 		q.material = m
 		p.draw_pass_1 = q
-		p.position = Vector3(side * 10.5, 2.5, 15)
+		p.position = Vector3(side * 11.5, 2.5, 15)
 		p.layers = 2
 		add_child(p)
 		_snow.append(p)

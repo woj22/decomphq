@@ -456,7 +456,7 @@ def standard_actions(person):
     action(arm, 'sit_talk', [(0, gesture(SIT, 0.2)), (20, gesture(SIT, 1.0)), (40, gesture(SIT, 0.5)), (60, gesture(SIT, 1.0)), (80, gesture(SIT, 0.2))])
     action(arm, 'talk', [(0, gesture(A, 0.2)), (20, gesture(A, 1.0)), (40, gesture(A, 0.5)), (60, gesture(A, 1.0)), (80, gesture(A, 0.2))])
     # leaning on the table, arms forward (dining car)
-    TABLE = merge(SIT, {'upper_arm.L': (-55, 0, 6), 'upper_arm.R': (-55, 0, -6), 'forearm.L': (-50, 0, -10), 'forearm.R': (-50, 0, 10), 'chest': (6, 0, 0)})
+    TABLE = merge(SIT, {'upper_arm.L': (6, 0, 6), 'upper_arm.R': (6, 0, -6), 'forearm.L': (-28, 0, -6), 'forearm.R': (-28, 0, 6), 'chest': (5, 0, 0)})
     action(arm, 'sit_table', [(0, TABLE), (45, merge(TABLE, {'chest': (-2, 0, 0)})), (90, TABLE)])
     # lying asleep (berths): flat on the back
     action(arm, 'lie', [(0, merge({'hips@loc': (0, -person.J['hips'].y + 0.62, 0)}, {'thigh.L': (0, 0, -2), 'thigh.R': (0, 0, 2)})),
