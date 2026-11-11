@@ -16,12 +16,14 @@ const MAX_SENT := 16 # history messages sent per request
 const MAX_KEPT := 80
 
 var api_key := ""
-var model := "gpt-4o-mini"
+var model := "gpt-6-luna"
 var base_url := "https://api.openai.com/v1"
 var history: Array = [] # [{role, content}]
 var busy := false
 var _http: HTTPRequest
 var _pending_kind := ""
+var _last_body: Dictionary = {}
+var _retried := false
 
 
 func _ready() -> void:
@@ -147,10 +149,10 @@ func _send(kind: String, extra: Array) -> void:
 	var msgs: Array = [{"role": "system", "content": persona()}, {"role": "system", "content": briefing()}]
 	msgs.append_array(history.slice(-MAX_SENT))
 	msgs.append_array(extra)
-	var body := JSON.stringify({"model": model, "messages": msgs, "temperature": 0.8, "max_completion_tokens": 220})
-	var headers := PackedStringArray(["Content-Type: application/json", "Authorization: Bearer " + api_key.strip_edges()])
 	_pending_kind = kind
-	var err := _http.request(base_url.trim_suffix("/") + "/chat/completions", headers, HTTPClient.METHOD_POST, body)
+	_retried = false
+	_last_body = request_body(msgs)
+	var err := _post(_last_body)
 	if err != OK:
 		failed.emit("Could not reach the line (error %d)." % err)
 		if kind == "chat":
@@ -160,7 +162,35 @@ func _send(kind: String, extra: Array) -> void:
 	busy_changed.emit(true)
 
 
+## Chat Completions body. Reasoning-era models (gpt-5*, gpt-6*, o*) reject a custom temperature and spend output tokens
+## thinking, so for those: no temperature, reasoning off, and a larger budget. Older models get a temperature.
+func request_body(msgs: Array) -> Dictionary:
+	var b := {"model": model, "messages": msgs}
+	var m := model.to_lower()
+	if m.begins_with("gpt-6") or m.begins_with("gpt-5") or m.begins_with("o"):
+		b["max_completion_tokens"] = 800
+		b["reasoning_effort"] = "none" if m.begins_with("gpt-6") else "minimal"
+	else:
+		b["max_completion_tokens"] = 220
+		b["temperature"] = 0.8
+	return b
+
+
+func _post(b: Dictionary) -> int:
+	var headers := PackedStringArray(["Content-Type: application/json", "Authorization: Bearer " + api_key.strip_edges()])
+	return _http.request(base_url.trim_suffix("/") + "/chat/completions", headers, HTTPClient.METHOD_POST, JSON.stringify(b))
+
+
 func _on_done(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	# A 400 about an unsupported parameter: retry once with only the essentials.
+	if code == 400 and not _retried:
+		var t := body.get_string_from_utf8().to_lower()
+		if t.contains("temperature") or t.contains("reasoning") or t.contains("unsupported") or t.contains("max_completion_tokens"):
+			_retried = true
+			var slim := {"model": _last_body.get("model", model), "messages": _last_body.get("messages", [])}
+			_last_body = slim
+			if _post(slim) == OK:
+				return
 	busy = false
 	busy_changed.emit(false)
 	var kind := _pending_kind

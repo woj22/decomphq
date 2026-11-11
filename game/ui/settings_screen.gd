@@ -53,7 +53,7 @@ func _text_row(label: String, value: String, secret: bool, cb: Callable) -> void
 	var e := LineEdit.new()
 	e.text = value
 	e.secret = secret
-	e.placeholder_text = "sk-..." if secret else "gpt-4o-mini"
+	e.placeholder_text = "sk-..." if secret else "gpt-6-luna"
 	e.custom_minimum_size = Vector2(220, 44)
 	e.virtual_keyboard_enabled = true
 	e.text_changed.connect(func(t: String) -> void: cb.call(t))
