@@ -93,6 +93,10 @@ def j_quarters(ctx):
     for ax in 'xy':
         kit.cell_bars(ctx, ax); shot(ctx, f'cell_bars_{ax}')
         kit.cell_door(ctx, ax); shot(ctx, f'cell_door_{ax}')
+    for mk in range(16):
+        kit.cell_bars_mask(ctx, mk); shot(ctx, f'cell_bars_m{mk}')
+    for mk in (5, 10):
+        kit.cell_bars_mask(ctx, mk, door=True); shot(ctx, f'cell_door_m{mk}')
 
 
 def j_shelves(ctx):

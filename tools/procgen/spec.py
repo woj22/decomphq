@@ -69,6 +69,11 @@ S('cell_bars_x', 'props', (64, 96), (32, 72), job='quarters', **P)
 S('cell_bars_y', 'props', (64, 96), (32, 72), job='quarters', **P)
 S('cell_door_x', 'props', (64, 96), (32, 72), job='quarters', **P)
 S('cell_door_y', 'props', (64, 96), (32, 72), job='quarters', **P)
+# connection-aware bars (mask bits: 1=-cy, 2=+cx, 4=+cy, 8=-cx); no outline so runs join seamlessly
+for _mk in range(16):
+    S(f'cell_bars_m{_mk}', 'props', (64, 96), (32, 72), job='quarters', mask=_mk, **dict(P, outline=False))
+for _mk in (5, 10):
+    S(f'cell_door_m{_mk}', 'props', (64, 96), (32, 72), job='quarters', mask=_mk, **dict(P, outline=False))
 S('shelf_empty', 'props', (64, 128), (32, 112), job='shelves', **P)
 S('counter', 'props', (64, 64), (32, 44), job='furn', **P)
 S('rope_post', 'props', (64, 48), (32, 36), job='rails', **P)

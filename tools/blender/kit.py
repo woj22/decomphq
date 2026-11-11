@@ -550,6 +550,54 @@ def cell_door(ctx, axis='x'):
         ctx.box((-.05, .12, .5), (.05, .26, .66), m('a8742a'))
 
 
+# connection bits (grid space): 1 = -cy (Blender +Y), 2 = +cx (+X), 4 = +cy (-Y), 8 = -cx (-X)
+BAR_DIRS = {1: (0, 1), 2: (1, 0), 4: (0, -1), 8: (-1, 0)}
+
+
+def cell_bars_mask(ctx, mask, door=False):
+    """Connection-aware iron bars: half-cell arms from the centre to each connected edge, posts at the centre
+    (unless straight) and at every arm end, shared top/bottom rails. Arms meet neighbours exactly on the cell edge."""
+    m = ctx.m
+    iron, rail, post = m('27232f'), m('37323f'), m('4b4654')
+    arms = [BAR_DIRS[b] for b in (1, 2, 4, 8) if mask & b]
+    straight = mask in (5, 10)
+    if not arms:                      # isolated: a short x run with end posts
+        arms = [(1, 0), (-1, 0)]; straight = True
+    H, t = 1.15, .035
+
+    def seg(d, a0, a1, z0, z1, w):
+        dx, dy = d
+        if dx:
+            lo, hi = sorted((dx * a0, dx * a1))
+            return ctx.box((lo, -w, z0), (hi, w, z1), rail if w > .02 else iron)
+        lo, hi = sorted((dy * a0, dy * a1))
+        return ctx.box((-w, lo, z0), (w, hi, z1), rail if w > .02 else iron)
+    for d in arms:
+        seg(d, 0, .5, H - .05, H + .03, t)          # top rail
+        seg(d, 0, .5, 0, .06, t)                    # bottom rail
+        for a in (.125, .25, .375):                 # bars
+            dx, dy = d
+            x, y = dx * a, dy * a
+            ctx.box((x - .014, y - .014, 0), (x + .014, y + .014, H), iron)
+        dx, dy = d                                  # end post on the edge (shared with the neighbour)
+        x, y = dx * .5, dy * .5
+        ctx.box((x - .03, y - .03, 0), (x + .03, y + .03, H + .06), post)
+        ctx.box((x - .04, y - .04, H + .06), (x + .04, y + .04, H + .09), rail)
+    if straight:
+        ctx.box((-.014, -.014, 0), (.014, .014, H), iron)
+    else:
+        ctx.box((-.045, -.045, 0), (.045, .045, H + .08), post)
+        ctx.box((-.055, -.055, H + .08), (.055, .055, H + .11), rail)
+        ctx.sphere(.04, (0, 0, H + .15), m('66616e'), seg=8, rings=5)
+    if door:
+        if mask == 10:
+            ctx.box((.12, -.05, .5), (.26, .05, .66), m('a8742a'))
+            ctx.box((.17, -.06, .55), (.21, .06, .6), m('1a1722'))
+        else:
+            ctx.box((-.05, -.26, .5), (.05, -.12, .66), m('a8742a'))
+            ctx.box((-.06, -.21, .55), (.06, -.17, .6), m('1a1722'))
+
+
 def washstand(ctx):
     m = ctx.m
     ctx.box((-.16, -.14, 0), (.16, .14, .5), m('5a3f2e'))

@@ -173,6 +173,8 @@ func _build_cells() -> void:
 
 
 func _place_prop(prop: String, c: Vector2i, d: Dictionary) -> void:
+	if prop.begins_with("cell_bars_") or prop.begins_with("cell_door_"):
+		prop = _bars_variant(prop, c)
 	var fp := JsonUtil.to_vec2i(d.get("footprint", Assets.info(prop).get("footprint", [1, 1])), Vector2i.ONE)
 	var ch := model.char_at(c)
 	if fp != Vector2i.ONE:
@@ -280,3 +282,22 @@ func object_at_point(world_pos: Vector2) -> Dictionary:
 	if not best.is_empty():
 		return best
 	return model.object_at(Iso.local_to_cell_i(world_pos))
+
+
+## Connection-aware iron bars: pick `cell_bars_m<mask>` / `cell_door_m<mask>` from the 4 neighbours
+## (bits 1 = -y, 2 = +x, 4 = +y, 8 = -x). A neighbour connects if it is bars/cell door or a wall/kerb/door cell.
+func _bars_variant(prop: String, c: Vector2i) -> String:
+	var mask := 0
+	var dirs := [[Vector2i(0, -1), 1], [Vector2i(1, 0), 2], [Vector2i(0, 1), 4], [Vector2i(-1, 0), 8]]
+	for e: Array in dirs:
+		var n: Vector2i = c + (e[0] as Vector2i)
+		if not model.in_bounds(n):
+			continue
+		var nd := model.def_at(n)
+		var nk := str(nd.get("kind", ""))
+		var np := str(nd.get("prop", ""))
+		if np.begins_with("cell_bars") or np.begins_with("cell_door") or nk in ["wall", "kerb", "door"]:
+			mask |= int(e[1])
+	var base := "cell_door_m" if prop.begins_with("cell_door") else "cell_bars_m"
+	var sid := "%s%d" % [base, mask]
+	return sid if Assets.has(sid) else prop
