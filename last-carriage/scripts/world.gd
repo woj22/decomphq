@@ -12,6 +12,12 @@ const SEATS := [  # bench centres round the table, clockwise from above: 0 = you
 	{"pos": Vector3(-1.125, 0, -0.82), "rot": 0.0},
 ]
 const EYE := Vector3(-1.125, 1.28, 0.79)
+# How far a seated passenger can turn. Further than this the camera ends up inside the seat back and wall pillar
+# (left) or the neighbour's head (right), and the near-plane clipping flickers with the carriage sway.
+const YAW_LEFT := 1.75
+const YAW_RIGHT := -1.9
+const PITCH_DOWN := -1.15
+const PITCH_UP := 0.95
 
 var camera: Camera3D
 var passengers: Array = []   # Passenger per seat (seat 0 is the player's own body, head hidden)
@@ -292,7 +298,14 @@ func turn_to(seat: int) -> void:
 	if not auto_look or seat == 0 or _t - _last_drag < 4.0:
 		return
 	var d := (head_point(seat) - Vector3(0, 0.06, 0) - EYE).normalized()
-	target = Vector2(atan2(-d.x, -d.z), asin(d.y))
+	var ty := clampf(atan2(-d.x, -d.z), YAW_RIGHT, YAW_LEFT)
+	target = Vector2(ty, clampf(asin(d.y), pitch_floor(ty), PITCH_UP))
+
+
+## Looking straight down shows your hands on the table; turned to the side, looking down would put the camera
+## inside your own shoulder, so the lowest pitch rises as you turn.
+func pitch_floor(y: float) -> float:
+	return lerpf(PITCH_DOWN, -0.4, smoothstep(0.2, 1.0, absf(y)))
 
 
 func reset_view() -> void:
@@ -301,6 +314,8 @@ func reset_view() -> void:
 
 # ------------------------------------------------------------------ look controls
 func _unhandled_input(e: InputEvent) -> void:
+	if e.device == InputEvent.DEVICE_ID_EMULATION:
+		return  # a phone touch also arrives as an emulated mouse event: count it once
 	if e is InputEventScreenTouch or (e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT):
 		_dragging = e.pressed
 		if e.pressed:
@@ -331,8 +346,8 @@ func _process(delta: float) -> void:
 		pitch = lerpf(pitch, tv.y, minf(1.0, delta * 3.0))
 		if absf(yaw - tv.x) < 0.004 and absf(pitch - tv.y) < 0.004:
 			target = null
-	yaw = clampf(yaw, -2.6, 2.6)
-	pitch = clampf(pitch, -1.2, 1.0)
+	yaw = clampf(yaw, YAW_RIGHT, YAW_LEFT)
+	pitch = clampf(pitch, pitch_floor(yaw), PITCH_UP)
 	# the stopped carriage only rocks when the wind gusts against it
 	_gust = maxf(0.0, _gust - delta * 0.5)
 	if randf() < delta * 0.07:
