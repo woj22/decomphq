@@ -150,7 +150,9 @@ func _on_modal(kind: String, data: Dictionary) -> void:
 		"card":
 			ModalScreens.card(root, data)
 			root.gui_input.connect(func(e: InputEvent) -> void:
-				if e is InputEventMouseButton and (e as InputEventMouseButton).pressed:
+				# Close on release so the same tap cannot also press whatever appears next.
+				if e is InputEventMouseButton and not (e as InputEventMouseButton).pressed \
+						and (e as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 					_modal_done(root))
 		"ledger":
 			ModalScreens.ledger(root, data, func() -> void: _modal_done(root))

@@ -20,7 +20,10 @@ static func _sheet(root: Control, parchment: bool, min_w: float) -> VBoxContaine
 
 
 static func card(root: Control, data: Dictionary) -> void:
-	root.add_child(UiKit.dim(0.92))
+	var dim := UiKit.dim(0.92)
+	# Let taps fall through to `root`, which owns the tap-to-continue handler (main.gd).
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(dim)
 	var v := _sheet(root, false, 360)
 	var t := UiKit.label(str(data.get("title", "")), 48 if str(data.get("title", "")).length() <= 20 else 24, UiKit.HEAVEN, "display")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

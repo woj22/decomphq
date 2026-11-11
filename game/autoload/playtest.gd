@@ -106,6 +106,15 @@ func drain(prefer: Array = [], effect: String = "", max_steps: int = 400) -> voi
 				Dialogue.choose(_pick(prefer, effect))
 			else:
 				Dialogue.advance()
+		elif Dialogue.current_kind == "summary":
+			return  # end-of-prototype summary: leave it on screen for the script to assert/dismiss
+		elif Dialogue.current_kind == "card":
+			# Dismiss title cards with a real tap through the input pipeline, as a player would.
+			await tap_screen(get_viewport().get_visible_rect().size * 0.5)
+			await frames(2)
+			if Dialogue.current_kind == "card":
+				fail("title card did not respond to a tap")
+				main.dismiss_modal()
 		else:
 			main.dismiss_modal()
 			if Dialogue.current_kind != "" and Dialogue.current_kind != "dialogue":
@@ -435,3 +444,17 @@ func screenshot(name: String) -> void:
 	img.save_png(p)
 	_log("screenshot %s (%dx%d) draw_calls=%d" % [p, img.get_width(), img.get_height(),
 		RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)])
+
+
+## Simulates a finger tap at a viewport position through Input (mouse press/release; touch emulation on devices).
+func tap_screen(pos: Vector2) -> void:
+	var vp := get_viewport()
+	var screen_pos: Vector2 = vp.get_final_transform() * pos
+	for pressed: bool in [true, false]:
+		var e := InputEventMouseButton.new()
+		e.button_index = MOUSE_BUTTON_LEFT
+		e.pressed = pressed
+		e.position = screen_pos
+		e.global_position = screen_pos
+		Input.parse_input_event(e)
+		await frames(1)
