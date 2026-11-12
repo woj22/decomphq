@@ -44,7 +44,8 @@ func start() -> void:
 # ------------------------------------------------------------------ phases
 func evening() -> void:
 	story.phase = "evening"
-	ui.set_phase("Night %d · evening" % story.night)
+	ui.set_phase("Night %d · evening" % story.night, "Talk to the passengers. When you're ready, go to compartment 1, lie down in your berth and sleep.")
+	train.set_time("night")
 	_seat_guests_dining(1.0)
 	_staff_positions()
 	for n in doors:
@@ -63,6 +64,7 @@ func sleep() -> void:
 		await _fade_card("The last night", "You lie down for the last time in this carriage. Toward dawn, through the wind, a deep mechanical rumble.")
 		await ending()
 		return
+	train.set_time("night")
 	await _fade_card("Night %d" % story.night, "You lie down in your berth. The wind leans on the carriage; the lamps tick as they cool. Somewhere a door slides.")
 	var res := story.resolve_night()
 	_clear_clues()
@@ -74,7 +76,8 @@ func sleep() -> void:
 		await ending()
 		return
 	story.phase = "morning"
-	ui.set_phase("Morning %d" % story.night)
+	ui.set_phase("Morning %d" % story.night, "Look at the scene if you like, then walk into the dining car: the tribunal starts when you enter.")
+	train.set_time("dawn")
 	player.put(Vector3(0.0, 0, Layout.compartment_z(1) + 1.1), -PI / 2.0)
 	for n in doors:
 		_set_door(n, true)
@@ -105,7 +108,7 @@ func tribunal() -> void:
 	_tribunal_pending = false
 	_busy = true
 	story.phase = "tribunal"
-	ui.set_phase("Morning %d · tribunal" % story.night)
+	ui.set_phase("Morning %d · tribunal" % story.night, "")
 	if not story.player_locked:
 		player.sit(Layout.dining_seats()[4])
 	player.frozen = true
@@ -186,7 +189,8 @@ func tribunal() -> void:
 func day() -> void:
 	story.phase = "day"
 	var d := story.night
-	ui.set_phase("Day %d · the train is still snowbound" % d)
+	ui.set_phase("Day %d · the train is still snowbound" % d, "Investigate: talk, knock on doors, search, ask the staff. Lie down in your berth to end the day." if not story.player_locked else "You are in the baggage car. Speak through the door; at nightfall, the train sleeps.")
+	train.set_time("day")
 	story.night += 1   # the next sleep is the next night
 	for id in story.free_guests():
 		var p: Person = people[id]
@@ -205,6 +209,7 @@ func day() -> void:
 
 func ending() -> void:
 	story.phase = "ending"
+	train.set_time("dawn")
 	var won := story.culprit in story.locked
 	var who: String = Cast.GUESTS[story.culprit]["name"]
 	var dead := story.victims.map(func(v): return Cast.display(v["id"]))

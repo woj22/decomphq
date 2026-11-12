@@ -142,6 +142,10 @@ func _tour(dir: String) -> void:
 		"window": [Vector3(-0.4, 1.4, 3.6), Vector3(-1.6, 1.3, 3.3)],
 		"dining": [Vector3(0.0, 1.55, 18.0), Vector3(0.0, 1.2, 30.0)],
 		"stove": [Vector3(0.3, 1.5, 27.0), Vector3(-1.2, 0.8, 29.5)],
+		"join_from_sleeper": [Vector3(0.9, 1.55, 15.2), Vector3(0.0, 1.3, 19.0)],
+		"join_from_dining": [Vector3(0.0, 1.55, 19.6), Vector3(0.4, 1.3, 16.0)],
+		"join_side": [Vector3(0.0, 1.5, 16.75), Vector3(-1.4, 1.2, 16.75)],
+		"baggage_door": [Vector3(0.0, 1.55, 30.2), Vector3(0.0, 1.3, 32.5)],
 	}
 	await get_tree().create_timer(1.5).timeout
 	for name in views:

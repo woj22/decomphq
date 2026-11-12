@@ -34,6 +34,7 @@ var journal_text: RichTextLabel
 var overlay: Control
 var hint: Label
 var fps_label: Label
+var goal_label: Label
 var _fps_t := 0.0
 var _joy_index := -1
 var _look_index := -2
@@ -176,6 +177,11 @@ func _build_hud() -> void:
 	root.add_child(hint)
 	fps_label = label("", 12, MUTED, false)
 	root.add_child(fps_label)
+	goal_label = label("", 14, TEXT)
+	goal_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	goal_label.add_theme_constant_override("shadow_offset_x", 1)
+	goal_label.add_theme_constant_override("shadow_offset_y", 1)
+	root.add_child(goal_label)
 	# conversation
 	talk_panel = PanelContainer.new()
 	talk_box = VBoxContainer.new()
@@ -246,7 +252,9 @@ func _layout() -> void:
 	joystick.position = Vector2(m + 18, s.y - 170 - m - 10)
 	action_btn.position = Vector2(s.x - action_btn.size.x - m - 12, s.y - action_btn.size.y - m - 30)
 	hint.position = Vector2(m, s.y - 28)
-	fps_label.position = Vector2(m + 4, m + 44)
+	goal_label.position = Vector2(m + 4, m + 46)
+	goal_label.size = Vector2(minf(520.0, s.x * 0.45), 0)
+	fps_label.position = Vector2(m + 4, m + 46 + goal_label.get_combined_minimum_size().y + 4)
 	var kb := 0.0
 	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
 		kb = DisplayServer.virtual_keyboard_get_height() / maxf(1.0, get_window().content_scale_factor)
@@ -268,8 +276,10 @@ func _process(d: float) -> void:
 		fps_label.text = "%d fps · %s" % [Engine.get_frames_per_second(), Quality.NAMES[Quality.level]]
 
 
-func set_phase(t: String) -> void:
+func set_phase(t: String, goal := "") -> void:
 	phase_label.text = t
+	goal_label.text = goal
+	_layout()
 
 
 func set_action(text: String) -> void:

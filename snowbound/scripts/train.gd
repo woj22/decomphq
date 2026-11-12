@@ -30,6 +30,12 @@ const LOOK := {
 const GLOW := {"LampShade": [Color(1.0, 0.74, 0.45), 1.6], "LampGlass": [Color(1.0, 0.86, 0.68), 2.2], "StoveGlow": [Color(1.0, 0.42, 0.12), 7.0]}
 
 var lights: Array[OmniLight3D] = []
+var _env: Environment
+var _sky_mat: ShaderMaterial
+var _moon: DirectionalLight3D
+var _ground_mat: ShaderMaterial
+var _snow_mats: Array[ShaderMaterial] = []
+var _ridge_mats: Array[StandardMaterial3D] = []
 var _flicker_t := 0.0
 var _snow: Array[GPUParticles3D] = []
 
@@ -44,6 +50,7 @@ func _ready() -> void:
 	for i in 4:
 		_place("dining_bay", Vector3(0, 0, DINING_Z + i * BAY))
 	_place("dining_end", Vector3(0, 0, DINING_Z + 4 * BAY))
+	_place("dining_entry", Vector3(0, 0, DINING_Z))
 	_outside()
 	_blizzard()
 
@@ -115,9 +122,16 @@ func _glass(src: Material) -> Material:
 	var g := StandardMaterial3D.new()
 	g.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	var c := (src as BaseMaterial3D).albedo_color if src is BaseMaterial3D else Color(0.7, 0.8, 0.9)
-	g.albedo_color = Color(c.r, c.g, c.b, 0.14 if src.resource_name == "Glass" else 0.55)
-	g.roughness = 0.04
-	g.metallic_specular = 0.9
+	if src.resource_name == "Glass":
+		# window glass: almost no diffuse colour (lamps would light it up like a frosted panel), only reflections,
+		# so at night the windows read as dark panes onto the snow
+		g.albedo_color = Color(0.02, 0.025, 0.035, 0.22)
+		g.roughness = 0.03
+		g.metallic_specular = 0.7
+	else:
+		g.albedo_color = Color(c.r, c.g, c.b, 0.55)
+		g.roughness = 0.04
+		g.metallic_specular = 0.9
 	g.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_mat_cache[key] = g
 	return g
@@ -159,6 +173,7 @@ func _environment() -> void:
 	var sm := ShaderMaterial.new()
 	sm.shader = load("res://shaders/sky.gdshader")
 	sky.sky_material = sm
+	_sky_mat = sm
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.3, 0.32, 0.42)
@@ -178,6 +193,7 @@ func _environment() -> void:
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.12
 	env.adjustment_saturation = 0.95
+	_env = env
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
@@ -187,6 +203,7 @@ func _environment() -> void:
 	moon.light_energy = 0.35
 	moon.light_cull_mask = 1 << 1  # outside only (layer 2)
 	add_child(moon)
+	_moon = moon
 
 
 func _outside() -> void:
@@ -200,6 +217,7 @@ func _outside() -> void:
 	ground.mesh = pm
 	var gm := ShaderMaterial.new()
 	gm.shader = load("res://shaders/snow_ground.gdshader")
+	_ground_mat = gm
 	ground.material_override = gm
 	ground.position = Vector3(0, -1.3, 15)
 	ground.layers = 2
@@ -234,8 +252,25 @@ func _outside() -> void:
 		mm.vertex_color_use_as_albedo = true
 		mm.roughness = 0.9
 		ridge.material_override = mm
+		_ridge_mats.append(mm)
 		ridge.layers = 2
 		add_child(ridge)
+
+
+## The light outside: "night" (evening and night), "dawn" (morning), "day" (overcast daylight).
+func set_time(t: String) -> void:
+	var day: float = {"night": 0.0, "dawn": 0.45, "day": 1.0}.get(t, 1.0)
+	var tw := create_tween().set_parallel(true)
+	tw.tween_method(func(v): _sky_mat.set_shader_parameter("daylight", v), _sky_mat.get_shader_parameter("daylight") if _sky_mat.get_shader_parameter("daylight") != null else 1.0, day, 1.5)
+	_sky_mat.set_shader_parameter("dawn", 1.0 if t == "dawn" else 0.0)
+	_moon.light_energy = lerpf(0.1, 0.35, day)
+	_moon.light_color = Color(0.45, 0.55, 0.9).lerp(Color(0.62, 0.68, 0.85), day)
+	_env.fog_light_color = Color(0.03, 0.04, 0.07).lerp(Color(0.2, 0.24, 0.36), day)
+	_env.ambient_light_energy = lerpf(0.12, 0.25, day)
+	for m in _snow_mats:
+		m.set_shader_parameter("colour", Color(0.85, 0.9, 1.0, 0.9) * Color(lerpf(0.3, 1.0, day), lerpf(0.32, 1.0, day), lerpf(0.4, 1.0, day), 1.0))
+	for m in _ridge_mats:
+		m.albedo_color = Color(1, 1, 1).lerp(Color(0.25, 0.28, 0.4), 1.0 - day)
 
 
 func _set_layer(n: Node, layer: int) -> void:
@@ -299,6 +334,7 @@ func _blizzard() -> void:
 		q.size = Vector2(0.05, 0.05)
 		var m := ShaderMaterial.new()
 		m.shader = preload("res://shaders/snowflake.gdshader")
+		_snow_mats.append(m)
 		q.material = m
 		p.draw_pass_1 = q
 		p.position = Vector3(side * 11.5, 2.5, 15)

@@ -397,6 +397,8 @@ def sleeper_rear():
         p(box('bellows', (0.04, 2.1, 0.6), (s * 0.55, 1.05, 17.3), m['Bellows']))
     p(box('bellows_top', (1.14, 0.04, 0.6), (0, 2.1, 17.3), m['Bellows']))
     p(box('plate', (1.1, 0.02, 0.6), (0, 0.0, 17.3), m['Iron']))
+    lights.append({'pos': dome(p, m, 0.0, 16.7), 'kind': 'dome'})                 # the vestibule was unlit
+    p(box('vest_ceiling', (2 * W2, 0.05, 0.62), (0, H + 0.025, 16.7), m['Ceiling']))
     for k in range(6):
         for s in (-1, 1):
             p(box('fold', (0.03, 2.06, 0.03), (s * 0.53, 1.03, 17.05 + k * 0.1), m['Black']))
@@ -518,6 +520,10 @@ def dining_end():
     panelled(p, m, 'z', z, 0.42, W2, 0, H + 0.2, -1, rail=0.95)
     p(box('door_head', (0.84, H + 0.2 - 2.0, 0.05), (0, (2.0 + H + 0.2) / 2, z), m['Panel']))
     p(box('bag_door', (0.8, 2.0, 0.07), (0, 1.0, z - 0.02), m['Iron'], bevel=0.01))
+    for sx in (-1, 1):   # a wooden frame closes the slits beside and above the door
+        p(box('bag_jamb', (0.12, 2.08, 0.1), (sx * 0.44, 1.04, z - 0.03), m['Trim'], bevel=0.015))
+    p(box('bag_head', (1.0, 0.1, 0.1), (0, 2.06, z - 0.03), m['Trim'], bevel=0.015))
+    p(box('bag_fill', (0.9, 0.06, 0.06), (0, 0.03, z - 0.03), m['Iron']))
     G.append(box('bag_window', (0.3, 0.22, 0.012), (0, 1.55, z - 0.06), m['Glass']))
     for k in range(5):
         p(cyl('bar', 0.007, 0.007, 0.24, (-0.12 + k * 0.06, 1.55, z - 0.07), m['Iron'], segs=6))
@@ -528,6 +534,30 @@ def dining_end():
     bake_and_export('dining_end', P, G, lights, m, res=1024,
                     moon=[((-W2 - 0.4, 1.33, 1.2), (1, 0, 0), (1.6, 0.94)), ((W2 + 0.4, 1.33, 1.2), (-1, 0, 0), (1.6, 0.94)),
                           ((-W2 - 0.4, 1.33, 3.4), (1, 0, 0), (1.2, 0.94)), ((W2 + 0.4, 1.33, 3.4), (-1, 0, 0), (1.2, 0.94))])
+
+
+def dining_entry():
+    """The dining car's end wall at the gangway (z 0..0.3 locally; placed at 17.6): panelling, a framed doorway onto
+    the gangway, and two wall lamps."""
+    m = M()
+    P, G, lights = [], [], []
+    p = P.append
+    z = 0.03
+    panelled(p, m, 'z', z, -W2, -0.42, 0, H + 0.2, 1, rail=0.95)
+    panelled(p, m, 'z', z, 0.42, W2, 0, H + 0.2, 1, rail=0.95)
+    p(box('head', (0.84, H + 0.2 - 2.05, 0.06), (0, (2.05 + H + 0.2) / 2, z), m['Panel']))
+    for sx in (-1, 1):
+        p(box('jamb', (0.1, 2.1, 0.12), (sx * 0.45, 1.05, z + 0.02), m['Trim'], bevel=0.015))
+    p(box('lintel', (1.0, 0.1, 0.12), (0, 2.08, z + 0.02), m['Trim'], bevel=0.015))
+    p(box('sign', (0.42, 0.08, 0.01), (0, 2.22, z + 0.04), m['Brass'], bevel=0.004))
+    for sx in (-1, 1):
+        x = sx * 0.95
+        p(cyl('plate', 0.045, 0.045, 0.02, (x, 1.6, z + 0.035), m['Brass'], rot=(90, 0, 0), segs=16))
+        p(tube('arm', [(x, 1.6, z + 0.04), (x, 1.64, z + 0.12), (x, 1.67, z + 0.18)], 0.01, m['Brass'], segs=8))
+        p(cyl('shade', 0.08, 0.05, 0.13, (x, 1.75, z + 0.18), m['Shade'], segs=20, cap=False))
+        p(sphere('bulb', 0.022, (x, 1.73, z + 0.18), m['Bulb'], segs=10, rings=6))
+        lights.append({'pos': (x, 1.73, z + 0.18), 'kind': 'sconce'})
+    bake_and_export('dining_entry', P, G, lights, m, res=512, moon=[])
 
 
 # ------------------------------------------------------------------ bake + export
@@ -560,7 +590,7 @@ def bake_and_export(name, parts, glass, lights, m, res, moon):
 
 
 MODULES = {'compartment': compartment, 'corridor': corridor, 'sleeper_front': sleeper_front,
-           'sleeper_rear': sleeper_rear, 'dining_bay': dining_bay, 'dining_end': dining_end}
+           'sleeper_rear': sleeper_rear, 'dining_bay': dining_bay, 'dining_end': dining_end, 'dining_entry': dining_entry}
 
 if __name__ == '__main__':
     names = [a for a in sys.argv[1:] if not a.startswith('--')] or list(MODULES)

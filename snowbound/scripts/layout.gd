@@ -10,18 +10,19 @@ const AISLE_X := 0.0
 ## [x0, x1, z0, z1]
 static func walk_rects() -> Array:
 	var r := [
-		[0.55, 1.3, -1.35, 16.35],          # sleeper corridor (front vestibule to the rear)
+		# neighbouring areas overlap by at least 0.25 m so you can always walk across a join
+		[0.55, 1.3, -1.35, 16.75],          # sleeper corridor (front vestibule to the rear vestibule)
 		[-1.2, 0.3, 14.6, 16.2],            # conductor's office
-		[0.2, 0.62, 15.15, 15.75],          # office doorway
-		[-1.3, 1.3, 16.45, 16.95],          # rear vestibule
-		[-0.42, 0.42, 16.9, 17.75],         # gangway
+		[0.1, 0.7, 15.15, 15.75],           # office doorway
+		[-1.3, 1.3, 16.3, 17.0],            # rear vestibule
+		[-0.42, 0.42, 16.6, 18.0],          # gangway, through the dining car's end door
 		[-0.36, 0.36, 17.6, 31.75],         # dining aisle
 		[-0.75, 0.55, 27.35, 31.75],        # bar and stove end
 	]
 	for i in 6:
 		var z := i * BAY
 		r.append([-0.95, 0.32, z + 0.58, z + 1.55])   # compartment floor between the seat and the bed
-		r.append([0.15, 0.62, z + 0.26, z + 0.89])    # its doorway
+		r.append([0.0, 0.75, z + 0.26, z + 0.89])     # its doorway, overlapping the floor and the corridor
 	return r
 
 

@@ -10,6 +10,9 @@ float noise(vec2 p) {
 }
 float fbm(vec2 p) { float v = 0.0, a = 0.5; for (int k = 0; k < 3; k++) { v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }
 
+uniform float daylight : hint_range(0.0, 1.0) = 1.0;   // 0 = night, 1 = overcast day
+uniform float dawn : hint_range(0.0, 1.0) = 0.0;       // warm band low in the east at sunrise
+
 void sky() {
 	vec3 d = EYEDIR;
 	float h = max(d.y, 0.0);
@@ -22,5 +25,10 @@ void sky() {
 	float c = fbm(uv * 0.8);   // static: a sky that uses TIME re-renders its radiance every frame
 	col = mix(col, vec3(0.2, 0.22, 0.3), smoothstep(0.45, 0.8, c) * 0.55 * (1.0 - h * 0.5));
 	if (d.y < 0.0) { col = mix(horizon * 0.9, vec3(0.25, 0.28, 0.36), clamp(-d.y * 4.0, 0.0, 1.0)); }
+	vec3 night = mix(vec3(0.03, 0.04, 0.08), vec3(0.006, 0.008, 0.02), pow(h, 0.4));
+	night += vec3(0.02, 0.025, 0.04) * smoothstep(0.45, 0.8, c);          // storm cloud faintly lit by the moon
+	col = mix(night, col, daylight);
+	float east = pow(max(dot(normalize(vec3(d.x, 0.0, d.z)), normalize(vec3(1.0, 0.0, 0.3))), 0.0), 3.0);
+	col += vec3(0.5, 0.28, 0.2) * east * exp(-h * 6.0) * dawn;
 	COLOR = col;
 }
