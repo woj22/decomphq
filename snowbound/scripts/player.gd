@@ -49,7 +49,8 @@ func face_clear() -> void:
 
 
 func _ok(p: Vector3) -> bool:
-	if blocker.is_valid() and blocker.call(p):
+	# a closed door blocks you, unless you are already standing in it (then you can always step out)
+	if blocker.is_valid() and blocker.call(p) and not blocker.call(position):
 		return false
 	if Layout.walkable(p):
 		return true

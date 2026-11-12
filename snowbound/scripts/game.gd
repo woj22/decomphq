@@ -115,75 +115,159 @@ func tribunal() -> void:
 	for id in story.free_guests():
 		(people[id] as Person).place(_dining_seat_for(id), "sit_table")
 	ui.tribunal_open("The tribunal — morning %d" % story.night)
-	var found := story.sweep_clues()
-	for c in found:
-		var line := "Mr Hale, the conductor: \"I found this on my round: %s\"" % c["text"]
-		ui.tribunal_line("Conductor", line)
-		story.announce(line)
-	await _wait(1.0)
 	var choices: Array = story.free_guests().duplicate()
 	if not story.player_locked:
 		choices.append(Cast.PLAYER)
-	for id in story.free_guests():
-		_look_all(id)
-		(people[id] as Person).set_talking(true)
-		ui.tribunal_line(Cast.display(id), "...")
-		var r := await brains.accusation(id)
-		(people[id] as Person).set_talking(false)
-		var line := "%s: \"%s\"" % [Cast.display(id), r["speech"]]
-		ui.tribunal_line(Cast.display(id), r["speech"])
-		story.announce("Tribunal %d — %s" % [story.night, line])
-		if r["accuse"] != "":
-			story.guests[id]["suspicion"] = story.guests[id]["suspicion"] + (8 if r["accuse"] == Cast.PLAYER else 0)
-		await _wait(0.4)
-	ui.tribunal_close()
-	var mine := "I have nothing to add." if autoplay else await ui.ask_text("Your turn to speak", "Say who you believe the killer is, and why. Everyone will hear it.", "I believe...")
-	story.announce("Tribunal %d — Confucius: \"%s\"" % [story.night, mine])
-	# the lock vote
+	var order: Array = story.free_guests().duplicate()
+	order.shuffle()
+	# opening: the conductor
+	ui.tribunal_stage("The conductor opens the tribunal")
+	var opening := "Mr Hale raps on a table. \"Ladies, gentlemen. We will hear everyone, then we vote. Whoever the vote falls on spends the night in the baggage car.\""
+	for c in story.sweep_clues():
+		opening += "\n\"And this I found on my round: %s\"" % c["text"]
+		story.announce("The conductor found: %s" % c["text"])
+	ui.tribunal_line("Mr Hale, the conductor", opening)
+	await _next()
+	# round 1: who do you suspect, and why
+	ui.tribunal_stage("Round 1 — who do you suspect, and why?")
+	for id in order:
+		await _guest_speaks(id, 1)
+	await _player_speaks("Your turn. Who do you suspect, and why? Everyone will hear it.", "I believe...")
+	# round 2: answers and second thoughts
+	ui.tribunal_stage("Round 2 — answers and second thoughts")
+	for id in order:
+		await _guest_speaks(id, 2)
+	await _player_speaks("Answer the room: defend yourself, challenge someone, or say nothing.", "To the Emperor I say...")
+	# the vote, with reasons, one at a time
+	ui.tribunal_stage("The vote — who goes in the baggage car?")
 	var votes := {}
-	for id in story.free_guests():
-		votes[id] = await brains.lock_vote(id, choices.filter(func(c): return c != id))
-	var pv: Variant = 0 if autoplay else await ui.choose("Vote: who goes in the baggage car?", choices.filter(func(c): return c != Cast.PLAYER).map(Cast.display), "", false)
+	for id in order:
+		var r := await _guest_votes(id, choices.filter(func(c): return c != id), "lock")
+		votes[id] = r
 	if not story.player_locked:
-		votes[Cast.PLAYER] = choices.filter(func(c): return c != Cast.PLAYER)[pv]
+		var opts: Array = choices.filter(func(c): return c != Cast.PLAYER)
+		var pv: Dictionary = {"index": 0, "reason": ""} if autoplay else await ui.tribunal_vote("Your vote, and why:", opts.map(Cast.display))
+		votes[Cast.PLAYER] = opts[pv["index"]]
+		var why: String = pv["reason"]
+		ui.tribunal_line("Confucius", why if why != "" else "(votes without a word)", "votes for %s" % Cast.display(opts[pv["index"]]))
+		story.announce("Tribunal %d vote — Confucius votes for %s%s" % [story.night, Cast.display(opts[pv["index"]]), (": \"%s\"" % why) if why != "" else ""])
 	var locked := story.tally(votes)
-	var summary := "Votes: " + ", ".join(votes.keys().map(func(k): return "%s → %s" % [Cast.display(k), Cast.display(votes[k]) if votes[k] != "" else "abstained"]))
-	story.announce(summary)
+	var counts := _count(votes)
+	ui.tribunal_stage("The result")
 	if locked == "":
-		story.announce("The vote was tied. Nobody is locked up.")
-		await _say_card("The vote", summary + "\n\nA tie. Nobody is locked up today.")
+		ui.tribunal_line("Mr Hale, the conductor", "%s\nA tie. Nobody goes in the baggage car today." % counts)
+		story.announce("The vote was tied (%s). Nobody is locked up." % counts)
 	else:
 		story.lock_up(locked)
-		story.announce("%s was locked in the baggage car." % Cast.display(locked))
+		story.announce("%s was locked in the baggage car (%s)." % [Cast.display(locked), counts])
 		if locked == Cast.PLAYER:
-			await _say_card("The vote", summary + "\n\nThe carriage has chosen you. The conductor takes your arm and leads you to the baggage car. The lock turns.\n\nYou are not finished: you can still speak through the door, and your voice still counts at the tribunal.")
-			_go_to_baggage()
+			ui.tribunal_line("Mr Hale, the conductor", "%s\nThe vote falls on you, Confucius. The conductor takes your arm. You can still speak through the baggage-car door, and your voice will still be heard at the tribunal." % counts)
 		else:
+			ui.tribunal_line("Mr Hale, the conductor", "%s\n%s is led to the baggage car, protesting. The padlock snaps shut." % [counts, Cast.display(locked)])
 			(people[locked] as Person).status = "locked"
 			(people[locked] as Person).visible = false
-			await _say_card("The vote", summary + "\n\n%s is led to the baggage car, protesting. The padlock snaps shut." % Cast.display(locked))
+	await _next()
 	# the coal vote
 	var free := story.free_guests()
 	if not free.is_empty():
-		var coal_choices: Array = free.duplicate()
+		ui.tribunal_stage("The coal — who sleeps by the stove tonight?")
+		ui.tribunal_line("Mrs Brandt, the steward", "The coal will heat all but one compartment tonight. One of you sleeps in the armchair by my stove, where I can see you.")
 		var cv := {}
 		for id in free:
-			cv[id] = await brains.coal_vote(id, coal_choices)
+			cv[id] = await _guest_votes(id, free, "coal")
 		if not story.player_locked:
-			var pick: Variant = 0 if autoplay else await ui.choose("The coal is low", coal_choices.map(Cast.display), "One passenger must sleep in the armchair by the stove tonight, watched by the steward. Who?", false)
-			cv[Cast.PLAYER] = coal_choices[pick]
+			var pick: Dictionary = {"index": 0, "reason": ""} if autoplay else await ui.tribunal_vote("Who should sleep by the stove?", free.map(Cast.display), false)
+			cv[Cast.PLAYER] = free[pick["index"]]
+			ui.tribunal_line("Confucius", "(chooses %s)" % Cast.display(free[pick["index"]]))
 		var stove := story.tally(cv)
 		if stove == "":
-			stove = coal_choices[story.rng.randi() % coal_choices.size()]
+			stove = free[story.rng.randi() % free.size()]
 		story.guests[stove]["status"] = "stove"
 		story.stove_tonight = stove
 		story.announce("%s will sleep by the stove tonight." % Cast.display(stove))
-		await _say_card("The stove", "%s will sleep by the stove tonight, under Mrs Brandt's eye." % Cast.display(stove))
+		ui.tribunal_line("Mrs Brandt, the steward", "%s it is. Warm, and watched." % Cast.display(stove))
+		await _next("Leave the tribunal")
+	ui.tribunal_close()
+	for id in people:
+		(people[id] as Person).look_target = null
+	if story.player_locked and not _in_baggage:
+		_go_to_baggage()
 	player.frozen = false
 	if not story.player_locked:
 		player.stand()
 	_busy = false
 	day()
+
+
+func _next(text := "Next  ▸") -> void:
+	if autoplay:
+		await get_tree().process_frame
+		return
+	await ui.tribunal_next(text)
+
+
+func _guest_speaks(id: String, round_no: int) -> void:
+	var p: Person = people[id]
+	_look_all(id)
+	ui.tribunal_waiting(Cast.display(id))
+	var r: Dictionary
+	if round_no == 1:
+		r = await brains.accusation(id)
+	else:
+		r = await brains.rebuttal(id)
+	p.set_talking(true)
+	var note := ("suspects %s" % Cast.display(r["accuse"])) if r["accuse"] != "" else ""
+	ui.tribunal_line(Cast.display(id), r["speech"], note)
+	story.announce("Tribunal %d, round %d — %s: \"%s\"" % [story.night, round_no, Cast.display(id), r["speech"]])
+	if r["accuse"] == Cast.PLAYER:
+		story.player_suspicion += 4
+	await _next()
+	p.set_talking(false)
+
+
+func _player_speaks(prompt: String, placeholder: String) -> void:
+	if autoplay:
+		return
+	for id in people:
+		(people[id] as Person).look_target = player.camera.global_position
+	var t := await ui.tribunal_speak(prompt + (" (You speak through the baggage-car door.)" if story.player_locked else ""), placeholder)
+	if t == "":
+		ui.tribunal_line("Confucius", "(says nothing)")
+		return
+	ui.tribunal_line("Confucius", t)
+	story.announce("Tribunal %d — Confucius: \"%s\"" % [story.night, t])
+
+
+func _guest_votes(id: String, options: Array, kind: String) -> String:
+	var p: Person = people[id]
+	_look_all(id)
+	ui.tribunal_waiting(Cast.display(id))
+	var r: Dictionary
+	if kind == "lock":
+		r = await brains.lock_vote(id, options)
+	else:
+		r = await brains.coal_vote(id, options)
+	var target: String = r["vote"]
+	if target == "":
+		target = options[story.rng.randi() % options.size()]
+	var reason: String = r["reason"] if str(r["reason"]).strip_edges() != "" else "(gives no reason)"
+	p.set_talking(true)
+	ui.tribunal_line(Cast.display(id), reason, ("votes for %s" if kind == "lock" else "chooses %s") % Cast.display(target))
+	story.announce("Tribunal %d %s — %s %s %s: \"%s\"" % [story.night, "vote" if kind == "lock" else "coal vote", Cast.display(id), "votes for" if kind == "lock" else "chooses", Cast.display(target), reason])
+	await _next()
+	p.set_talking(false)
+	return target
+
+
+func _count(votes: Dictionary) -> String:
+	var c := {}
+	for v in votes.values():
+		if v != "":
+			c[v] = c.get(v, 0) + 1
+	var parts := []
+	for k in c:
+		parts.append("%s %d" % [Cast.display(k), c[k]])
+	return "Votes: " + ", ".join(parts) + "."
 
 
 func day() -> void:
@@ -308,7 +392,17 @@ func _make_doors() -> void:
 		doors[n] = {"node": d, "open": false, "z": z}
 
 
+func _player_in_room(n: int) -> bool:
+	var z := Layout.compartment_z(n)
+	var p := player.position
+	return p.z > z - 0.1 and p.z < z + Layout.BAY + 0.1 and p.x < 0.72   # inside, or in the doorway
+
+
 func _set_door(n: int, open: bool) -> void:
+	if not open and _player_in_room(n):
+		# never shut a door on you: wait until you've left the doorway and the compartment
+		while _player_in_room(n):
+			await get_tree().create_timer(0.5).timeout
 	var d: Dictionary = doors[n]
 	d["open"] = open
 	var node: Node3D = d["node"]

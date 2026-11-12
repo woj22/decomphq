@@ -40,7 +40,7 @@ func _context(id: String) -> String:
 	var dead := story.victims.map(func(v): return "%s (killed night %d)" % [Cast.display(v["id"]), v["night"]])
 	lines.append("Dead: %s." % (", ".join(dead) if not dead.is_empty() else "nobody yet"))
 	lines.append("Locked in the baggage car: %s." % (", ".join(story.locked.map(Cast.display)) if not story.locked.is_empty() else "nobody"))
-	lines.append("PUBLIC RECORD (everyone knows this):\n- " + "\n- ".join(story.public_log.slice(-14)))
+	lines.append("PUBLIC RECORD (everyone knows this):\n- " + "\n- ".join(story.public_log.slice(-26)))
 	if not s["heard"].is_empty():
 		lines.append("WHAT YOU PERSONALLY SAW OR HEARD (only you know this):\n- " + "\n- ".join(s["heard"]))
 	if s["notes"] != "":
@@ -93,21 +93,27 @@ func accusation(id: String) -> Dictionary:
 	var names := story.free_guests().filter(func(i): return i != id).map(Cast.display)
 	if not story.player_locked:
 		names.append("Confucius")
-	var task := "MORNING TRIBUNAL in the dining car. Everyone must say aloud who they think the killer is and why, before a vote to lock one passenger in the freezing baggage car. Possible names: %s. Speak to the room (2-3 sentences)." % ", ".join(names)
+	var task := "MORNING TRIBUNAL in the dining car, DISCUSSION ROUND 1. Everyone says aloud who they think the killer is and why, before a vote to lock one passenger in the freezing baggage car. Possible names: %s. Speak to the room (2-3 sentences); point to specific evidence, behaviour or what was said." % ", ".join(names)
 	var out := await _ask(id, task, '{"speech": "<what you say to the room>", "accuse": "<one name from the list>"}')
 	return {"speech": str(out.get("speech", "...")), "accuse": _match(str(out.get("accuse", "")), id)}
 
 
-func lock_vote(id: String, choices: Array) -> String:
-	var task := "Everyone has spoken (see the public record). Cast your vote: who should be locked in the baggage car? Choices: %s." % ", ".join(choices.map(Cast.display))
-	var out := await _ask(id, task, '{"vote": "<one name>", "reason": "<a few words>"}')
-	return _match(str(out.get("vote", "")), id, choices)
+func rebuttal(id: String) -> Dictionary:
+	var task := "TRIBUNAL, DISCUSSION ROUND 2. Everyone has made their first statement (see the public record, latest lines). Now respond to the room: answer anyone who accused you, challenge or support others' reasoning, and say whether your suspicion has changed and why. 2-3 sentences, in character."
+	var out := await _ask(id, task, '{"speech": "<what you say>", "accuse": "<who you now suspect most>"}')
+	return {"speech": str(out.get("speech", "...")), "accuse": _match(str(out.get("accuse", "")), id)}
 
 
-func coal_vote(id: String, choices: Array) -> String:
+func lock_vote(id: String, choices: Array) -> Dictionary:
+	var task := "TRIBUNAL, THE VOTE. The discussion is over (see the public record). Announce your vote to the room: who should be locked in the baggage car, and justify it in one or two sentences, in character. Choices: %s." % ", ".join(choices.map(Cast.display))
+	var out := await _ask(id, task, '{"vote": "<one name>", "reason": "<your spoken justification>"}')
+	return {"vote": _match(str(out.get("vote", "")), id, choices), "reason": str(out.get("reason", ""))}
+
+
+func coal_vote(id: String, choices: Array) -> Dictionary:
 	var task := "The coal will only heat the compartments of all but one passenger tonight. One must sleep in the armchair by the dining-car stove, under the steward's eye (warm, watched, and so with an alibi). Vote for who should sleep by the stove. Choices: %s." % ", ".join(choices.map(Cast.display))
-	var out := await _ask(id, task, '{"vote": "<one name>"}')
-	return _match(str(out.get("vote", "")), id, choices)
+	var out := await _ask(id, task, '{"vote": "<one name>", "reason": "<a short spoken reason>"}')
+	return {"vote": _match(str(out.get("vote", "")), id, choices), "reason": str(out.get("reason", ""))}
 
 
 func _match(text: String, self_id: String, choices := []) -> String:
@@ -128,4 +134,5 @@ func _mock(id: String, task: String) -> Dictionary:
 	var lines := ["The snow has made liars of us all.", "I slept poorly; this train has thin walls.", "Ask yourself who gains from a death tonight.",
 		"I have nothing to hide that concerns this matter.", "You are a careful man, Confucius. So am I."]
 	return {"speech": lines[randi() % lines.size()] + " (demo)", "accuse": Cast.display(pick), "vote": Cast.display(pick),
+		"reason": "%s has given me no reason to trust them. (demo)" % Cast.display(pick),
 		"trust_change": randi_range(-3, 5), "suspicion_change": randi_range(-3, 3), "notes": "demo"}

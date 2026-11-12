@@ -122,11 +122,27 @@ func _shots(dir: String) -> void:
 	await _snap(dir, "06_talk")
 	ui.send_line.emit("__leave__")
 	await get_tree().create_timer(0.5).timeout
-	ui.tribunal_open("The tribunal — morning 1")
-	ui.tribunal_line("Napoleon", "I have commanded armies; I know a deserter's eyes. The Florentine has them. (demo)")
-	ui.tribunal_line("Cleopatra", "The nurse counts doses she does not account for. Ask her about the missing one. (demo)")
-	await get_tree().create_timer(0.6).timeout
-	await _snap(dir, "07_tribunal")
+	# the real tribunal, stepped through like a player would
+	game.tribunal()
+	var steps := 0
+	var shot_vote := false
+	while game.story.phase == "tribunal" and steps < 80:
+		await get_tree().create_timer(1.3).timeout
+		if ui._tri_controls == null:
+			break
+		var kinds := ui._tri_controls.get_children().map(func(c): return c.get_class())
+		if "GridContainer" in kinds:
+			if not shot_vote:
+				await _snap(dir, "08_vote")
+				shot_vote = true
+			ui.done.emit({"index": 0, "reason": "His story about the lamps does not hold together."})
+		elif "TextEdit" in kinds:
+			ui.done.emit("I watched the lamps flicker at two. Someone who understands wiring knew the corridor would be dark.")
+		elif "Button" in kinds:
+			steps += 1
+			if steps == 4:
+				await _snap(dir, "07_discussion")
+			ui.done.emit(true)
 	get_tree().quit()
 
 

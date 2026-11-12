@@ -270,6 +270,8 @@ func _layout() -> void:
 func _process(d: float) -> void:
 	if talk_panel.visible:
 		_layout()
+	if tribunal:
+		_layout_tribunal()
 	_fps_t -= d
 	if _fps_t <= 0.0:
 		_fps_t = 0.5
@@ -295,7 +297,7 @@ func hud_visible(on: bool) -> void:
 
 # ------------------------------------------------------------------ touch: joystick and look
 func blocking_ui() -> bool:
-	return talk_panel.visible or journal.visible or overlay != null
+	return talk_panel.visible or journal.visible or overlay != null or tribunal != null
 
 
 func _input(e: InputEvent) -> void:
@@ -340,6 +342,8 @@ func _over_ui(p: Vector2) -> bool:
 	for c in [talk_panel, journal, action_btn, journal_btn, root.get_node("PhasePanel")]:
 		if (c as Control).visible and (c as Control).get_global_rect().has_point(p):
 			return true
+	if tribunal and tribunal.get_global_rect().has_point(p):
+		return true
 	return overlay != null
 
 
@@ -535,29 +539,153 @@ func ask_text(title: String, body: String, placeholder: String) -> String:
 	return r
 
 
-var _tribunal_log: RichTextLabel
+# ------------------------------------------------------------------ the tribunal panel
+## A persistent panel on the right (the table stays visible on the left): the whole transcript, the current stage,
+## and controls that change with each step. Nothing advances until you press Next.
+var tribunal: PanelContainer
+var _tri_log: RichTextLabel
+var _tri_stage: Label
+var _tri_controls: VBoxContainer
 
 
 func tribunal_open(title: String) -> void:
-	var v := _overlay_begin(0.35)
-	var t := label(title, 22, GOLD)
+	tribunal = PanelContainer.new()
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 8)
+	tribunal.add_child(v)
+	var t := label(title, 20, GOLD, false)
 	t.add_theme_font_override("font", _font("Bold"))
 	v.add_child(t)
-	_tribunal_log = RichTextLabel.new()
-	_tribunal_log.bbcode_enabled = true
-	_tribunal_log.fit_content = true
-	_tribunal_log.scroll_following = true
-	v.add_child(_tribunal_log)
+	_tri_stage = label("", 14, MUTED)
+	v.add_child(_tri_stage)
+	_tri_log = RichTextLabel.new()
+	_tri_log.bbcode_enabled = true
+	_tri_log.scroll_following = true
+	_tri_log.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(_tri_log)
+	_tri_controls = VBoxContainer.new()
+	_tri_controls.add_theme_constant_override("separation", 6)
+	v.add_child(_tri_controls)
+	root.add_child(tribunal)
+	hud_visible(false)
+	journal_btn.visible = false
+	_layout_tribunal()
 
 
-func tribunal_line(who: String, text: String) -> void:
-	if _tribunal_log:
-		_tribunal_log.append_text("[b][color=#d9b064]%s[/color][/b]  %s\n\n" % [who.replace("[", "[lb]"), text.replace("[", "[lb]")])
+func _layout_tribunal() -> void:
+	if tribunal == null:
+		return
+	var s := root.get_viewport_rect().size
+	var kb := 0.0
+	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
+		kb = DisplayServer.virtual_keyboard_get_height() / maxf(1.0, get_window().content_scale_factor)
+	var w := minf(640.0, s.x * 0.58)
+	tribunal.position = Vector2(s.x - w - 12, 12)
+	tribunal.size = Vector2(w, maxf(240.0, s.y - 24 - kb))
+
+
+func tribunal_stage(text: String) -> void:
+	_tri_stage.text = text
+	_tri_log.append_text("\n[center][i][color=#a49a8a]— %s —[/color][/i][/center]\n" % text.replace("[", "[lb]"))
+
+
+func tribunal_line(who: String, text: String, note := "") -> void:
+	if _tri_log == null:
+		return
+	var n := (" [color=#a49a8a][font_size=12]%s[/font_size][/color]" % note.replace("[", "[lb]")) if note != "" else ""
+	_tri_log.append_text("[b][color=#d9b064]%s[/color][/b]%s\n%s\n\n" % [who.replace("[", "[lb]"), n, text.replace("[", "[lb]")])
+
+
+func _tri_clear() -> void:
+	for c in _tri_controls.get_children():
+		c.queue_free()
+
+
+## Waits for Next (or returns at once in autoplay).
+func tribunal_next(text := "Next  ▸") -> void:
+	_tri_clear()
+	var b := button(text)
+	b.size_flags_horizontal = Control.SIZE_SHRINK_END
+	b.pressed.connect(func(): done.emit(true))
+	_tri_controls.add_child(b)
+	await done
+	_tri_clear()
+
+
+func tribunal_waiting(who: String) -> void:
+	_tri_clear()
+	_tri_controls.add_child(label("%s is thinking…" % who, 14, MUTED, false))
+
+
+func tribunal_speak(prompt: String, placeholder: String, allow_pass := true) -> String:
+	_tri_clear()
+	_tri_controls.add_child(label(prompt, 14, TEXT))
+	var e := TextEdit.new()
+	e.placeholder_text = placeholder
+	e.custom_minimum_size = Vector2(0, 76)
+	e.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+	_tri_controls.add_child(e)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	var sp := button("Speak")
+	sp.pressed.connect(func():
+		if e.text.strip_edges() != "":
+			done.emit(e.text.strip_edges()))
+	row.add_child(sp)
+	if allow_pass:
+		var ps := button("Say nothing", true)
+		ps.pressed.connect(func(): done.emit(""))
+		row.add_child(ps)
+	_tri_controls.add_child(row)
+	var r: String = await done
+	_tri_clear()
+	return r
+
+
+## Pick one option and (optionally) give a reason. Returns {"index": int, "reason": String}.
+func tribunal_vote(prompt: String, options: Array, ask_reason := true) -> Dictionary:
+	_tri_clear()
+	_tri_controls.add_child(label(prompt, 14, TEXT))
+	var picked := [-1]
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 6)
+	grid.add_theme_constant_override("v_separation", 6)
+	var buttons := []
+	for i in options.size():
+		var b := button(str(options[i]), true)
+		b.custom_minimum_size = Vector2(150, 44)
+		b.toggle_mode = true
+		b.pressed.connect(func():
+			picked[0] = i
+			for k in buttons.size():
+				(buttons[k] as Button).button_pressed = k == i)
+		grid.add_child(b)
+		buttons.append(b)
+	_tri_controls.add_child(grid)
+	var e: LineEdit = null
+	if ask_reason:
+		e = LineEdit.new()
+		e.placeholder_text = "Why? (everyone will hear it)"
+		_tri_controls.add_child(e)
+	var go := button("Cast vote")
+	go.size_flags_horizontal = Control.SIZE_SHRINK_END
+	go.pressed.connect(func():
+		if picked[0] >= 0:
+			done.emit({"index": picked[0], "reason": e.text.strip_edges() if e else ""}))
+	_tri_controls.add_child(go)
+	var r: Dictionary = await done
+	_tri_clear()
+	return r
 
 
 func tribunal_close() -> void:
-	_tribunal_log = null
-	_overlay_end()
+	if tribunal:
+		tribunal.queue_free()
+	tribunal = null
+	_tri_log = null
+	journal_btn.visible = true
+	hud_visible(true)
 
 
 func ask_error(who: String, msg: String) -> String:
