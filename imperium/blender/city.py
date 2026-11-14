@@ -448,7 +448,18 @@ def banner_flat(a, top, width, length, yaw):
     def p(u, v):
         return tuple(Vector((x, y, z)) + R @ Vector((u, -0.06, v)))
     a.poly([p(-hw, 0), p(hw, 0), p(hw, -(length - tail)), p(0, -length), p(-hw, -(length - tail))][::-1], a.key(CRIMSON))
-    a.poly([p(-hw * 0.3, -length * 0.42 + 0.0), p(0, -length * 0.42 + hw * 0.4), p(hw * 0.3, -length * 0.42), p(0, -length * 0.42 - hw * 0.4)][::-1], a.key(GOLD, 0.5, 0.4))
+    gk = a.key(GOLD, 0.5, 0.4)
+    def q(u, v):
+        return tuple(Vector((x, y, z)) + R @ Vector((u, -0.075, v)))
+    cz = -length * 0.4
+    rr = width * 0.3
+    for sx in (-1, 1):
+        for i in range(7):
+            ang = -1.3 + i * 0.42
+            lu, lv = sx * math.sin(ang + math.pi / 2) * rr, cz - math.cos(ang + math.pi / 2) * rr * 1.1
+            dl = rr * 0.22
+            a.poly([q(lu - dl * 0.6, lv), q(lu, lv + dl * 1.2), q(lu + dl * 0.6, lv), q(lu, lv - dl * 0.7)][::-1], gk)
+    a.poly([q(-width * 0.38, -0.12), q(width * 0.38, -0.12), q(width * 0.38, -0.2), q(-width * 0.38, -0.2)][::-1], gk)
     a.box(p(0, 0.05), (width + 0.3, 0.12, 0.12), a.key(GOLD, 0.5, 0.4), yaw)
 
 
@@ -909,14 +920,14 @@ def fire_bowl(x, y, s=1.5):
              (1.22 * s, ring(10, 0.74 * s, 0.74 * s), x, y), (1.27 * s, ring(10, 0.8 * s, 0.8 * s), x, y)], a.key("9a6428", 0.4, 0.6), True, False)
     a.stack([(1.18 * s, ring(10, 0.72 * s, 0.72 * s), x, y), (1.19 * s, ring(10, 0.72 * s, 0.72 * s), x, y)], a.key("3a1a10"))
     rr = random.Random(9)
-    for i in range(9):
-        ang = 2 * math.pi * i / 9 + rr.uniform(-0.2, 0.2)
-        r = rr.uniform(0.15, 0.5) * s
+    for i in range(8):
+        ang = 2 * math.pi * i / 8 + rr.uniform(-0.2, 0.2)
+        r = rr.uniform(0.1, 0.42) * s
         bx, by = x + math.cos(ang) * r, y + math.sin(ang) * r
-        h = rr.uniform(0.35, 0.75) * s
+        h = rr.uniform(0.6, 1.25) * s
         col = a.key(rr.choice(("ff7a18", "ff8a20", "f06010")), 0.5, 0, rr.choice(("ff4a00", "ff5a08", "e84000")), rr.uniform(1.4, 2.2))
-        base = [(bx + math.cos(ang + k * 2.1) * 0.2 * s, by + math.sin(ang + k * 2.1) * 0.2 * s, 1.18 * s) for k in range(3)]
-        tip = (bx + math.cos(ang) * 0.15 * s, by + math.sin(ang) * 0.15 * s, 1.18 * s + h)
+        base = [(bx + math.cos(ang + k * 2.1) * 0.17 * s, by + math.sin(ang + k * 2.1) * 0.17 * s, 1.18 * s) for k in range(3)]
+        tip = (bx + math.cos(ang) * 0.32 * s + rr.uniform(-0.1, 0.1), by + math.sin(ang) * 0.32 * s, 1.18 * s + h)
         for k in range(3):
             a.poly([base[k], base[(k + 1) % 3], tip], col)
     core = a.key("ffb030", 0.5, 0, "ff9a10", 2.6)

@@ -11,3 +11,7 @@ Characters and environments are modelled with Blender scripts (`blender/`, run w
 - `blender/cast.py`: the whole court (19 characters, four species) from one data table, hand-placed
   low-poly bodies, species heads, outfits, crowns, cloaks and props. Exports `assets/characters/<id>.glb`
   and renders group line-ups to `renders/cast_<group>.png`. `python3 imperium/blender/cast.py [--only a,b] [--turn]`
+- `blender/vista.py`: the Imperial Balcony vista, composed from the reference's measured geometry
+  (oblique balustrade, palace ~40 m above the city, capitol on its hill right of centre, low sun right),
+  three depth layers with shader-based aerial haze, walking citizens. `python3 imperium/blender/vista.py`
+  then `python3 imperium/blender/compare.py imperium/reference/balcony_target.png imperium/renders/vista.png out.png`
