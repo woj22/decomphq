@@ -727,8 +727,8 @@ def build_horizon(rng):
         dirv = Vector((math.sin(t), -math.cos(t), 0))
         r = rng.uniform(2600, 3400)
         c = dirv * r
-        h = rng.uniform(140, 300)
-        rx, ry = rng.uniform(300, 600), rng.uniform(200, 400)
+        h = rng.uniform(90, 190)
+        rx, ry = rng.uniform(450, 800), rng.uniform(250, 450)
         col = rgbhex([a + (b - a) * rng.uniform(0.0, 0.25) for a, b in zip(hexrgb("a291c0"), hexrgb("d1a8bd"))])
         pts = []
         for k in range(7):
@@ -745,13 +745,13 @@ def build_horizon(rng):
     objs = [m.build()]
     # faceted evening clouds and the setting sun
     cl = Acc("Clouds")
-    for i in range(18):
+    for i in range(9):
         t = rng.uniform(-0.7, 0.6)
         dirv = Vector((math.sin(t), -math.cos(t), 0))
-        c = CAM + dirv * rng.uniform(900, 1400) + Vector((0, 0, rng.uniform(220, 520)))
+        c = CAM + dirv * rng.uniform(900, 1400) + Vector((0, 0, rng.uniform(120, 300)))
         yaw = t + rng.uniform(-0.3, 0.3)
         L = rng.uniform(160, 420)
-        for k in range(rng.randint(3, 6)):
+        for k in range(rng.randint(2, 4)):
             p = c + Vector((math.cos(yaw), math.sin(yaw), 0)) * rng.uniform(-L / 2, L / 2) + Vector((0, 0, rng.uniform(-15, 15)))
             w, d, h = rng.uniform(90, 200), rng.uniform(50, 90), rng.uniform(26, 55)
             top = cl.key(rng.choice(("f8cf8f", "f6bd7a", "fadca2")), 0.9, 0, rng.choice(("f8b86a", "f6aa60")), 1.4)
@@ -866,12 +866,12 @@ def fire_bowl(x, y, s=1.5):
         r = rr.uniform(0.15, 0.5) * s
         bx, by = x + math.cos(ang) * r, y + math.sin(ang) * r
         h = rr.uniform(0.35, 0.75) * s
-        col = a.key(rr.choice(("ff8a1a", "ff9a2a", "ff6a10")), 0.5, 0, rr.choice(("ff5a00", "ff7010", "ff4800")), rr.uniform(1.6, 2.6))
+        col = a.key(rr.choice(("ff7a18", "ff8a20", "f06010")), 0.5, 0, rr.choice(("ff4a00", "ff5a08", "e84000")), rr.uniform(1.4, 2.2))
         base = [(bx + math.cos(ang + k * 2.1) * 0.2 * s, by + math.sin(ang + k * 2.1) * 0.2 * s, 1.18 * s) for k in range(3)]
         tip = (bx + math.cos(ang) * 0.15 * s, by + math.sin(ang) * 0.15 * s, 1.18 * s + h)
         for k in range(3):
             a.poly([base[k], base[(k + 1) % 3], tip], col)
-    core = a.key("ffc040", 0.5, 0, "ffa000", 3.0)
+    core = a.key("ffb030", 0.5, 0, "ff9a10", 2.6)
     base = [(x + math.cos(k * 2.1) * 0.35 * s, y + math.sin(k * 2.1) * 0.35 * s, 1.18 * s) for k in range(3)]
     for k in range(3):
         a.poly([base[k], base[(k + 1) % 3], (x, y, 1.18 * s + 0.95 * s)], core)
@@ -886,11 +886,11 @@ def statue_on(spec, x, y, z, yaw, scale=1.6):
     marble = dict(spec)
     for k in ("skin", "hair", "primary", "secondary", "trim", "cloak", "shield", "lining"):
         if marble.get(k):
-            marble[k] = "d9cdb2"
+            marble[k] = "cdb48c"
     fig = C.Figure("statue", marble).build()
     for o in fig:
         o.data.materials.clear()
-        o.data.materials.append(C.m("d9cdb2", 0.7))
+        o.data.materials.append(C.m("cdb48c", 0.7))
         for p in o.data.polygons:
             p.material_index = 0
     P.place(fig, (x, y, z), yaw, scale)
@@ -902,22 +902,26 @@ def court():
     who = [("emperor", (-0.6, 3.7), -0.12, 1.38), ("herald", (-2.6, 1.6), 0.45, 1.0), ("treasurer", (-3.0, 0.4), 0.3, 1.0),
            ("aldric", (-3.4, 1.0), 0.6, 1.0), ("empress", (-3.6, 2.4), 0.2, 1.0), ("chancellor", (-2.9, -0.4), 0.4, 1.0), ("halvana", (-3.8, -0.2), 0.5, 1.0)]
     for cid, (x, y), yaw, sc in who:
-        P.place(C.Figure(cid, C.CAST[cid]).build(), (x, y, 0.03), yaw, sc)
+        spec = C.CAST[cid]
+        if cid == "emperor":
+            spec = dict(spec, hair="4a2e1e", beard="full", prop="none")
+        P.place(C.Figure(cid, spec).build(), (x, y, 0.03), yaw, sc)
 
 
 def lighting(samples):
     P.lighting(samples)
     sc = bpy.context.scene
     sun = [o for o in sc.objects if o.type == "LIGHT" and o.data.type == "SUN"][0]
-    sun.rotation_euler = Vector((-0.55, 0.85, 0.55)).normalized().to_track_quat("Z", "Y").to_euler()
-    sun.data.energy = 2.5
+    # key: the visible evening sun ahead, throwing long baluster shadows toward the viewer
+    sun.rotation_euler = Vector((SUN_DIR.x, SUN_DIR.y, 0.32)).normalized().to_track_quat("Z", "Y").to_euler()
+    sun.data.energy = 2.6
     # a warm fill from behind the viewer, as in the painting: faces toward us read golden, not grey
     bpy.ops.object.light_add(type="SUN", location=(0, 0, 50))
     fill = bpy.context.active_object
-    fill.data.energy = 0.0
+    fill.data.energy = 1.7
     fill.data.color = (1.0, 0.74, 0.5)
     fill.data.use_shadow = False
-    fill.rotation_euler = Vector((0.5, 1.0, 0.55)).normalized().to_track_quat("Z", "Y").to_euler()
+    fill.rotation_euler = Vector((-0.45, 1.0, 0.6)).normalized().to_track_quat("Z", "Y").to_euler()
     sun.data.color = (1.0, 0.8, 0.6)
     w = sc.world.node_tree
     ramp = [n for n in w.nodes if n.type == "VALTORGB"][0].color_ramp

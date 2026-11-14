@@ -687,7 +687,7 @@ class Figure:
                     p = Vector((math.cos(a) * rx * 1.02, cy + math.sin(a) * ry * 1.02, zb - 0.01 + 0.008 * (i % 2)))
                     out = Vector((math.cos(a), math.sin(a), 0))
                     tang = Vector((-math.sin(a), math.cos(a), 0)) * -sx
-                    leaf = [p - tang * 0.018, p + out * 0.016, p + tang * 0.03 + Vector((0, 0, 0.022)), p - out * 0.006]
+                    leaf = [p - tang * 0.026, p + out * 0.026, p + tang * 0.045 + Vector((0, 0, 0.036)), p - out * 0.008]
                     self.add(done(mesh_from("Leaf", [tuple(v) for v in leaf], [(0, 1, 2), (0, 2, 3)], False), col))
             return
         cols = {"crown_gold": GOLD, "crown_silver": SILVER, "crown_iron": IRON, "diadem": GOLD, "diadem_silver": SILVER, "circlet": SILVER, "circlet_gold": GOLD}
