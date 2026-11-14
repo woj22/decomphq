@@ -1,10 +1,11 @@
 """Kharad warrior-king (Thrask of Khar-Dumeth), modelled procedurally in Blender.
 
-Run:  python3 imperium/blender/kharad.py [--out DIR] [--samples N]
-Writes renders (hero, back, head) to imperium/renders/ and a .glb to imperium/assets/characters/.
+Run:  python3 imperium/blender/kharad.py [--samples N] [--no-render]
+Writes a character sheet (full body, four head views, palette) to imperium/renders/kharad_sheet.png,
+the individual renders next to it, and the model to imperium/assets/characters/kharad_thrask.glb.
 
-Style: faceted low-poly (flat shaded, decimated organic forms), warm sunset lighting.
-Blender axes: Z up, the character faces -Y, +X is the character's left (screen right in front view).
+Style: big flat facets, a muted palette (olive, charcoal, gold, crimson, bone) and warm studio light.
+Blender axes: Z up, the character faces -Y, +X is the character's left.
 """
 import argparse
 import math
@@ -13,24 +14,23 @@ import random
 
 import bpy  # must come first: it provides bmesh and mathutils
 import bmesh
-from mathutils import Euler, Matrix, Vector
+from mathutils import Euler, Vector
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-rng = random.Random(7)
+rng = random.Random(11)
 
-# ----------------------------------------------------------------------------- palette
-SKIN = "5f6e43"
-SKIN_DARK = "3c4a2c"
-BELLY = "b4a46e"
-HORN = "d9cba5"
-BRONZE = "a8762f"
-BRONZE_DARK = "7d5424"
-CLOTH = "2c3a27"
-CLOTH_LINING = "6e2a1e"
-GOLD = "dcaa45"
-LEATHER = "5e3f25"
-IRON = "4b4c50"
-EYE = "ffb21c"
+# ----------------------------------------------------------------------------- palette (the sheet's swatches)
+SKIN = "5b6235"
+SKIN_DARK = "40452a"
+SKIN_LIGHT = "7f8248"
+CHARCOAL = "38333a"
+GOLD = "c8862d"
+CRIMSON = "7f1d24"
+BONE = "e2d3c3"
+LEATHER = "5b3a28"
+IRON = "2b282c"
+EYE = "ffc23a"
+SWATCHES = [SKIN_DARK, SKIN_LIGHT, CHARCOAL, GOLD, CRIMSON, BONE]
 
 
 def hexc(h, a=1.0):
@@ -40,12 +40,8 @@ def hexc(h, a=1.0):
     return (*lin, a)
 
 
-# ----------------------------------------------------------------------------- scene helpers
-def reset():
-    bpy.ops.wm.read_factory_settings(use_empty=True)
-
-
-def mat(name, color, rough=0.75, metal=0.0, emit=None, emit_strength=0.0):
+# ----------------------------------------------------------------------------- helpers
+def mat(name, color, rough=0.8, metal=0.0, emit=None, emit_strength=0.0):
     m = bpy.data.materials.get(name)
     if m:
         return m
@@ -55,7 +51,6 @@ def mat(name, color, rough=0.75, metal=0.0, emit=None, emit_strength=0.0):
     bsdf = nt.nodes["Principled BSDF"]
     bsdf.inputs["Roughness"].default_value = rough
     bsdf.inputs["Metallic"].default_value = metal
-    # per-face colour variation from the "facet" attribute, multiplied onto the base colour
     attr = nt.nodes.new("ShaderNodeVertexColor")
     attr.layer_name = "facet"
     mul = nt.nodes.new("ShaderNodeMix")
@@ -71,8 +66,8 @@ def mat(name, color, rough=0.75, metal=0.0, emit=None, emit_strength=0.0):
     return m
 
 
-def finish(obj, material, jitter=0.07, region_fn=None):
-    """Flat shading + a per-face colour attribute (facet jitter, optional regional tint)."""
+def finish(obj, material, jitter=0.035, region_fn=None):
+    """Flat shading + a per-face colour attribute (facet variation, optional regional tint)."""
     obj.data.materials.clear()
     obj.data.materials.append(material)
     me = obj.data
@@ -104,28 +99,25 @@ def new_obj(name, me):
     return obj
 
 
-# ----------------------------------------------------------------------------- organic forms via Skin
-SKIN_K = 1.45   # skin radii are box half-sizes; subdivision shrinks them by roughly this much
+SKIN_K = 1.12   # skin radii are box half-sizes; subdivision shrinks them a little
 
 
-def skin_object(name, nodes, edges, root=0, subsurf=1, decimate=0.5):
-    """nodes: [(x, y, z, rx[, ry])]; edges: [(i, j)]. Returns a faceted low-poly mesh object."""
+def skin_object(name, nodes, edges, root=0, subsurf=1, decimate=0.3):
+    """Organic form from a node graph: nodes [(x, y, z, rx[, ry])], edges [(i, j)]."""
     me = bpy.data.meshes.new(name)
     me.from_pydata([n[:3] for n in nodes], edges, [])
     obj = new_obj(name, me)
-    obj.modifiers.new("skin", "SKIN")
+    mod = obj.modifiers.new("skin", "SKIN")
+    mod.branch_smoothing = 0.5
     sv = me.skin_vertices[0].data
     for i, n in enumerate(nodes):
         rx = n[3] * SKIN_K
         ry = (n[4] if len(n) > 4 else n[3]) * SKIN_K
         sv[i].radius = (rx, ry)
         sv[i].use_root = i == root
-    obj.modifiers["skin"].use_smooth_shade = False
-    obj.modifiers["skin"].branch_smoothing = 0.6
     if subsurf:
         s = obj.modifiers.new("sub", "SUBSURF")
         s.levels = subsurf
-        s.render_levels = subsurf
     if decimate < 1.0:
         d = obj.modifiers.new("dec", "DECIMATE")
         d.ratio = decimate
@@ -133,171 +125,56 @@ def skin_object(name, nodes, edges, root=0, subsurf=1, decimate=0.5):
     return obj
 
 
-def mirror_nodes(nodes, edges, side_nodes, side_edges):
-    """Append a node chain for the character's left (+X) and its mirror (-X)."""
-    out_nodes = list(nodes)
-    out_edges = list(edges)
-    for sign in (1, -1):
-        base = len(out_nodes)
-        remap = {}
-        for k, n in enumerate(side_nodes):
-            out_nodes.append((n[0] * sign, *n[1:]))
-            remap[k] = base + k
-        for a, b in side_edges:
-            ia = a if isinstance(a, int) and a < 0 else None
-            out_edges.append((remap[a] if not isinstance(a, str) else a, remap[b]))
-    return out_nodes, out_edges
-
-
-def loft(name, rings, closed=True, cap_top=False, cap_bottom=False, arc=None, solidify=0.0, subsurf=0):
-    """rings: [(z, rx, ry, cx, cy)] lofted into a tube (or an open shell when arc=(a0, a1) radians)."""
+def loft(name, rings, arc=None, cap_top=False, cap_bottom=False, solidify=0.0, seg=16, decimate=1.0):
+    """rings: [(z, rx, ry, cx, cy[, wobble])], lofted bottom-up into a tube, or an open shell for arc=(a0, a1).
+    Angles are measured from +X toward +Y (the character's back is +Y, the front -Y)."""
     bm = bmesh.new()
-    seg = 18
-    vrings = []
-    for (z, rx, ry, cx, cy, *rest) in rings:
-        wob = rest[0] if rest else 0.0
-        row = []
+    vr = []
+    for ring in rings:
+        z, rx, ry, cx, cy = ring[:5]
+        wob = ring[5] if len(ring) > 5 else 0.0
         n = seg if arc is None else seg + 1
+        row = []
         for i in range(n):
             t = (2 * math.pi * i / seg) if arc is None else arc[0] + (arc[1] - arc[0]) * i / seg
             f = 1.0 + (wob if i % 2 == 0 else -wob)
             row.append(bm.verts.new((cx + math.cos(t) * rx * f, cy + math.sin(t) * ry * f, z)))
-        vrings.append(row)
-    for a, b in zip(vrings, vrings[1:]):
+        vr.append(row)
+    for a, b in zip(vr, vr[1:]):
         n = len(a)
-        rng_ = range(n) if arc is None else range(n - 1)
-        for i in rng_:
+        for i in (range(n) if arc is None else range(n - 1)):
             j = (i + 1) % n
             bm.faces.new((a[i], a[j], b[j], b[i]))
     if cap_top and arc is None:
-        bm.faces.new(vrings[-1])
+        bm.faces.new(vr[-1])
     if cap_bottom and arc is None:
-        bm.faces.new(list(reversed(vrings[0])))
+        bm.faces.new(list(reversed(vr[0])))
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     me = bpy.data.meshes.new(name)
     bm.to_mesh(me)
     bm.free()
     obj = new_obj(name, me)
-    if subsurf:
-        s = obj.modifiers.new("sub", "SUBSURF")
-        s.levels = subsurf
     if solidify:
         s = obj.modifiers.new("sol", "SOLIDIFY")
         s.thickness = solidify
         s.offset = 0
+    if decimate < 1.0:
+        d = obj.modifiers.new("dec", "DECIMATE")
+        d.ratio = decimate
     apply_all(obj)
     return obj
 
 
-def prim(kind, name, loc, scale=(1, 1, 1), rot=(0, 0, 0), **kw):
-    if kind == "cone":
-        bpy.ops.mesh.primitive_cone_add(location=loc, rotation=rot, **kw)
-    elif kind == "sphere":
-        bpy.ops.mesh.primitive_uv_sphere_add(location=loc, rotation=rot, **kw)
-    elif kind == "ico":
-        bpy.ops.mesh.primitive_ico_sphere_add(location=loc, rotation=rot, **kw)
-    elif kind == "cyl":
-        bpy.ops.mesh.primitive_cylinder_add(location=loc, rotation=rot, **kw)
-    elif kind == "cube":
-        bpy.ops.mesh.primitive_cube_add(location=loc, rotation=rot, **kw)
-    elif kind == "torus":
-        bpy.ops.mesh.primitive_torus_add(location=loc, rotation=rot, **kw)
-    o = bpy.context.active_object
-    o.name = name
-    o.scale = scale
-    bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
-    return o
-
-
-def join(objs, name):
-    bpy.ops.object.select_all(action="DESELECT")
-    for o in objs:
-        o.select_set(True)
-    bpy.context.view_layer.objects.active = objs[0]
-    bpy.ops.object.join()
-    o = bpy.context.active_object
-    o.name = name
-    return o
-
-
-# ----------------------------------------------------------------------------- the Kharad
-def build_body():
-    # spine, neck, head, snout, jaw (centre line)
-    nodes = [
-        (0, 0.02, 0.98, 0.21, 0.19),   # 0 pelvis (root)
-        (0, 0.00, 1.20, 0.23, 0.20),   # 1 belly
-        (0, -0.02, 1.44, 0.29, 0.24),  # 2 chest
-        (0, 0.01, 1.64, 0.27, 0.21),   # 3 upper chest
-        (0, -0.05, 1.8, 0.115),        # 4 neck
-        (0, -0.09, 1.92, 0.1),         # 5 neck top (inside the head)
-        (0, -0.09, 1.92, 0.01),        # 6 (unused)
-        (0, -0.09, 1.92, 0.01),        # 7 (unused)
-        (0, -0.09, 1.92, 0.01),        # 8 (unused)
-        (0, -0.09, 1.92, 0.01),        # 9 (unused)
-        # tail
-        (0, 0.20, 0.92, 0.17),         # 10
-        (0, 0.47, 0.74, 0.135),        # 11
-        (0, 0.78, 0.50, 0.10),         # 12
-        (0, 1.08, 0.30, 0.07),         # 13
-        (0, 1.34, 0.16, 0.042),        # 14
-        (0, 1.52, 0.10, 0.015),        # 15
-    ]
-    edges = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5),
-             (0, 10), (10, 11), (11, 12), (12, 13), (13, 14), (14, 15)]
-    # one side: arm and leg chains, attached to upper chest (3) and pelvis (0)
-    side = [
-        (0.22, 0.00, 1.66, 0.15),   # 0 clavicle
-        (0.40, 0.02, 1.64, 0.15),   # 1 shoulder
-        (0.50, 0.05, 1.32, 0.115),  # 2 elbow
-        (0.55, -0.03, 1.06, 0.085),  # 3 wrist
-        (0.57, -0.07, 0.97, 0.075),  # 4 palm
-        (0.61, -0.12, 0.88, 0.03),   # 5 claw outer
-        (0.57, -0.15, 0.87, 0.03),   # 6 claw mid
-        (0.53, -0.13, 0.88, 0.03),   # 7 claw inner
-        (0.51, -0.09, 0.98, 0.028),  # 8 thumb
-        (0.15, 0.02, 0.96, 0.16),    # 9 hip
-        (0.18, -0.09, 0.56, 0.125),  # 10 knee (forward)
-        (0.19, 0.06, 0.16, 0.085),   # 11 ankle (back: digitigrade)
-        (0.20, -0.08, 0.06, 0.08),   # 12 foot
-        (0.25, -0.25, 0.035, 0.035),  # 13 toe out
-        (0.20, -0.28, 0.035, 0.035),  # 14 toe mid
-        (0.15, -0.25, 0.035, 0.035),  # 15 toe in
-        (0.20, 0.10, 0.06, 0.03),    # 16 dewclaw
-    ]
-    side_edges = [("chest", 0), (0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (4, 6), (4, 7), (3, 8),
-                  ("pelvis", 9), (9, 10), (10, 11), (11, 12), (12, 13), (12, 14), (12, 15), (11, 16)]
-    for sign in (1, -1):
-        base = len(nodes)
-        for n in side:
-            nodes.append((n[0] * sign, *n[1:]))
-        for a, b in side_edges:
-            ia = 3 if a == "chest" else 0 if a == "pelvis" else base + a
-            edges.append((ia, base + b))
-    body = skin_object("KharadBody", nodes, edges, root=0, subsurf=1, decimate=0.42)
-
-    skin = hexc(SKIN)
-
-    def region(p, n):
-        t = (1.0, 1.0, 1.0)
-        # darker along the back and the top of the tail, pale belly/throat
-        if n.y > 0.35 and p.z > 0.3:
-            t = (0.72, 0.76, 0.7)
-        if n.y < -0.3 and (0.9 < p.z < 1.75 and abs(p.x) < 0.2):
-            t = (1.9, 1.7, 1.25)
-        if p.z > 1.78 and n.z < -0.35:
-            t = (1.8, 1.6, 1.2)
-        return t
-    finish(body, mat("KharadSkin", SKIN, rough=0.7), 0.09, region)
-    return body
-
-
-def loft_y(name, rings):
-    """Loft along -Y (the snout): rings [(y, rx, rz, cz)]; both ends capped."""
+def loft_y(name, rings, seg=8, decimate=1.0):
+    """Loft along -Y (heads, snouts): rings [(y, rx, rz, cz)], capped at both ends."""
     bm = bmesh.new()
-    seg = 12
     vr = []
     for (y, rx, rz, cz) in rings:
-        vr.append([bm.verts.new((math.cos(2 * math.pi * i / seg) * rx, y, cz + math.sin(2 * math.pi * i / seg) * rz)) for i in range(seg)])
+        row = []
+        for i in range(seg):
+            t = 2 * math.pi * i / seg + math.pi / seg
+            row.append(bm.verts.new((math.cos(t) * rx, y, cz + math.sin(t) * rz)))
+        vr.append(row)
     for a, b in zip(vr, vr[1:]):
         for i in range(seg):
             j = (i + 1) % seg
@@ -309,29 +186,122 @@ def loft_y(name, rings):
     bm.to_mesh(me)
     bm.free()
     o = new_obj(name, me)
-    s2 = o.modifiers.new("sub", "SUBSURF")
-    s2.levels = 1
-    d = o.modifiers.new("dec", "DECIMATE")
-    d.ratio = 0.55
-    apply_all(o)
+    if decimate < 1.0:
+        d = o.modifiers.new("dec", "DECIMATE")
+        d.ratio = decimate
+        apply_all(o)
     return o
 
 
-HEAD = [  # (y, rx, rz, cz): back of the skull to the tip of the snout
-    (0.06, 0.07, 0.07, 2.0),
-    (0.0, 0.125, 0.12, 2.02),
-    (-0.1, 0.15, 0.13, 2.03),
-    (-0.2, 0.135, 0.11, 2.02),
-    (-0.3, 0.105, 0.085, 1.99),
-    (-0.42, 0.085, 0.065, 1.97),
-    (-0.5, 0.06, 0.05, 1.96),
-    (-0.54, 0.03, 0.03, 1.955),
+def prim(kind, name, loc, scale=(1, 1, 1), rot=(0, 0, 0), **kw):
+    ops = {"cone": bpy.ops.mesh.primitive_cone_add, "ico": bpy.ops.mesh.primitive_ico_sphere_add,
+           "cyl": bpy.ops.mesh.primitive_cylinder_add, "cube": bpy.ops.mesh.primitive_cube_add,
+           "sphere": bpy.ops.mesh.primitive_uv_sphere_add}
+    ops[kind](location=loc, rotation=rot, **kw)
+    o = bpy.context.active_object
+    o.name = name
+    o.scale = scale
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
+    return o
+
+
+def _aim(o, a, b):
+    o.rotation_mode = "QUATERNION"
+    o.rotation_quaternion = (b - a).to_track_quat("Z", "Y")
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+
+
+def wedge(name, a, b, width, depth, material, jitter=0.03):
+    """A flat, tapering plate from point a to point b (brows)."""
+    a, b = Vector(a), Vector(b)
+    o = prim("cone", name, (a + b) / 2, (width, depth, (b - a).length / 2), vertices=4)
+    _aim(o, a, b)
+    return finish(o, material, jitter)
+
+
+def spike(name, base, tip, r, material, verts=4):
+    base, tip = Vector(base), Vector(tip)
+    o = prim("cone", name, (base + tip) / 2, (r, r, (tip - base).length / 2), vertices=verts)
+    _aim(o, base, tip)
+    return finish(o, material, 0.03)
+
+
+# ----------------------------------------------------------------------------- the body
+def build_body():
+    nodes = [
+        (0, 0.02, 1.12, 0.165, 0.15),   # 0 pelvis (root)
+        (0, 0.0, 1.32, 0.145, 0.125),   # 1 waist
+        (0, -0.03, 1.56, 0.25, 0.19),   # 2 chest
+        (0, 0.0, 1.76, 0.24, 0.17),     # 3 upper chest / shoulders
+        (0, -0.02, 1.9, 0.095),         # 4 neck
+        (0, -0.05, 2.02, 0.08),         # 5 upper neck
+        (0, -0.04, 2.1, 0.06),          # 6 (into the head)
+        (0, 0.17, 1.06, 0.12),          # 7 tail
+        (0, 0.42, 0.82, 0.09),          # 8
+        (0, 0.66, 0.52, 0.065),         # 9
+        (0, 0.86, 0.26, 0.04),          # 10
+        (0, 1.0, 0.09, 0.012),          # 11
+    ]
+    edges = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (0, 7), (7, 8), (8, 9), (9, 10), (10, 11)]
+    side = [
+        (0.2, 0.0, 1.79, 0.11),      # 0 clavicle
+        (0.37, 0.02, 1.75, 0.14),    # 1 shoulder
+        (0.46, 0.07, 1.43, 0.1),     # 2 elbow
+        (0.5, -0.01, 1.14, 0.08),    # 3 wrist
+        (0.51, -0.04, 1.02, 0.1, 0.085),  # 4 fist
+        (0.15, 0.02, 1.1, 0.15),     # 5 hip
+        (0.17, -0.13, 0.72, 0.1),    # 6 knee (forward)
+        (0.18, 0.1, 0.33, 0.07),     # 7 hock (raised heel: digitigrade)
+        (0.19, -0.07, 0.07, 0.06),   # 8 ball of the foot
+        (0.25, -0.3, 0.035, 0.028),  # 9 toe outer
+        (0.19, -0.34, 0.035, 0.03),  # 10 toe middle
+        (0.13, -0.3, 0.035, 0.028),  # 11 toe inner
+    ]
+    side_edges = [("chest", 0), (0, 1), (1, 2), (2, 3), (3, 4),
+                  ("pelvis", 5), (5, 6), (6, 7), (7, 8), (8, 9), (8, 10), (8, 11)]
+    for sign in (1, -1):
+        base = len(nodes)
+        for n in side:
+            nodes.append((n[0] * sign, *n[1:]))
+        for a, b in side_edges:
+            ia = 3 if a == "chest" else 0 if a == "pelvis" else base + a
+            edges.append((ia, base + b))
+    body = skin_object("KharadBody", nodes, edges, root=0, subsurf=1, decimate=0.32)
+
+    def region(p, n):
+        if n.y > 0.4 and p.z > 0.3:
+            return (0.78, 0.8, 0.76)          # darker back
+        if n.y < -0.35 and abs(p.x) < 0.16 and 1.0 < p.z < 2.1:
+            return (1.35, 1.3, 1.18)          # paler throat and belly
+        if n.z > 0.6:
+            return (1.12, 1.1, 1.05)
+        return (1.0, 1.0, 1.0)
+    finish(body, mat("KharadSkin", SKIN), 0.06, region)
+    parts = [body]
+    claw = mat("Claw", BONE, rough=0.5)
+    for sx in (1, -1):
+        for (x, y) in ((0.25, -0.3), (0.19, -0.34), (0.13, -0.3)):
+            parts.append(spike("claw", (sx * x, y - 0.03, 0.035), (sx * x, y - 0.12, 0.0), 0.022, claw))
+        parts.append(spike("heelspur", (sx * 0.18, 0.12, 0.3), (sx * 0.18, 0.22, 0.26), 0.022, mat("KharadSkinDark", SKIN_DARK)))
+        for k in range(3):
+            parts.append(spike("knuckle", (sx * (0.49 + k * 0.025), -0.1, 1.05), (sx * (0.49 + k * 0.025), -0.15, 1.03), 0.014, claw))
+    return parts
+
+
+# ----------------------------------------------------------------------------- the head
+HEAD = [  # (y, rx, rz, cz): back of the skull to the tip of the snout (a long, flat-topped wedge)
+    (0.05, 0.05, 0.06, 2.15),
+    (0.0, 0.1, 0.095, 2.155),
+    (-0.08, 0.105, 0.088, 2.16),
+    (-0.17, 0.08, 0.066, 2.145),
+    (-0.26, 0.063, 0.05, 2.125),
+    (-0.33, 0.045, 0.036, 2.112),
+    (-0.365, 0.02, 0.02, 2.105),
 ]
-JAW = [(-0.02, 0.11, 0.06, 1.91), (-0.15, 0.115, 0.055, 1.9), (-0.3, 0.09, 0.042, 1.895), (-0.45, 0.06, 0.03, 1.895), (-0.5, 0.03, 0.02, 1.9)]
+JAW = [(-0.0, 0.08, 0.04, 2.08), (-0.13, 0.072, 0.036, 2.075), (-0.26, 0.05, 0.026, 2.075), (-0.33, 0.026, 0.018, 2.08)]
 
 
 def head_at(y):
-    """Interpolated head section (rx, rz, cz) at y."""
     for a, b in zip(HEAD, HEAD[1:]):
         if a[0] >= y >= b[0]:
             t = (a[0] - y) / (a[0] - b[0])
@@ -339,266 +309,267 @@ def head_at(y):
     return HEAD[-1][1:]
 
 
-def build_head_details():
+def build_head():
+    skin = mat("KharadSkin", SKIN)
+    dark = mat("KharadSkinDark", SKIN_DARK)
+    bone = mat("Bone", BONE, rough=0.55)
+    black = mat("Black", "15110f")
     parts = []
-    skin_m = mat("KharadSkin", SKIN, rough=0.7)
-    dark_m = mat("KharadSkinDark", SKIN_DARK, rough=0.7)
 
-    def head_region(p, n):
-        if n.z < -0.3:
-            return (1.7, 1.55, 1.15)
-        if n.z > 0.5:
-            return (0.8, 0.84, 0.78)
-        return (1.0, 1.0, 1.0)
-    parts.append(finish(loft_y("Head", HEAD), skin_m, 0.09, head_region))
-    parts.append(finish(loft_y("Jaw", JAW), skin_m, 0.09, lambda p, n: (1.75, 1.6, 1.2) if n.z < 0 else (1, 1, 1)))
-    # heavy brow ridge on the skull surface, eyes tucked beneath it
+    def hr(p, n):
+        if n.z < -0.4:
+            return (1.3, 1.26, 1.15)
+        if n.z > 0.6:
+            return (0.88, 0.9, 0.85)
+        return (1, 1, 1)
+    parts.append(finish(loft_y("Head", HEAD), skin, 0.05, hr))
+    parts.append(finish(loft_y("Jaw", JAW), skin, 0.05, lambda p, n: (1.3, 1.26, 1.15) if n.z < 0 else (1, 1, 1)))
+    eye_m = mat("KharadEye", EYE, rough=0.2, emit="ffb000", emit_strength=8.0)
     for sx in (1, -1):
-        rx, rz, cz = head_at(-0.2)
-        b = prim("cone", "brow", (sx * rx * 0.6, -0.2, cz + rz * 0.78), (0.05, 0.075, 0.025), (math.pi / 2 + 0.25, 0, sx * -0.35), vertices=4)
-        parts.append(finish(b, dark_m, 0.05))
-        e = prim("ico", "eye", (sx * rx * 0.86, -0.225, cz + rz * 0.42), (0.03, 0.026, 0.022), subdivisions=1, radius=1)
-        parts.append(finish(e, mat("KharadEye", EYE, rough=0.2, emit=EYE, emit_strength=3.0), 0.0))
-        p = prim("cube", "pupil", (sx * (rx * 0.86 + 0.012), -0.25, cz + rz * 0.42), (0.004, 0.004, 0.018))
-        parts.append(finish(p, mat("Black", "0d0a08", rough=0.3), 0.0))
-        # nostrils and scale ridges
-        rx2, rz2, cz2 = head_at(-0.5)
-        n = prim("cube", "nostril", (sx * 0.025, -0.515, cz2 + rz2 * 0.6), (0.01, 0.012, 0.007))
-        parts.append(finish(n, mat("Black", "0d0a08"), 0.0))
-        # cheek frill
-        f = prim("cone", "frill", (sx * 0.15, -0.02, 1.95), (0.05, 0.02, 0.09), (0.0, sx * 1.2, 0.0), vertices=4)
-        parts.append(finish(f, dark_m, 0.06))
-    # teeth along the upper lip
-    for sx in (1, -1):
-        for k in range(6):
-            y = -0.2 - k * 0.055
-            rx, rz, cz = head_at(y)
-            t = prim("cone", "tooth", (sx * rx * 0.8, y, cz - rz * 0.85 - 0.012), (0.011, 0.011, 0.028 if k != 1 else 0.045), (math.pi, 0, 0), vertices=4)
-            parts.append(finish(t, mat("Horn", HORN, rough=0.5), 0.05))
-    # horns: curved, swept back (skin chains), a pair of big ones and two pairs of small
-    horn_parts = []
-    for sx in (1, -1):
-        for (bx, by, bz, s) in ((0.11, -0.04, 2.1, 1.0), (0.14, 0.02, 2.02, 0.65), (0.06, 0.03, 2.13, 0.55)):
-            hn = [(sx * bx, by, bz, 0.032 * s),
-                  (sx * (bx + 0.06 * s), by + 0.12 * s, bz + 0.1 * s, 0.025 * s),
-                  (sx * (bx + 0.1 * s), by + 0.27 * s, bz + 0.12 * s, 0.016 * s),
-                  (sx * (bx + 0.11 * s), by + 0.4 * s, bz + 0.05 * s, 0.004)]
-            h = skin_object("horn", hn, [(0, 1), (1, 2), (2, 3)], 0, subsurf=1, decimate=0.6)
-            horn_parts.append(finish(h, mat("Horn", HORN, rough=0.5), 0.08))
-    # dorsal spines down the neck, back and tail
-    spines = []
-    path = [(0, 0.08, 1.98), (0, 0.18, 1.86), (0, 0.24, 1.7), (0, 0.27, 1.48), (0, 0.25, 1.24),
-            (0, 0.3, 0.98), (0, 0.52, 0.84), (0, 0.8, 0.6), (0, 1.08, 0.4), (0, 1.32, 0.24)]
-    for k, p in enumerate(path):
-        s = 0.07 - k * 0.004
-        c = prim("cone", "spine", p, (s * 0.35, s, s * 1.2), (-0.9, 0, 0), vertices=4)
-        spines.append(finish(c, mat("KharadSkinDark", SKIN_DARK), 0.08))
-    return parts + horn_parts + spines
-
-
-def build_kit():
-    kit = []
-    bronze = mat("Bronze", BRONZE, rough=0.42, metal=0.7)
-    bronze_dark = mat("BronzeDark", BRONZE_DARK, rough=0.45, metal=0.8)
-    gold = mat("Gold", GOLD, rough=0.25, metal=0.95)
-    cloth = mat("Cloth", CLOTH, rough=0.9)
-    leather = mat("Leather", LEATHER, rough=0.8)
-    iron = mat("Iron", IRON, rough=0.45, metal=0.8)
-
-    # muscled bronze cuirass
-    cu = loft("Cuirass", [
-        (1.04, 0.27, 0.24, 0, 0.0),
-        (1.18, 0.29, 0.25, 0, -0.01),
-        (1.36, 0.34, 0.29, 0, -0.03),
-        (1.52, 0.37, 0.3, 0, -0.03),
-        (1.64, 0.33, 0.26, 0, 0.0),
-        (1.74, 0.2, 0.18, 0, 0.0),
-    ], cap_top=False, subsurf=1)
-    kit.append(finish(cu, bronze, 0.06))
-    for z in (1.12, 1.24):
-        band = loft("band", [(z, 0.3, 0.262, 0, -0.012), (z + 0.03, 0.305, 0.267, 0, -0.012)])
-        kit.append(finish(band, bronze_dark, 0.03))
-    # pectoral plates and a gorgon-ish boss
-    boss = prim("ico", "boss", (0, -0.31, 1.36), (0.05, 0.02, 0.05), subdivisions=1, radius=1)
-    kit.append(finish(boss, gold, 0.03))
-    # gold collar
-    col = loft("collar", [(1.7, 0.23, 0.2, 0, 0), (1.77, 0.19, 0.17, 0, 0)])
-    kit.append(finish(col, gold, 0.04))
-    # layered pauldrons
+        rx, rz, cz = head_at(-0.16)
+        parts.append(wedge("brow", (sx * rx * 0.55, -0.24, cz + rz * 0.62), (sx * rx * 1.05, -0.07, cz + rz * 1.02), 0.035, 0.012, dark))
+        e = prim("ico", "eye", (sx * rx * 0.9, -0.165, cz + rz * 0.42), (0.018, 0.046, 0.014), (0.25, 0.0, sx * 0.3), subdivisions=1, radius=1)
+        parts.append(finish(e, eye_m, 0.0))
+        parts.append(spike("cheek", (sx * 0.08, -0.03, 2.1), (sx * 0.15, 0.09, 2.1), 0.022, dark))
+        parts.append(spike("jawspike", (sx * 0.065, 0.0, 2.06), (sx * 0.12, 0.1, 2.02), 0.018, dark))
+        parts.append(spike("crest", (sx * 0.05, 0.03, 2.2), (sx * 0.07, 0.13, 2.25), 0.016, dark))
+        parts.append(finish(prim("cube", "lip", (sx * 0.045, -0.2, 2.087), (0.004, 0.11, 0.004), (0, 0, sx * -0.12)), black, 0.0))
+        parts.append(finish(prim("cube", "nostril", (sx * 0.022, -0.345, 2.135), (0.008, 0.012, 0.005)), black, 0.0))
+        for (bx, by, bz, s) in ((0.07, 0.0, 2.21, 1.0), (0.095, 0.03, 2.15, 0.7)):
+            hn = [(sx * bx, by, bz, 0.034 * s),
+                  (sx * (bx + 0.03 * s), by + 0.16 * s, bz + 0.07 * s, 0.03 * s),
+                  (sx * (bx + 0.05 * s), by + 0.32 * s, bz + 0.15 * s, 0.021 * s),
+                  (sx * (bx + 0.06 * s), by + 0.44 * s, bz + 0.27 * s, 0.011 * s),
+                  (sx * (bx + 0.055 * s), by + 0.48 * s, bz + 0.37 * s, 0.002)]
+            h = skin_object("horn", hn, [(0, 1), (1, 2), (2, 3), (3, 4)], 0, subsurf=1, decimate=0.5)
+            parts.append(finish(h, bone, 0.05, lambda p, n: (0.85, 0.8, 0.76) if p.z < 2.3 else (1.04, 1.03, 1.0)))
     for sx in (1, -1):
         for k in range(3):
-            pa = prim("sphere", "pauldron", (sx * (0.4 + k * 0.025), 0.01, 1.7 - k * 0.07),
-                      (0.17 - k * 0.01, 0.18 - k * 0.01, 0.1), (0, sx * 0.5, 0), segments=10, ring_count=6)
-            kit.append(finish(pa, bronze if k % 2 == 0 else bronze_dark, 0.05))
-    # under-skirt and pteruges
-    sk = loft("skirt", [(0.66, 0.36, 0.31, 0, 0.0, 0.05), (0.86, 0.32, 0.28, 0, 0.0, 0.04), (1.07, 0.27, 0.24, 0, 0.0)], subsurf=0)
-    kit.append(finish(sk, cloth, 0.06))
-    for k in range(14):
-        a = 2 * math.pi * k / 14
-        x, y = math.cos(a) * 0.31, math.sin(a) * 0.27
-        st = prim("cube", "pteryx", (x, y, 0.84), (0.045, 0.012, 0.2), (0, 0, a + math.pi / 2))
-        st.rotation_euler = (0, 0, 0)
-        kit.append(finish(st, leather, 0.08))
-        tip = prim("cube", "pteryx_tip", (x * 1.02, y * 1.02, 0.645), (0.046, 0.014, 0.02), (0, 0, a + math.pi / 2))
-        kit.append(finish(tip, gold, 0.03))
-    belt = loft("belt", [(1.02, 0.3, 0.27, 0, 0), (1.07, 0.3, 0.27, 0, 0)])
-    kit.append(finish(belt, gold, 0.04))
-    # bracers and greaves
+            z = 2.0 - k * 0.09
+            parts.append(spike("neckspine", (sx * 0.07, 0.04, z), (sx * 0.12, 0.1, z - 0.03), 0.014, dark))
+    for (y, z, s) in ((0.12, 1.98, 0.05), (0.18, 1.86, 0.05), (0.27, 1.32, 0.045), (0.27, 1.18, 0.045), (0.42, 0.92, 0.04),
+                      (0.6, 0.66, 0.035), (0.78, 0.42, 0.03), (0.92, 0.2, 0.02)):
+        parts.append(spike("dorsal", (0, y - 0.03, z), (0, y + s * 1.2, z + s * 0.6), s * 0.35, dark))
+    return parts
+
+
+# ----------------------------------------------------------------------------- crown and kit
+def build_kit():
+    gold = mat("Gold", GOLD, rough=0.5, metal=0.35)
+    char = mat("Charcoal", CHARCOAL, rough=0.9)
+    crim = mat("Crimson", CRIMSON, rough=0.9)
+    leather = mat("Leather", LEATHER, rough=0.85)
+    iron = mat("Iron", IRON, rough=0.6, metal=0.4)
+    gem_m = mat("Garnet", "b31d2a", rough=0.15, emit="5a0a10", emit_strength=0.8)
+    kit = []
+
+    # crown: a black spiked band with a red gem at the front
+    crown = loft("Crown", [(2.205, 0.108, 0.105, 0, -0.06), (2.255, 0.112, 0.11, 0, -0.06)], seg=10)
+    kit.append(finish(crown, iron, 0.03))
+    for k in range(7):
+        a = -math.pi / 2 + (k - 3) * 0.48
+        h = 0.11 if k == 3 else 0.075 - abs(k - 3) * 0.008
+        p = (math.cos(a) * 0.11, -0.06 + math.sin(a) * 0.108, 2.245)
+        kit.append(spike("crownspike", p, (p[0] * 1.08, p[1] - 0.005, p[2] + h), 0.02, iron, 4))
+    kit.append(finish(prim("ico", "gem", (0, -0.172, 2.235), (0.018, 0.01, 0.028), subdivisions=1, radius=1), gem_m, 0.0))
+
+    # gold breastplate: a front shell with sculpted planes and a diamond emblem
+    bp = loft("Breastplate", [
+        (1.26, 0.2, 0.17, 0, -0.005),
+        (1.36, 0.21, 0.17, 0, -0.005),
+        (1.5, 0.245, 0.19, 0, -0.02),
+        (1.64, 0.27, 0.2, 0, -0.03),
+        (1.78, 0.245, 0.18, 0, -0.01),
+    ], arc=(math.radians(-200), math.radians(20)), seg=10, solidify=0.03)
+    kit.append(finish(bp, gold, 0.05))
     for sx in (1, -1):
-        br = loft("bracer", [(1.08, 0.125, 0.12, sx * 0.548, -0.035), (1.26, 0.15, 0.145, sx * 0.53, 0.012)])
-        kit.append(finish(br, bronze, 0.05))
-        gr = loft("greave", [(0.22, 0.135, 0.135, sx * 0.19, 0.03), (0.52, 0.17, 0.17, sx * 0.18, -0.07)])
-        kit.append(finish(gr, bronze, 0.05))
-    # the cloak: an open shell around the back, folds, gold hem, crimson lining
-    rings = [
-        (1.78, 0.42, 0.26, 0, 0.06, 0.0),
-        (1.5, 0.5, 0.34, 0, 0.12, 0.04),
-        (1.1, 0.6, 0.42, 0, 0.16, 0.06),
-        (0.7, 0.68, 0.5, 0, 0.2, 0.07),
-        (0.38, 0.74, 0.56, 0, 0.24, 0.08),
-    ]
-    cl = loft("Cloak", rings, arc=(math.radians(-20), math.radians(200)), solidify=0.025)
-    cl.data.materials.append(cloth)
-    finish(cl, cloth, 0.08)
-    lining = mat("Lining", CLOTH_LINING, rough=0.9)
-    cl.data.materials.append(lining)
-    for p in cl.data.polygons:
-        # faces whose normal points inward (toward the body) get the lining
-        c = p.center
-        out = Vector((c.x, c.y - 0.1, 0)).normalized()
-        if p.normal.dot(Vector((out.x, out.y, 0))) < -0.2:
-            p.material_index = 1
-    kit.append(cl)
-    hem = loft("hem", [(0.36, 0.745, 0.565, 0, 0.24, 0.08), (0.42, 0.735, 0.555, 0, 0.235, 0.08)], arc=(math.radians(-20), math.radians(200)), solidify=0.03)
+        kit.append(finish(prim("ico", "pec", (sx * 0.11, -0.21, 1.64), (0.11, 0.035, 0.08), (0, 0, sx * 0.1), subdivisions=1, radius=1), gold, 0.05))
+    kit.append(finish(prim("cube", "ridge", (0, -0.235, 1.55), (0.012, 0.012, 0.16)), gold, 0.04))
+    kit.append(finish(prim("cube", "emblem", (0, -0.245, 1.6), (0.045, 0.012, 0.045), (0, math.pi / 4, 0)), gold, 0.0))
+    kit.append(finish(prim("cube", "emblem_gem", (0, -0.258, 1.6), (0.022, 0.008, 0.022), (0, math.pi / 4, 0)), gem_m, 0.0))
+    # angular layered pauldrons
+    for sx in (1, -1):
+        for k, (dx, dz, s) in enumerate(((0.0, 0.0, 1.0), (0.06, -0.11, 0.8))):
+            p = prim("ico", "pauldron", (sx * (0.36 + dx), 0.01, 1.8 + dz), (0.19 * s, 0.17 * s, 0.11 * s), (0, sx * (0.5 + k * 0.2), 0), subdivisions=1, radius=1)
+            kit.append(finish(p, gold, 0.06))
+    # charcoal mantle over the shoulders, open in a V at the front, gold-edged
+    front_open = (math.radians(-90 + 32), math.radians(270 - 32))
+    mantle = loft("Mantle", [(1.66, 0.43, 0.3, 0, 0.04, 0.03), (1.79, 0.36, 0.26, 0, 0.03, 0.02), (1.9, 0.17, 0.15, 0, 0.0)],
+                  arc=front_open, seg=16, solidify=0.03)
+    kit.append(finish(mantle, char, 0.05))
+    hem = loft("MantleHem", [(1.64, 0.435, 0.305, 0, 0.04, 0.03), (1.69, 0.43, 0.3, 0, 0.04, 0.03)], arc=front_open, seg=16, solidify=0.035)
     kit.append(finish(hem, gold, 0.04))
-    mantle = loft("mantle", [(1.56, 0.5, 0.36, 0, 0.04, 0.05), (1.68, 0.44, 0.31, 0, 0.04, 0.04), (1.77, 0.3, 0.23, 0, 0.02, 0.03), (1.83, 0.16, 0.15, 0, -0.01)], subsurf=0)
-    kit.append(finish(mantle, cloth, 0.07))
     for sx in (1, -1):
-        clasp = prim("cyl", "clasp", (sx * 0.24, -0.27, 1.68), (0.05, 0.05, 0.015), (math.pi / 2, 0, 0), vertices=8)
-        kit.append(finish(clasp, gold, 0.03))
-    # iron crown with spikes and a garnet
-    cr = loft("crown", [(2.1, 0.135, 0.15, 0, -0.08), (2.17, 0.145, 0.16, 0, -0.08)])
-    kit.append(finish(cr, iron, 0.06))
-    for k in range(9):
-        a = 2 * math.pi * k / 9 + math.pi / 2
-        sp = prim("cone", "crownspike", (math.cos(a) * 0.14, -0.08 + math.sin(a) * 0.155, 2.2), (0.02, 0.02, 0.05), vertices=4)
-        kit.append(finish(sp, iron, 0.06))
-    gem = prim("ico", "garnet", (0, -0.24, 2.135), (0.02, 0.012, 0.026), subdivisions=1, radius=1)
-    kit.append(finish(gem, mat("Garnet", "9b1b24", rough=0.15, emit="5a0a10", emit_strength=0.6), 0.0))
+        disc = prim("cyl", "clasp", (sx * 0.24, -0.27, 1.73), (0.06, 0.06, 0.018), (math.pi / 2, 0, 0), vertices=10)
+        kit.append(finish(disc, gold, 0.03))
+    # the cloak: charcoal outside, crimson inside, gold edges and hem
+    arc = (math.radians(-28), math.radians(208))
+    rings = [(1.82, 0.36, 0.24, 0, 0.05, 0.0), (1.5, 0.48, 0.32, 0, 0.11, 0.025), (1.0, 0.58, 0.4, 0, 0.16, 0.04),
+             (0.5, 0.65, 0.45, 0, 0.2, 0.05), (0.2, 0.68, 0.48, 0, 0.22, 0.05)]
+    cloak = loft("Cloak", list(reversed(rings)), arc=arc, seg=14, solidify=0.025)
+    finish(cloak, char, 0.05)
+    cloak.data.materials.append(crim)
+    for p in cloak.data.polygons:
+        c = p.center
+        out = Vector((c.x, c.y - 0.12, 0)).normalized()
+        if p.normal.dot(out) < -0.2:
+            p.material_index = 1
+    kit.append(cloak)
+    trim = [(r[0], r[1] * 1.01, r[2] * 1.01, r[3], r[4], r[5]) for r in reversed(rings)]
+    for a0, a1 in ((arc[0], arc[0] + 0.07), (arc[1] - 0.07, arc[1])):
+        edge = loft("CloakEdge", trim, arc=(a0, a1), seg=1, solidify=0.035)
+        kit.append(finish(edge, gold, 0.04))
+    chem = loft("CloakHem", [(0.19, 0.685, 0.485, 0, 0.22, 0.05), (0.26, 0.676, 0.478, 0, 0.217, 0.05)], arc=arc, seg=14, solidify=0.035)
+    kit.append(finish(chem, gold, 0.04))
+    # belt, straps, kilt and tabard
+    belt = loft("Belt", [(1.22, 0.205, 0.18, 0, 0.0), (1.3, 0.195, 0.17, 0, 0.0)], seg=12)
+    kit.append(finish(belt, gold, 0.04))
+    kit.append(finish(prim("cube", "buckle", (0, -0.185, 1.26), (0.05, 0.014, 0.045)), gold, 0.0))
+    kilt = loft("Kilt", [(0.82, 0.33, 0.27, 0, 0.02, 0.04), (1.02, 0.28, 0.23, 0, 0.01, 0.03), (1.24, 0.2, 0.175, 0, 0.0)], seg=12)
+    kit.append(finish(kilt, char, 0.05))
+    khem = loft("KiltHem", [(0.81, 0.333, 0.273, 0, 0.02, 0.04), (0.85, 0.327, 0.268, 0, 0.02, 0.04)], seg=12)
+    kit.append(finish(khem, gold, 0.04))
+    tab = prim("cube", "tabard", (0, -0.25, 0.93), (0.1, 0.012, 0.3), (0.1, 0, 0))
+    kit.append(finish(tab, char, 0.04))
+    for sx in (1, -1):
+        kit.append(finish(prim("cube", "tabtrim", (sx * 0.098, -0.252, 0.93), (0.012, 0.014, 0.3), (0.1, 0, 0)), gold, 0.0))
+    kit.append(finish(prim("cube", "tabhem", (0, -0.22, 0.64), (0.11, 0.016, 0.014), (0.1, 0, 0)), gold, 0.0))
+    kit.append(spike("tabpoint", (0, -0.215, 0.64), (0, -0.205, 0.58), 0.03, gold))
+    for x in (-0.15, 0.15, -0.21, 0.21):
+        st = prim("cube", "strap", (x, -0.2 + abs(x) * 0.35, 1.06), (0.03, 0.01, 0.2), (0.08, 0, x * 1.2))
+        kit.append(finish(st, leather, 0.05))
+    # vambraces
+    for sx in (1, -1):
+        vb = loft("Vambrace", [(1.1, 0.1, 0.095, sx * 0.502, -0.015), (1.2, 0.105, 0.1, sx * 0.49, 0.015), (1.31, 0.12, 0.115, sx * 0.478, 0.045)], seg=8)
+        kit.append(finish(vb, gold, 0.05))
+        kit.append(spike("vfin", (sx * 0.56, 0.06, 1.28), (sx * 0.6, 0.12, 1.33), 0.02, gold))
     return kit
 
 
-# ----------------------------------------------------------------------------- stage, lights, render
+# ----------------------------------------------------------------------------- stage and renders
 def stage(samples):
     sc = bpy.context.scene
     sc.render.engine = "CYCLES"
     sc.cycles.device = "CPU"
     sc.cycles.samples = samples
     sc.cycles.use_denoising = True
-    sc.render.resolution_x = 1280
-    sc.render.resolution_y = 960
-    sc.view_settings.view_transform = "AgX"
-    sc.view_settings.look = "AgX - Medium High Contrast"
-    # sunset world: violet zenith, orange horizon
-    w = bpy.data.worlds.new("Sunset")
+    sc.render.film_transparent = True
+    sc.view_settings.view_transform = "Standard"
+    sc.view_settings.look = "None"
+    w = bpy.data.worlds.new("Studio")
     sc.world = w
     w.use_nodes = True
-    nt = w.node_tree
-    bg = nt.nodes["Background"]
-    tc = nt.nodes.new("ShaderNodeTexCoord")
-    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
-    ramp = nt.nodes.new("ShaderNodeValToRGB")
-    nt.links.new(tc.outputs["Generated"], sep.inputs[0])
-    nt.links.new(sep.outputs["Z"], ramp.inputs["Fac"])
-    cr = ramp.color_ramp
-    cr.elements[0].position = 0.48
-    cr.elements[0].color = hexc("d98a62")
-    cr.elements[1].position = 0.62
-    cr.elements[1].color = hexc("3b2f74")
-    e = cr.elements.new(0.51)
-    e.color = hexc("f2b27a")
-    e2 = cr.elements.new(0.555)
-    e2.color = hexc("b07aa6")
-    nt.links.new(ramp.outputs["Color"], bg.inputs["Color"])
-    bg.inputs["Strength"].default_value = 0.9
-    # marble floor
-    bpy.ops.mesh.primitive_plane_add(size=14, location=(0, 0, 0))
-    fl = bpy.context.active_object
-    fm = bpy.data.materials.new("Marble")
-    fm.use_nodes = True
-    fnt = fm.node_tree
-    chk = fnt.nodes.new("ShaderNodeTexChecker")
-    chk.inputs["Scale"].default_value = 7.0
-    chk.inputs["Color1"].default_value = hexc("e6d8c0")
-    chk.inputs["Color2"].default_value = hexc("c9b498")
-    fnt.links.new(chk.outputs["Color"], fnt.nodes["Principled BSDF"].inputs["Base Color"])
-    fnt.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.35
-    fl.data.materials.append(fm)
-    # low warm sun from behind-left, cool fill, rim
-    bpy.ops.object.light_add(type="SUN", location=(0, 0, 5))
-    sun = bpy.context.active_object
-    sun.data.energy = 4.0
-    sun.data.color = (1.0, 0.68, 0.42)
-    sun.data.angle = math.radians(3)
-    sun.rotation_euler = Euler((math.radians(70), 0, math.radians(-130)))
-    bpy.ops.object.light_add(type="AREA", location=(2.5, -3.5, 2.6))
-    fill = bpy.context.active_object
-    fill.data.energy = 220
-    fill.data.size = 3
-    fill.data.color = (0.75, 0.7, 1.0)
-    fill.rotation_euler = Euler((math.radians(60), 0, math.radians(35)))
-    bpy.ops.object.light_add(type="AREA", location=(-2.2, 2.4, 3.0))
-    rim = bpy.context.active_object
-    rim.data.energy = 260
-    rim.data.size = 2
-    rim.data.color = (1.0, 0.75, 0.5)
-    rim.rotation_euler = Euler((math.radians(-55), 0, math.radians(-140)))
+    w.node_tree.nodes["Background"].inputs["Color"].default_value = hexc("8a5a48")
+    w.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.55
+    bpy.ops.mesh.primitive_plane_add(size=12, location=(0, 0, 0))
+    bpy.context.active_object.is_shadow_catcher = True
+
+    def area(loc, rot, energy, size, color):
+        bpy.ops.object.light_add(type="AREA", location=loc)
+        l = bpy.context.active_object
+        l.data.energy = energy
+        l.data.size = size
+        l.data.color = color
+        l.rotation_euler = Euler([math.radians(v) for v in rot])
+    area((-3.0, -3.2, 3.6), (50, 0, -42), 420, 2.5, (1.0, 0.84, 0.66))    # warm key, front-left
+    area((3.2, -2.8, 1.8), (70, 0, 48), 90, 3.0, (0.85, 0.8, 0.95))       # cool fill
+    area((2.4, 3.0, 3.0), (-55, 0, 145), 520, 1.5, (1.0, 0.66, 0.38))     # warm rim, behind-right
 
 
-def shoot(path, loc, target, lens=50):
+def shoot(path, loc, target, lens, res):
     sc = bpy.context.scene
+    sc.render.resolution_x, sc.render.resolution_y = res
     cam = sc.camera
     if cam is None:
         bpy.ops.object.camera_add()
         cam = bpy.context.active_object
         sc.camera = cam
     cam.location = loc
-    d = Vector(target) - Vector(loc)
-    cam.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
+    cam.rotation_euler = (Vector(target) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
     cam.data.lens = lens
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
     print("render", path)
 
 
+def orbit(target, dist, yaw_deg, pitch_deg):
+    """Camera position around target: yaw 0 = straight in front, negative = toward the character's right."""
+    y, p = math.radians(yaw_deg), math.radians(pitch_deg)
+    t = Vector(target)
+    return (t.x + math.sin(y) * math.cos(p) * dist, t.y - math.cos(y) * math.cos(p) * dist, t.z + math.sin(p) * dist)
+
+
+def sheet(out, files):
+    """Compose the character sheet: full figure left, four head studies right, palette swatches."""
+    from PIL import Image, ImageDraw
+    W, H = 1536, 1024
+    bg = Image.new("RGB", (W, H))
+    d = ImageDraw.Draw(bg)
+    for y in range(H):
+        t = y / H
+        d.line([(0, y), (W, y)], fill=(int(150 - 38 * t), int(96 - 28 * t), int(80 - 22 * t)))
+    d.polygon([(0, 660), (700, 610), (700, H), (0, H)], fill=(134, 86, 70))
+    d.line([(712, 476), (W, 476)], fill=(118, 74, 60), width=3)
+    d.line([(705, 0), (705, H)], fill=(118, 74, 60), width=3)
+
+    def paste(path, box):
+        im = Image.open(path).convert("RGBA")
+        bb = im.getchannel("A").point(lambda a: 255 if a > 40 else 0).getbbox()
+        if bb:
+            im = im.crop((max(0, bb[0] - 20), max(0, bb[1] - 20), min(im.width, bb[2] + 20), min(im.height, bb[3] + 20)))
+        scale = min(box[2] / im.width, box[3] / im.height)
+        im = im.resize((int(im.width * scale), int(im.height * scale)), Image.LANCZOS)
+        bg.paste(im, (box[0] + (box[2] - im.width) // 2, box[1] + (box[3] - im.height) // 2), im)
+    paste(files["full"], (90, 10, 600, 1004))
+    paste(files["h1"], (715, 8, 405, 462))
+    paste(files["h2"], (1125, 8, 405, 462))
+    paste(files["h3"], (715, 482, 405, 536))
+    paste(files["h4"], (1125, 482, 405, 536))
+    for i, h in enumerate(SWATCHES):
+        cx, cy, r = 62, 78 + i * 66, 24
+        rgb = tuple(int(h[k:k + 2], 16) for k in (0, 2, 4))
+        d.polygon([(cx, cy - r), (cx + r, cy), (cx, cy + r), (cx - r, cy)], fill=rgb, outline=(70, 46, 38))
+    bg.save(out)
+    print("sheet", out)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.path.join(ROOT, "renders"))
-    ap.add_argument("--samples", type=int, default=64)
+    ap.add_argument("--samples", type=int, default=48)
     ap.add_argument("--no-render", action="store_true")
+    ap.add_argument("--only", default="")
     args = ap.parse_args()
-    reset()
-    body = build_body()
-    details = build_head_details()
-    kit = build_kit()
-    allp = [body] + details + kit
-    tris = sum(sum(len(p.vertices) - 2 for p in o.data.polygons) for o in allp)
-    print("Kharad parts:", len(allp), "triangles:", tris)
-    # export the character (before adding the stage)
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    parts = build_body() + build_head() + build_kit()
+    tris = sum(sum(len(p.vertices) - 2 for p in o.data.polygons) for o in parts)
+    print("Kharad parts:", len(parts), "triangles:", tris)
     os.makedirs(os.path.join(ROOT, "assets", "characters"), exist_ok=True)
     bpy.ops.object.select_all(action="DESELECT")
-    for o in allp:
+    for o in parts:
         o.select_set(True)
     glb = os.path.join(ROOT, "assets", "characters", "kharad_thrask.glb")
     bpy.ops.export_scene.gltf(filepath=glb, use_selection=True, export_format="GLB", export_vertex_color="ACTIVE")
     print("exported", glb)
     if args.no_render:
         return
-    stage(args.samples)
     os.makedirs(args.out, exist_ok=True)
-    shoot(os.path.join(args.out, "kharad_front.png"), (2.2, -4.6, 2.0), (0, 0, 1.15), 50)
-    shoot(os.path.join(args.out, "kharad_back.png"), (-3.4, 3.6, 1.9), (0, 0.2, 1.0), 50)
-    shoot(os.path.join(args.out, "kharad_head.png"), (0.75, -1.35, 2.15), (0, -0.2, 1.95), 70)
+    stage(args.samples)
+    f = {k: os.path.join(args.out, "kharad_%s.png" % k) for k in ("full", "h1", "h2", "h3", "h4")}
+    head = (0, -0.02, 2.14)
+    shots = {
+        "full": (orbit((0, 0, 1.2), 5.3, -28, 6), (0, 0, 1.2), 50, (860, 1300)),
+        "h1": (orbit(head, 1.75, -38, 8), (0, -0.02, 2.08), 60, (700, 800)),
+        "h2": (orbit(head, 1.75, -90, 4), (0, 0.04, 2.1), 60, (700, 800)),
+        "h3": (orbit(head, 1.8, 0, 8), (0, -0.02, 2.07), 60, (700, 920)),
+        "h4": (orbit(head, 1.8, -128, 16), (0, 0.02, 2.04), 55, (700, 920)),
+    }
+    for k, (loc, tgt, lens, res) in shots.items():
+        if args.only and k != args.only:
+            continue
+        shoot(f[k], loc, tgt, lens, res)
+    if not args.only:
+        sheet(os.path.join(args.out, "kharad_sheet.png"), f)
 
 
 if __name__ == "__main__":

@@ -5,3 +5,6 @@ Characters and environments are modelled with Blender scripts (`blender/`, run w
 
 - `blender/kharad.py`: Thrask, a Kharad warrior-king (faceted low-poly creature body, bronze kit,
   cloak, iron crown). `python3 imperium/blender/kharad.py [--samples 64]`
+- `blender/kharad_head.py`: the Kharad head hand-modelled vertex by vertex (cross-section slices,
+  hinged jaw, surface-placed eyes and brows, square-section horns, fitted crown), flat colours.
+  `python3 imperium/blender/kharad_head.py` -> `renders/kharad_head_sheet.png`
