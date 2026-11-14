@@ -207,8 +207,8 @@ def brazier(x, y, z=0.0, s=1.0, light=True):
                                [0.05 * s, 0.04 * s], 4), metal(BRONZE)))
     parts.append(done(stack("Bowl", [(z + 0.95 * s, ringN(8, 0.2 * s, 0.2 * s), x, y), (z + 1.2 * s, ringN(8, 0.6 * s, 0.6 * s), x, y),
                                      (z + 1.27 * s, ringN(8, 0.62 * s, 0.62 * s), x, y)], cap_top=False), metal("a8742f")))
-    fire = m("ffae3a", 0.5, 0, "ff8a1a", 12.0)
-    core = m("fff0a0", 0.5, 0, "ffd860", 18.0)
+    fire = m("ff8a2a", 0.5, 0, "ff6a10", 2.2)
+    core = m("ffd36a", 0.5, 0, "ffb030", 3.0)
     for i in range(6):
         a = 2 * math.pi * i / 6
         h = (0.6 + 0.3 * (i % 2)) * s

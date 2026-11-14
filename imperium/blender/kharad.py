@@ -487,6 +487,7 @@ def shoot(path, loc, target, lens, res):
     cam.location = loc
     cam.rotation_euler = (Vector(target) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
     cam.data.lens = lens
+    cam.data.clip_end = 8000.0
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
     print("render", path)
