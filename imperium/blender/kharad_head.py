@@ -194,8 +194,8 @@ def _keep(obj):
 
 
 # ----------------------------------------------------------------------------- the head
-def build_head():
-    skin = K.mat("HSkin", K.SKIN, rough=0.85)
+def build_head(crown=True, bust=True, skin_hex=None):
+    skin = K.mat("HSkin" + (skin_hex or ""), skin_hex or K.SKIN, rough=0.85)
     belly = K.mat("HBelly", "7f8650", rough=0.85)
     dark = K.mat("HDark", K.SKIN_DARK, rough=0.85)
     bone = K.mat("HBone", K.BONE, rough=0.6)
@@ -254,56 +254,58 @@ def build_head():
             h = angular_tube("Horn", path, [0.05 * s, 0.042 * s, 0.03 * s, 0.016 * s, 0.0], 4, 0.18 * sx)
             parts.append(flat(h, bone, lambda c, n: 1 if c.z < Z0 + 0.2 else 0, [K.mat("HBoneDark", "b9a690", rough=0.6)]))
 
+    if crown:
     # crown: a seven-sided iron band with triangular spikes and a cut garnet at the front
-    sides = 7
-    cv, cf = [], []
-    zb = 0.138
-    ys = [y / 100.0 for y in range(-30, 8)]
-    inside = [y for y in ys if top_z(y) >= zb]
-    cy0 = (inside[0] + inside[-1]) / 2
-    ry = (inside[-1] - inside[0]) / 2 + 0.012
-    rx = max(surface_x(y, zb) for y in inside) + 0.012
-    for i in range(sides):
-        a = -math.pi / 2 + 2 * math.pi * i / sides
-        x, y = math.cos(a) * rx, cy0 + math.sin(a) * ry
-        cv += [(x, y, zb), (x * 1.04, cy0 + (y - cy0) * 1.04, zb + 0.05)]
-    for i in range(sides):
-        j = (i + 1) % sides
-        cf.append((2 * i, 2 * j, 2 * j + 1, 2 * i + 1))
-    for i in range(sides):
-        a = -math.pi / 2 + 2 * math.pi * i / sides
-        a2 = a + math.pi / sides
-        h = 0.1 if i == 0 else 0.06
-        b = len(cv)
-        mx, my = math.cos(a) * rx * 1.04, cy0 + math.sin(a) * ry * 1.04
-        nx, ny = math.cos(a2) * rx * 1.04, cy0 + math.sin(a2) * ry * 1.04
-        px, py = math.cos(a - math.pi / sides) * rx * 1.04, cy0 + math.sin(a - math.pi / sides) * ry * 1.04
-        cv += [(px, py, zb + 0.05), (nx, ny, zb + 0.05), (mx * 1.06, cy0 + (my - cy0) * 1.06, zb + 0.05 + h), (mx * 0.9, cy0 + (my - cy0) * 0.9, zb + 0.05)]
-        cf += [(b, b + 1, b + 2), (b + 1, b + 3, b + 2), (b + 3, b, b + 2)]
-    crown = explicit("Crown", cv, cf, mirror=False)
-    parts.append(flat(crown, iron))
-    g = 0.0
-    gy = cy0 - ry * 1.02 - 0.004
-    parts.append(flat(explicit("Garnet", [(0, gy - 0.014, zb + 0.025), (0.017, gy, zb + 0.025), (0, gy, zb + 0.052), (0, gy, zb - 0.002)],
-                               [(0, 1, 2), (0, 3, 1)]), gem))
+        sides = 7
+        cv, cf = [], []
+        zb = 0.138
+        ys = [y / 100.0 for y in range(-30, 8)]
+        inside = [y for y in ys if top_z(y) >= zb]
+        cy0 = (inside[0] + inside[-1]) / 2
+        ry = (inside[-1] - inside[0]) / 2 + 0.012
+        rx = max(surface_x(y, zb) for y in inside) + 0.012
+        for i in range(sides):
+            a = -math.pi / 2 + 2 * math.pi * i / sides
+            x, y = math.cos(a) * rx, cy0 + math.sin(a) * ry
+            cv += [(x, y, zb), (x * 1.04, cy0 + (y - cy0) * 1.04, zb + 0.05)]
+        for i in range(sides):
+            j = (i + 1) % sides
+            cf.append((2 * i, 2 * j, 2 * j + 1, 2 * i + 1))
+        for i in range(sides):
+            a = -math.pi / 2 + 2 * math.pi * i / sides
+            a2 = a + math.pi / sides
+            h = 0.1 if i == 0 else 0.06
+            b = len(cv)
+            mx, my = math.cos(a) * rx * 1.04, cy0 + math.sin(a) * ry * 1.04
+            nx, ny = math.cos(a2) * rx * 1.04, cy0 + math.sin(a2) * ry * 1.04
+            px, py = math.cos(a - math.pi / sides) * rx * 1.04, cy0 + math.sin(a - math.pi / sides) * ry * 1.04
+            cv += [(px, py, zb + 0.05), (nx, ny, zb + 0.05), (mx * 1.06, cy0 + (my - cy0) * 1.06, zb + 0.05 + h), (mx * 0.9, cy0 + (my - cy0) * 0.9, zb + 0.05)]
+            cf += [(b, b + 1, b + 2), (b + 1, b + 3, b + 2), (b + 3, b, b + 2)]
+        crown = explicit("Crown", cv, cf, mirror=False)
+        parts.append(flat(crown, iron))
+        g = 0.0
+        gy = cy0 - ry * 1.02 - 0.004
+        parts.append(flat(explicit("Garnet", [(0, gy - 0.014, zb + 0.025), (0.017, gy, zb + 0.025), (0, gy, zb + 0.052), (0, gy, zb - 0.002)],
+                                   [(0, 1, 2), (0, 3, 1)]), gem))
 
+    if bust:
     # neck and a collar, so the head studies read as a bust
-    neck = K.loft("Neck", [(Z0 - 0.36, 0.17, 0.15, 0, 0.0), (Z0 - 0.2, 0.135, 0.12, 0, -0.015), (Z0 - 0.02, 0.12, 0.11, 0, 0.0)], seg=8)
-    parts.append(flat(neck, skin, lambda c, n: 1 if n.y < -0.6 else 0, [belly]))
-    col_v = []
-    cf2 = []
-    for i in range(8):
-        a = 2 * math.pi * i / 8
-        col_v += [(math.cos(a) * 0.19, math.sin(a) * 0.17, -0.33), (math.cos(a) * 0.36, math.sin(a) * 0.28, -0.44)]
-    for i in range(8):
-        j = (i + 1) % 8
-        cf2.append((2 * i, 2 * j, 2 * j + 1, 2 * i + 1))
-    parts.append(flat(explicit("Collar", col_v, cf2, mirror=False), char))
-    rim_v = []
-    for i in range(8):
-        a = 2 * math.pi * i / 8
-        rim_v += [(math.cos(a) * 0.19, math.sin(a) * 0.17, -0.325), (math.cos(a) * 0.215, math.sin(a) * 0.19, -0.35)]
-    parts.append(flat(explicit("CollarRim", rim_v, cf2, mirror=False), gold))
+        neck = K.loft("Neck", [(Z0 - 0.36, 0.17, 0.15, 0, 0.0), (Z0 - 0.2, 0.135, 0.12, 0, -0.015), (Z0 - 0.02, 0.12, 0.11, 0, 0.0)], seg=8)
+        parts.append(flat(neck, skin, lambda c, n: 1 if n.y < -0.6 else 0, [belly]))
+        col_v = []
+        cf2 = []
+        for i in range(8):
+            a = 2 * math.pi * i / 8
+            col_v += [(math.cos(a) * 0.19, math.sin(a) * 0.17, -0.33), (math.cos(a) * 0.36, math.sin(a) * 0.28, -0.44)]
+        for i in range(8):
+            j = (i + 1) % 8
+            cf2.append((2 * i, 2 * j, 2 * j + 1, 2 * i + 1))
+        parts.append(flat(explicit("Collar", col_v, cf2, mirror=False), char))
+        rim_v = []
+        for i in range(8):
+            a = 2 * math.pi * i / 8
+            rim_v += [(math.cos(a) * 0.19, math.sin(a) * 0.17, -0.325), (math.cos(a) * 0.215, math.sin(a) * 0.19, -0.35)]
+        parts.append(flat(explicit("CollarRim", rim_v, cf2, mirror=False), gold))
     return parts
 
 

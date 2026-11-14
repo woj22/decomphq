@@ -8,3 +8,6 @@ Characters and environments are modelled with Blender scripts (`blender/`, run w
 - `blender/kharad_head.py`: the Kharad head hand-modelled vertex by vertex (cross-section slices,
   hinged jaw, surface-placed eyes and brows, square-section horns, fitted crown), flat colours.
   `python3 imperium/blender/kharad_head.py` -> `renders/kharad_head_sheet.png`
+- `blender/cast.py`: the whole court (19 characters, four species) from one data table, hand-placed
+  low-poly bodies, species heads, outfits, crowns, cloaks and props. Exports `assets/characters/<id>.glb`
+  and renders group line-ups to `renders/cast_<group>.png`. `python3 imperium/blender/cast.py [--only a,b] [--turn]`
