@@ -6,8 +6,9 @@ extends Node3D
 ##   --shots=DIR   capture the screenshot tour into DIR and quit
 ##   --smoke       simulate for a few seconds, print a report and quit (exit code 1 on failure)
 
-const CAM_OFFSET := Vector3(0, 12.5, 10.5)
 const TALK_RANGE := 2.6
+const SHOULDER := 0.55        # over-the-right-shoulder offset
+const PIVOT_H := 1.62
 
 var palace: Palace
 var player: PlayerController
@@ -16,15 +17,18 @@ var hud: HUD
 var npcs: Array = []
 var by_id: Dictionary = {}
 
-var zoom := 0.78
-var cam_yaw := 0.0
-var _cam_yaw_target := 0.0
-var _cam_focus := Vector3.ZERO
+## Third-person orbit camera: yaw/pitch around a pivot over the king's shoulder.
+var cam_yaw := PI
+var cam_pitch := -0.2
+var cam_dist := 4.4
+var _pivot := Vector3.ZERO
+var _orbit_touch := -1
+var _orbit_idle := 99.0
+var _touch_start := {}
 var _room_id := ""
 var _talking_to: NPC
 var _bark_t := 2.0
 var _last_barker: NPC
-var _cutaway := true
 var _args := {}
 
 
@@ -42,8 +46,9 @@ func _ready() -> void:
 	player.position = palace.spawn
 	player.arrived.connect(_on_arrived)
 	cam = Camera3D.new()
-	cam.fov = 46
-	cam.far = 400
+	cam.fov = 58
+	cam.near = 0.1
+	cam.far = 3000
 	add_child(cam)
 	hud = HUD.new()
 	hud.main = self
@@ -51,7 +56,8 @@ func _ready() -> void:
 	hud.dialogue_closed.connect(_end_dialogue)
 	_spawn_cast()
 	player.npcs = npcs
-	_cam_focus = player.position
+	player.face(palace.spawn + Vector3(-10, 0, 2.5))
+	cam_yaw = player.rotation.y
 	_update_camera(1.0)
 	if _args.has("shots"):
 		_shot_tour.call_deferred(_args["shots"])
@@ -150,17 +156,14 @@ func whereabouts(id: String) -> String:
 # ------------------------------------------------------------------ frame
 
 func _process(delta: float) -> void:
-	_update_camera(delta)
-	if _cutaway:
-		_update_cutaway()
 	var r := palace.room_at(player.global_position)
 	if r.get("id", "") != _room_id and r.get("id", "") != "":
 		_room_id = r["id"]
-		_cam_yaw_target = r.get("cam_yaw", 0.0)
 		hud.show_location(r)
-	cam_yaw = lerp_angle(cam_yaw, _cam_yaw_target, minf(1.0, delta * 2.5))
 	player.input_dir = hud.joystick
 	player.view_yaw = cam_yaw
+	_orbit_idle += delta
+	_update_camera(delta)
 	if _talking_to == null and not hud.roster_open():
 		hud.set_speak_target(_nearest_npc(TALK_RANGE))
 		_ambient_barks(delta)
@@ -169,48 +172,41 @@ func _process(delta: float) -> void:
 
 
 func _update_camera(delta: float) -> void:
-	var focus := player.global_position + Vector3(0, 1.0, 0)
-	var yb := Basis(Vector3.UP, cam_yaw)
-	var off := yb * (CAM_OFFSET * zoom)
+	var k := minf(1.0, delta * 8.0) if delta < 0.99 else 1.0
+	var yaw := cam_yaw
+	var pitch := cam_pitch
+	var dist := cam_dist
+	var pivot := player.global_position + Vector3(0, PIVOT_H, 0)
 	if _talking_to != null:
-		focus = (player.global_position + _talking_to.global_position) * 0.5 + Vector3(0, 1.4, 0)
-		off = yb * Vector3(2.5, 4.2, 7.0)
+		# over the king's shoulder, looking at whoever he is speaking with
+		var to := _talking_to.global_position - player.global_position
+		yaw = atan2(to.x, to.z) + PI - 0.42
+		pitch = -0.1
+		dist = 2.9
+		pivot = player.global_position + Vector3(0, 1.75, 0) + to * 0.25
 		if hud.dialogue_open():
-			focus.y -= 1.3   # leave room for the dialogue panel at the bottom of the screen
-	_cam_focus = _cam_focus.lerp(focus, minf(1.0, delta * 5.0))
-	var want := _cam_focus + off
-	cam.position = cam.position.lerp(want, minf(1.0, delta * 4.0)) if delta < 0.99 else want
-	cam.look_at(_cam_focus)
-
-
-func _update_cutaway() -> void:
-	var eye := cam.global_position
-	var a := player.global_position + Vector3(0, 0.4, 0)
-	var b := player.global_position + Vector3(0, 1.7, 0)
-	var extra: Array = []
-	if _talking_to != null:
-		extra.append(_talking_to.global_position + Vector3(0, 1.2, 0))
-	var pp := player.global_position
-	var back := Basis(Vector3.UP, cam_yaw) * Vector3.BACK     # toward the camera, horizontal
-	var right := Basis(Vector3.UP, cam_yaw) * Vector3.RIGHT
-	for o in palace.occluders:
-		var mi := o as MeshInstance3D
-		var raw: AABB = mi.get_meta("aabb")
-		var box := raw.grow(0.35)
-		var hit := box.intersects_segment(a, eye) != null or box.intersects_segment(b, eye) != null
-		for p in extra:
-			hit = hit or box.intersects_segment(p, eye) != null
-		# a cutaway window: tall pieces between the player and the camera (which looks north)
-		if not hit and raw.end.y > 2.5:
-			var cdel := raw.get_center() - pp
-			var ex := raw.size * 0.5
-			var eb := absf(ex.x * back.x) + absf(ex.z * back.z)
-			var er := absf(ex.x * right.x) + absf(ex.z * right.z)
-			var db := cdel.x * back.x + cdel.z * back.z
-			var dr := cdel.x * right.x + cdel.z * right.z
-			if db + eb > 0.2 and db - eb < 11.0 and absf(dr) - er < 6.5:
-				hit = true
-		mi.visible = not hit
+			pivot.y -= 0.55   # keep faces above the dialogue panel
+		cam_yaw = lerp_angle(cam_yaw, yaw, k * 0.5)
+		yaw = cam_yaw
+	elif player.velocity.length() > 0.5 and _orbit_idle > 1.5:
+		# drift behind the king while he walks, unless he walks toward the camera
+		var py := player.rotation.y
+		if absf(angle_difference(cam_yaw, py)) < 1.9:
+			cam_yaw = lerp_angle(cam_yaw, py, minf(1.0, delta * 0.9))
+		yaw = cam_yaw
+	var basis := Basis(Vector3.UP, yaw) * Basis(Vector3.RIGHT, pitch)
+	pivot += Basis(Vector3.UP, yaw) * Vector3(SHOULDER if _talking_to == null else 0.0, 0, 0)
+	_pivot = _pivot.lerp(pivot, k) if delta < 0.99 else pivot
+	var want := _pivot + basis * Vector3(0, 0, dist)
+	# keep the camera out of walls
+	var space := get_world_3d().direct_space_state
+	var q := PhysicsRayQueryParameters3D.create(_pivot, want + (want - _pivot).normalized() * 0.3)
+	q.exclude = [player.get_rid()]
+	var hit := space.intersect_ray(q)
+	if not hit.is_empty():
+		want = hit["position"] - (want - _pivot).normalized() * 0.3
+	cam.global_position = want
+	cam.global_basis = basis
 
 
 func _nearest_npc(r: float) -> NPC:
@@ -271,24 +267,46 @@ func _unhandled_input(ev: InputEvent) -> void:
 				elif hud.roster_open():
 					hud.toggle_roster()
 			KEY_EQUAL, KEY_KP_ADD:
-				zoom = clampf(zoom - 0.1, 0.55, 1.5)
+				cam_dist = clampf(cam_dist - 0.5, 2.2, 9.0)
 			KEY_MINUS, KEY_KP_SUBTRACT:
-				zoom = clampf(zoom + 0.1, 0.55, 1.5)
+				cam_dist = clampf(cam_dist + 0.5, 2.2, 9.0)
+			KEY_Q:
+				cam_yaw += 0.35
+				_orbit_idle = 0.0
+			KEY_R:
+				cam_yaw -= 0.35
+				_orbit_idle = 0.0
 	if ev is InputEventMouseButton and ev.pressed:
 		var mb := ev as InputEventMouseButton
 		if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
-			zoom = clampf(zoom - 0.06, 0.55, 1.5)
+			cam_dist = clampf(cam_dist - 0.3, 2.2, 9.0)
 		elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			zoom = clampf(zoom + 0.06, 0.55, 1.5)
+			cam_dist = clampf(cam_dist + 0.3, 2.2, 9.0)
 	if ev is InputEventMagnifyGesture:
-		zoom = clampf(zoom / (ev as InputEventMagnifyGesture).factor, 0.55, 1.5)
-	if ev is InputEventScreenTouch and not ev.pressed and _talking_to == null and not hud.roster_open():
-		var n2 := _pick_npc((ev as InputEventScreenTouch).position)
-		if n2:
-			if n2.global_position.distance_to(player.global_position) < TALK_RANGE:
-				begin_dialogue(n2)
-			else:
-				player.walk_to(n2)
+		cam_dist = clampf(cam_dist / (ev as InputEventMagnifyGesture).factor, 2.2, 9.0)
+	if ev is InputEventScreenTouch:
+		var t := ev as InputEventScreenTouch
+		if t.pressed:
+			_touch_start[t.index] = t.position
+			if _orbit_touch < 0:
+				_orbit_touch = t.index
+		else:
+			var start: Vector2 = _touch_start.get(t.index, t.position)
+			_touch_start.erase(t.index)
+			if t.index == _orbit_touch:
+				_orbit_touch = -1
+			if start.distance_to(t.position) < 14.0 and _talking_to == null and not hud.roster_open():
+				var n2 := _pick_npc(t.position)
+				if n2:
+					if n2.global_position.distance_to(player.global_position) < TALK_RANGE:
+						begin_dialogue(n2)
+					else:
+						player.walk_to(n2)
+	if ev is InputEventScreenDrag and (ev as InputEventScreenDrag).index == _orbit_touch and _talking_to == null:
+		var dr := ev as InputEventScreenDrag
+		cam_yaw -= dr.relative.x * 0.0055
+		cam_pitch = clampf(cam_pitch - dr.relative.y * 0.004, -0.85, 0.25)
+		_orbit_idle = 0.0
 
 
 func _pick_npc(screen: Vector2) -> NPC:
@@ -343,15 +361,15 @@ func _snap(dir: String, nm: String) -> void:
 	print("screenshot ", nm)
 
 
-func _teleport(p: Vector3, face_to := Vector3.INF) -> void:
+func _teleport(p: Vector3, face_to := Vector3.INF, pitch := -0.2, dist := 4.4) -> void:
 	player.global_position = p
 	player.velocity = Vector3.ZERO
 	if face_to != Vector3.INF:
 		player.face(face_to)
-	_cam_focus = p + Vector3(0, 1.0, 0)
+	cam_yaw = player.rotation.y
+	cam_pitch = pitch
+	cam_dist = dist
 	var r := palace.room_at(p)
-	cam_yaw = r.get("cam_yaw", 0.0)
-	_cam_yaw_target = cam_yaw
 	_room_id = r.get("id", "")
 	hud.show_location(r)
 	_update_camera(1.0)
@@ -361,27 +379,33 @@ func _shot_tour(dir: String) -> void:
 	DirAccess.make_dir_recursive_absolute(dir)
 	await _wait(10)
 	var tour := [
-		["01_courtyard", Vector3(0, 0, 13.5), Vector3(0, 0, 0), 1.0],
-		["02_fountain", Vector3(5.5, 0, 6.0), Vector3(0, 0, 0), 0.8],
-		["03_council", Vector3(0, 0, -25.0), Vector3(0, 0, -40), 1.1],
-		["04_council_dais", Vector3(0, 0, -36.0), Vector3(0, 0, -44), 0.85],
-		["05_hall_of_kings", Vector3(25.0, 0, 0.5), Vector3(40, 0, 0), 1.2],
-		["06_kings_table", Vector3(36.0, 0, 3.6), Vector3(36, 0, 0), 0.8],
-		["07_petitions", Vector3(-22.0, 0, 2.0), Vector3(-28, 0, 0), 0.9],
-		["08_audience", Vector3(-38.0, 0, 0.0), Vector3(-50, 0, 0), 1.15],
-		["09_gallery", Vector3(0, 0, 25.0), Vector3(0, 0, 20), 0.9],
-		["10_apartments", Vector3(-3.0, 0, 42.0), Vector3(-5, 0, 46), 1.1],
-		["11_bedchamber", Vector3(7.5, 0, 46.0), Vector3(10, 0, 50), 0.8],
+		["00_terrace", Vector3(-46.0, 0, 22.5), Vector3(-250, 0, -10), -0.3, 5.2],
+		["01_courtyard", Vector3(0, 0, 14.0), Vector3(0, 0, 0), -0.18, 5.0],
+		["02_fountain", Vector3(6.0, 0, 7.0), Vector3(-4, 0, -6), -0.15, 4.2],
+		["03_council", Vector3(0, 0, -23.0), Vector3(0, 0, -40), -0.2, 4.6],
+		["04_council_dais", Vector3(2.0, 0, -35.0), Vector3(0, 0, -44), -0.12, 4.0],
+		["05_hall_of_kings", Vector3(24.0, 0, 0.5), Vector3(50, 0, 0), -0.16, 4.6],
+		["06_kings_table", Vector3(35.0, 0, 4.0), Vector3(33, 0, -8), -0.18, 4.4],
+		["07_petitions", Vector3(-21.0, 0, 2.0), Vector3(-28, 0, -1), -0.15, 4.2],
+		["08_audience", Vector3(-35.0, 0, 0.6), Vector3(-52, 0, 0), -0.12, 4.6],
+		["09_gallery", Vector3(0, 0, 30.0), Vector3(0, 0, 18), -0.12, 4.0],
+		["10_apartments", Vector3(0.0, 0, 50.0), Vector3(-6, 0, 40), -0.2, 4.6],
+		["11_bedchamber", Vector3(6.0, 0, 44.0), Vector3(12, 0, 51), -0.2, 4.2],
+		["20_terrace_south", Vector3(-30.0, 0, 26.0), Vector3(-130, 0, 60), -0.32, 5.4],
 	]
 	for s in tour:
-		zoom = s[3]
-		_teleport(s[1], s[2])
+		if _args.has("only") and not str(s[0]).begins_with(_args["only"]):
+			continue
+		_teleport(s[1], s[2], s[3], s[4])
 		await _wait(45)
 		await _snap(dir, s[0])
+	if _args.has("only"):
+		print("camera at ", cam.global_position, " basis z ", cam.global_basis.z)
+		get_tree().quit()
+		return
 	# conversations
-	zoom = 1.0
 	var talks := [["12_talk_emperor", "emperor", Vector3(-45.2, 0, 1.6)], ["13_talk_thrask", "thrask", Vector3(32.6, 0, -6.9)],
-		["14_talk_ilsaveth", "ilsaveth", Vector3.INF], ["15_talk_halvana", "halvana", Vector3(-24.6, 0, 5.4)]]
+		["14_talk_ilsaveth", "ilsaveth", Vector3.INF], ["15_talk_halvana", "halvana", Vector3(-24.6, 0, 5.0)]]
 	for t in talks:
 		var n: NPC = by_id[t[1]]
 		var at: Vector3 = t[2]
@@ -403,17 +427,14 @@ func _shot_tour(dir: String) -> void:
 		await _wait(30)
 		await _snap(dir, r[0])
 	hud.toggle_roster()
-	# overview from high above, walls intact
-	_cutaway = false
-	for o in palace.occluders:
-		(o as MeshInstance3D).visible = true
+	# overview from high above
 	hud.visible = false
 	for n in npcs:
 		(n as NPC).set_process(false)
 	set_process(false)
-	cam.position = Vector3(2, 95, 88)
-	cam.look_at(Vector3(2, 0, 2))
-	cam.fov = 50
+	cam.position = Vector3(60, 70, 120)
+	cam.look_at(Vector3(-30, -10, 0))
+	cam.fov = 55
 	await _wait(10)
 	await _snap(dir, "00_overview")
 	get_tree().quit()

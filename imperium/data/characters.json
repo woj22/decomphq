@@ -2,483 +2,1312 @@
   "player": {
     "name": "Cassian Arvel",
     "title": "King of Seravel",
-    "species": "human", "sex": "m", "age": 34,
-    "faction": "seravel", "group": "household",
+    "species": "human",
+    "sex": "m",
+    "age": 34,
+    "faction": "seravel",
+    "group": "household",
     "role": "You. Sovereign of Seravel and sworn vassal of the Ardent Throne.",
-    "traits": ["Untested at court", "Respected at home"],
+    "traits": [
+      "Untested at court",
+      "Respected at home"
+    ],
     "ambition": "Keep Seravel prosperous, win the Emperor's trust, and rise as far as the throne allows. Perhaps further.",
     "bio": "Crowned at twenty-nine after his father's long reign, Cassian has kept Seravel prosperous and quiet. That quiet has kept it overlooked. This season he has come to Caelora for the first time as a king rather than a prince.",
-    "opinion": 100, "loyalty": 70,
-    "look": {"skin": "d8a77f", "hair": "3a2618", "hair_style": "short", "beard": "short",
-             "outfit": "toga", "primary": "e8e2d4", "secondary": "2b4c7e", "trim": "c7cdd8",
-             "cloak": "2b4c7e", "headwear": "crown_silver", "prop": "none"}
+    "opinion": 100,
+    "loyalty": 70,
+    "look": {
+      "skin": "d8a77f",
+      "hair": "3a2618",
+      "hair_style": "short",
+      "beard": "short",
+      "outfit": "toga",
+      "primary": "e8e2d4",
+      "secondary": "2b4c7e",
+      "trim": "c7cdd8",
+      "cloak": "2b4c7e",
+      "headwear": "crown_silver",
+      "prop": "none"
+    }
   },
-
   "emperor": {
     "name": "Aurex IV Valerran",
     "title": "Emperor of the Ardent Imperium",
-    "species": "human", "sex": "m", "age": 56,
-    "faction": "imperium", "group": "imperial",
+    "species": "human",
+    "sex": "m",
+    "age": 56,
+    "faction": "imperium",
+    "group": "imperial",
     "role": "The Emperor. Supreme authority over forty provinces and six client kingdoms.",
-    "traits": ["Shrewd", "Magnanimous in public", "Tests everyone", "Never forgets"],
+    "traits": [
+      "Shrewd",
+      "Magnanimous in public",
+      "Tests everyone",
+      "Never forgets"
+    ],
     "ambition": "Hand the Empire to his heir stronger than he received it, and make sure no king grows strong enough to object.",
     "agenda": "The eastern frontier is quiet, the treasury is full, and he is restless. He is watching which kings bring him solutions and which bring requests.",
     "bio": "Aurex has ruled for twenty-two years. He has won two frontier wars and finished the Grand Aqueduct, and he is said to remember the name of every legate. He rewards competence lavishly, punishes disloyalty quietly, and lets his ministers compete for his attention.",
-    "opinion": 10, "loyalty": 100,
-    "relations": {"prince": 60, "empress": 55, "chancellor": 80, "marcellan": 40, "thrask": -10},
-    "place": {"seat": "audience_throne"},
-    "look": {"skin": "d8a77f", "hair": "8e8a84", "hair_style": "short", "beard": "short",
-             "outfit": "toga", "primary": "5a1f5c", "secondary": "e8e2d4", "trim": "d9a63e",
-             "cloak": "5a1f5c", "headwear": "radiate", "prop": "staff_gold", "build": 1.05},
+    "opinion": 10,
+    "loyalty": 100,
+    "relations": {
+      "prince": 60,
+      "empress": 55,
+      "chancellor": 80,
+      "marcellan": 40,
+      "thrask": -10
+    },
+    "place": {
+      "seat": "audience_throne"
+    },
+    "look": {
+      "skin": "d8a77f",
+      "hair": "8e8a84",
+      "hair_style": "short",
+      "beard": "short",
+      "outfit": "toga",
+      "primary": "efe6d2",
+      "secondary": "5a1f5c",
+      "trim": "d9a63e",
+      "cloak": "8e1f24",
+      "headwear": "laurel_gold",
+      "prop": "staff_gold",
+      "build": 1.05
+    },
     "lines": {
-      "greet_warm": ["Seravel. You have been useful to me. Speak.", "Ah, the river king. Come closer, I prefer to see a man's face."],
-      "greet_neutral": ["King of Seravel. You have the Emperor's attention. Spend it well.", "Seravel. Remind me what your kingdom does for mine."],
-      "greet_cold": ["Seravel. I am told you have opinions. Keep them brief."],
+      "greet_warm": [
+        "Seravel. You have been useful to me. Speak.",
+        "Ah, the river king. Come closer, I prefer to see a man's face."
+      ],
+      "greet_neutral": [
+        "King of Seravel. You have the Emperor's attention. Spend it well.",
+        "Seravel. Remind me what your kingdom does for mine."
+      ],
+      "greet_cold": [
+        "Seravel. I am told you have opinions. Keep them brief."
+      ],
       "about": "I am the ninth century of the Valerran line. Every road you travelled to reach this room was laid by my ancestors. Your crown is a promise they made to yours, and promises are renewed or they lapse.",
       "agenda": "The frontier is quiet and the treasury is full. A wise king would be asking himself why I summoned the client kings to court in a season of peace."
     },
-    "overheard": ["Thane wants another triumph. Triumphs are expensive.", "Tell the Herald the Hall of Kings sits at the next bell."]
+    "overheard": [
+      "Thane wants another triumph. Triumphs are expensive.",
+      "Tell the Herald the Hall of Kings sits at the next bell."
+    ]
   },
-
   "prince": {
     "name": "Valen Valerran",
     "title": "Crown Prince of the Imperium",
-    "species": "human", "sex": "m", "age": 26,
-    "faction": "imperium", "group": "imperial",
+    "species": "human",
+    "sex": "m",
+    "age": 26,
+    "faction": "imperium",
+    "group": "imperial",
     "role": "Heir to the throne, eager to prove he is more than his father's shadow.",
-    "traits": ["Idealistic", "Impatient", "Charismatic", "Easily flattered"],
+    "traits": [
+      "Idealistic",
+      "Impatient",
+      "Charismatic",
+      "Easily flattered"
+    ],
     "ambition": "Build his own circle among the client kings before his father's ministers decide what kind of emperor he will be.",
     "agenda": "He is quietly sounding out which kings would back a reform of the auxiliary legions, giving Kharad officers real command.",
     "bio": "Raised in the palace and trained on the eastern frontier, Valen admires the Kharad legions he served beside and finds the old human aristocracy suffocating. His father indulges him, and his father's ministers do not.",
-    "opinion": 20, "loyalty": 90,
-    "relations": {"emperor": 55, "thane": -30, "korrach": 50, "marcellan": -20},
-    "place": {"routine": [["c_mid_e", 14], ["p_e", 6], ["kh_a_n", 18], ["kh_n1", 10], ["c_n", 8]]},
-    "look": {"skin": "d8a77f", "hair": "6b4424", "hair_style": "curly", "beard": "none",
-             "outfit": "tunic", "primary": "efe6d2", "secondary": "5a1f5c", "trim": "d9a63e",
-             "cloak": "8a2a3a", "headwear": "diadem", "prop": "sword"},
+    "opinion": 20,
+    "loyalty": 90,
+    "relations": {
+      "emperor": 55,
+      "thane": -30,
+      "korrach": 50,
+      "marcellan": -20
+    },
+    "place": {
+      "routine": [
+        [
+          "c_mid_e",
+          14
+        ],
+        [
+          "p_e",
+          6
+        ],
+        [
+          "kh_a_n",
+          18
+        ],
+        [
+          "kh_n1",
+          10
+        ],
+        [
+          "c_n",
+          8
+        ]
+      ]
+    },
+    "look": {
+      "skin": "d8a77f",
+      "hair": "6b4424",
+      "hair_style": "curly",
+      "beard": "none",
+      "outfit": "tunic",
+      "primary": "efe6d2",
+      "secondary": "5a1f5c",
+      "trim": "d9a63e",
+      "cloak": "8a2a3a",
+      "headwear": "diadem",
+      "prop": "sword"
+    },
     "lines": {
-      "greet_warm": ["Cassian! Walk with me, the gardens are the only place nobody takes minutes."],
-      "greet_neutral": ["King of Seravel. Father's court is crowded this season, isn't it?"],
-      "greet_cold": ["Seravel. I hear you dine with Lucerna. Pity."],
+      "greet_warm": [
+        "Cassian! Walk with me, the gardens are the only place nobody takes minutes."
+      ],
+      "greet_neutral": [
+        "King of Seravel. Father's court is crowded this season, isn't it?"
+      ],
+      "greet_cold": [
+        "Seravel. I hear you dine with Lucerna. Pity."
+      ],
       "about": "I am the heir, which here means I am watched by everyone and trusted with nothing. I served three years on the eastern frontier. I learned more from Kharad sergeants than from any tutor in this palace.",
       "agenda": "The auxiliary legions win our wars and their officers can never command one. That will change in my reign, or sooner if enough kings speak up."
     },
-    "overheard": ["Korrach's legions held the Basalt Gate for nine days. Nine. And Thane took the triumph.", "Father says patience. Father has had twenty-two years of patience."]
+    "overheard": [
+      "Korrach's legions held the Basalt Gate for nine days. Nine. And Thane took the triumph.",
+      "Father says patience. Father has had twenty-two years of patience."
+    ]
   },
-
   "empress": {
     "name": "Sabine Valerran",
     "title": "Empress Consort",
-    "species": "human", "sex": "f", "age": 51,
-    "faction": "imperium", "group": "imperial",
+    "species": "human",
+    "sex": "f",
+    "age": 51,
+    "faction": "imperium",
+    "group": "imperial",
     "role": "The Emperor's consort and patron of the imperial academies.",
-    "traits": ["Perceptive", "Patient", "Cultured", "Protective of her son"],
+    "traits": [
+      "Perceptive",
+      "Patient",
+      "Cultured",
+      "Protective of her son"
+    ],
     "ambition": "See Valen crowned with allies already in place, and keep her husband from making him an enemy first.",
     "agenda": "She is quietly assembling kings who could stand behind Valen. She has noticed you.",
     "bio": "Born to a minor Lucernan house, Sabine married into the dynasty and outmanoeuvred three generations of palace factions. She funds the Veyari academies, speaks four languages, and is the only person who interrupts the Emperor.",
-    "opinion": 5, "loyalty": 85,
-    "relations": {"emperor": 60, "prince": 95, "ilsaveth": 40, "marcellan": 10},
-    "place": {"routine": [["c_mid_w", 24], ["c_w", 10], ["c_mid_n", 20], ["c_mid_w", 16]]},
-    "look": {"skin": "e9c4a0", "hair": "a87a45", "hair_style": "bun", "beard": "none",
-             "outfit": "stola", "primary": "7a3a6a", "secondary": "efe6d2", "trim": "d9a63e",
-             "cloak": null, "headwear": "diadem", "prop": "none"},
+    "opinion": 5,
+    "loyalty": 85,
+    "relations": {
+      "emperor": 60,
+      "prince": 95,
+      "ilsaveth": 40,
+      "marcellan": 10
+    },
+    "place": {
+      "routine": [
+        [
+          "c_mid_w",
+          20
+        ],
+        [
+          "d_terrace",
+          4
+        ],
+        [
+          "t_view",
+          24
+        ],
+        [
+          "t_mid",
+          10
+        ],
+        [
+          "c_mid_n",
+          16
+        ]
+      ]
+    },
+    "look": {
+      "skin": "e9c4a0",
+      "hair": "a87a45",
+      "hair_style": "bun",
+      "beard": "none",
+      "outfit": "stola",
+      "primary": "7a3a6a",
+      "secondary": "efe6d2",
+      "trim": "d9a63e",
+      "cloak": null,
+      "headwear": "diadem",
+      "prop": "none"
+    },
     "lines": {
-      "greet_warm": ["King Cassian. Sit with me by the water, the fountain hides what we say."],
-      "greet_neutral": ["Seravel. My husband speaks of you rarely, which in this palace is almost a compliment."],
-      "greet_cold": ["King of Seravel. I'm told you've been making friends. Choose them carefully."],
+      "greet_warm": [
+        "King Cassian. Sit with me by the water, the fountain hides what we say."
+      ],
+      "greet_neutral": [
+        "Seravel. My husband speaks of you rarely, which in this palace is almost a compliment."
+      ],
+      "greet_cold": [
+        "King of Seravel. I'm told you've been making friends. Choose them carefully."
+      ],
       "about": "I have been Empress for twenty-two years and the Emperor's wife for thirty. The second is the more demanding post.",
       "agenda": "My son will be Emperor. The kings who stand with him early will find him generous. Those who wait to see which way the wind blows will find the wind has already chosen."
     },
-    "overheard": ["The Veyari academies need another wing. The Treasurer will say no; he always says no first.", "Valen is right about the auxiliaries. He is wrong to say so in the Council."]
+    "overheard": [
+      "The Veyari academies need another wing. The Treasurer will say no; he always says no first.",
+      "Valen is right about the auxiliaries. He is wrong to say so in the Council."
+    ]
   },
-
   "chancellor": {
     "name": "Severa Ostian",
     "title": "Prefect of the Palace",
-    "species": "human", "sex": "f", "age": 63,
-    "faction": "imperium", "group": "ministers",
+    "species": "human",
+    "sex": "f",
+    "age": 63,
+    "faction": "imperium",
+    "group": "ministers",
     "role": "Head of the imperial administration. Nobody sees the Emperor without passing her desk.",
-    "traits": ["Meticulous", "Incorruptible", "Cold", "Loyal to the institution"],
+    "traits": [
+      "Meticulous",
+      "Incorruptible",
+      "Cold",
+      "Loyal to the institution"
+    ],
     "ambition": "Keep the machinery of empire running exactly as it is, and outlive every reformer who wants to change it.",
     "agenda": "Twelve petitions for audience this week and three bells to hear them. She decides who waits.",
     "bio": "Severa entered imperial service as a copyist at fourteen and has run the palace for nineteen years. She knows every office, every budget line and every favour owed in Caelora. She has never taken a bribe, and she keeps a list of everyone who has offered one.",
-    "opinion": 0, "loyalty": 100,
-    "relations": {"emperor": 85, "treasurer": 40, "prince": -15, "marcellan": 5},
-    "place": {"stand": [-27.5, -2.5], "face": "E"},
-    "look": {"skin": "c08a62", "hair": "d9d6d0", "hair_style": "bun", "beard": "none",
-             "outfit": "stola", "primary": "3d4a5c", "secondary": "c9c2b0", "trim": "d9a63e",
-             "cloak": null, "headwear": "none", "prop": "tablet"},
+    "opinion": 0,
+    "loyalty": 100,
+    "relations": {
+      "emperor": 85,
+      "treasurer": 40,
+      "prince": -15,
+      "marcellan": 5
+    },
+    "place": {
+      "stand": [
+        -27.5,
+        -2.5
+      ],
+      "face": "E"
+    },
+    "look": {
+      "skin": "c08a62",
+      "hair": "d9d6d0",
+      "hair_style": "bun",
+      "beard": "none",
+      "outfit": "stola",
+      "primary": "3d4a5c",
+      "secondary": "c9c2b0",
+      "trim": "d9a63e",
+      "cloak": null,
+      "headwear": "none",
+      "prop": "tablet"
+    },
     "lines": {
-      "greet_warm": ["King Cassian. Your petition is near the top of the list. Do not make me regret it."],
-      "greet_neutral": ["Seravel. If you seek an audience, your request must be in writing, sealed, and brief."],
-      "greet_cold": ["Seravel. The Emperor's calendar is full. It will remain full."],
+      "greet_warm": [
+        "King Cassian. Your petition is near the top of the list. Do not make me regret it."
+      ],
+      "greet_neutral": [
+        "Seravel. If you seek an audience, your request must be in writing, sealed, and brief."
+      ],
+      "greet_cold": [
+        "Seravel. The Emperor's calendar is full. It will remain full."
+      ],
       "about": "I am the Prefect of the Palace. Kings come and go; the Prefecture remains. Every grain ship, every legion's pay, every audience in this palace passes over my desk.",
       "agenda": "Twelve kings and governors want the Emperor's ear this week and I have three bells to give them. Make your case to me first. If it is good, I will make it for you."
     },
-    "overheard": ["Governor Pryce, you will be called. Sit.", "No, Herald. The Hall of Kings convenes after the Council, not before."]
+    "overheard": [
+      "Governor Pryce, you will be called. Sit.",
+      "No, Herald. The Hall of Kings convenes after the Council, not before."
+    ]
   },
-
   "treasurer": {
     "name": "Nyssal Vey-Tamir",
     "title": "Count of the Sacred Treasury",
-    "species": "veyari", "sex": "m", "age": 162,
-    "faction": "imperium", "group": "ministers",
+    "species": "veyari",
+    "sex": "m",
+    "age": 162,
+    "faction": "imperium",
+    "group": "ministers",
     "role": "Master of the imperial treasury, mints and tribute rolls. The only non-human on the inner council.",
-    "traits": ["Precise", "Mercantile", "Proud", "Quietly resentful"],
+    "traits": [
+      "Precise",
+      "Mercantile",
+      "Proud",
+      "Quietly resentful"
+    ],
     "ambition": "Prove that a Veyari can hold the highest offices on merit, and make sure the next Count is also Veyari.",
     "agenda": "Seravel's river tolls were assessed low a generation ago. He has noticed.",
     "bio": "Nyssal has served four Emperors in a hundred and twenty years and balanced every budget. Humans praise his competence to his face and call him 'the bookkeeper' behind his back. He keeps a ledger of both.",
-    "opinion": -5, "loyalty": 80,
-    "relations": {"chancellor": 40, "ilsaveth": 30, "oduvar": -25, "thane": -35},
-    "place": {"routine": [["cu_floor_w", 22], ["cu_front", 10], ["cu_entry", 4], ["p_n", 6], ["cu_floor_w", 14]]},
-    "look": {"skin": "8fa8cc", "hair": "e8ecf2", "hair_style": "long", "beard": "none",
-             "outfit": "robe", "primary": "1f5f66", "secondary": "c9d3e6", "trim": "c7cdd8",
-             "cloak": null, "headwear": "circlet", "prop": "tablet"},
+    "opinion": -5,
+    "loyalty": 80,
+    "relations": {
+      "chancellor": 40,
+      "ilsaveth": 30,
+      "oduvar": -25,
+      "thane": -35
+    },
+    "place": {
+      "routine": [
+        [
+          "cu_floor_w",
+          22
+        ],
+        [
+          "cu_front",
+          10
+        ],
+        [
+          "cu_entry",
+          4
+        ],
+        [
+          "p_n",
+          6
+        ],
+        [
+          "cu_floor_w",
+          14
+        ]
+      ]
+    },
+    "look": {
+      "skin": "8fa8cc",
+      "hair": "e8ecf2",
+      "hair_style": "long",
+      "beard": "none",
+      "outfit": "robe",
+      "primary": "1f5f66",
+      "secondary": "c9d3e6",
+      "trim": "c7cdd8",
+      "cloak": null,
+      "headwear": "circlet",
+      "prop": "tablet"
+    },
     "lines": {
-      "greet_warm": ["King Cassian. Seravel's accounts are in excellent order. Rare, and appreciated."],
-      "greet_neutral": ["Seravel. I was reviewing your river tolls only this morning. Fascinating numbers."],
-      "greet_cold": ["Seravel. The treasury has questions. I suggest you have answers."],
+      "greet_warm": [
+        "King Cassian. Seravel's accounts are in excellent order. Rare, and appreciated."
+      ],
+      "greet_neutral": [
+        "Seravel. I was reviewing your river tolls only this morning. Fascinating numbers."
+      ],
+      "greet_cold": [
+        "Seravel. The treasury has questions. I suggest you have answers."
+      ],
       "about": "I am the Count of the Sacred Treasury. Every denarius struck in the Empire carries the Emperor's face and my signature. I have served four Emperors. I intend to serve a fifth.",
       "agenda": "Marshal Thane wants twenty thousand more legionaries. Karst Odun owes the mints eleven years of tribute. Somebody must pay for glory, King of Seravel. I am deciding who."
     },
-    "overheard": ["Thane counts soldiers. I count what they cost.", "The Othari have asked for another extension. Of course they have."]
+    "overheard": [
+      "Thane counts soldiers. I count what they cost.",
+      "The Othari have asked for another extension. Of course they have."
+    ]
   },
-
   "thane": {
     "name": "Decimar Thane",
     "title": "Marshal of the Legions",
-    "species": "human", "sex": "m", "age": 49,
-    "faction": "imperium", "group": "ministers",
+    "species": "human",
+    "sex": "m",
+    "age": 49,
+    "faction": "imperium",
+    "group": "ministers",
     "role": "Supreme commander of the imperial legions.",
-    "traits": ["Ambitious", "Bold", "Vain", "Brilliant in the field"],
+    "traits": [
+      "Ambitious",
+      "Bold",
+      "Vain",
+      "Brilliant in the field"
+    ],
     "ambition": "A great eastern campaign, a triumph through Caelora, and a seat so close to the throne that the succession must account for him.",
     "agenda": "He is asking the Council for twenty thousand men and the funds to march them, and he needs kings to pledge levies.",
     "bio": "Thane rose from a minor equestrian family on his victories alone. He took the triumph for the Basalt Gate campaign, though the auxiliaries who held the gate received none. The army adores him, and the Emperor finds him useful and is watching him.",
-    "opinion": 10, "loyalty": 70,
-    "relations": {"emperor": 50, "korrach": -40, "prince": -25, "treasurer": -30, "marcellan": 45},
-    "place": {"routine": [["cu_floor_e", 20], ["cu_front", 8], ["cu_entry", 4], ["c_n", 12], ["c_mid_n", 8], ["cu_floor_e", 10]]},
-    "look": {"skin": "c08a62", "hair": "1e1712", "hair_style": "cropped", "beard": "none",
-             "outfit": "armour", "primary": "b8893a", "secondary": "9b2226", "trim": "d9a63e",
-             "cloak": "9b2226", "headwear": "helmet", "prop": "sword", "build": 1.05},
+    "opinion": 10,
+    "loyalty": 70,
+    "relations": {
+      "emperor": 50,
+      "korrach": -40,
+      "prince": -25,
+      "treasurer": -30,
+      "marcellan": 45
+    },
+    "place": {
+      "routine": [
+        [
+          "cu_floor_e",
+          20
+        ],
+        [
+          "cu_front",
+          8
+        ],
+        [
+          "cu_entry",
+          4
+        ],
+        [
+          "c_n",
+          12
+        ],
+        [
+          "c_mid_n",
+          8
+        ],
+        [
+          "cu_floor_e",
+          10
+        ]
+      ]
+    },
+    "look": {
+      "skin": "c08a62",
+      "hair": "1e1712",
+      "hair_style": "cropped",
+      "beard": "none",
+      "outfit": "armour",
+      "primary": "b8893a",
+      "secondary": "9b2226",
+      "trim": "d9a63e",
+      "cloak": "9b2226",
+      "headwear": "helmet",
+      "prop": "sword",
+      "build": 1.05
+    },
     "lines": {
-      "greet_warm": ["Seravel! Your levies marched well at the Sera crossing. Bring me five thousand more and I'll make you famous."],
-      "greet_neutral": ["King of Seravel. Have you come to pledge men, or merely to admire the columns?"],
-      "greet_cold": ["Seravel. I'll remember which kings found excuses."],
+      "greet_warm": [
+        "Seravel! Your levies marched well at the Sera crossing. Bring me five thousand more and I'll make you famous."
+      ],
+      "greet_neutral": [
+        "King of Seravel. Have you come to pledge men, or merely to admire the columns?"
+      ],
+      "greet_cold": [
+        "Seravel. I'll remember which kings found excuses."
+      ],
       "about": "I am Marshal of the Legions. Twenty-eight legions, six hundred forts, and every frontier the Empire possesses. I did not inherit this command. I took it.",
       "agenda": "The frontier is quiet because our enemies are rebuilding. I mean to strike before they finish. The Council will decide whether we have the coin; you kings decide whether we have the men."
     },
-    "overheard": ["The Basalt Gate was my victory. The auxiliaries did their duty.", "Twenty thousand, and not a man less."]
+    "overheard": [
+      "The Basalt Gate was my victory. The auxiliaries did their duty.",
+      "Twenty thousand, and not a man less."
+    ]
   },
-
   "korrach": {
     "name": "Korrach Venn",
     "title": "Legate of the Auxilia",
-    "species": "kharad", "sex": "m", "age": 58,
-    "faction": "khar_dumeth", "group": "ministers",
+    "species": "kharad",
+    "sex": "m",
+    "age": 58,
+    "faction": "khar_dumeth",
+    "group": "ministers",
     "role": "Commander of the Empire's auxiliary legions, most of them Kharad.",
-    "traits": ["Steadfast", "Blunt", "Protective of his soldiers", "Patient grudge-holder"],
+    "traits": [
+      "Steadfast",
+      "Blunt",
+      "Protective of his soldiers",
+      "Patient grudge-holder"
+    ],
     "ambition": "Citizenship and full pay for auxiliary veterans, and command for Kharad officers equal to their human peers.",
     "agenda": "He held the Basalt Gate for nine days and Thane took the triumph. He wants that corrected on the record.",
     "bio": "Korrach has served the Empire for forty years, more than half of them under human legates who took the credit for his work. He is the first Kharad to hold the legateship of the Auxilia. He means to make sure he is not the last.",
-    "opinion": 0, "loyalty": 75,
-    "relations": {"thane": -45, "prince": 50, "thrask": 30, "vashka": 20},
-    "place": {"stand": [33.5, -8.6], "face": "W", "chat_with": "thrask"},
-    "look": {"skin": "4b5a4f", "hair": "2b2620", "hair_style": "bald", "beard": "none",
-             "outfit": "scale", "primary": "7d8790", "secondary": "2f3b2a", "trim": "b07a3a",
-             "cloak": "2f3b2a", "headwear": "none", "prop": "spear"},
+    "opinion": 0,
+    "loyalty": 75,
+    "relations": {
+      "thane": -45,
+      "prince": 50,
+      "thrask": 30,
+      "vashka": 20
+    },
+    "place": {
+      "stand": [
+        33.5,
+        -8.6
+      ],
+      "face": "W",
+      "chat_with": "thrask"
+    },
+    "look": {
+      "skin": "4b5a4f",
+      "hair": "2b2620",
+      "hair_style": "bald",
+      "beard": "none",
+      "outfit": "scale",
+      "primary": "7d8790",
+      "secondary": "2f3b2a",
+      "trim": "b07a3a",
+      "cloak": "2f3b2a",
+      "headwear": "none",
+      "prop": "spear"
+    },
     "lines": {
-      "greet_warm": ["King of Seravel. Your men stood beside mine at the Sera. I remember it."],
-      "greet_neutral": ["Seravel. Speak plainly. I've no patience for palace talk."],
-      "greet_cold": ["Seravel. You sit with Thane's friends. Then sit with them."],
+      "greet_warm": [
+        "King of Seravel. Your men stood beside mine at the Sera. I remember it."
+      ],
+      "greet_neutral": [
+        "Seravel. Speak plainly. I've no patience for palace talk."
+      ],
+      "greet_cold": [
+        "Seravel. You sit with Thane's friends. Then sit with them."
+      ],
       "about": "Legate of the Auxilia. Eleven legions of Kharad, Othari and every other blood the Empire sends to die in the front rank. Forty years under the eagle-sun. I have scars older than your kingdom's charter.",
       "agenda": "Nine days we held the Basalt Gate. Nine days, and the triumph rode through Caelora with a human at its head. My veterans want citizenship and their back-pay. I want it written down."
     },
-    "overheard": ["Thane will spend Kharad lives like copper coins.", "The prince listens. That is more than his father's council does."]
+    "overheard": [
+      "Thane will spend Kharad lives like copper coins.",
+      "The prince listens. That is more than his father's council does."
+    ]
   },
-
   "ulda": {
     "name": "Ulda Karrask",
     "title": "Master of Imperial Works",
-    "species": "othari", "sex": "f", "age": 97,
-    "faction": "imperium", "group": "ministers",
+    "species": "othari",
+    "sex": "f",
+    "age": 97,
+    "faction": "imperium",
+    "group": "ministers",
     "role": "Chief architect and engineer of the Empire, builder of the Grand Aqueduct.",
-    "traits": ["Exacting", "Blunt", "Hates waste", "Secretly sentimental"],
+    "traits": [
+      "Exacting",
+      "Blunt",
+      "Hates waste",
+      "Secretly sentimental"
+    ],
     "ambition": "Complete the Western Aqueduct and the Sera bridges, the greatest works of the age, with her name cut into the keystones.",
     "agenda": "Her Western Aqueduct would run through Seravel. She needs royal labour, quarry rights and someone on the Council to fight the Treasurer for funds.",
     "bio": "Ulda rebuilt half of Caelora after the Great Fire and finished the Grand Aqueduct two years early. She speaks to kings as if they were apprentices who had misread a plan, and she means nothing by it.",
-    "opinion": 15, "loyalty": 85,
-    "relations": {"treasurer": -20, "oduvar": 40, "emperor": 60},
-    "place": {"routine": [["c_mid_s", 18], ["c_mid_e", 10], ["c_e", 6], ["c_mid_n", 14], ["c_mid_w", 10]]},
-    "look": {"skin": "9a7b62", "hair": "b0a090", "hair_style": "braids", "beard": "plates",
-             "outfit": "tunic", "primary": "a0602a", "secondary": "5c4a3a", "trim": "c9b48a",
-             "cloak": null, "headwear": "none", "prop": "tablet", "build": 1.0},
+    "opinion": 15,
+    "loyalty": 85,
+    "relations": {
+      "treasurer": -20,
+      "oduvar": 40,
+      "emperor": 60
+    },
+    "place": {
+      "routine": [
+        [
+          "c_mid_s",
+          18
+        ],
+        [
+          "c_mid_e",
+          10
+        ],
+        [
+          "c_e",
+          6
+        ],
+        [
+          "c_mid_n",
+          14
+        ],
+        [
+          "c_mid_w",
+          10
+        ]
+      ]
+    },
+    "look": {
+      "skin": "9a7b62",
+      "hair": "b0a090",
+      "hair_style": "braids",
+      "beard": "plates",
+      "outfit": "tunic",
+      "primary": "a0602a",
+      "secondary": "5c4a3a",
+      "trim": "c9b48a",
+      "cloak": null,
+      "headwear": "none",
+      "prop": "tablet",
+      "build": 1.0
+    },
     "lines": {
-      "greet_warm": ["Seravel! Good. Your quarries are the best limestone west of the capital. Let's talk stone."],
-      "greet_neutral": ["King. Mind the fountain, the coping's new."],
-      "greet_cold": ["Seravel. I build things. Talk to me when you want something built."],
+      "greet_warm": [
+        "Seravel! Good. Your quarries are the best limestone west of the capital. Let's talk stone."
+      ],
+      "greet_neutral": [
+        "King. Mind the fountain, the coping's new."
+      ],
+      "greet_cold": [
+        "Seravel. I build things. Talk to me when you want something built."
+      ],
       "about": "Master of Imperial Works. That fountain? Mine. The aqueduct that fills it? Mine. The dome over the Council Chamber that the masons swore couldn't stand? Mine. And it's standing.",
       "agenda": "The Western Aqueduct. Ninety miles of arches, through your kingdom, done in eight years if the Treasurer stops counting the stones. Seravel would have water and trade for a thousand years. You'd want a say in where it runs."
     },
-    "overheard": ["Eight years. Not nine. Eight.", "This coping stone is half a finger out of true. Who signed for this?"]
+    "overheard": [
+      "Eight years. Not nine. Eight.",
+      "This coping stone is half a finger out of true. Who signed for this?"
+    ]
   },
-
   "halvana": {
     "name": "Halvana Pryce",
     "title": "Governor of Meridia",
-    "species": "human", "sex": "f", "age": 45,
-    "faction": "imperium", "group": "ministers",
+    "species": "human",
+    "sex": "f",
+    "age": 45,
+    "faction": "imperium",
+    "group": "ministers",
     "role": "Governor of Meridia, the grain province that feeds the capital. Seravel's neighbour.",
-    "traits": ["Earnest", "Overworked", "Pragmatic", "Fiercely protective of her province"],
+    "traits": [
+      "Earnest",
+      "Overworked",
+      "Pragmatic",
+      "Fiercely protective of her province"
+    ],
     "ambition": "Get Meridia through a second dry year without famine, and be remembered for it.",
     "agenda": "Meridia's harvest is failing. She has waited three days for an audience to ask for grain relief and irrigation funds.",
     "bio": "Halvana is a career administrator, not an aristocrat. Meridia was given to her because nobody else wanted a province of dust. She made it the granary of the capital, and now drought threatens all of it.",
-    "opinion": 25, "loyalty": 90,
-    "relations": {"chancellor": 20, "thane": -15, "ulda": 35},
-    "place": {"seat": "ante_bench_s1"},
-    "look": {"skin": "c08a62", "hair": "3a2618", "hair_style": "bun", "beard": "none",
-             "outfit": "stola", "primary": "5f7a3a", "secondary": "efe6d2", "trim": "c9b48a",
-             "cloak": null, "headwear": "none", "prop": "scroll"},
+    "opinion": 25,
+    "loyalty": 90,
+    "relations": {
+      "chancellor": 20,
+      "thane": -15,
+      "ulda": 35
+    },
+    "place": {
+      "seat": "ante_bench_s1"
+    },
+    "look": {
+      "skin": "c08a62",
+      "hair": "3a2618",
+      "hair_style": "bun",
+      "beard": "none",
+      "outfit": "stola",
+      "primary": "5f7a3a",
+      "secondary": "efe6d2",
+      "trim": "c9b48a",
+      "cloak": null,
+      "headwear": "none",
+      "prop": "scroll"
+    },
     "lines": {
-      "greet_warm": ["Cassian! Thank the Sun, a friendly face. Three days I've waited on this bench."],
-      "greet_neutral": ["King of Seravel. Are you waiting for an audience too? Then we'll grow old together."],
-      "greet_cold": ["Seravel. Your river tolls are strangling my grain barges. I'll be raising it with the Emperor."],
+      "greet_warm": [
+        "Cassian! Thank the Sun, a friendly face. Three days I've waited on this bench."
+      ],
+      "greet_neutral": [
+        "King of Seravel. Are you waiting for an audience too? Then we'll grow old together."
+      ],
+      "greet_cold": [
+        "Seravel. Your river tolls are strangling my grain barges. I'll be raising it with the Emperor."
+      ],
       "about": "Governor of Meridia, for my sins. Half the bread in Caelora grows in my province. When the rains fail, the capital riots, and the Council blames the governor.",
       "agenda": "Second dry year. If Meridia gets no irrigation money and no grain relief before the autumn sowing, the capital goes hungry by midwinter. Seravel has granaries and a river. You could help, if you wanted to."
     },
-    "overheard": ["Three days. Three days on this bench.", "If the Marshal gets his twenty thousand, who feeds them?"]
+    "overheard": [
+      "Three days. Three days on this bench.",
+      "If the Marshal gets his twenty thousand, who feeds them?"
+    ]
   },
-
   "herald": {
     "name": "Sethiel Aurn",
     "title": "Imperial Herald",
-    "species": "veyari", "sex": "m", "age": 118,
-    "faction": "imperium", "group": "ministers",
+    "species": "veyari",
+    "sex": "m",
+    "age": 118,
+    "faction": "imperium",
+    "group": "ministers",
     "role": "Master of ceremonies. Announces audiences, keeps precedence and hears every rumour first.",
-    "traits": ["Theatrical", "Gossip", "Impeccable memory", "Discreet when paid"],
+    "traits": [
+      "Theatrical",
+      "Gossip",
+      "Impeccable memory",
+      "Discreet when paid"
+    ],
     "ambition": "Remain the one person everyone at court must stay on good terms with.",
     "agenda": "Precedence in the Hall of Kings is being argued again: Lucerna wants to sit at the Emperor's right. Sethiel decides the seating chart.",
     "bio": "Sethiel has announced every king, envoy and condemned traitor to enter the palace for sixty years. He knows the genealogies of every royal house by heart, including the parts they would rather he forgot.",
-    "opinion": 5, "loyalty": 75,
-    "relations": {"marcellan": 25, "ilsaveth": 50, "chancellor": 30},
-    "place": {"stand": [21.5, 2.2], "face": "W"},
-    "look": {"skin": "b2a6d6", "hair": "b9c4d6", "hair_style": "long", "beard": "none",
-             "outfit": "robe", "primary": "efe6d2", "secondary": "5a1f5c", "trim": "d9a63e",
-             "cloak": "5a1f5c", "headwear": "none", "prop": "staff"},
+    "opinion": 5,
+    "loyalty": 75,
+    "relations": {
+      "marcellan": 25,
+      "ilsaveth": 50,
+      "chancellor": 30
+    },
+    "place": {
+      "stand": [
+        21.5,
+        2.2
+      ],
+      "face": "W"
+    },
+    "look": {
+      "skin": "b2a6d6",
+      "hair": "b9c4d6",
+      "hair_style": "long",
+      "beard": "none",
+      "outfit": "robe",
+      "primary": "efe6d2",
+      "secondary": "5a1f5c",
+      "trim": "d9a63e",
+      "cloak": "8e1f24",
+      "headwear": "none",
+      "prop": "staff"
+    },
     "lines": {
-      "greet_warm": ["His Majesty of Seravel! Always a pleasure to announce a king whose name I can pronounce."],
-      "greet_neutral": ["Seravel. North side, nearest the door, I'm afraid. Precedence moves when someone dies or marries."],
-      "greet_cold": ["Ah. Seravel. Your seat has been moved nearer the door. Draughty, I'm afraid."],
+      "greet_warm": [
+        "His Majesty of Seravel! Always a pleasure to announce a king whose name I can pronounce."
+      ],
+      "greet_neutral": [
+        "Seravel. North side, nearest the door, I'm afraid. Precedence moves when someone dies or marries."
+      ],
+      "greet_cold": [
+        "Ah. Seravel. Your seat has been moved nearer the door. Draughty, I'm afraid."
+      ],
       "about": "I am the Imperial Herald. I say who enters, in what order, and with how many titles. You would be amazed how many wars began over a seating chart.",
       "agenda": "Marcellan of Lucerna insists Lucerna sits at the Emperor's right hand in the Hall of Kings. Queen Ilsaveth insists it does not. I insist on a generous gift from whichever of them wins."
     },
-    "overheard": ["Lucerna at the right hand? Over my embalmed body.", "Did you hear who the Empress walked with this morning?"]
+    "overheard": [
+      "Lucerna at the right hand? Over my embalmed body.",
+      "Did you hear who the Empress walked with this morning?"
+    ]
   },
-
   "cassia": {
     "name": "Cassia Varro",
     "title": "Prefect of the Praetorian Guard",
-    "species": "human", "sex": "f", "age": 41,
-    "faction": "imperium", "group": "ministers",
+    "species": "human",
+    "sex": "f",
+    "age": 41,
+    "faction": "imperium",
+    "group": "ministers",
     "role": "Commander of the Emperor's personal guard. Responsible for his life and nothing else.",
-    "traits": ["Vigilant", "Laconic", "Incorruptible", "Suspicious of all kings"],
+    "traits": [
+      "Vigilant",
+      "Laconic",
+      "Incorruptible",
+      "Suspicious of all kings"
+    ],
     "ambition": "None that she will admit. The Emperor dies of old age, in his bed.",
     "agenda": "Six client kings with retinues inside the palace at once. She has doubled the guard and trusts none of you.",
     "bio": "Cassia was a frontier centurion, then a palace guard, and for six years has commanded the Praetorians. In that time two plots against the Emperor were discovered, and both ended in the same quiet way.",
-    "opinion": 0, "loyalty": 100,
-    "relations": {"emperor": 95, "thane": 10, "marcellan": -20},
-    "place": {"stand": [-46.6, -3.0], "face": "E"},
-    "look": {"skin": "9a6744", "hair": "1e1712", "hair_style": "cropped", "beard": "none",
-             "outfit": "armour", "primary": "aeb4bc", "secondary": "5a1f5c", "trim": "d9a63e",
-             "cloak": "5a1f5c", "headwear": "helmet", "prop": "spear", "shield": "5a1f5c"},
+    "opinion": 0,
+    "loyalty": 100,
+    "relations": {
+      "emperor": 95,
+      "thane": 10,
+      "marcellan": -20
+    },
+    "place": {
+      "stand": [
+        -46.6,
+        -3.0
+      ],
+      "face": "E"
+    },
+    "look": {
+      "skin": "9a6744",
+      "hair": "1e1712",
+      "hair_style": "cropped",
+      "beard": "none",
+      "outfit": "armour",
+      "primary": "aeb4bc",
+      "secondary": "5a1f5c",
+      "trim": "d9a63e",
+      "cloak": "8e1f24",
+      "headwear": "helmet",
+      "prop": "spear",
+      "shield": "5a1f5c"
+    },
     "lines": {
-      "greet_warm": ["Seravel."],
-      "greet_neutral": ["Keep your hands where I can see them, Majesty."],
-      "greet_cold": ["Step back from the dais, Seravel."],
+      "greet_warm": [
+        "Seravel."
+      ],
+      "greet_neutral": [
+        "Keep your hands where I can see them, Majesty."
+      ],
+      "greet_cold": [
+        "Step back from the dais, Seravel."
+      ],
       "about": "Praetorian Prefect. I keep the Emperor alive. That is the whole of my job, and I am very good at it.",
       "agenda": "Six kings in the palace. Six retinues. Twelve hundred armed strangers inside my walls. I have doubled the watches. Nobody approaches the throne without my leave."
     },
-    "overheard": ["Double the north watch until the kings leave.", "Nobody approaches the dais."]
+    "overheard": [
+      "Double the north watch until the kings leave.",
+      "Nobody approaches the dais."
+    ]
   },
-
   "marcellan": {
     "name": "Marcellan Dorr",
     "title": "King of Lucerna",
-    "species": "human", "sex": "m", "age": 47,
-    "faction": "lucerna", "group": "kings",
+    "species": "human",
+    "sex": "m",
+    "age": 47,
+    "faction": "lucerna",
+    "group": "kings",
     "role": "The Emperor's cousin and the most senior human king. Your rival.",
-    "traits": ["Charming", "Condescending", "Patient schemer", "Proud of his blood"],
+    "traits": [
+      "Charming",
+      "Condescending",
+      "Patient schemer",
+      "Proud of his blood"
+    ],
     "ambition": "The upper Sera, Seravel's river trade, and a regency council should the Emperor die before his son is ready.",
     "agenda": "He is quietly lobbying the Treasurer to reassess Seravel's river tolls, and the Herald to seat Lucerna at the Emperor's right.",
     "bio": "Marcellan has been at court since boyhood and treats the palace as his family home, which in a sense it is. He is gracious to everyone and will smile while he takes what is yours.",
-    "opinion": -35, "loyalty": 65,
-    "relations": {"emperor": 50, "thane": 45, "ilsaveth": -30, "thrask": -40, "prince": -10},
-    "place": {"routine": [["kh_b_s", 18], ["kh_s2", 10], ["kh_a_s", 10], ["kh_entry", 4], ["p_e", 8], ["c_mid_e", 12], ["kh_b_s", 10]]},
-    "look": {"skin": "e9c4a0", "hair": "1e1712", "hair_style": "short", "beard": "full",
-             "outfit": "toga", "primary": "efe6d2", "secondary": "9b2226", "trim": "d9a63e",
-             "cloak": "9b2226", "headwear": "crown_gold", "prop": "none", "build": 1.05},
+    "opinion": -35,
+    "loyalty": 65,
+    "relations": {
+      "emperor": 50,
+      "thane": 45,
+      "ilsaveth": -30,
+      "thrask": -40,
+      "prince": -10
+    },
+    "place": {
+      "routine": [
+        [
+          "kh_b_s",
+          18
+        ],
+        [
+          "kh_s2",
+          10
+        ],
+        [
+          "kh_a_s",
+          10
+        ],
+        [
+          "kh_entry",
+          4
+        ],
+        [
+          "p_e",
+          8
+        ],
+        [
+          "c_mid_e",
+          12
+        ],
+        [
+          "kh_b_s",
+          10
+        ]
+      ]
+    },
+    "look": {
+      "skin": "e9c4a0",
+      "hair": "1e1712",
+      "hair_style": "short",
+      "beard": "full",
+      "outfit": "toga",
+      "primary": "efe6d2",
+      "secondary": "c8702a",
+      "trim": "d9a63e",
+      "cloak": "c8702a",
+      "headwear": "crown_gold",
+      "prop": "none",
+      "build": 1.05
+    },
     "lines": {
-      "greet_warm": ["Cousin Cassian! Well, nearly cousin. Walk with me."],
-      "greet_neutral": ["Seravel. Your first season at court as king? You'll find it larger than the riverbank."],
-      "greet_cold": ["Ah, Seravel. Still here? How persistent the provinces are."],
+      "greet_warm": [
+        "Cousin Cassian! Well, nearly cousin. Walk with me."
+      ],
+      "greet_neutral": [
+        "Seravel. Your first season at court as king? You'll find it larger than the riverbank."
+      ],
+      "greet_cold": [
+        "Ah, Seravel. Still here? How persistent the provinces are."
+      ],
       "about": "Marcellan of Lucerna. My grandmother was a Valerran princess, my mother a Valerran duchess, and my sister married the Emperor's brother. I mention it only because everyone else does.",
       "agenda": "The Sera is one river, Cassian. It is absurd that two kingdoms tax it. One toll, one authority, at the river mouth, which happens to be Lucerna. Think how much simpler life would be."
     },
-    "overheard": ["Seravel tolls my barges twice: once at the ford, once at the quay.", "The Herald will see reason. He always does, at the right price."]
+    "overheard": [
+      "Seravel tolls my barges twice: once at the ford, once at the quay.",
+      "The Herald will see reason. He always does, at the right price."
+    ]
   },
-
   "thrask": {
     "name": "Thrask Ur-Vashen",
     "title": "King of Khar-Dumeth",
-    "species": "kharad", "sex": "m", "age": 71,
-    "faction": "khar_dumeth", "group": "kings",
+    "species": "kharad",
+    "sex": "m",
+    "age": 71,
+    "faction": "khar_dumeth",
+    "group": "kings",
     "role": "Warrior-king of the largest Kharad realm. His grandfather fought the Empire; he fights for a place within it.",
-    "traits": ["Proud", "Honourable", "Short-tempered", "Remembers every slight"],
+    "traits": [
+      "Proud",
+      "Honourable",
+      "Short-tempered",
+      "Remembers every slight"
+    ],
     "ambition": "Kharad legions under Kharad command, and a voice in the Imperial Council, not just the Hall of Kings.",
     "agenda": "He backs Korrach's claim over the Basalt Gate and wants a king to stand with him openly. Few humans will.",
     "bio": "Thrask's grandfather fought the Empire for thirty years and lost. Thrask has given forty thousand Kharad soldiers to the eagle-sun standard and has never been offered a seat on the Council. He considers that an insult to his ancestors.",
-    "opinion": 5, "loyalty": 50,
-    "relations": {"marcellan": -45, "korrach": 35, "vashka": -25, "emperor": 15},
-    "place": {"stand": [32.2, -8.9], "face": "E", "chat_with": "korrach"},
-    "look": {"skin": "5d6b45", "hair": "2b2620", "hair_style": "bald", "beard": "none",
-             "outfit": "armour", "primary": "8a6a3a", "secondary": "2f3b2a", "trim": "b07a3a",
-             "cloak": "2f3b2a", "headwear": "crown_iron", "prop": "none", "build": 1.08},
+    "opinion": 5,
+    "loyalty": 50,
+    "relations": {
+      "marcellan": -45,
+      "korrach": 35,
+      "vashka": -25,
+      "emperor": 15
+    },
+    "place": {
+      "stand": [
+        32.2,
+        -8.9
+      ],
+      "face": "E",
+      "chat_with": "korrach"
+    },
+    "look": {
+      "skin": "5d6b45",
+      "hair": "2b2620",
+      "hair_style": "bald",
+      "beard": "none",
+      "outfit": "armour",
+      "primary": "8a6a3a",
+      "secondary": "2f3b2a",
+      "trim": "b07a3a",
+      "cloak": "2f3b2a",
+      "headwear": "crown_iron",
+      "prop": "none",
+      "build": 1.08
+    },
     "lines": {
-      "greet_warm": ["Seravel. You keep your word. I value that above gold."],
-      "greet_neutral": ["Human king. Speak. I am listening."],
-      "greet_cold": ["Seravel. You smile like Lucerna. Go smile at him."],
+      "greet_warm": [
+        "Seravel. You keep your word. I value that above gold."
+      ],
+      "greet_neutral": [
+        "Human king. Speak. I am listening."
+      ],
+      "greet_cold": [
+        "Seravel. You smile like Lucerna. Go smile at him."
+      ],
       "about": "I am Thrask, son of Vor, son of Ur-Vashen who held the Basalt Mountains against six imperial legions for thirty years. Now I send my sons to march under the same eagle-sun my grandfather fought.",
       "agenda": "Forty thousand Kharad spears serve this Empire. Not one Kharad voice sits on its Council. Korrach held the Basalt Gate and a human rode in triumph for it. I would know, Seravel, which side of that table you sit on."
     },
-    "overheard": ["Lucerna. Smiling again.", "My grandfather would have burned this hall. I am trying to sit in it."]
+    "overheard": [
+      "Lucerna. Smiling again.",
+      "My grandfather would have burned this hall. I am trying to sit in it."
+    ]
   },
-
   "vashka": {
     "name": "Vashka Tor-Ilun",
     "title": "Queen of Tor-Ilun",
-    "species": "kharad", "sex": "f", "age": 33,
-    "faction": "tor_ilun", "group": "kings",
+    "species": "kharad",
+    "sex": "f",
+    "age": 33,
+    "faction": "tor_ilun",
+    "group": "kings",
     "role": "The young reformist queen of a Kharad steppe kingdom.",
-    "traits": ["Reformist", "Quick-witted", "Restless", "Underestimated"],
+    "traits": [
+      "Reformist",
+      "Quick-witted",
+      "Restless",
+      "Underestimated"
+    ],
     "ambition": "Roads, markets and imperial law for Tor-Ilun. Make her kingdom rich enough that neither the old clans nor Khar-Dumeth can push her around.",
     "agenda": "She wants a trade road linking Tor-Ilun to the western river markets: to Seravel.",
     "bio": "Vashka took the throne at twenty-five when her father died. She has since broken two clan revolts and built her first stone city. Thrask calls her a human in scales. She takes it as a compliment.",
-    "opinion": 15, "loyalty": 70,
-    "relations": {"thrask": -30, "ilsaveth": 25, "prince": 30},
-    "place": {"routine": [["kh_s1", 16], ["kh_a_s", 8], ["kh_s2", 12], ["kh_b_s", 6], ["kh_apse", 10]]},
-    "look": {"skin": "7a6a48", "hair": "1c1f22", "hair_style": "bald", "beard": "none",
-             "outfit": "tunic", "primary": "7a2e1c", "secondary": "c9b48a", "trim": "d9a63e",
-             "cloak": "c9b48a", "headwear": "circlet_gold", "prop": "none", "build": 0.95, "height": 0.97},
+    "opinion": 15,
+    "loyalty": 70,
+    "relations": {
+      "thrask": -30,
+      "ilsaveth": 25,
+      "prince": 30
+    },
+    "place": {
+      "routine": [
+        [
+          "kh_s1",
+          16
+        ],
+        [
+          "kh_a_s",
+          8
+        ],
+        [
+          "kh_s2",
+          12
+        ],
+        [
+          "kh_b_s",
+          6
+        ],
+        [
+          "kh_apse",
+          10
+        ]
+      ]
+    },
+    "look": {
+      "skin": "7a6a48",
+      "hair": "1c1f22",
+      "hair_style": "bald",
+      "beard": "none",
+      "outfit": "tunic",
+      "primary": "7a2e1c",
+      "secondary": "c9b48a",
+      "trim": "d9a63e",
+      "cloak": "c9b48a",
+      "headwear": "circlet_gold",
+      "prop": "none",
+      "build": 0.95,
+      "height": 0.97
+    },
     "lines": {
-      "greet_warm": ["Seravel! Come, I have a map and an idea, and you are in both."],
-      "greet_neutral": ["River king. Have you ever seen a Kharad caravan? You will."],
-      "greet_cold": ["Seravel. Thrask says you're no friend to Kharad. Prove him wrong or don't."],
+      "greet_warm": [
+        "Seravel! Come, I have a map and an idea, and you are in both."
+      ],
+      "greet_neutral": [
+        "River king. Have you ever seen a Kharad caravan? You will."
+      ],
+      "greet_cold": [
+        "Seravel. Thrask says you're no friend to Kharad. Prove him wrong or don't."
+      ],
       "about": "Vashka, Queen of Tor-Ilun. My kingdom joined the Empire with a treaty, not a war, and I mean to show the old clans what that was worth.",
       "agenda": "A road. Stone, garrisoned, tolled fairly, from the steppe to the Sera. Our horses and hides for your grain and timber. Your river and my road could make us both richer than Lucerna."
     },
-    "overheard": ["Thrask fights the last war. I'm busy with the next market.", "A road, not a legion. Why is that so hard for them?"]
+    "overheard": [
+      "Thrask fights the last war. I'm busy with the next market.",
+      "A road, not a legion. Why is that so hard for them?"
+    ]
   },
-
   "ilsaveth": {
     "name": "Ilsaveth Anorai",
     "title": "Queen of Velithra",
-    "species": "veyari", "sex": "f", "age": 189,
-    "faction": "velithra", "group": "kings",
+    "species": "veyari",
+    "sex": "f",
+    "age": 189,
+    "faction": "velithra",
+    "group": "kings",
     "role": "Merchant-queen of the richest Veyari kingdom. Creditor to half the court.",
-    "traits": ["Subtle", "Gracious", "Calculating", "Long memory"],
+    "traits": [
+      "Subtle",
+      "Gracious",
+      "Calculating",
+      "Long memory"
+    ],
     "ambition": "A Veyari seat on the Imperial Council, and Velithran banks financing every great work of the age.",
     "agenda": "She is offering to finance Marshal Thane's campaign or Ulda's aqueduct, whichever buys her the most influence.",
     "bio": "Ilsaveth has reigned for ninety years and outlived three Lucernan kings. She lends money freely, collects it gently and has never once been seen to lose her temper.",
-    "opinion": 10, "loyalty": 60,
-    "relations": {"marcellan": -30, "treasurer": 35, "empress": 40, "herald": 45},
-    "place": {"routine": [["c_mid_n", 16], ["c_mid_e", 12], ["p_ne", 8], ["c_mid_e", 10]]},
-    "look": {"skin": "a9bce0", "hair": "e8ecf2", "hair_style": "long", "beard": "none",
-             "outfit": "robe", "primary": "1f6f78", "secondary": "c9d3e6", "trim": "c7cdd8",
-             "cloak": "c9d3e6", "headwear": "diadem_silver", "prop": "none", "height": 1.0},
+    "opinion": 10,
+    "loyalty": 60,
+    "relations": {
+      "marcellan": -30,
+      "treasurer": 35,
+      "empress": 40,
+      "herald": 45
+    },
+    "place": {
+      "stand": [
+        -46.2,
+        26.4
+      ],
+      "face": "W"
+    },
+    "look": {
+      "skin": "a9bce0",
+      "hair": "e8ecf2",
+      "hair_style": "long",
+      "beard": "none",
+      "outfit": "robe",
+      "primary": "1f6f78",
+      "secondary": "c9d3e6",
+      "trim": "c7cdd8",
+      "cloak": "c9d3e6",
+      "headwear": "diadem_silver",
+      "prop": "none",
+      "height": 1.0
+    },
     "lines": {
-      "greet_warm": ["Cassian, dear. You remind me of your great-grandfather. He also repaid his loans on time."],
-      "greet_neutral": ["King of Seravel. How refreshing to meet a monarch who isn't asking me for money. You aren't, are you?"],
-      "greet_cold": ["Seravel. I hear Lucerna has your ear. I do hope it's returned in good condition."],
+      "greet_warm": [
+        "Cassian, dear. You remind me of your great-grandfather. He also repaid his loans on time."
+      ],
+      "greet_neutral": [
+        "King of Seravel. How refreshing to meet a monarch who isn't asking me for money. You aren't, are you?"
+      ],
+      "greet_cold": [
+        "Seravel. I hear Lucerna has your ear. I do hope it's returned in good condition."
+      ],
       "about": "Ilsaveth, Queen of Velithra. I have worn this crown for ninety years. I have watched dynasties of human kings rise and fall like tides on my harbour wall.",
       "agenda": "Somebody must pay for the Marshal's war, or the Works Master's aqueduct, or both. Velithra can. The question is what the Empire will give in return. A seat at the Council table, perhaps."
     },
-    "overheard": ["The Marshal or the aqueduct. Either way, they borrow from me.", "A Veyari on the Council. In my lifetime. I have a long lifetime."]
+    "overheard": [
+      "The Marshal or the aqueduct. Either way, they borrow from me.",
+      "A Veyari on the Council. In my lifetime. I have a long lifetime."
+    ]
   },
-
   "oduvar": {
     "name": "Oduvar Brunnhak",
     "title": "King of Karst Odun",
-    "species": "othari", "sex": "m", "age": 124,
-    "faction": "karst_odun", "group": "kings",
+    "species": "othari",
+    "sex": "m",
+    "age": 124,
+    "faction": "karst_odun",
+    "group": "kings",
     "role": "King of the Othari mountain holds that feed the imperial mints.",
-    "traits": ["Blunt", "Stubborn", "Generous host", "Drowning in debt"],
+    "traits": [
+      "Blunt",
+      "Stubborn",
+      "Generous host",
+      "Drowning in debt"
+    ],
     "ambition": "Have Karst Odun's debt to the treasury forgiven, or at least make the Treasurer stop mentioning it.",
     "agenda": "He owes eleven years of tribute. He wants a lower ore tariff and a king willing to argue for it.",
     "bio": "Oduvar inherited a kingdom of incredible wealth and incredible debt: his ancestors borrowed against mines that later flooded. He is honest to a fault, and he resents it when people mistake that for being simple.",
-    "opinion": 0, "loyalty": 70,
-    "relations": {"treasurer": -40, "ulda": 45, "ilsaveth": -10},
-    "place": {"seat": "kh_throne_karst_odun"},
-    "look": {"skin": "8a8580", "hair": "3a3430", "hair_style": "braids", "beard": "plates",
-             "outfit": "tunic", "primary": "8a4b24", "secondary": "5a5d63", "trim": "c9b48a",
-             "cloak": "5a5d63", "headwear": "crown_iron", "prop": "none", "build": 1.06},
+    "opinion": 0,
+    "loyalty": 70,
+    "relations": {
+      "treasurer": -40,
+      "ulda": 45,
+      "ilsaveth": -10
+    },
+    "place": {
+      "seat": "kh_throne_karst_odun"
+    },
+    "look": {
+      "skin": "8a8580",
+      "hair": "3a3430",
+      "hair_style": "braids",
+      "beard": "plates",
+      "outfit": "tunic",
+      "primary": "8a4b24",
+      "secondary": "5a5d63",
+      "trim": "c9b48a",
+      "cloak": "5a5d63",
+      "headwear": "crown_iron",
+      "prop": "none",
+      "build": 1.06
+    },
     "lines": {
-      "greet_warm": ["Seravel! Sit, sit. Have you eaten? You look like you haven't eaten."],
-      "greet_neutral": ["River king. You'll forgive me not standing. These thrones were built for taller arses."],
-      "greet_cold": ["Seravel. If you're here for the Treasurer, tell him I've no more coins in my beard."],
+      "greet_warm": [
+        "Seravel! Sit, sit. Have you eaten? You look like you haven't eaten."
+      ],
+      "greet_neutral": [
+        "River king. You'll forgive me not standing. These thrones were built for taller arses."
+      ],
+      "greet_cold": [
+        "Seravel. If you're here for the Treasurer, tell him I've no more coins in my beard."
+      ],
       "about": "Oduvar, King of Karst Odun. Every coin in your purse was dug out of my mountains by my people. You'd think that would earn us some thanks.",
       "agenda": "Eleven years of tribute owed on mines that flooded before my father was born. The Treasurer calls it a debt. I call it a curse with interest. Lower the ore tariff and we pay. Raise it and the mints go hungry."
     },
-    "overheard": ["Bookkeeper. Bloodless bookkeeper.", "Ulda knows what stone's worth. That's more than the Treasury does."]
+    "overheard": [
+      "Bookkeeper. Bloodless bookkeeper.",
+      "Ulda knows what stone's worth. That's more than the Treasury does."
+    ]
   },
-
   "aldric": {
     "name": "Aldric Fenn",
     "title": "Royal Steward of Seravel",
-    "species": "human", "sex": "m", "age": 61,
-    "faction": "seravel", "group": "household",
+    "species": "human",
+    "sex": "m",
+    "age": 61,
+    "faction": "seravel",
+    "group": "household",
     "role": "Your steward. Runs your household, your correspondence and your kingdom's reports while you are at court.",
-    "traits": ["Loyal", "Careful", "Dry-witted", "Worrier"],
+    "traits": [
+      "Loyal",
+      "Careful",
+      "Dry-witted",
+      "Worrier"
+    ],
     "ambition": "See you succeed where your father was content to be forgotten.",
     "agenda": "Reports from Seravel arrive daily. The granaries are full, the treasury is sound, and the river tolls are under scrutiny.",
     "bio": "Aldric served your father for thirty years and you for five. He remembers every courtier's grievance against Seravel since before you were born, and he will tell you about them whether you ask or not.",
-    "opinion": 85, "loyalty": 60,
-    "relations": {"player": 90, "hessa": 60},
-    "place": {"stand": [-6.2, 39.6], "face": "S"},
-    "look": {"skin": "e9c4a0", "hair": "d9d6d0", "hair_style": "short", "beard": "short",
-             "outfit": "robe", "primary": "2b4c7e", "secondary": "c7cdd8", "trim": "c7cdd8",
-             "cloak": null, "headwear": "none", "prop": "scroll"},
+    "opinion": 85,
+    "loyalty": 60,
+    "relations": {
+      "player": 90,
+      "hessa": 60
+    },
+    "place": {
+      "stand": [
+        -6.2,
+        39.6
+      ],
+      "face": "S"
+    },
+    "look": {
+      "skin": "e9c4a0",
+      "hair": "d9d6d0",
+      "hair_style": "short",
+      "beard": "short",
+      "outfit": "robe",
+      "primary": "2b4c7e",
+      "secondary": "c7cdd8",
+      "trim": "c7cdd8",
+      "cloak": null,
+      "headwear": "none",
+      "prop": "scroll"
+    },
     "lines": {
-      "greet_warm": ["Majesty. The dispatches from Seravel are on your desk, and the court gossip is in my head."],
-      "greet_neutral": ["Majesty."],
-      "greet_cold": ["Majesty."],
+      "greet_warm": [
+        "Majesty. The dispatches from Seravel are on your desk, and the court gossip is in my head."
+      ],
+      "greet_neutral": [
+        "Majesty."
+      ],
+      "greet_cold": [
+        "Majesty."
+      ],
       "about": "Aldric Fenn, steward to the Crown of Seravel, as I was to your father. I keep your accounts, your letters and, when I can, your temper.",
       "agenda": "Three things, Majesty. The Treasurer has asked for our toll ledgers. King Marcellan has been seen dining with him. And Governor Pryce has been waiting three days for an audience; a grain gift to Meridia would cost us little and buy a great deal."
     },
-    "overheard": ["The Treasurer's clerk came again, Majesty.", "Seravel's granaries are full. Meridia's are not."]
+    "overheard": [
+      "The Treasurer's clerk came again, Majesty.",
+      "Seravel's granaries are full. Meridia's are not."
+    ]
   },
-
   "hessa": {
     "name": "Hessa Durn",
     "title": "Captain of the Seravel Guard",
-    "species": "othari", "sex": "f", "age": 88,
-    "faction": "seravel", "group": "household",
+    "species": "othari",
+    "sex": "f",
+    "age": 88,
+    "faction": "seravel",
+    "group": "household",
     "role": "Captain of your royal guard. Othari by blood, Seravelan by forty years' service.",
-    "traits": ["Stoic", "Fiercely loyal", "Observant", "Hates court"],
+    "traits": [
+      "Stoic",
+      "Fiercely loyal",
+      "Observant",
+      "Hates court"
+    ],
     "ambition": "Get you home alive and keep you from trusting Lucerna.",
     "agenda": "She keeps a watch on everyone who comes near your apartments and reports what the other kings' guards gossip about.",
     "bio": "Hessa's family came to Seravel as miners and stayed as soldiers. She has guarded the royal family since your father's coronation and has a scar from the one assassin who got close.",
-    "opinion": 75, "loyalty": 40,
-    "relations": {"player": 85, "aldric": 55, "oduvar": 20},
-    "place": {"stand": [2.6, 36.2], "face": "S"},
-    "look": {"skin": "6f6a66", "hair": "2a2826", "hair_style": "braids", "beard": "plates",
-             "outfit": "armour", "primary": "8e9196", "secondary": "2b4c7e", "trim": "c7cdd8",
-             "cloak": "2b4c7e", "headwear": "helmet", "prop": "spear", "shield": "2b4c7e"},
+    "opinion": 75,
+    "loyalty": 40,
+    "relations": {
+      "player": 85,
+      "aldric": 55,
+      "oduvar": 20
+    },
+    "place": {
+      "stand": [
+        2.6,
+        36.2
+      ],
+      "face": "S"
+    },
+    "look": {
+      "skin": "6f6a66",
+      "hair": "2a2826",
+      "hair_style": "braids",
+      "beard": "plates",
+      "outfit": "armour",
+      "primary": "8e9196",
+      "secondary": "2b4c7e",
+      "trim": "c7cdd8",
+      "cloak": "2b4c7e",
+      "headwear": "helmet",
+      "prop": "spear",
+      "shield": "2b4c7e"
+    },
     "lines": {
-      "greet_warm": ["Majesty. All quiet. Lucerna's men were sniffing about the gallery again."],
-      "greet_neutral": ["Majesty."],
-      "greet_cold": ["Majesty."],
+      "greet_warm": [
+        "Majesty. All quiet. Lucerna's men were sniffing about the gallery again."
+      ],
+      "greet_neutral": [
+        "Majesty."
+      ],
+      "greet_cold": [
+        "Majesty."
+      ],
       "about": "Hessa Durn, Captain of your guard. My grandmother cut stone in Seravel's quarries. I cut the other sort of thing.",
       "agenda": "Six kings, six guard companies, one palace. The Kharad guards respect strength, the Veyari ones gossip, and Lucerna's are spies. Don't go anywhere without telling me first."
     },
-    "overheard": ["Lucerna's men again.", "Nobody passes without my say."]
+    "overheard": [
+      "Lucerna's men again.",
+      "Nobody passes without my say."
+    ]
   }
 }

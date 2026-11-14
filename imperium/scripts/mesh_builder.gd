@@ -10,6 +10,8 @@ extends RefCounted
 
 var xf := Transform3D.IDENTITY
 var bone := -1
+## Per-facet brightness variation (0 = off). Gives the hand-painted low-poly look.
+var jitter := 0.05
 
 var _v := PackedVector3Array()
 var _n := PackedVector3Array()
@@ -37,6 +39,8 @@ static func glow_material() -> StandardMaterial3D:
 		_mat_glow.vertex_color_use_as_albedo = true
 		_mat_glow.vertex_color_is_srgb = true
 		_mat_glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_mat_glow.albedo_color = Color(2.4, 2.1, 1.8)
+		_mat_glow.disable_fog = true
 	return _mat_glow
 
 
@@ -56,6 +60,10 @@ func tri(a: Vector3, b: Vector3, c: Vector3, col: Color) -> void:
 	if n.length_squared() < 1e-14:
 		return
 	n = n.normalized()
+	if jitter > 0.0:
+		var hsh := sin((a.x + b.y * 1.7 + c.z * 2.3) * 12.9898 + (a.y + c.x) * 78.233) * 43758.5453
+		var f := 1.0 + (hsh - floorf(hsh) - 0.5) * 2.0 * jitter
+		col = Color(col.r * f, col.g * f, col.b * f, col.a)
 	_v.append(a)
 	_v.append(c)
 	_v.append(b)
@@ -123,6 +131,54 @@ func cyl(base: Vector3, r_bot: float, r_top: float, h: float, sides: int, col: C
 			tri(ct, top[i], top[i + 1], col)
 		if cap_bot and r_bot > 0.0:
 			tri(base, bot[i + 1], bot[i], col)
+
+
+## Faceted tube with an elliptical cross-section (radii x, z) tapering from bottom to top.
+## `folds` alternates the radius of neighbouring vertices (drapery); a0..a1 < TAU makes an open
+## shell (cloaks), drawn on both sides when `double` (inner side in `inner`).
+func tube(base: Vector3, rb: Vector2, rt: Vector2, h: float, sides: int, col: Color,
+		cap_top := true, cap_bot := true, basis := Basis.IDENTITY, folds := 0.0,
+		a0 := 0.0, a1 := TAU, top_off := Vector3.ZERO, double := false, inner := Color(0, 0, 0, 0)) -> void:
+	var closed := absf(a1 - a0 - TAU) < 0.001
+	var bot: Array = []
+	var top: Array = []
+	for i in sides + 1:
+		var t := lerpf(a0, a1, float(i) / sides)
+		var f := 1.0 + (folds if i % 2 == 0 else -folds)
+		var d := Vector3(cos(t), 0.0, -sin(t))
+		bot.append(base + basis * Vector3(d.x * rb.x * f, 0.0, d.z * rb.y * f))
+		top.append(base + basis * (Vector3(d.x * rt.x * f, h, d.z * rt.y * f) + top_off))
+	var ic := col.darkened(0.25) if inner.a == 0.0 else inner
+	for i in sides:
+		quad(bot[i], bot[i + 1], top[i + 1], top[i], col)
+		if double:
+			quad(bot[i + 1], bot[i], top[i], top[i + 1], ic)
+	if closed:
+		var ct := base + basis * (Vector3(0, h, 0) + top_off)
+		for i in sides:
+			if cap_top and rt.length() > 0.0:
+				tri(ct, top[i], top[i + 1], col)
+			if cap_bot and rb.length() > 0.0:
+				tri(base, bot[i + 1], bot[i], col)
+
+
+## Triangular prism roof/gable: ridge along local X, base rectangle size (x, z), height h.
+func gable(center: Vector3, size: Vector2, h: float, col: Color, end_col := Color(0, 0, 0, 0), basis := Basis.IDENTITY) -> void:
+	var ec := col if end_col.a == 0.0 else end_col
+	var hx := size.x * 0.5
+	var hz := size.y * 0.5
+	var p := func(x: float, y: float, z: float) -> Vector3:
+		return center + basis * Vector3(x, y, z)
+	var a: Vector3 = p.call(-hx, 0, hz)
+	var b: Vector3 = p.call(hx, 0, hz)
+	var c2: Vector3 = p.call(hx, 0, -hz)
+	var d2: Vector3 = p.call(-hx, 0, -hz)
+	var r0: Vector3 = p.call(-hx, h, 0)
+	var r1: Vector3 = p.call(hx, h, 0)
+	quad(a, b, r1, r0, col)
+	quad(c2, d2, r0, r1, col)
+	tri(b, c2, r1, ec)
+	tri(d2, a, r0, ec)
 
 
 func cone(base: Vector3, r: float, h: float, sides: int, col: Color, basis := Basis.IDENTITY) -> void:
