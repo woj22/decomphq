@@ -463,15 +463,35 @@ def tree(a, base, h, kind="cypress"):
                  (z + h * 0.95, ring(8, h * 0.25, h * 0.25, 0.1), x + 0.3, y)], a.key(PINE))
 
 
+WALKERS = []      # (centre, radius, count, ground z) requests; real articulated citizens are spawned later
+
+
 def people(a, center, radius, n, rng, z):
-    cols = ["efe6d2", "8e1f24", "2b4c7e", "5f7a3a", "c8862d", "7a3a6a", "d9b48c", "3d4a5c"]
-    for _ in range(n):
-        ang = rng.uniform(0, 2 * math.pi)
-        r = radius * math.sqrt(rng.random())
-        x, y = center[0] + math.cos(ang) * r, center[1] + math.sin(ang) * r
-        k = a.key(cols[rng.randrange(len(cols))])
-        a.stack([(z, ring(5, 0.28, 0.24), x, y), (z + 1.35, ring(5, 0.2, 0.17), x, y)], k)
-        a.box((x, y, z + 1.55), (0.24, 0.24, 0.28), a.key("c99a76"))
+    WALKERS.append((tuple(center), radius, n, z))
+
+
+def spawn_walkers(rng, frames, budget=150):
+    total = sum(r[2] for r in WALKERS)
+    k = min(1.0, budget / max(1, total))
+    made = 0
+    for (cx, cy), radius, n, z in WALKERS:
+        for _ in range(max(1, int(round(n * k))) if n * k >= 0.5 else 0):
+            fig = C.Figure("citizen", C.citizen_spec(rng))
+            fig.build()
+            root, piv = C.articulate(fig)
+            pts = []
+            for q in range(rng.randint(2, 4)):
+                ang = rng.uniform(0, 2 * math.pi)
+                r = radius * math.sqrt(rng.random())
+                pts.append((cx + math.cos(ang) * r, cy + math.sin(ang) * r, z))
+            if rng.random() < 0.2:
+                # a few stand and talk instead of walking
+                root.location = pts[0]
+                root.rotation_euler = (0, 0, rng.uniform(0, 2 * math.pi))
+            else:
+                C.animate_walk(root, piv, pts, rng.uniform(1.0, 1.5), 24, 1, frames, 0.55, rng.random())
+            made += 1
+    return made
 
 
 def arch(a, x, y, z, yaw, w=14.0, h=13.0, d=4.0):
@@ -745,23 +765,51 @@ def build_horizon(rng):
     objs = [m.build()]
     # faceted evening clouds and the setting sun
     cl = Acc("Clouds")
-    for i in range(9):
-        t = rng.uniform(-0.7, 0.6)
-        dirv = Vector((math.sin(t), -math.cos(t), 0))
-        c = CAM + dirv * rng.uniform(900, 1400) + Vector((0, 0, rng.uniform(120, 300)))
-        yaw = t + rng.uniform(-0.3, 0.3)
-        L = rng.uniform(160, 420)
-        for k in range(rng.randint(2, 4)):
-            p = c + Vector((math.cos(yaw), math.sin(yaw), 0)) * rng.uniform(-L / 2, L / 2) + Vector((0, 0, rng.uniform(-15, 15)))
-            w, d, h = rng.uniform(90, 200), rng.uniform(50, 90), rng.uniform(26, 55)
-            top = cl.key(rng.choice(("f8cf8f", "f6bd7a", "fadca2")), 0.9, 0, rng.choice(("f8b86a", "f6aa60")), 1.4)
-            bot = cl.key(rng.choice(("c88f9e", "b884a2")), 0.9, 0, "9a6a8c", 0.6)
-            pts = [(p.x + math.cos(yaw + 2 * math.pi * q / 6) * w * (0.7 + 0.3 * (q % 2)), p.y + math.sin(yaw + 2 * math.pi * q / 6) * d, p.z) for q in range(6)]
-            up = (p.x + rng.uniform(-10, 10), p.y, p.z + h)
-            dn = (p.x, p.y, p.z - h * 0.5)
-            for q in range(6):
-                cl.poly([pts[q], pts[(q + 1) % 6], up], top)
-                cl.poly([pts[(q + 1) % 6], pts[q], dn], bot)
+    # painterly key for the clouds: from above, the low sun and a little from the viewer's side
+    tosun = (Vector((0, 0, 1)) * 0.8 + Vector((SUN_DIR.x, SUN_DIR.y, 0.0)) * 0.45 + Vector((0, 1, 0)) * 0.35).normalized()
+    gold = [cl.key("ffd08a", 0.9, 0, "ffc070", 1.6), cl.key("f8b47a", 0.9, 0, "f4a268", 1.3), cl.key("eda08a", 0.9, 0, "e8907e", 1.0),
+            cl.key("c793a8", 0.9, 0, "b886a2", 0.8), cl.key("a98ab8", 0.9, 0, "977cae", 0.7)]
+    for i in range(8):
+        t = rng.uniform(-0.75, 0.62)
+        d = rng.uniform(1000, 1500)
+        elev = math.radians(rng.uniform(6.5, 17))
+        c = CAM + Vector((math.sin(t), -math.cos(t), 0)) * d + Vector((0, 0, d * math.tan(elev)))
+        yaw = t + rng.uniform(-0.35, 0.35)
+        tilt = rng.uniform(-0.12, 0.12)
+        L = rng.uniform(220, 520)
+        lumps = rng.randint(4, 8)
+        for k in range(lumps):
+            u = (k / max(1, lumps - 1) - 0.5) * L
+            centre = c + Vector((math.cos(yaw), math.sin(yaw), tilt)) * u + Vector((0, 0, rng.uniform(-8, 12)))
+            sx = rng.uniform(90, 170) * (1.0 - abs(u) / L * 0.8)
+            sz = rng.uniform(12, 26) * (1.0 - abs(u) / L * 0.7)
+            sy = sx * 0.45
+            segs, rings = 7, 4
+            grid = []
+            for r in range(rings + 1):
+                ph = math.pi * r / rings
+                row = []
+                for q in range(segs):
+                    th = 2 * math.pi * q / segs + (0.4 if r % 2 else 0.0)
+                    z = math.cos(ph)
+                    z = max(z, -0.35)          # flattened underside
+                    v = Vector((math.sin(ph) * math.cos(th) * sx, math.sin(ph) * math.sin(th) * sy, z * sz))
+                    v.rotate(Euler((0, 0, yaw)))
+                    row.append(centre + v)
+                grid.append(row)
+            for r in range(rings):
+                for q in range(segs):
+                    qa, qb = q, (q + 1) % segs
+                    for tri in ((grid[r][qa], grid[r + 1][qa], grid[r + 1][qb]), (grid[r][qa], grid[r + 1][qb], grid[r][qb])):
+                        n = (tri[1] - tri[0]).cross(tri[2] - tri[0])
+                        if n.length < 1e-6:
+                            continue
+                        n.normalize()
+                        if n.dot(centre - (tri[0] + tri[1] + tri[2]) / 3) > 0:
+                            n = -n
+                        lit = n.dot(tosun)
+                        idx = 0 if lit > 0.55 else 1 if lit > 0.2 else 2 if lit > -0.15 else 3 if lit > -0.5 else 4
+                        cl.poly([tuple(p) for p in tri], gold[idx])
     objs.append(cl.build())
     sun = Acc("SunDisc")
     sc = CAM + SUN_DIR * 2600
@@ -786,7 +834,7 @@ def build_balcony(rng):
     for i in range(-8, 7):
         for j in range(-1, 6):
             x0, y0 = i * 2.0, j * 2.0
-            k = a.key("e6dcd6" if (i + j) % 2 == 0 else "d2c4bc", 0.35)
+            k = a.key("e6dcd6" if (i + j) % 2 == 0 else "d2c4bc", 0.75)
             a.poly([(x0, y0, 0), (x0 + 2, y0, 0), (x0 + 2, y0 + 2, 0), (x0, y0 + 2, 0)], k)
     # the carpet: crimson with a gold border, from the doors to the balustrade
     a.box((-2.6, 5.0, 0.01), (3.6, 12.0, 0.02), a.key("c8862d", 0.6))
@@ -899,7 +947,7 @@ def statue_on(spec, x, y, z, yaw, scale=1.6):
 
 def court():
     """The Emperor at the balustrade with his court behind him."""
-    who = [("emperor", (-0.6, 3.7), -0.12, 1.38), ("herald", (-2.6, 1.6), 0.45, 1.0), ("treasurer", (-3.0, 0.4), 0.3, 1.0),
+    who = [("emperor", (-0.6, 3.7), 0.55, 1.38), ("herald", (-2.6, 1.6), 0.45, 1.0), ("treasurer", (-3.0, 0.4), 0.3, 1.0),
            ("aldric", (-3.4, 1.0), 0.6, 1.0), ("empress", (-3.6, 2.4), 0.2, 1.0), ("chancellor", (-2.9, -0.4), 0.4, 1.0), ("halvana", (-3.8, -0.2), 0.5, 1.0)]
     for cid, (x, y), yaw, sc in who:
         spec = C.CAST[cid]
@@ -914,11 +962,12 @@ def lighting(samples):
     sun = [o for o in sc.objects if o.type == "LIGHT" and o.data.type == "SUN"][0]
     # key: the visible evening sun ahead, throwing long baluster shadows toward the viewer
     sun.rotation_euler = Vector((SUN_DIR.x, SUN_DIR.y, 0.32)).normalized().to_track_quat("Z", "Y").to_euler()
-    sun.data.energy = 2.6
+    sun.data.energy = 1.9
+    sun.data.angle = math.radians(14.0)
     # a warm fill from behind the viewer, as in the painting: faces toward us read golden, not grey
     bpy.ops.object.light_add(type="SUN", location=(0, 0, 50))
     fill = bpy.context.active_object
-    fill.data.energy = 1.7
+    fill.data.energy = 1.35
     fill.data.color = (1.0, 0.74, 0.5)
     fill.data.use_shadow = False
     fill.rotation_euler = Vector((-0.45, 1.0, 0.6)).normalized().to_track_quat("Z", "Y").to_euler()
@@ -933,10 +982,10 @@ def lighting(samples):
     ramp.elements[1].color = K.hexc("3e3487")
     for pos, col in ((0.05, "ffa06a"), (0.12, "e7849a"), (0.25, "8e6ec2")):
         ramp.elements.new(pos).color = K.hexc(col)
-    w.nodes["Background"].inputs["Strength"].default_value = 0.62
+    w.nodes["Background"].inputs["Strength"].default_value = 0.85
     sc.view_settings.view_transform = "Standard"
     try:
-        sc.view_settings.look = "Medium High Contrast"
+        sc.view_settings.look = "Medium Contrast"
     except TypeError:
         sc.view_settings.look = "None"
     sc.cycles.max_bounces = 4
@@ -948,6 +997,8 @@ def main():
     ap.add_argument("--samples", type=int, default=48)
     ap.add_argument("--only", default="")
     ap.add_argument("--res", default="1672x941")
+    ap.add_argument("--frames", type=int, default=72)
+    ap.add_argument("--anim", action="store_true", help="render the street-level walking clip")
     args = ap.parse_args()
     rng = random.Random(4)
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -955,6 +1006,8 @@ def main():
     before = set(bpy.context.scene.objects)
     build_balcony(rng)
     court()
+    nwalk = spawn_walkers(rng, args.frames)
+    print("walkers:", nwalk)
     # the balcony is authored with the colonnade at -X; mirror it so the colonnade reads on the left
     mirror = bpy.data.objects.new("BalconyMirror", None)
     bpy.context.collection.objects.link(mirror)
@@ -977,7 +1030,29 @@ def main():
     for k, (loc, tgt, lens) in shots.items():
         if args.only and k not in args.only.split(","):
             continue
+        bpy.context.scene.frame_set(1)
         K.shoot(os.path.join(out, k + ".png"), loc, tgt, lens, (rx, ry))
+    if args.anim:
+        fx, fy, fw, fd = FORUM
+        sc = bpy.context.scene
+        sc.frame_start, sc.frame_end = 1, args.frames
+        sc.render.fps = 24
+        sc.render.resolution_x, sc.render.resolution_y = 854, 480
+        sc.cycles.samples = 8
+        if sc.camera is None:
+            bpy.ops.object.camera_add()
+            sc.camera = bpy.context.active_object
+        cam = sc.camera
+        cam.data.clip_end = 8000.0
+        cam.location = (fx + 10, fy + 30, CITY_Z + 1.7)
+        cam.rotation_euler = (Vector((fx - 4, fy - 40, CITY_Z + 7)) - Vector(cam.location)).to_track_quat("-Z", "Y").to_euler()
+        cam.data.lens = 28
+        frames_dir = os.path.join(out, "walk_frames")
+        os.makedirs(frames_dir, exist_ok=True)
+        sc.render.filepath = os.path.join(frames_dir, "f_")
+        sc.render.image_settings.file_format = "PNG"
+        bpy.ops.render.render(animation=True)
+        print("animation frames", frames_dir)
 
 
 if __name__ == "__main__":

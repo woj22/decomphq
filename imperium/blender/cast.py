@@ -271,11 +271,14 @@ class Figure:
             self.sp["waist_w"] *= 0.88
             self.sp["arm"] = tuple(r * 0.88 for r in self.sp["arm"])
         self.parts = []
+        self.tags = []
+        self.tag = "body"
         self.ox = x
 
     def add(self, obj):
         obj.location.x += self.ox
         self.parts.append(obj)
+        self.tags.append(self.tag)
         return obj
 
     # colours
@@ -295,7 +298,9 @@ class Figure:
         armoured = o in ("armour", "scale")
         self.torso(armoured)
         self.legs(long_skirt, armoured)
+        self.tag = "body"
         self.arms(o, armoured)
+        self.tag = "body"
         self.skirt(o)
         if kh:
             self.tail()
@@ -407,6 +412,7 @@ class Figure:
         kh = self.s["species"] == "kharad"
         r = sp["leg"]
         for sx in (1, -1):
+            self.tag = ("leg", sx)
             x = sx * sp["leg_x"]
             if kh:
                 path = [(x, 0.02, sp["hip"] + 0.02), (x * 1.1, -0.13, sp["knee"]), (x * 1.18, 0.1, sp["ankle"]), (x * 1.22, -0.05, 0.07)]
@@ -436,6 +442,7 @@ class Figure:
         r = sp["arm"]
         kh = self.s["species"] == "kharad"
         for sx in (1, -1):
+            self.tag = ("arm", sx)
             sh = (sx * sp["arm_x"], 0.0, sp["shoulder"] - 0.02)
             el = (sx * (sp["arm_x"] + 0.06), 0.03, sp["waist"] + 0.03)
             wr = (sx * (sp["arm_x"] + 0.09), -0.01, sp["hip"] - 0.0)
@@ -681,13 +688,16 @@ class Figure:
             return
         if hw.startswith("laurel"):
             col = metal(GOLD) if hw == "laurel_gold" else m("4f7a3a")
+            band = stack("LaurelBand", [(zb - 0.02, ringN(10, rx * 1.04, ry * 1.04, 0, -math.pi / 2), 0, cy), (zb + 0.012, ringN(10, rx * 1.06, ry * 1.06, 0, -math.pi / 2), 0, cy)],
+                         cap_bottom=False, cap_top=False)
+            self.add(done(band, col))
             for sx in (1, -1):
                 for i in range(7):
                     a = -math.pi / 2 + sx * (0.35 + i * 0.36)
                     p = Vector((math.cos(a) * rx * 1.02, cy + math.sin(a) * ry * 1.02, zb - 0.01 + 0.008 * (i % 2)))
                     out = Vector((math.cos(a), math.sin(a), 0))
                     tang = Vector((-math.sin(a), math.cos(a), 0)) * -sx
-                    leaf = [p - tang * 0.026, p + out * 0.026, p + tang * 0.045 + Vector((0, 0, 0.036)), p - out * 0.008]
+                    leaf = [p - tang * 0.04, p + out * 0.045, p + tang * 0.07 + Vector((0, 0, 0.06)), p - out * 0.012]
                     self.add(done(mesh_from("Leaf", [tuple(v) for v in leaf], [(0, 1, 2), (0, 2, 3)], False), col))
             return
         cols = {"crown_gold": GOLD, "crown_silver": SILVER, "crown_iron": IRON, "diadem": GOLD, "diadem_silver": SILVER, "circlet": SILVER, "circlet_gold": GOLD}
@@ -866,3 +876,107 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# ----------------------------------------------------------------------------- articulation and walking
+def articulate(fig, name="Walker"):
+    """Group a built Figure under a root empty, with hip and shoulder pivots for the limbs.
+    Returns (root, pivots) where pivots[("leg"|"arm", side)] is an empty rotating about X."""
+    sp = fig.sp
+    root = bpy.data.objects.new(name, None)
+    bpy.context.collection.objects.link(root)
+    pivots = {}
+    for kind, z, xoff in (("leg", sp["hip"] + 0.02, sp["leg_x"]), ("arm", sp["shoulder"] - 0.02, sp["arm_x"])):
+        for sx in (1, -1):
+            e = bpy.data.objects.new("%s_%d" % (kind, sx), None)
+            bpy.context.collection.objects.link(e)
+            e.location = (sx * xoff, 0.0, z)
+            e.parent = root
+            pivots[(kind, sx)] = e
+    for o, tag in zip(fig.parts, fig.tags):
+        if tag in pivots:
+            pv = pivots[tag]
+            o.parent = pv
+            o.matrix_parent_inverse = Matrix.Translation(pv.location).inverted()
+        else:
+            o.parent = root
+    return root, pivots
+
+
+def animate_walk(root, pivots, waypoints, speed=1.3, fps=24, start=1, frames=120, stride=0.55, phase=0.0, scale=1.0):
+    """Keyframe a walk along a closed loop of waypoints: legs and arms swing in opposition."""
+    pts = [Vector(p) for p in waypoints]
+    segs = []
+    total = 0.0
+    for a, b in zip(pts, pts[1:] + pts[:1]):
+        segs.append((a, b, total))
+        total += (b - a).length
+    root.scale = (scale, scale, scale)
+    for f in range(start, start + frames + 1):
+        t = (f - start) / fps
+        dist = (t * speed + phase * total) % total
+        for a, b, d0 in segs:
+            if d0 <= dist <= d0 + (b - a).length:
+                u = (dist - d0) / max(1e-6, (b - a).length)
+                pos = a.lerp(b, u)
+                heading = b - a
+                break
+        root.location = pos
+        root.rotation_euler = (0, 0, math.atan2(heading.x, -heading.y))
+        root.keyframe_insert("location", frame=f)
+        root.keyframe_insert("rotation_euler", frame=f)
+        cycle = 2 * math.pi * dist / (stride * 2)
+        swing = math.sin(cycle) * 0.5
+        for (kind, sx), pv in pivots.items():
+            amp = 1.0 if kind == "leg" else -0.7
+            pv.rotation_euler = (swing * amp * sx, 0, 0)
+            pv.keyframe_insert("rotation_euler", frame=f)
+        root.location.z = pos.z + abs(math.cos(cycle)) * 0.03 * scale
+        root.keyframe_insert("location", index=2, frame=f)
+    if root.animation_data and root.animation_data.action:
+        _linear(root.animation_data.action)
+    for pv in pivots.values():
+        if pv.animation_data and pv.animation_data.action:
+            _linear(pv.animation_data.action)
+
+
+def _linear(action):
+    try:
+        curves = action.fcurves
+    except AttributeError:
+        curves = [fc for layer in action.layers for strip in layer.strips for bag in strip.channelbags for fc in bag.fcurves]
+    for fc in curves:
+        for kp in fc.keyframe_points:
+            kp.interpolation = "LINEAR"
+
+
+CITIZEN_LOOKS = [
+    dict(outfit="toga", primary="efe6d2", secondary="5a1f5c", trim=GOLD),
+    dict(outfit="toga", primary="e8e0d0", secondary="8e1f24", trim=GOLD),
+    dict(outfit="tunic", primary="8e1f24", secondary="c9b48a", trim="c9b48a"),
+    dict(outfit="tunic", primary="2b4c7e", secondary="c9b48a", trim="c9b48a"),
+    dict(outfit="tunic", primary="5f7a3a", secondary="c9b48a", trim="c9b48a"),
+    dict(outfit="tunic", primary="c9b48a", secondary="6b4a2e", trim="6b4a2e"),
+    dict(outfit="stola", primary="7a3a6a", secondary="efe6d2", trim=GOLD),
+    dict(outfit="stola", primary="d9b48c", secondary="5f7a3a", trim="c9b48a"),
+    dict(outfit="robe", primary="3d4a5c", secondary="c9c2b0", trim=SILVER),
+    dict(outfit="robe", primary="efe6d2", secondary="1f6f78", trim=SILVER),
+]
+SKINS = {"human": ["e9c4a0", "d8a77f", "c08a62", "9a6744", "6e4630"], "veyari": ["9fb2dc", "a6a4d8", "b2a6d6"],
+         "othari": ["8a8580", "9a7b62", "6f6a66"], "kharad": ["5b6235", "4b5a4f", "7a6a48"]}
+HAIRS = ["1e1712", "3a2618", "6b4424", "a87a45", "8e8a84"]
+
+
+def citizen_spec(rng):
+    sp = rng.choice(["human"] * 6 + ["veyari", "othari", "kharad"])
+    sex = rng.choice("mf")
+    look = dict(rng.choice(CITIZEN_LOOKS))
+    if sex == "m" and look["outfit"] == "stola":
+        look["outfit"] = "tunic"
+    spec = dict(species=sp, sex=sex, skin=rng.choice(SKINS[sp]), hair=rng.choice(HAIRS),
+                hair_style=rng.choice(["short", "curly", "cropped"] if sex == "m" else ["bun", "long", "braids"]),
+                beard=("plates" if sp == "othari" else (rng.choice(["none", "short", "full"]) if sex == "m" and sp == "human" else "none")),
+                headwear="none", prop=rng.choice(["none", "none", "none", "scroll"]), **look)
+    if rng.random() < 0.08:
+        spec.update(outfit="armour", primary="aeb4bc", secondary="8e1f24", trim=GOLD, cloak="8e1f24", headwear="helmet", prop="spear")
+    return spec
