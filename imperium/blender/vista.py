@@ -35,7 +35,7 @@ LENS = 24.0
 CITY = -40.0                                   # city ground relative to the balcony floor
 SUN = Vector((-math.sin(math.radians(23)), -math.cos(math.radians(23)), math.tan(math.radians(3.4)))).normalized()
 PLAZA = Vector((-19.5, -188.0))
-CAPITOL = Vector((-60.0, -420.0))
+CAPITOL = Vector((-86.0, -600.0))
 HAZE = "e2b2a6"
 MARBLE, MARBLE2, CRIMSON, GOLD = T.MARBLE, T.MARBLE2, T.CRIMSON, T.GOLD
 
@@ -56,16 +56,17 @@ def plan_city(rng):
 
     def acc(x, y):
         dist = math.hypot(x, y)
-        band = 0 if dist < 700 else 1 if dist < 1500 else 2
-        k = (band, int((x + 4000) // 400), int((y + 4000) // 400))
+        band = 0 if dist < 600 else 1 if dist < 1400 else 2 if dist < 2800 else 3 if dist < 4500 else 4
+        k = (band, int((x + 8000) // 600), int((y + 8000) // 600))
         if k not in accs:
             accs[k] = Acc("Vista_%d_%d_%d" % k)
+            accs[k].haze = (0.0, 0.06, 0.16, 0.28, 0.4)[band]
         return accs[k], dist
 
     g, _ = acc(0, -500)
     g.T = Matrix.Identity(4)
     g.poly([(-6000, -7000, CITY - 0.5), (6000, -7000, CITY - 0.5), (6000, 400, CITY - 0.5), (-6000, 400, CITY - 0.5)], g.key("b49c7a"))
-    g.poly([(-1700, -3400, CITY), (1700, -3400, CITY), (1700, -60, CITY), (-1700, -60, CITY)], g.key("cbb593"))
+    g.poly([(-7000, -7600, CITY), (7000, -7600, CITY), (7000, -60, CITY), (-7000, -60, CITY)], g.key("cbb593"))
 
     # the palace hill falling away below the balcony: terraces, retaining walls and trees
     for k, (y0, y1, z) in enumerate(((-12, -30, -16), (-30, -52, -31))):
@@ -78,7 +79,7 @@ def plan_city(rng):
     occupied = []
 
     def free(x, y, r):
-        if (Vector((x, y)) - PLAZA).length < 44 + r:
+        if (Vector((x, y)) - PLAZA).length < 40 + r:
             return False
         if abs(x - CAPITOL.x) < 210 + r and abs(y - CAPITOL.y) < 190 + r:
             return False
@@ -86,88 +87,211 @@ def plan_city(rng):
         ax, ay = PLAZA
         bx, by = CAPITOL.x + 10, CAPITOL.y + 190
         t = max(0.0, min(1.0, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / ((bx - ax) ** 2 + (by - ay) ** 2)))
-        if math.hypot(x - (ax + (bx - ax) * t), y - (ay + (by - ay) * t)) < 16 + r:
+        if math.hypot(x - (ax + (bx - ax) * t), y - (ay + (by - ay) * t)) < 9 + r:
             return False
+        for (lx, ly, lw, ld) in ((-118, -205, 44, 26), (-160, -270, 38, 24), (52, -240, 40, 24), (-82, -150, 30, 20)):
+            if abs(x - lx) < lw / 2 + 8 + r and abs(y - ly) < ld / 2 + 12 + r:
+                return False
         return y < -62
-    walls = T.WALLS
-    for gx in range(-70, 71):
-        for gy in range(2, 112):
-            base = 30.0
-            x = gx * base + rng.uniform(-4, 4)
-            y = -gy * base + rng.uniform(-4, 4)
-            dist = math.hypot(x, y)
-            if dist > 3300 or not free(x, y, 10):
+    # ------------------------------------------------------------------ an organic street network
+    # Roads are rasterised into a 4 m mask; buildings are scattered into the gaps with an occupancy
+    # mask, so lots pack irregularly, orientations drift by district, and nothing repeats on a grid.
+    CELL = 4.0
+    road = set()
+    occ = set()
+
+    def cells(x, y, r):
+        r = max(1, int(r / CELL))
+        cx, cy = int(math.floor(x / CELL)), int(math.floor(y / CELL))
+        return [(cx + i, cy + j) for i in range(-r, r + 1) for j in range(-r, r + 1)]
+
+    def paint(p0, p1, w):
+        p0, p1 = Vector(p0), Vector(p1)
+        n = max(1, int((p1 - p0).length / (CELL * 0.7)))
+        for k in range(n + 1):
+            p = p0.lerp(p1, k / n)
+            for c in cells(p.x, p.y, w / 2):
+                road.add(c)
+
+    def polyline(start, heading, length, step, wander, w):
+        p = Vector(start)
+        h = heading
+        pts = [p.copy()]
+        dist_ = 0.0
+        while dist_ < length:
+            h += rng.uniform(-wander, wander)
+            q = p + Vector((math.sin(h), -math.cos(h))) * step
+            paint(p, q, w)
+            pts.append(q.copy())
+            p = q
+            dist_ += step
+        return pts
+
+    paved = g.key("cdb894")
+    def pave(pts, w, z=CITY + 0.04):
+        for p0, p1 in zip(pts, pts[1:]):
+            d = (p1 - p0)
+            if d.length < 1e-3:
                 continue
-            # thin out to the sides at distance so the skyline reads, keep it dense ahead
-            if abs(math.atan2(-x, -y)) > math.radians(50) and dist < 220:
+            n = Vector((-d.y, d.x)).normalized() * (w / 2)
+            g.poly([(p0.x + n.x, p0.y + n.y, z), (p0.x - n.x, p0.y - n.y, z), (p1.x - n.x, p1.y - n.y, z), (p1.x + n.x, p1.y + n.y, z)], paved)
+
+    # radial avenues from the forum, gently wandering
+    for ang in (-62, -38, -20, 14, 36, 58, 78, -84):
+        pts = polyline(PLAZA, math.radians(-ang + rng.uniform(-4, 4)), 6500, 60, 0.05, 11)
+        pave(pts, 11)
+    # broken ring roads around the forum
+    for R in (150, 330, 560, 880, 1300, 1900, 2700, 3800):
+        a0 = -math.pi + rng.uniform(-0.2, 0.2)
+        n = int(R * 2 * math.pi / 50)
+        prev = None
+        for k in range(n + 1):
+            if rng.random() < 0.08:
+                prev = None
                 continue
-            a, dist = acc(x, y)
-            yaw = rng.choice((0.0, 0.0, math.radians(rng.uniform(-12, 12))))
-            if dist < 760:
-                roll = rng.random()
-                at(a, x, y, CITY, yaw)
-                if roll < 0.05:
-                    a.T = a.T @ Matrix.Rotation(math.pi, 4, "Z")
-                    temple(a, rng.uniform(11, 15), rng.uniform(16, 22), rng.uniform(7, 9), rng, True)
-                elif roll < 0.1:
-                    domus(a, rng.uniform(20, 26), rng, True)
-                elif roll < 0.14:
-                    a.box((0, 0, 0.15), (26, 26, 0.3), a.key("6f8f45"))
-                    for _ in range(rng.randint(4, 9)):
-                        tree(a, (rng.uniform(-12, 12), rng.uniform(-12, 12), 0.3), rng.uniform(8, 13), "cypress" if rng.random() < 0.6 else "pine")
-                elif roll < 0.17:
-                    # a tower: tall, narrow, with a tiled pyramid cap
-                    h = rng.uniform(22, 34)
-                    a.box((0, 0, h / 2), (7, 7, h), a.key(rng.choice(walls)))
-                    for f in range(int(h / 4)):
-                        a.box((0, 3.52, 2.5 + f * 4), (1.0, 0.05, 1.6), a.key("5e4038"))
-                    a.box((0, 0, h - 0.2), (8, 8, 0.4), a.key(MARBLE))
-                    hip_roof(a, 7, 7, h, a.key(T.ROOF), a.key("8a3a28"), 0.6, 0.9)
-                elif roll < 0.2:
-                    # a rotunda with a dome
-                    a.stack([(0, ring(14, 9, 9), 0, 0), (9, ring(14, 9, 9), 0, 0)], a.key(rng.choice(walls)), False, False)
-                    for q in range(14):
-                        ang = 2 * math.pi * q / 14
-                        a.tube([(math.cos(ang) * 9.6, math.sin(ang) * 9.6, 0), (math.cos(ang) * 9.6, math.sin(ang) * 9.6, 8.5)], [0.4, 0.35], a.key(MARBLE), 8)
-                    secs = [(9 + math.sin(t * math.pi / 2) * 7, ring(14, max(0.4, math.cos(t * math.pi / 2) * 9.4), max(0.4, math.cos(t * math.pi / 2) * 9.4)), 0, 0) for t in (0, 0.3, 0.55, 0.78, 1.0)]
-                    a.stack(secs, a.key(T.ROOF), False, True)
-                else:
-                    # one to four insulae of different heights, packed tight
-                    split = rng.choice(((1, 1), (2, 1), (1, 2), (2, 2), (2, 2)))
-                    for u in range(split[0]):
-                        for v in range(split[1]):
-                            bw = (base - 4) / split[0] - 0.6
-                            bd = (base - 4) / split[1] - 0.6
-                            at(a, x - (base - 4) / 2 + (u + 0.5) * (base - 4) / split[0], y - (base - 4) / 2 + (v + 0.5) * (base - 4) / split[1], CITY, yaw)
-                            fl = rng.choice((2, 3, 3, 3, 4, 4, 5)) if dist < 500 else rng.choice((2, 3, 3, 4))
-                            insula(a, bw * rng.uniform(0.86, 1.0), bd * rng.uniform(0.86, 1.0), fl, rng, True, dist < 420)
-                    if rng.random() < 0.3:
-                        a.T = Matrix.Identity(4)
-                        tree(a, (x + rng.uniform(-14, 14), y + base / 2 - 1, CITY), rng.uniform(8, 12), "cypress")
-            elif dist < 1600:
-                # medium detail: massing, roofs, a cornice and a few window bands
-                at(a, x, y, CITY, yaw)
-                for u in range(rng.choice((1, 2))):
-                    w = rng.uniform(10, 24)
-                    d = rng.uniform(10, 24)
-                    h = rng.uniform(7, 16)
-                    off = rng.uniform(-6, 6)
-                    keep = a.T
-                    a.T = a.T @ Matrix.Translation((off, rng.uniform(-6, 6), 0))
-                    a.box((0, 0, h / 2), (w, d, h), a.key(rng.choice(walls)))
-                    a.box((0, 0, h - 0.2), (w + 0.4, d + 0.4, 0.4), a.key(MARBLE))
-                    for f in range(int(h / 3.4)):
-                        a.box((0, d / 2 + 0.02, 2.2 + f * 3.4), (w * 0.8, 0.05, 1.0), a.key("8a6a5e"))
-                    hip_roof(a, w, d, h, a.key(T.ROOF), a.key("8a3a28"), 0.5, rng.uniform(0.25, 0.35))
-                    a.T = keep
-                if rng.random() < 0.12:
-                    a.T = Matrix.Identity(4)
-                    tree(a, (x, y + 12, CITY), 12, "cypress")
+            t = a0 + 2 * math.pi * k / n
+            rr = R * (1 + 0.06 * math.sin(3 * t + R)) + rng.uniform(-6, 6)
+            p = Vector((PLAZA.x + math.sin(t) * rr, PLAZA.y - math.cos(t) * rr))
+            if prev is not None:
+                paint(prev, p, 8)
+                pave([prev, p], 8)
+            prev = p
+    # alleys: short wandering lanes everywhere
+    for _ in range(420):
+        d0 = rng.uniform(80, 4500)
+        th = math.radians(rng.uniform(-55, 55))
+        st = Vector((-math.sin(th) * d0, -math.cos(th) * d0))
+        pts = polyline(st, rng.uniform(0, 2 * math.pi), rng.uniform(80, 260), 30, 0.35, 4.5)
+        if d0 < 900:
+            pave(pts, 4.5)
+    # the processional way to the capitol stair
+    stair_foot = Vector((CAPITOL.x + 10, CAPITOL.y + 166))
+    paint(PLAZA + Vector((0, -30)), stair_foot, 14)
+
+    def district_yaw(x, y):
+        return 0.32 * math.sin(x / 260.0 + 1.3) + 0.26 * math.cos(y / 310.0) + 0.12 * math.sin((x + y) / 140.0)
+
+    def fits(x, y, w, d):
+        r = max(w, d) / 2
+        for c in cells(x, y, r * 0.8):
+            if c in road or c in occ:
+                return False
+        return True
+
+    def mark(x, y, w, d):
+        for c in cells(x, y, max(w, d) / 2 * 0.85):
+            occ.add(c)
+
+    walls = T.WALLS + ["e9c9a8", "f0d8c0", "dfbe98", "f2e2c8", "e4c0a0", "ead3b4"]
+    roofs = [T.ROOF, T.ROOF2, "a84a32", "be5c40", "9e4632", "b45a3c"]
+    half = math.radians(52)
+    n_try = 52000
+    built = 0
+    for _ in range(n_try):
+        # sample distance with a bias toward the near and middle ground
+        u = rng.random()
+        dist = 70 + (u ** 1.7) * 6900
+        th = rng.uniform(-half, half) * (1.0 if dist > 250 else 0.85)
+        x, y = -math.sin(th) * dist, -math.cos(th) * dist
+        if not free(x, y, 4):
+            continue
+        near = dist < 520
+        mid = dist < 1500
+        sz = (rng.uniform(7, 19), rng.uniform(7, 19)) if near else (rng.uniform(9, 24), rng.uniform(9, 24)) if mid else (rng.uniform(12, 32), rng.uniform(12, 32))
+        if not fits(x, y, *sz):
+            continue
+        mark(x, y, *sz)
+        built += 1
+        a, _ = acc(x, y)
+        yaw = district_yaw(x, y) + rng.choice((0.0, 0.0, math.pi / 2)) + rng.uniform(-0.06, 0.06)
+        at(a, x, y, CITY + rng.uniform(-0.2, 0.3), yaw)
+        w, d = sz
+        roll = rng.random()
+        if near:
+            if roll < 0.035:
+                a.T = a.T @ Matrix.Rotation(math.pi, 4, "Z")
+                temple(a, w * 0.9 + 4, d * 1.1 + 6, rng.uniform(6, 9), rng, rng.random() < 0.5)
+            elif roll < 0.06:
+                h = rng.uniform(18, 34)
+                a.box((0, 0, h / 2), (min(w, 8), min(w, 8), h), a.key(rng.choice(walls)))
+                for f in range(int(h / 4)):
+                    a.box((0, min(w, 8) / 2 + 0.02, 2.4 + f * 4), (1.0, 0.05, 1.5), a.key("5e4038"))
+                a.box((0, 0, h - 0.2), (min(w, 8) + 0.8, min(w, 8) + 0.8, 0.4), a.key(MARBLE))
+                hip_roof(a, min(w, 8), min(w, 8), h, a.key(rng.choice(roofs)), a.key("8a3a28"), 0.6, rng.uniform(0.6, 1.0))
+            elif roll < 0.08:
+                r0 = min(w, d) / 2
+                hh = rng.uniform(7, 12)
+                a.stack([(0, ring(12, r0, r0), 0, 0), (hh, ring(12, r0, r0), 0, 0)], a.key(rng.choice(walls)), False, False)
+                a.stack([(hh + math.sin(t * math.pi / 2) * r0 * 0.8, ring(12, max(0.3, math.cos(t * math.pi / 2) * r0 * 1.04), max(0.3, math.cos(t * math.pi / 2) * r0 * 1.04)), 0, 0)
+                         for t in (0, 0.35, 0.65, 0.88, 1.0)], a.key(rng.choice(("c99a45", T.ROOF, "b8a890"))), False, True)
+            elif roll < 0.13:
+                domus(a, max(w, d) + 4, rng, True)
+            elif roll < 0.17:
+                a.box((0, 0, 0.15), (w, d, 0.3), a.key("6f8f45"))
+                for _k in range(rng.randint(2, 5)):
+                    tree(a, (rng.uniform(-w / 2, w / 2), rng.uniform(-d / 2, d / 2), 0.3), rng.uniform(7, 12), "cypress" if rng.random() < 0.6 else "pine")
             else:
-                at(a, x, y, CITY, 0.0)
-                w, d, h = rng.uniform(14, 28), rng.uniform(14, 28), rng.uniform(8, 18)
-                a.box((0, 0, h / 2), (w, d, h), a.key(rng.choice(walls)))
-                hip_roof(a, w, d, h, a.key(T.ROOF), a.key("8a3a28"), 0.5, 0.3)
+                fl = rng.choices((1, 2, 3, 4, 5, 6), (1, 4, 6, 5, 3, 1))[0]
+                insula(a, w, d, fl, rng, True, dist < 380)
+                if rng.random() < 0.25:
+                    # an annex of a different height, overlapping the main block
+                    keep = a.T
+                    a.T = a.T @ Matrix.Translation((rng.uniform(-w / 3, w / 3), rng.uniform(-d / 3, d / 3), 0))
+                    insula(a, w * rng.uniform(0.4, 0.6), d * rng.uniform(0.4, 0.6), max(1, fl + rng.choice((-2, -1, 1, 2))), rng, True, False)
+                    a.T = keep
+        elif mid:
+            fl = rng.choices((1, 2, 3, 4, 5, 7), (1, 4, 6, 4, 2, 0.6))[0]
+            h = fl * 3.4 + rng.uniform(0, 1.5)
+            wall = rng.choice(walls)
+            a.box((0, 0, h / 2), (w, d, h), a.key(wall))
+            a.box((0, 0, h - 0.2), (w + 0.4, d + 0.4, 0.4), a.key(MARBLE))
+            for f in range(fl):
+                a.box((0, d / 2 + 0.03, 1.9 + f * 3.4), (w * rng.uniform(0.6, 0.85), 0.05, 1.1), a.key("8a6a5e"))
+            if roll < 0.12:
+                a.box((0, 0, h + 0.05), (w, d, 0.1), a.key("d9c7aa"))
+                tree(a, (0, 0, h), 4, "pine")
+            elif roll < 0.18:
+                r0 = min(w, d) / 2
+                a.stack([(h + math.sin(t * math.pi / 2) * r0 * 0.8, ring(10, max(0.3, math.cos(t * math.pi / 2) * r0), max(0.3, math.cos(t * math.pi / 2) * r0)), 0, 0)
+                         for t in (0, 0.4, 0.75, 1.0)], a.key(rng.choice(("c99a45", T.ROOF))), False, True)
+            else:
+                hip_roof(a, w, d, h, a.key(rng.choice(roofs)), a.key("8a3a28"), 0.5, rng.uniform(0.18, 0.42))
+            if rng.random() < 0.06:
+                a.T = Matrix.Identity(4)
+                tree(a, (x + rng.uniform(-8, 8), y + d / 2 + 4, CITY), rng.uniform(9, 14), "cypress")
+        else:
+            h = rng.choices((5, 8, 11, 14, 18, 26), (2, 5, 5, 3, 1.5, 0.4))[0] * rng.uniform(0.85, 1.15)
+            a.box((0, 0, h / 2), (w, d, h), a.key(rng.choice(walls)))
+            if roll < 0.06:
+                r0 = min(w, d) / 2
+                a.cone((0, 0, h), r0, r0 * 0.9, a.key(rng.choice(("c99a45", "b8a890"))), 8)
+            else:
+                hip_roof(a, w, d, h, a.key(rng.choice(roofs)), a.key("8a3a28"), 0.5, rng.uniform(0.2, 0.4))
+    print("city lots:", built)
+
+    # distant skyline landmarks: domes, towers and temples among the haze
+    for _ in range(60):
+        dist = rng.uniform(1300, 6200)
+        th = rng.uniform(-half, half)
+        x, y = -math.sin(th) * dist, -math.cos(th) * dist
+        a, _ = acc(x, y)
+        at(a, x, y, CITY, rng.uniform(0, math.pi))
+        kind = rng.random()
+        if kind < 0.4:
+            r0 = rng.uniform(16, 34)
+            hh = rng.uniform(14, 26)
+            a.stack([(0, ring(12, r0, r0), 0, 0), (hh, ring(12, r0, r0), 0, 0)], a.key(rng.choice(walls)), False, False)
+            a.stack([(hh + math.sin(t * math.pi / 2) * r0 * 0.85, ring(12, max(0.5, math.cos(t * math.pi / 2) * r0), max(0.5, math.cos(t * math.pi / 2) * r0)), 0, 0)
+                     for t in (0, 0.35, 0.65, 0.88, 1.0)], a.key(rng.choice(("c99a45", "b8a890", T.ROOF))), False, True)
+        elif kind < 0.7:
+            s = rng.uniform(9, 14)
+            h = rng.uniform(40, 70)
+            a.box((0, 0, h / 2), (s, s, h), a.key(rng.choice(walls)))
+            hip_roof(a, s, s, h, a.key(T.ROOF), a.key("8a3a28"), 0.6, 0.9)
+        else:
+            a.T = a.T @ Matrix.Rotation(math.pi, 4, "Z")
+            temple(a, rng.uniform(22, 34), rng.uniform(30, 44), rng.uniform(12, 16), rng, False)
+
     for a in accs.values():
         a.T = Matrix.Identity(4)
 
@@ -175,12 +299,12 @@ def plan_city(rng):
     a, _ = acc(PLAZA.x, PLAZA.y)
     a.T = Matrix.Identity(4)
     fx, fy = PLAZA
-    a.box((fx, fy, CITY + 0.1), (72, 60, 0.2), a.key("e8ddc8"))
+    a.box((fx, fy, CITY + 0.1), (72, 60, 0.2), a.key("d8c6a6"))
     for i in range(9):
         for j in range(8):
             if (i + j) % 2 == 0:
                 a.poly([(fx - 36 + i * 8, fy - 30 + j * 7.5, CITY + 0.21), (fx - 28 + i * 8, fy - 30 + j * 7.5, CITY + 0.21),
-                        (fx - 28 + i * 8, fy - 22.5 + j * 7.5, CITY + 0.21), (fx - 36 + i * 8, fy - 22.5 + j * 7.5, CITY + 0.21)], a.key("d6c6aa"))
+                        (fx - 28 + i * 8, fy - 22.5 + j * 7.5, CITY + 0.21), (fx - 36 + i * 8, fy - 22.5 + j * 7.5, CITY + 0.21)], a.key("c8b391"))
     for side in (-1, 1):
         x0 = fx + side * 34
         for k in range(14):
@@ -197,19 +321,22 @@ def plan_city(rng):
     a.stack([(CITY + 1.2, ring(12, 10.2, 10.2), fx, fy), (CITY + 1.25, ring(12, 10.2, 10.2), fx, fy)], a.key("5aa3c4", 0.05))
     a.stack([(CITY + 1.2, ring(8, 2.6, 2.6), fx, fy), (CITY + 7.5, ring(8, 2.0, 2.0), fx, fy)], a.key(MARBLE2))
     T.arch(a, fx - 6, fy - 36, CITY, math.radians(-12))
+    for k in range(16):
+        ang = 2 * math.pi * k / 16
+        tree(a, (fx + math.cos(ang) * 30, fy + math.sin(ang) * 26, CITY + 0.2), rng.uniform(7, 10), "cypress" if k % 2 else "pine")
     a.T = Matrix.Identity(4)
     # the processional way: a colonnaded avenue with cypresses and banner poles
     ax, ay = fx, fy - 32
     bx, by = CAPITOL.x + 10, CAPITOL.y + 196
-    n = 22
+    n = 34
     for k in range(n):
         t = k / (n - 1)
         x, y = ax + (bx - ax) * t, ay + (by - ay) * t
         for sx in (-1, 1):
-            tree(a, (x + sx * 13, y, CITY), 10, "cypress")
+            tree(a, (x + sx * 7.5, y, CITY), 10, "cypress")
             if k % 3 == 1:
-                a.tube([(x + sx * 9, y, CITY), (x + sx * 9, y, CITY + 11)], [0.15, 0.12], a.key(GOLD, 0.5, 0.4), 5)
-                banner_flat(a, (x + sx * 9, y + 0.3, CITY + 10.6), 1.8, 5.0, math.pi)
+                a.tube([(x + sx * 5.5, y, CITY), (x + sx * 5.5, y, CITY + 11)], [0.15, 0.12], a.key(GOLD, 0.5, 0.4), 5)
+                banner_flat(a, (x + sx * 5.5, y + 0.3, CITY + 10.6), 1.8, 5.0, math.pi)
 
     # the capitol: a hill with arcaded terraces, a grand stair, flanking temples, the great temple on top
     a, _ = acc(CAPITOL.x, CAPITOL.y)
@@ -310,9 +437,9 @@ def plan_city(rng):
     # the aqueduct across the right, the amphitheatre on the left
     a, _ = acc(-700, -1300)
     a.T = Matrix.Identity(4)
-    aqueduct(a, (-1800, -1700, 0), (-260, -880, 0), CITY, 34)
-    a2, _ = acc(520, -900)
-    amphitheatre(a2, 520, -900, CITY, 70)
+    aqueduct(a, (-2600, -2600, 0), (-420, -1100, 0), CITY, 34)
+    a2, _ = acc(760, -1250)
+    amphitheatre(a2, 760, -1250, CITY, 80)
     return [ac.build() for ac in accs.values()]
 
 
@@ -322,12 +449,12 @@ MOUNTAIN_MATS = set()
 def horizon(rng):
     objs = []
     m = Acc("Mountains")
-    for i in range(40):
+    for i in range(26):
         t = rng.uniform(-1.0, 1.0)
-        r = rng.uniform(4200, 6200)
+        r = rng.uniform(9000, 12000)
         c = Vector((math.sin(-t) * r, -math.cos(t) * r, 0))
-        h = rng.uniform(150, 330)
-        rx, ry = rng.uniform(900, 1600), rng.uniform(500, 900)
+        h = rng.uniform(110, 260)
+        rx, ry = rng.uniform(1600, 2800), rng.uniform(800, 1400)
         col = T.rgbhex([a + (b - a) * rng.uniform(0.0, 0.35) for a, b in zip(T.hexrgb("8d7cb4"), T.hexrgb("b996b4"))])
         pts = [(c.x + math.cos(2 * math.pi * k / 7 + rng.uniform(-0.2, 0.2)) * rx, c.y + math.sin(2 * math.pi * k / 7) * ry, CITY - 5) for k in range(7)]
         peak = (c.x + rng.uniform(-150, 150), c.y + rng.uniform(-150, 150), CITY + h)
@@ -491,7 +618,7 @@ def apply_haze():
         cam = nt.nodes.new("ShaderNodeCameraData")
         mr = nt.nodes.new("ShaderNodeMapRange")
         mr.inputs["From Min"].default_value = 380.0
-        mr.inputs["From Max"].default_value = 7000.0
+        mr.inputs["From Max"].default_value = 8500.0
         mr.inputs["To Min"].default_value = 0.0
         mr.inputs["To Max"].default_value = 1.0
         pw = nt.nodes.new("ShaderNodeMath")
