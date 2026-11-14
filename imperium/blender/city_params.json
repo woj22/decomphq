@@ -1,0 +1,55 @@
+{
+ "seed": 21,
+ "footprint_m": 7000,
+ "view_half_angle_deg": 54,
+ "lot_attempts": 90000,
+ "density": {
+  "near": 1.0,
+  "mid": 0.9,
+  "far": 0.75
+ },
+ "near_limit_m": 650,
+ "mid_limit_m": 1900,
+ "height_scale": [
+  0.85,
+  1.2
+ ],
+ "footprint_scale": [
+  0.85,
+  1.15
+ ],
+ "street_width": {
+  "avenue": 11,
+  "ring": 8,
+  "alley": 4.5
+ },
+ "alleys": 480,
+ "squares": 7,
+ "tree_density": 0.08,
+ "landmark_temple": {
+  "x": -88,
+  "y": -620,
+  "hill": 20.0,
+  "scale": 1.4
+ },
+ "forum": {
+  "x": -19.5,
+  "y": -188
+ },
+ "mix_near": {
+  "small": 0.3,
+  "medium": 0.38,
+  "large": 0.16,
+  "public": 0.08,
+  "temple": 0.035,
+  "tower": 0.003,
+  "garden": 0.05,
+  "monument": 0.004
+ },
+ "haze": {
+  "start_m": 550,
+  "end_m": 9500,
+  "max": 0.72,
+  "colour": "e2b2a6"
+ }
+}

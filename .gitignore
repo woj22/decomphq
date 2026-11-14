@@ -1,3 +1,8 @@
 dist/
 game/.godot/
 build/
+__pycache__/
+*.pyc
+imperium/blend/*.blend
+!imperium/blend/roman_city_final.blend
+imperium/renders/walk_frames/

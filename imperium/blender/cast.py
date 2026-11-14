@@ -234,13 +234,15 @@ def spike(name, base, tip, r, sides=4):
     return pyramid(name, pts, tip)
 
 
-def shell(name, sections, a0, a1, thickness=0.02, segs=10):
-    """An open curved panel (cloaks, capes, beards): sections [(z, rx, ry, cx, cy)] between angles a0..a1."""
+def shell(name, sections, a0, a1, thickness=0.02, segs=10, folds=0.0):
+    """An open curved panel (cloaks, capes, beards): sections [(z, rx, ry, cx, cy)] between angles a0..a1.
+    `folds` alternates the radius of neighbouring columns, giving hanging drapery its pleats."""
     verts, faces = [], []
-    for (z, rx, ry, cx, cy) in sections:
+    for k2, (z, rx, ry, cx, cy) in enumerate(sections):
         for i in range(segs + 1):
             t = a0 + (a1 - a0) * i / segs
-            verts.append((cx + math.cos(t) * rx, cy + math.sin(t) * ry, z))
+            f = 1.0 + (folds if i % 2 else -folds) * (1.0 - k2 / max(1, len(sections) - 1) * 0.6)
+            verts.append((cx + math.cos(t) * rx * f, cy + math.sin(t) * ry * f, z))
     n = segs + 1
     for k in range(len(sections) - 1):
         for i in range(segs):
@@ -737,11 +739,18 @@ class Figure:
                 (bottom, W * 1.6, d * 2.4, 0, 0.13)]
         secs.reverse()
         a0, a1 = math.radians(-25), math.radians(205)
-        cl = shell("Cloak", secs, a0, a1, 0.025, 12)
+        royal = bool(self.s.get("royal"))
+        cl = shell("Cloak", secs, a0, a1, 0.03 if royal else 0.025, 20 if royal else 12, 0.055 if royal else 0.0)
         done(cl, col, lambda c, n: 1 if Vector((n.x, n.y, 0)).dot(Vector((c.x - self.ox, c.y - 0.05, 0)).normalized()) < -0.2 else 0, [lining])
         self.add(cl)
         hem = shell("CloakHem", [(bottom - 0.005, W * 1.61, d * 2.41, 0, 0.13), (bottom + 0.05, W * 1.585, d * 2.37, 0, 0.128)], a0, a1, 0.03, 12)
         self.add(done(hem, trim))
+        if royal:
+            # the royal cloak: a gold V from the shoulders to the middle of the back, gold edges
+            for sx in (1, -1):
+                self.add(done(tube("CloakV", [(sx * W * 0.62, d * 1.38, top - 0.02), (0.0, d * 1.95, top - 0.62)], [0.03, 0.03], 4, 0.4), trim))
+                edge = [(math.cos(t) * r[1], math.sin(t) * r[2] + r[4], r[0]) for r, t in ((secs[-1], a0 if sx < 0 else a1), (secs[0], a0 if sx < 0 else a1))]
+                self.add(done(tube("CloakEdge", edge, [0.025, 0.025], 4), trim))
         # mantle over the shoulders, open at the front
         man = shell("Mantle", [(sp["shoulder"] - 0.08, W * 1.25, d * 1.5, 0, 0.01), (sp["shoulder"] + 0.04, W * 1.0, d * 1.18, 0, 0.0),
                                (sp["neck"] + 0.03, W * 0.5, d * 0.75, 0, 0.0)], math.radians(-90 + 34), math.radians(270 - 34), 0.03, 14)
