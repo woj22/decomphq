@@ -3,7 +3,7 @@
   python build_addon.py SKIN.png [--out DIR]
 
 SKIN.png is the cow skin (64x64). The script paints a rank sash onto it in 12 colours, writes both packs, and zips them.
-The Kingdom of Vaccaria: 12 ranks of cow-folk NPCs who walk, open doors, look at you and each other, talk
+The Principality of Vaccaria: 12 ranks of cow-folk NPCs who walk, open doors, look at you and each other, talk
 (a dialogue window when you interact), and either flee danger or (guard ranks) fight hostile mobs. Ranks 1-3 are
 reserved for five named councillors who sit with you on the Emperor's council.
 """
@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "8fbdd496-9ef3-459c-84a4-4b18f4142a53", "69027871-2e46-44f8-97fd-d9c685aba689"
-VERSION = [1, 1, 0]
+VERSION = [1, 2, 0]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -119,7 +119,7 @@ def write(path, data):
 def behaviour_pack(d):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Vaccaria Council (behaviour)", "description": "The cow-folk of the Kingdom of Vaccaria: 12 ranks of humanlike NPCs.",
+        "header": {"name": "Vaccaria Council (behaviour)", "description": "The cow-folk of the Principality of Vaccaria: 12 ranks of humanlike NPCs.",
                    "uuid": BP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "data", "uuid": BP_DATA, "version": VERSION},
                     {"type": "script", "language": "javascript", "uuid": BP_SCRIPT, "entry": "scripts/main.js", "version": VERSION}],
@@ -221,36 +221,36 @@ const FAMILY = ["Hornwick", "Clovermere", "Brindle", "Moorlow", "Dunhorn", "Mead
 const LINES = {
   council: {
     "Lord Chancellor Bram Hornwick": [
-      "Majesty. When the Emperor's council sits, Vaccaria will speak with one voice: yours. I will see to it the others remember that.",
+      "Highness. When the Emperor's council sits, Vaccaria will speak with one voice: yours. I will see to it the others remember that.",
       "The other kingdoms count their legions. We count our friends. Ours is the longer list, if we are careful.",
     ],
     "High Steward Odalie Clovermere": [
-      "The treasury ledgers are in order, Majesty. If the Imperial assessors ask for more, I will show them exactly what we have, and not a coin more.",
+      "The treasury ledgers are in order, Highness. If the Imperial assessors ask for more, I will show them exactly what we have, and not a coin more.",
       "Vaccaria's granaries could feed half the province. That is a fact the Emperor's council will want to hear, and pay for.",
     ],
     "High Steward Tamsin Brindle": [
       "I have the guest lists for the council feast. Seat the southern kings far from the northern ones, and the night may end without a duel.",
-      "Your quarters in the palace are ready, Majesty. I had the cushions aired twice.",
+      "Your quarters in the palace are ready, Highness. I had the cushions aired twice.",
     ],
     "Envoy Fennick Moorlow": [
       "I have spoken to the envoys of three kingdoms this week. Two want our support. One wants our pastures. I told none of them anything.",
       "At the council, watch the Chancellor of the Treasury's hands. He taps the table before he lies.",
     ],
     "Envoy Hesper Dunhorn": [
-      "The Emperor's herald has confirmed our seats, Majesty: second row, left of the throne. Closer than last year.",
+      "The Emperor's herald has confirmed our seats, Highness: second row, left of the throne. Closer than last year.",
       "If the council calls a vote on the frontier levies, let me speak first. I know what the Legions will accept.",
     ],
   },
   rank: {
-    4: ["Justice in Vaccaria is swift and fair, Majesty. Mostly swift."],
+    4: ["Justice in Vaccaria is swift and fair, Highness. Mostly swift."],
     5: ["The roads are safe while the Knight-Wardens ride them."],
-    6: ["The Herd Guard stands ready, Majesty. Say the word."],
+    6: ["The Herd Guard stands ready, Highness. Say the word."],
     7: ["Every treaty Vaccaria ever signed is in my archive. Some of them twice."],
     8: ["Trade is good this season. The guilds send their respects, and their invoices."],
-    9: ["Keep close to the guard, Majesty. These streets are busy tonight."],
-    10: ["Hear ye! Make way for the King!"],
-    11: ["A fine day for it, Majesty."],
-    12: ["Majesty! Oh, I didn't see you there."],
+    9: ["Keep close to the guard, Highness. These streets are busy tonight."],
+    10: ["Hear ye! Make way for the Prince!"],
+    11: ["A fine day for it, Highness."],
+    12: ["Highness! Oh, I didn't see you there."],
   },
 };
 
@@ -282,8 +282,8 @@ function talk(player, entity) {
   form.show(player).then((r) => {
     if (r.canceled || r.selection === 2) return;
     const reply = r.selection === 0
-      ? "Vaccaria: green hills, deep wells and the stubbornest cattle in the Empire. We are a small kingdom, Majesty, but we are a loyal one, and the Emperor knows it."
-      : (own ? own[1] : "The council sits soon, Majesty. The Lord Chancellor and the envoys will stand beside you. The rest of us will keep the kingdom running while you are gone.");
+      ? "Vaccaria: green hills, deep wells and the stubbornest cattle in the Empire. We are a small principality, Highness, but we are a loyal one, and the Emperor knows it."
+      : (own ? own[1] : "The council sits soon, Highness. The Lord Chancellor and the envoys will stand beside you. The rest of us will keep the principality running while you are gone.");
     new ActionFormData().title(who.name).body(reply).button("Thank you").show(player);
   });
 }
