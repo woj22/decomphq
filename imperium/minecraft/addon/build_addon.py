@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "5c5a844e-3048-4853-a07f-c21dc13f39a0", "0ca0ec24-6ce0-4046-a896-a28910270aeb"   # new in 1.6.0 so worlds cannot keep an older resource pack in its place
-VERSION = [1, 7, 0]
+VERSION = [1, 8, 0]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -119,7 +119,7 @@ def write(path, data):
 def behaviour_pack(d):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - Map Lectern opens the campaign map menu; ledger; clear_maps; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
+        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - the Imperial court (16 named NPCs); Map Lectern; ledger; clear_maps; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
                    "uuid": BP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "data", "uuid": BP_DATA, "version": VERSION},
                     {"type": "script", "language": "javascript", "uuid": BP_SCRIPT, "entry": "scripts/main.js", "version": VERSION}],
@@ -417,6 +417,8 @@ def main():
     ap.add_argument("--world-map", help="world map image (512x512) for the 4x4 map wall")
     ap.add_argument("--campaign", help="campaign map image (1024x1024) for the 16x16 campaign table")
     ap.add_argument("--realm-pos", help="JSON of realm name -> [u, v] centre on the campaign map")
+    ap.add_argument("--court-pack", help="folder of the skin pack the court's skins come from")
+    ap.add_argument("--court-cast", help="JSON list of {name, file} choosing a skin for each court character")
     a = ap.parse_args()
     shutil.rmtree(a.out, ignore_errors=True)
     tex = textures(a.skin, os.path.join(a.out, "textures"))
@@ -429,6 +431,11 @@ def main():
     if a.world_map and a.campaign and a.realm_pos:
         import maps_addon
         extra = maps_addon.add_maps(bp, rp, a.world_map, a.campaign, json.load(open(a.realm_pos)))
+        with open(os.path.join(bp, "scripts", "main.js"), "a") as f:
+            f.write(extra)
+    if a.court_pack and a.court_cast:
+        import court_addon
+        extra = court_addon.add_court(bp, rp, a.court_pack, a.court_cast)
         with open(os.path.join(bp, "scripts", "main.js"), "a") as f:
             f.write(extra)
     out = os.path.join(a.out, "Vaccaria_Council_v%d.%d.%d.mcaddon" % tuple(VERSION))

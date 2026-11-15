@@ -1,0 +1,98 @@
+[
+ {
+  "name": "Emperor Aurex IV",
+  "title": "Emperor",
+  "skin": "Egyptian (1)",
+  "file": "a1687516aee335452df7c46a40b9f536.png"
+ },
+ {
+  "name": "Empress Sabine",
+  "title": "Empress",
+  "skin": "Egyptian (2)",
+  "file": "f98fc1790f0199a02e33d6593ae4a4bb.png"
+ },
+ {
+  "name": "Prince Valen",
+  "title": "Crown Prince",
+  "skin": "Spartan (1)",
+  "file": "2e541ba1b3d3d4c3f49dad574146a429.png"
+ },
+ {
+  "name": "Decimar Thane",
+  "title": "Marshal of the Legions",
+  "skin": "Roman (1)",
+  "file": "e82af7cc7ab50b9079301324ece1bbb5.png"
+ },
+ {
+  "name": "Cassia Varro",
+  "title": "Praetorian Prefect",
+  "skin": "Medieval Knight (2)",
+  "file": "b87385ed2249bde6dcf52f7c1cc693ce.png"
+ },
+ {
+  "name": "Severa Ostian",
+  "title": "Prefect of the Palace",
+  "skin": "Musketeer (2)",
+  "file": "be85c7e1acac1f4b7d33a30ddb656a42.png"
+ },
+ {
+  "name": "Nyssal Vey-Tamir",
+  "title": "Count of the Treasury (Veyari)",
+  "skin": "Siamese Cat Man",
+  "file": "464dbc0ad8b527f1f472d79484a0490b.png"
+ },
+ {
+  "name": "Sethiel Aurn",
+  "title": "Imperial Herald (Veyari)",
+  "skin": "Fox",
+  "file": "de7b8fdc57c8a948bc0cf52b31b617f3.png"
+ },
+ {
+  "name": "Korrach Venn",
+  "title": "Legate of the Auxilia (Kharad)",
+  "skin": "Rhinoceros",
+  "file": "fb33ea7d86254c9238e22b75b0785558.png"
+ },
+ {
+  "name": "Ulda Karrask",
+  "title": "Master of Works (Othari)",
+  "skin": "Hedgehog",
+  "file": "25a4e55018610319ab54297df09f1052.png"
+ },
+ {
+  "name": "Halvana Pryce",
+  "title": "Governor of Meridia",
+  "skin": "Roman (2)",
+  "file": "00472ce4d8f962a02815c52de9c538af.png"
+ },
+ {
+  "name": "Thrask Ur-Vashen",
+  "title": "King of Khar-Dumeth (Kharad)",
+  "skin": "Crocodile",
+  "file": "08593f6462671249c427e87daf8bd686.png"
+ },
+ {
+  "name": "Vashka Tor-Ilun",
+  "title": "Queen of Tor-Ilun (Kharad)",
+  "skin": "Gecko",
+  "file": "d21fd702ca38e5b427eb3296236492c3.png"
+ },
+ {
+  "name": "Ilsaveth Anorai",
+  "title": "Queen of Velithra (Veyari)",
+  "skin": "Snow Leopard",
+  "file": "cf4695456dff30510f0b24d56565151d.png"
+ },
+ {
+  "name": "Oduvar Brunnhak",
+  "title": "King of Karst Odun (Othari)",
+  "skin": "Badger",
+  "file": "5841d0014fc42f0fcf9a019d349d50fd.png"
+ },
+ {
+  "name": "Marcellan Dorr",
+  "title": "King of Lucerna",
+  "skin": "Conquistador (1)",
+  "file": "bd9e76664621f035dd27a8557c1616da.png"
+ }
+]

@@ -55,6 +55,7 @@ import { world as aw, system as asys } from "@minecraft/server";
 import { ActionFormData as AF } from "@minecraft/server-ui";
 
 const COW = "vaccaria:cow_folk";
+const isNpc = (e) => e?.typeId === "vaccaria:cow_folk" || e?.typeId === "vaccaria:courtier";
 const LEDGER = "vaccaria:ledger";
 const pending = new Map();      // player id -> { mode: "cornerA" | "cornerB" | "bed", target, a }
 const lastClick = new Map();
@@ -83,7 +84,7 @@ function copyArea(p, e) {
   const area = getJSON(e, "vaccaria:area");
   if (!area) { notify(p, "§eSet a roaming area for this one first."); return; }
   let n = 0;
-  for (const o of e.dimension.getEntities({ type: COW, location: e.location, maxDistance: 12 })) {
+  for (const o of e.dimension.getEntities({ families: ["vaccaria"], location: e.location, maxDistance: 12 })) {
     if (o.id === e.id) continue;
     setJSON(o, "vaccaria:area", area); n++;
   }
@@ -119,7 +120,7 @@ function bedAt(block) {
 }
 
 aw.afterEvents.playerInteractWithEntity.subscribe((ev) => {
-  if (ev.target?.typeId === COW && ev.itemStack?.typeId === LEDGER) menu(ev.player, ev.target);
+  if (isNpc(ev.target) && ev.itemStack?.typeId === LEDGER) menu(ev.player, ev.target);
 });
 
 aw.afterEvents.playerInteractWithBlock.subscribe((ev) => {
@@ -161,7 +162,7 @@ aw.afterEvents.itemUse.subscribe((ev) => {
     .button("Show assignments near me").button("Close")
     .show(p).then((r) => {
       if (r.canceled || r.selection !== 0) return;
-      const near = p.dimension.getEntities({ type: COW, location: p.location, maxDistance: 32 });
+      const near = p.dimension.getEntities({ families: ["vaccaria"], location: p.location, maxDistance: 32 });
       near.forEach(show);
       notify(p, `§6Showing ${near.length} cow-folk within 32 blocks.`);
     });
@@ -181,12 +182,12 @@ asys.afterEvents.scriptEventReceive.subscribe((ev) => {
   const p = ev.sourceEntity;
   if (!p || p.typeId !== "minecraft:player") return;
   if (ev.id === "vaccaria:follow") {
-    const near = p.dimension.getEntities({ type: COW, location: p.location, maxDistance: 10 });
+    const near = p.dimension.getEntities({ families: ["vaccaria"], location: p.location, maxDistance: 10 });
     near.forEach((e) => startFollowing(e, p));
     notify(p, `§6${near.length} cow-folk fall in behind you.`);
   } else if (ev.id === "vaccaria:stay") {
     let n = 0;
-    for (const e of p.dimension.getEntities({ type: COW })) if (e.getDynamicProperty("vaccaria:follow") === p.id) { stopFollowing(e); n++; }
+    for (const e of p.dimension.getEntities({ families: ["vaccaria"] })) if (e.getDynamicProperty("vaccaria:follow") === p.id) { stopFollowing(e); n++; }
     notify(p, `§6${n} cow-folk return to their posts.`);
   }
 });
@@ -209,7 +210,7 @@ function steer(e, p) {
 }
 asys.runInterval(() => {
   for (const p of aw.getAllPlayers()) {
-    for (const e of p.dimension.getEntities({ type: COW, location: p.location, maxDistance: 64 })) {
+    for (const e of p.dimension.getEntities({ families: ["vaccaria"], location: p.location, maxDistance: 64 })) {
       if (e.getDynamicProperty("vaccaria:follow") === p.id) { try { steer(e, p); } catch (x) { } }
     }
   }
@@ -219,7 +220,7 @@ asys.runInterval(() => {
 function tend(e, night) {
   const tag = e.nameTag;
   if (tag && OLD_NAMES[tag]) e.nameTag = OLD_NAMES[tag];
-  else if (tag && tag.includes(" ") && !COUNCIL[tag]) e.nameTag = tag.split(" ")[0];
+  else if (tag && tag.includes(" ") && !COUNCIL[tag] && e.typeId === COW) e.nameTag = tag.split(" ")[0];
   if (e.getDynamicProperty("vaccaria:follow")) {          // followers keep company with their player, not their routine
     const owner = aw.getAllPlayers().find((q) => q.id === e.getDynamicProperty("vaccaria:follow"));
     if (owner) return;
@@ -257,7 +258,7 @@ asys.runInterval(() => {
   for (const id of ["overworld", "nether", "the_end"]) {
     let d;
     try { d = aw.getDimension(id); } catch (x) { continue; }
-    for (const e of d.getEntities({ type: COW })) {
+    for (const e of d.getEntities({ families: ["vaccaria"] })) {
       try { tend(e, night); } catch (x) { }
     }
   }
