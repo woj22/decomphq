@@ -62,7 +62,9 @@ def work(args):
             wet.append(k == 'WATER')
         return ids[n]
     out = []
-    for cx, cz, hmb in chunks:
+    for n_, (cx, cz, hmb) in enumerate(chunks):
+        if n_ % 5000 == 0:
+            print(dbdir[-4:], n_, len(chunks), flush=True)
         top = np.frombuffer(hmb, dtype='<i2', count=256).reshape(16, 16).T.astype(np.int32) - 1
         ylo, yhi = int(top.min()) - 40, int(top.max()) + 1
         layers = []
@@ -106,9 +108,11 @@ def main(dbdir, out, ncpu=4, limit=None):
             os.system('cp -r "%s" "%s"' % (dbdir, d))
         dirs.append(d)
     res = []
-    with mp.Pool(ncpu) as pool:
-        for r in pool.imap_unordered(work, [(dirs[i], chunks[i::ncpu]) for i in range(ncpu)]):
+    with mp.get_context("spawn").Pool(ncpu) as pool:
+        parts = [(dirs[i], chunks[i::ncpu]) for i in range(ncpu)]
+        for r in pool.imap_unordered(work, parts):
             res += r
+            print("progress", len(res), "%.0fs" % (time.time() - t), flush=True)
     import pickle
     pickle.dump(res, open(out, 'wb'))
     print('chunks', len(res), '%.0fs' % (time.time() - t))
