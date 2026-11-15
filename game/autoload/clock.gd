@@ -39,9 +39,11 @@ func advance(m: int, _reason: String = "") -> void:
 
 
 signal night_changed(night: bool)
+signal hour_changed(hour: int)
 
 var _rt_acc := 0.0
 var _was_night := false
+var _last_hour := -1
 
 
 func is_night() -> bool:
@@ -80,6 +82,9 @@ func tick(m: int) -> void:
 
 
 func _check_night() -> void:
+	if hour() != _last_hour:
+		_last_hour = hour()
+		hour_changed.emit(_last_hour)
 	var n := is_night()
 	if n != _was_night:
 		_was_night = n
@@ -124,3 +129,21 @@ func from_dict(d: Dictionary) -> void:
 	total_minutes = int(d.get("total", 0))
 	_was_night = is_night()
 	EventBus.clock_ticked.emit(day, minutes)
+
+
+## True if `h` (default: now) falls in a [from, to) hour range or list of ranges; ranges may wrap midnight.
+func in_hours(hours: Variant, h: int = -1) -> bool:
+	var hh := hour() if h < 0 else h
+	var ranges: Array = []
+	if hours is Array and not (hours as Array).is_empty() and (hours as Array)[0] is Array:
+		ranges = hours
+	elif hours is Array and (hours as Array).size() == 2:
+		ranges = [hours]
+	for r: Variant in ranges:
+		var a := int((r as Array)[0])
+		var b := int((r as Array)[1])
+		if a < b and hh >= a and hh < b:
+			return true
+		if a > b and (hh >= a or hh < b):
+			return true
+	return false

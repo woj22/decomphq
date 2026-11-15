@@ -1,0 +1,21 @@
+{
+ "id": "dlg_cook",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The cauldron holds the Refectory's only dish: a grey broth the menu calls 'Remembrance'.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "It tastes of whatever you last ate alive. Yours is bread and pears. You feel steadier.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "heal"
+    }
+   ]
+  }
+ }
+}

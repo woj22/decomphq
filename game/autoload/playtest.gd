@@ -341,6 +341,15 @@ func run_step(s: Dictionary) -> bool:
 		"open_settings":
 			main._menu(SettingsScreen.new())
 			await frames(3)
+		"kill_boss":
+			for e: Variant in Combat.enemies.duplicate():
+				if is_instance_valid(e) and (e as Enemy).boss_flag != "":
+					(e as Enemy).take_hit(99999.0)
+			await frames(3)
+		"set_rank":
+			GameState.set_rank(int(s.get("value", 2)))
+			await frames(2)
+			await drain()
 		"set_flag":
 			GameState.set_flag(str(s["id"]), s.get("value", true))
 		"leave_desk":

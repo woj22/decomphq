@@ -1,0 +1,176 @@
+{
+ "id": "area_room0",
+ "name": "Room 0",
+ "size": [
+  12,
+  10
+ ],
+ "ambience": "amb_hell",
+ "backdrop": "none",
+ "grid": [
+  "############",
+  "#.g.g..g.g.k",
+  "#..........k",
+  "#....e.....k",
+  "#S........Sk",
+  "#..........k",
+  "#..........k",
+  "#.g......g.k",
+  "#..........k",
+  "kkkkkDkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  },
+  "g": {
+   "kind": "prop",
+   "prop": "ledger_stack",
+   "solid": true
+  },
+  "e": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [],
+ "decor": [
+  {
+   "sprite": "ink_puddle",
+   "cell": [
+    3,
+    5
+   ]
+  },
+  {
+   "sprite": "ink_puddle",
+   "cell": [
+    8,
+    6
+   ]
+  },
+  {
+   "sprite": "light_pool_red",
+   "cell": [
+    5,
+    5
+   ]
+  },
+  {
+   "sprite": "rug_red",
+   "cell": [
+    5,
+    5
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_room0_out",
+   "type": "door",
+   "cell": [
+    5,
+    9
+   ],
+   "use_cell": [
+    5,
+    8
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_office_auditor",
+    "spawn": "from_room0"
+   }
+  }
+ ],
+ "spawns": {
+  "default": [
+   5,
+   8
+  ],
+  "from_office": [
+   5,
+   8
+  ]
+ },
+ "zones": {},
+ "hostiles": {
+  "spawn_cells": [
+   [
+    5,
+    2
+   ]
+  ],
+  "boss_cell": [
+   5,
+   2
+  ],
+  "breakout_every": [
+   9999,
+   9999
+  ],
+  "max_enemies": 10,
+  "defenders": [
+   {
+    "id": "odalys",
+    "cell": [
+     3,
+     7
+    ],
+    "sprite": "chr_odalys",
+    "night_sprite": "chr_odalys",
+    "hp": 140
+   },
+   {
+    "id": "quill",
+    "cell": [
+     7,
+     7
+    ],
+    "sprite": "chr_guard_night",
+    "night_sprite": "chr_guard_night",
+    "hp": 180,
+    "flag": "flag_quill_ally"
+   }
+  ]
+ },
+ "ambient": {
+  "desk_clerks": [],
+  "staff": [],
+  "flows": []
+ },
+ "ext": {
+  "note": "Act III boss: Auditor-General Corvin Thrace."
+ }
+}

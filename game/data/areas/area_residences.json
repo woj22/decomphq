@@ -1,0 +1,501 @@
+{
+ "id": "area_residences",
+ "name": "The Residence Gallery",
+ "size": [
+  26,
+  7
+ ],
+ "ambience": "amb_chamber",
+ "backdrop": "none",
+ "grid": [
+  "##D##D##D##D##D##D##D##D##",
+  "#..i.....i.....i.....i...k",
+  "#........................k",
+  "D........................k",
+  "#........................k",
+  "#........................k",
+  "kkkkkkkkkkkkkkkkkkkkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "n": {
+   "kind": "prop",
+   "prop": "bed",
+   "solid": true
+  },
+  "w": {
+   "kind": "prop",
+   "prop": "washstand",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "e": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "o": {
+   "kind": "prop",
+   "prop": "stool",
+   "solid": false
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  },
+  "W": {
+   "kind": "prop",
+   "prop": "wardrobe",
+   "solid": true
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "coffer",
+   "solid": true
+  },
+  "T": {
+   "kind": "prop",
+   "prop": "long_table",
+   "solid": true
+  },
+  "=": {
+   "kind": "prop",
+   "prop": "bench_long",
+   "solid": false
+  },
+  "p": {
+   "kind": "prop",
+   "prop": "pew",
+   "solid": true
+  },
+  "A": {
+   "kind": "prop",
+   "prop": "altar",
+   "solid": true
+  },
+  "i": {
+   "kind": "prop",
+   "prop": "candle_stand",
+   "solid": true
+  },
+  "M": {
+   "kind": "prop",
+   "prop": "map_table",
+   "solid": true
+  },
+  "H": {
+   "kind": "prop",
+   "prop": "throne",
+   "solid": true
+  },
+  "g": {
+   "kind": "prop",
+   "prop": "ledger_stack",
+   "solid": true
+  },
+  "s": {
+   "kind": "prop",
+   "prop": "infirmary_screen",
+   "solid": true
+  },
+  "b": {
+   "kind": "prop",
+   "prop": "bookcase_low",
+   "solid": true
+  },
+  "u": {
+   "kind": "prop",
+   "prop": "cauldron",
+   "solid": true
+  },
+  "x": {
+   "kind": "prop",
+   "prop": "chain_post",
+   "solid": true
+  },
+  "R": {
+   "kind": "prop",
+   "prop": "brazier_hell",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [],
+ "decor": [
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    3,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    9,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    15,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    21,
+    2
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    12,
+    0
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_res_court",
+   "type": "door",
+   "cell": [
+    0,
+    3
+   ],
+   "use_cell": [
+    1,
+    3
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_clerks_court",
+    "spawn": "from_dorm"
+   }
+  },
+  {
+   "id": "door_res_marrow",
+   "type": "door",
+   "cell": [
+    2,
+    0
+   ],
+   "use_cell": [
+    2,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_room_marrow",
+    "spawn": "from_gallery"
+   }
+  },
+  {
+   "id": "door_res_wren",
+   "type": "door",
+   "cell": [
+    5,
+    0
+   ],
+   "use_cell": [
+    5,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_room_wren",
+    "spawn": "from_gallery"
+   }
+  },
+  {
+   "id": "door_res_grist",
+   "type": "door",
+   "cell": [
+    8,
+    0
+   ],
+   "use_cell": [
+    8,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_room_grist",
+    "spawn": "from_gallery"
+   }
+  },
+  {
+   "id": "door_res_dorcas",
+   "type": "door",
+   "cell": [
+    11,
+    0
+   ],
+   "use_cell": [
+    11,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_room_dorcas",
+    "spawn": "from_gallery"
+   }
+  },
+  {
+   "id": "door_res_ysolde",
+   "type": "door",
+   "cell": [
+    14,
+    0
+   ],
+   "use_cell": [
+    14,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_room_ysolde",
+    "spawn": "from_gallery"
+   }
+  },
+  {
+   "id": "door_res_quill",
+   "type": "door",
+   "cell": [
+    17,
+    0
+   ],
+   "use_cell": [
+    17,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_room_quill",
+    "spawn": "from_gallery"
+   }
+  },
+  {
+   "id": "door_res_player",
+   "type": "door",
+   "cell": [
+    20,
+    0
+   ],
+   "use_cell": [
+    20,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_room_player",
+    "spawn": "from_gallery"
+   }
+  },
+  {
+   "id": "door_res_dormitory",
+   "type": "door",
+   "cell": [
+    23,
+    0
+   ],
+   "use_cell": [
+    23,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_dormitory",
+    "spawn": "from_gallery"
+   }
+  },
+  {
+   "id": "obj_occupied_0",
+   "type": "inspect",
+   "cell": [
+    4,
+    6
+   ],
+   "use_cell": [
+    4,
+    5
+   ],
+   "dialogue": "dlg_occupied",
+   "verb": "Knock"
+  },
+  {
+   "id": "obj_occupied_1",
+   "type": "inspect",
+   "cell": [
+    9,
+    6
+   ],
+   "use_cell": [
+    9,
+    5
+   ],
+   "dialogue": "dlg_occupied",
+   "verb": "Knock"
+  },
+  {
+   "id": "obj_occupied_2",
+   "type": "inspect",
+   "cell": [
+    14,
+    6
+   ],
+   "use_cell": [
+    14,
+    5
+   ],
+   "dialogue": "dlg_occupied",
+   "verb": "Knock"
+  },
+  {
+   "id": "obj_occupied_3",
+   "type": "inspect",
+   "cell": [
+    19,
+    6
+   ],
+   "use_cell": [
+    19,
+    5
+   ],
+   "dialogue": "dlg_occupied",
+   "verb": "Knock"
+  }
+ ],
+ "spawns": {
+  "default": [
+   1,
+   3
+  ],
+  "from_court": [
+   1,
+   3
+  ],
+  "from_marrow": [
+   2,
+   1
+  ],
+  "from_wren": [
+   5,
+   1
+  ],
+  "from_grist": [
+   8,
+   1
+  ],
+  "from_dorcas": [
+   11,
+   1
+  ],
+  "from_ysolde": [
+   14,
+   1
+  ],
+  "from_quill": [
+   17,
+   1
+  ],
+  "from_player": [
+   20,
+   1
+  ],
+  "from_dormitory": [
+   23,
+   1
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "flows": [],
+  "staff": [
+   {
+    "sprite": "chr_clerk_grey",
+    "count": 2,
+    "rect": [
+     1,
+     2,
+     24,
+     5
+    ],
+    "hours": [
+     [
+      6,
+      9
+     ],
+     [
+      20,
+      23
+     ]
+    ]
+   },
+   {
+    "sprite": "chr_clerk_lilac",
+    "count": 1,
+    "rect": [
+     1,
+     2,
+     24,
+     5
+    ],
+    "hours": [
+     [
+      6,
+      9
+     ],
+     [
+      20,
+      23
+     ]
+    ]
+   },
+   {
+    "sprite": "chr_guard_night",
+    "count": 1,
+    "rect": [
+     1,
+     2,
+     24,
+     5
+    ],
+    "hours": [
+     23,
+     6
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,297 @@
+{
+ "id": "area_diplomatic",
+ "name": "The Diplomatic Quarter",
+ "size": [
+  16,
+  7
+ ],
+ "ambience": "amb_chamber",
+ "backdrop": "none",
+ "grid": [
+  "####D######D####",
+  "#.i.....i....i.k",
+  "#..............k",
+  "#..............D",
+  "#..............k",
+  "#..............k",
+  "kkkkkkkkkkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "n": {
+   "kind": "prop",
+   "prop": "bed",
+   "solid": true
+  },
+  "w": {
+   "kind": "prop",
+   "prop": "washstand",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "e": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "o": {
+   "kind": "prop",
+   "prop": "stool",
+   "solid": false
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  },
+  "W": {
+   "kind": "prop",
+   "prop": "wardrobe",
+   "solid": true
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "coffer",
+   "solid": true
+  },
+  "T": {
+   "kind": "prop",
+   "prop": "long_table",
+   "solid": true
+  },
+  "=": {
+   "kind": "prop",
+   "prop": "bench_long",
+   "solid": false
+  },
+  "p": {
+   "kind": "prop",
+   "prop": "pew",
+   "solid": true
+  },
+  "A": {
+   "kind": "prop",
+   "prop": "altar",
+   "solid": true
+  },
+  "i": {
+   "kind": "prop",
+   "prop": "candle_stand",
+   "solid": true
+  },
+  "M": {
+   "kind": "prop",
+   "prop": "map_table",
+   "solid": true
+  },
+  "H": {
+   "kind": "prop",
+   "prop": "throne",
+   "solid": true
+  },
+  "g": {
+   "kind": "prop",
+   "prop": "ledger_stack",
+   "solid": true
+  },
+  "s": {
+   "kind": "prop",
+   "prop": "infirmary_screen",
+   "solid": true
+  },
+  "b": {
+   "kind": "prop",
+   "prop": "bookcase_low",
+   "solid": true
+  },
+  "u": {
+   "kind": "prop",
+   "prop": "cauldron",
+   "solid": true
+  },
+  "x": {
+   "kind": "prop",
+   "prop": "chain_post",
+   "solid": true
+  },
+  "R": {
+   "kind": "prop",
+   "prop": "brazier_hell",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [],
+ "decor": [
+  {
+   "sprite": "banner_gold",
+   "cell": [
+    2,
+    0
+   ]
+  },
+  {
+   "sprite": "banner_gold",
+   "cell": [
+    6,
+    0
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    9,
+    0
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    13,
+    0
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    4,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_red",
+   "cell": [
+    11,
+    2
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_dq_cloister",
+   "type": "door",
+   "cell": [
+    15,
+    3
+   ],
+   "use_cell": [
+    14,
+    3
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_upper_cloister",
+    "spawn": "from_diplomatic"
+   }
+  },
+  {
+   "id": "door_dq_auric",
+   "type": "door",
+   "cell": [
+    4,
+    0
+   ],
+   "use_cell": [
+    4,
+    1
+   ],
+   "style": "gilt",
+   "to": {
+    "area": "area_legation_auric",
+    "spawn": "from_quarter"
+   }
+  },
+  {
+   "id": "door_dq_dominion",
+   "type": "door",
+   "cell": [
+    11,
+    0
+   ],
+   "use_cell": [
+    11,
+    1
+   ],
+   "style": "ember",
+   "to": {
+    "area": "area_legation_dominion",
+    "spawn": "from_quarter"
+   }
+  }
+ ],
+ "spawns": {
+  "default": [
+   14,
+   3
+  ],
+  "from_cloister": [
+   14,
+   3
+  ],
+  "from_auric": [
+   4,
+   1
+  ],
+  "from_dominion": [
+   11,
+   1
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "flows": [],
+  "staff": [
+   {
+    "sprite": "chr_ashgrove",
+    "count": 1,
+    "rect": [
+     1,
+     2,
+     7,
+     5
+    ],
+    "hours": [
+     9,
+     12
+    ]
+   },
+   {
+    "sprite": "chr_guard",
+    "count": 2,
+    "rect": [
+     1,
+     2,
+     14,
+     5
+    ],
+    "always": true
+   }
+  ]
+ }
+}

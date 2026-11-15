@@ -1,0 +1,12 @@
+{
+ "id": "npc_vael",
+ "name": "Seraphine Vael",
+ "title": "Archon of the Lustrants",
+ "sprite": "chr_vael",
+ "portrait": "por_vael",
+ "dialogue": [
+  {
+   "id": "dlg_vael"
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "id": "dlg_provost_commission",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_provost",
+   "text": "Oh. Oh dear. Oh dear, oh dear. I signed - I sign everything, you understand -",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_provost",
+   "text": "Very well. Very well! Chief Commissioner of the Border. There. Signed. Read, even. Please don't tell anyone I read it.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_rank",
+     "value": 4
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_act4_glut"
+    }
+   ]
+  }
+ }
+}

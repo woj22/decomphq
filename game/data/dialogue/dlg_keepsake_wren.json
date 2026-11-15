@@ -1,0 +1,16 @@
+{
+ "id": "dlg_keepsake_wren",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "Under the mattress: a sheaf of slips, each with a soul's name and a verdict, in a hand that is not Wren's.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "The ink is violet. You put them back exactly as you found them.",
+   "next": "end"
+  }
+ }
+}

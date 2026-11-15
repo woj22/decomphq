@@ -16,6 +16,7 @@ const SIGNAL_ARGS := {
 	"objective_changed": ["objective_id"],
 	"case_seated": ["case_id"],
 	"case_judged": ["case_id", "verdict"],
+	"flag_changed": ["flag_id", "value"],
 }
 
 var enabled := true

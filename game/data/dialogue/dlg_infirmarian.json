@@ -1,0 +1,46 @@
+{
+ "id": "dlg_infirmarian",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_infirmarian",
+   "text": "Torn again? Souls do not bleed, but they fray. Sit. Two obols, and do try to keep your edges on.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Mend me (2 obols).",
+     "next": "mend",
+     "conditions": [
+      {
+       "op": "stat_gte",
+       "id": "purse",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "text": "Just visiting.",
+     "next": "end"
+    }
+   ]
+  },
+  "mend": {
+   "speaker": "npc_infirmarian",
+   "text": "There. Whole-ish. If you get dragged in from the Gate again I am charging double.",
+   "effects": [
+    {
+     "op": "add_stat",
+     "id": "purse",
+     "value": -2
+    },
+    {
+     "op": "heal"
+    }
+   ],
+   "next": "end"
+  }
+ }
+}

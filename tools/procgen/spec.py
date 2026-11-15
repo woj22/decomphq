@@ -93,6 +93,24 @@ for i in range(3):
     S(f'floor_brimstone_{i}', 'tiles', (64, 32), (32, 16), 'floor', 'pil')
 S('rune_circle', 'tiles', (192, 96), (96, 48), 'decal', 'pil', footprint=[3, 3])
 
+# map expansion props
+S('long_table', 'props', (64, 56), (32, 40), job='rooms', **P)
+S('bench_long', 'props', (64, 40), (32, 26), job='rooms', **dict(P, solid=False))
+S('pew', 'props', (64, 56), (32, 40), job='rooms', **P)
+S('altar', 'props', (64, 80), (32, 60), job='rooms', **P)
+S('candle_stand', 'props', (32, 48), (16, 40), job='rooms', frames=4, fps=6, **P)
+S('wardrobe', 'props', (64, 112), (32, 96), job='rooms', **P)
+S('coffer', 'props', (64, 48), (32, 34), job='rooms', **P)
+S('map_table', 'props', (64, 64), (32, 46), job='rooms', **P)
+S('throne', 'props', (64, 128), (32, 112), job='rooms', **P)
+S('ledger_stack', 'props', (32, 40), (16, 32), job='rooms', **P)
+S('banner_gold', 'props', (32, 64), (16, 72), job='banner', frames=2, fps=2, **dict(P, solid=False))
+S('infirmary_screen', 'props', (64, 80), (32, 62), job='rooms', **P)
+S('bookcase_low', 'props', (64, 72), (32, 56), job='rooms', **P)
+S('fireplace_x', 'walls', (64, 128), (32, 112), 'wall', job='rooms', solid=True, frames=4, fps=6)
+S('rug_red', 'tiles', (128, 64), (64, 32), 'decal', 'pil', footprint=[2, 2], solid=False)
+S('rug_gold', 'tiles', (128, 64), (64, 32), 'decal', 'pil', footprint=[2, 2], solid=False)
+
 # ---------------------------------------------------------------- fx (numpy)
 S('shadow_blob', 'fx', (32, 16), (16, 8), 'fx', 'pil')
 S('select_ring', 'fx', (32, 16), (16, 8), 'fx', 'pil', frames=4, fps=8)
@@ -107,6 +125,10 @@ S('spell_nova_charged', 'fx', (192, 96), (96, 48), 'fx', 'pil', frames=6, fps=12
 S('impact_spark', 'fx', (32, 32), (16, 24), 'fx', 'pil', frames=4, fps=16)
 S('demon_slash', 'fx', (32, 32), (16, 24), 'fx', 'pil', frames=3, fps=12)
 S('hell_glow', 'fx', (192, 96), (96, 48), 'fx', 'pil', additive=True)
+S('violet_bolt', 'fx', (32, 16), (16, 8), 'fx', 'pil', frames=4, fps=12)
+S('holy_beam', 'fx', (32, 96), (16, 88), 'fx', 'pil', frames=4, fps=12, additive=True)
+S('hellfire_burst', 'fx', (96, 48), (48, 32), 'fx', 'pil', frames=6, fps=12, additive=True)
+S('ink_puddle', 'fx', (64, 32), (32, 16), 'decal', 'pil', frames=4, fps=6)
 
 # ---------------------------------------------------------------- characters
 CHAR_ANIMS = {
@@ -115,18 +137,28 @@ CHAR_ANIMS = {
     'soul':  [('idle', 4, 4), ('walk', 4, 8)],
     'demon': [('idle', 2, 3), ('walk', 4, 8), ('attack', 3, 10), ('hit', 1, 1)],
     'brute': [('idle', 2, 3), ('walk', 4, 8), ('attack', 3, 10), ('hit', 1, 1)],
+    'boss':  [('idle', 2, 2), ('walk', 4, 8), ('cast', 3, 10), ('hit', 1, 1)],
+    'glut':  [('idle', 2, 2), ('walk', 4, 8), ('attack', 3, 10), ('cast', 3, 10), ('hit', 1, 1)],
+    'wraith': [('idle', 2, 3), ('walk', 4, 8), ('attack', 3, 10), ('hit', 1, 1)],
+    'walker': [('idle', 2, 2), ('walk', 4, 8)],
 }
 CHARS = {
     'chr_player': 'std', 'chr_player_r2': 'std', 'chr_clerk_grey': 'std', 'chr_clerk_lilac': 'std',
     'chr_archivist': 'std', 'chr_guard': 'guard',
     'chr_soul_0': 'soul', 'chr_soul_1': 'soul', 'chr_soul_2': 'soul', 'chr_soul_3': 'soul',
     'chr_guard_night': 'guard', 'chr_sorcerer': 'std', 'chr_demon': 'demon', 'chr_demon_brute': 'brute',
+    'chr_thrace': 'boss', 'chr_vael': 'boss', 'chr_glut': 'glut', 'chr_ink_wraith': 'wraith',
+    'chr_provost': 'std', 'chr_crake': 'walker', 'chr_ashgrove': 'walker', 'chr_smoulder': 'walker', 'chr_odalys': 'std',
 }
+CID_CELL = {'chr_thrace': ((40, 64), (20, 56)), 'chr_vael': ((56, 72), (28, 64)), 'chr_glut': ((72, 88), (36, 80)),
+            'chr_ink_wraith': ((40, 56), (20, 48)), 'chr_crake': ((32, 64), (16, 56)), 'chr_ashgrove': ((40, 56), (20, 48))}
 CHAR_CELL = {'guard': (32, 64), 'demon': (48, 64), 'brute': (64, 80)}
 CHAR_ORIGIN = {'guard': (16, 56), 'demon': (24, 56), 'brute': (32, 72)}
 
 
 def char_cell(cid):
+    if cid in CID_CELL:
+        return CID_CELL[cid]
     t = CHARS[cid]
     return CHAR_CELL.get(t, (32, 56)), CHAR_ORIGIN.get(t, (16, 48))
 
@@ -134,7 +166,15 @@ def char_cell(cid):
 # ---------------------------------------------------------------- portraits / busts (rendered from the rig)
 CASE_SOULS = ['s001', 's002', 's003', 's004', 's007', 's008']
 EXPRESSIONS = ['neutral', 'distressed', 'relieved']
-PORTRAITS = ['por_marrow', 'por_pell', 'por_wren', 'por_grist', 'por_registrar', 'por_works', 'por_soul', 'por_nan', 'por_oddy']
+PORTRAITS = ['por_marrow', 'por_pell', 'por_wren', 'por_grist', 'por_registrar', 'por_works', 'por_soul', 'por_nan', 'por_oddy',
+             'por_thrace', 'por_vael', 'por_glut', 'por_provost', 'por_crake', 'por_ashgrove', 'por_smoulder', 'por_odalys',
+             'por_ysolde', 'por_quill']
+# portrait rig base, camera target z (head height); faces of 'bare' heads are modelled, not drawn
+PORTRAIT_NEW = {'por_thrace': ('chr_thrace', .93), 'por_vael': ('chr_vael', 1.0), 'por_glut': ('chr_glut', 1.12),
+                'por_provost': ('chr_provost', .7), 'por_crake': ('chr_crake', .78), 'por_ashgrove': ('chr_ashgrove', .7),
+                'por_smoulder': ('chr_smoulder', .64), 'por_odalys': ('chr_odalys', .7), 'por_ysolde': ('chr_sorcerer', .74),
+                'por_quill': ('chr_quill_portrait', .7)}
+VIOLET_OK = ['chr_ink_wraith', 'violet_bolt']   # sprites allowed the reserved Room-0 violet #8b3fd9
 
 AUDIO = ['sfx_tap', 'sfx_page', 'sfx_quill', 'sfx_door', 'sfx_stamp', 'sfx_bell', 'sfx_link',
          'amb_court', 'amb_hall', 'amb_records', 'amb_booths', 'amb_chamber',

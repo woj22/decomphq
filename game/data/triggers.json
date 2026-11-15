@@ -774,7 +774,229 @@
    },
    {
     "op": "spawn_boss",
-    "flag": "flag_captain_dead"
+    "flag": "flag_captain_dead",
+    "kind": "captain"
+   }
+  ]
+ },
+ {
+  "id": "trg_act2_captain",
+  "on": "flag_changed",
+  "match": {
+   "flag_id": "flag_captain_dead"
+  },
+  "conditions": [],
+  "once": true,
+  "effects": [
+   {
+    "op": "show_card",
+    "title": "The Manifest",
+    "text": "The Captain dissolves into ash. Its ledger is bound in violet, countersigned: C. Thrace, Auditor-General."
+   },
+   {
+    "op": "set_objective",
+    "id": "obj_report_pell"
+   }
+  ]
+ },
+ {
+  "id": "trg_act3_rank",
+  "on": "shift_ended",
+  "match": {},
+  "once": true,
+  "conditions": [
+   {
+    "op": "flag",
+    "id": "flag_story_c4"
+   },
+   {
+    "op": "rank_gte",
+    "value": 2
+   },
+   {
+    "op": "not",
+    "of": {
+     "op": "rank_gte",
+     "value": 3
+    }
+   },
+   {
+    "op": "stat_gte",
+    "id": "cases_processed",
+    "value": 11
+   }
+  ],
+  "effects": [
+   {
+    "op": "show_card",
+    "title": "Department Supervisor",
+    "text": "Marrow's note: 'They are promoting you to keep you busy. Be busier than they expect.'"
+   },
+   {
+    "op": "set_rank",
+    "value": 3
+   },
+   {
+    "op": "set_flag",
+    "id": "flag_act3",
+    "value": true
+   },
+   {
+    "op": "set_objective",
+    "id": "obj_act3_back"
+   }
+  ]
+ },
+ {
+  "id": "trg_act3_room0",
+  "on": "area_entered",
+  "match": {
+   "area_id": "area_room0"
+  },
+  "once": false,
+  "conditions": [
+   {
+    "op": "not_flag",
+    "id": "flag_thrace_defeated"
+   }
+  ],
+  "effects": [
+   {
+    "op": "show_card",
+    "title": "Room 0",
+    "text": "Thrace looks up from a violet ledger. 'You should not be here. Neither should I. Somebody has to be.'"
+   },
+   {
+    "op": "spawn_boss",
+    "flag": "flag_thrace_defeated",
+    "kind": "thrace"
+   }
+  ]
+ },
+ {
+  "id": "trg_act3_thrace",
+  "on": "flag_changed",
+  "match": {
+   "flag_id": "flag_thrace_defeated"
+  },
+  "once": true,
+  "conditions": [],
+  "effects": [
+   {
+    "op": "show_card",
+    "title": "The Quota Compact",
+    "text": "Room 0's ledger: a Compact fixing souls each way, signed by Archon Vael and Baron Glut."
+   },
+   {
+    "op": "set_objective",
+    "id": "obj_act4_crake"
+   }
+  ]
+ },
+ {
+  "id": "trg_act4_glut",
+  "on": "area_entered",
+  "match": {
+   "area_id": "area_counting_house"
+  },
+  "once": false,
+  "conditions": [
+   {
+    "op": "rank_gte",
+    "value": 4
+   },
+   {
+    "op": "is_night"
+   },
+   {
+    "op": "not_flag",
+    "id": "flag_glut_defeated"
+   }
+  ],
+  "effects": [
+   {
+    "op": "show_card",
+    "title": "Quota Night",
+    "text": "Glut, beaming: 'An audit! How thrilling. Let's settle the account the old way.'"
+   },
+   {
+    "op": "spawn_boss",
+    "flag": "flag_glut_defeated",
+    "kind": "glut"
+   }
+  ]
+ },
+ {
+  "id": "trg_act4_glut_down",
+  "on": "flag_changed",
+  "match": {
+   "flag_id": "flag_glut_defeated"
+  },
+  "once": true,
+  "conditions": [],
+  "effects": [
+   {
+    "op": "show_card",
+    "title": "The Furnace Cools",
+    "text": "Crake seals the Guild's books. 'One signature left, Commissioner. The other half of heaven's choir.'"
+   },
+   {
+    "op": "set_objective",
+    "id": "obj_act4_vael"
+   }
+  ]
+ },
+ {
+  "id": "trg_act4_vael",
+  "on": "area_entered",
+  "match": {
+   "area_id": "area_legation_auric"
+  },
+  "once": false,
+  "conditions": [
+   {
+    "op": "flag",
+    "id": "flag_glut_defeated"
+   },
+   {
+    "op": "not_flag",
+    "id": "flag_vael_defeated"
+   }
+  ],
+  "effects": [
+   {
+    "op": "show_card",
+    "title": "The Choir",
+    "text": "Vael rises, wings opening. 'You counted wrongly, Commissioner. Let me show you how it is done.'"
+   },
+   {
+    "op": "spawn_boss",
+    "flag": "flag_vael_defeated",
+    "kind": "vael"
+   }
+  ]
+ },
+ {
+  "id": "trg_act4_vael_down",
+  "on": "flag_changed",
+  "match": {
+   "flag_id": "flag_vael_defeated"
+  },
+  "once": true,
+  "conditions": [],
+  "effects": [
+   {
+    "op": "show_card",
+    "title": "The Chair Offered",
+    "text": "The Compact is broken. By morning the Provost has resigned and the seal on the Chair has been lifted."
+   },
+   {
+    "op": "set_rank",
+    "value": 5
+   },
+   {
+    "op": "set_objective",
+    "id": "obj_act5_chair"
    }
   ]
  }

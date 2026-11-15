@@ -1,0 +1,391 @@
+{
+ "id": "area_upper_cloister",
+ "name": "The Upper Cloister",
+ "size": [
+  24,
+  7
+ ],
+ "ambience": "amb_chamber",
+ "backdrop": "none",
+ "grid": [
+  "###D####D####D####D#####",
+  "#.i...i....i....i....i.k",
+  "#......................k",
+  "D......................D",
+  "#......................k",
+  "#......................k",
+  "kkkkkkkkkkkkkkkkkkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "n": {
+   "kind": "prop",
+   "prop": "bed",
+   "solid": true
+  },
+  "w": {
+   "kind": "prop",
+   "prop": "washstand",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "e": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "o": {
+   "kind": "prop",
+   "prop": "stool",
+   "solid": false
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  },
+  "W": {
+   "kind": "prop",
+   "prop": "wardrobe",
+   "solid": true
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "coffer",
+   "solid": true
+  },
+  "T": {
+   "kind": "prop",
+   "prop": "long_table",
+   "solid": true
+  },
+  "=": {
+   "kind": "prop",
+   "prop": "bench_long",
+   "solid": false
+  },
+  "p": {
+   "kind": "prop",
+   "prop": "pew",
+   "solid": true
+  },
+  "A": {
+   "kind": "prop",
+   "prop": "altar",
+   "solid": true
+  },
+  "i": {
+   "kind": "prop",
+   "prop": "candle_stand",
+   "solid": true
+  },
+  "M": {
+   "kind": "prop",
+   "prop": "map_table",
+   "solid": true
+  },
+  "H": {
+   "kind": "prop",
+   "prop": "throne",
+   "solid": true
+  },
+  "g": {
+   "kind": "prop",
+   "prop": "ledger_stack",
+   "solid": true
+  },
+  "s": {
+   "kind": "prop",
+   "prop": "infirmary_screen",
+   "solid": true
+  },
+  "b": {
+   "kind": "prop",
+   "prop": "bookcase_low",
+   "solid": true
+  },
+  "u": {
+   "kind": "prop",
+   "prop": "cauldron",
+   "solid": true
+  },
+  "x": {
+   "kind": "prop",
+   "prop": "chain_post",
+   "solid": true
+  },
+  "R": {
+   "kind": "prop",
+   "prop": "brazier_hell",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [],
+ "decor": [
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    2,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    6,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    11,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    16,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    21,
+    2
+   ]
+  },
+  {
+   "sprite": "banner_gold",
+   "cell": [
+    10,
+    0
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    15,
+    0
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_uc_chamber",
+   "type": "door",
+   "cell": [
+    23,
+    3
+   ],
+   "use_cell": [
+    22,
+    3
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_adjudicator_chamber",
+    "spawn": "from_cloister"
+   }
+  },
+  {
+   "id": "door_uc_provost",
+   "type": "door",
+   "cell": [
+    3,
+    0
+   ],
+   "use_cell": [
+    3,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_office_provost",
+    "spawn": "from_cloister"
+   }
+  },
+  {
+   "id": "door_uc_auditor",
+   "type": "door",
+   "cell": [
+    8,
+    0
+   ],
+   "use_cell": [
+    8,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_office_auditor",
+    "spawn": "from_cloister"
+   }
+  },
+  {
+   "id": "door_uc_treasury",
+   "type": "door",
+   "cell": [
+    13,
+    0
+   ],
+   "use_cell": [
+    13,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_treasury",
+    "spawn": "from_cloister"
+   }
+  },
+  {
+   "id": "door_uc_chancellor",
+   "type": "door",
+   "cell": [
+    18,
+    0
+   ],
+   "use_cell": [
+    18,
+    1
+   ],
+   "style": "gilt",
+   "to": {
+    "area": "area_office_chancellor",
+    "spawn": "from_cloister"
+   },
+   "conditions": [
+    {
+     "op": "rank_gte",
+     "value": 5
+    }
+   ],
+   "locked_dialogue": "dlg_chancellor_locked"
+  },
+  {
+   "id": "door_uc_diplomatic",
+   "type": "door",
+   "cell": [
+    0,
+    3
+   ],
+   "use_cell": [
+    1,
+    3
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_diplomatic",
+    "spawn": "from_cloister"
+   }
+  }
+ ],
+ "spawns": {
+  "default": [
+   22,
+   3
+  ],
+  "from_chamber": [
+   22,
+   3
+  ],
+  "from_provost": [
+   3,
+   1
+  ],
+  "from_auditor": [
+   8,
+   1
+  ],
+  "from_treasury": [
+   13,
+   1
+  ],
+  "from_chancellor": [
+   18,
+   1
+  ],
+  "from_diplomatic": [
+   1,
+   3
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "flows": [],
+  "staff": [
+   {
+    "sprite": "chr_clerk_lilac",
+    "count": 2,
+    "rect": [
+     1,
+     2,
+     22,
+     5
+    ],
+    "hours": [
+     7,
+     20
+    ]
+   },
+   {
+    "sprite": "chr_guard",
+    "count": 2,
+    "rect": [
+     1,
+     2,
+     22,
+     5
+    ],
+    "hours": [
+     6,
+     22
+    ]
+   },
+   {
+    "sprite": "chr_guard_night",
+    "count": 2,
+    "rect": [
+     1,
+     2,
+     22,
+     5
+    ],
+    "hours": [
+     22,
+     6
+    ]
+   }
+  ]
+ }
+}

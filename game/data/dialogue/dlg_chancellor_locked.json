@@ -1,0 +1,11 @@
+{
+ "id": "dlg_chancellor_locked",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "Gilt doors, sealed with a wax disc the size of a plate. THE CHAIR IS VACANT. ADMITTANCE BY APPOINTMENT OF THE PRINCIPAL.",
+   "next": "end"
+  }
+ }
+}

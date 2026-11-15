@@ -1,0 +1,404 @@
+{
+ "id": "area_lower_cloister",
+ "name": "The Lower Cloister",
+ "size": [
+  22,
+  7
+ ],
+ "ambience": "amb_court",
+ "backdrop": "none",
+ "grid": [
+  "###D####D####D####D###",
+  "#.i...i...i...i....i.k",
+  "#....................k",
+  "D....................D",
+  "#....................k",
+  "#B..................Bk",
+  "kkkkkkkkkkkkkkkkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "n": {
+   "kind": "prop",
+   "prop": "bed",
+   "solid": true
+  },
+  "w": {
+   "kind": "prop",
+   "prop": "washstand",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "e": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "o": {
+   "kind": "prop",
+   "prop": "stool",
+   "solid": false
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  },
+  "W": {
+   "kind": "prop",
+   "prop": "wardrobe",
+   "solid": true
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "coffer",
+   "solid": true
+  },
+  "T": {
+   "kind": "prop",
+   "prop": "long_table",
+   "solid": true
+  },
+  "=": {
+   "kind": "prop",
+   "prop": "bench_long",
+   "solid": false
+  },
+  "p": {
+   "kind": "prop",
+   "prop": "pew",
+   "solid": true
+  },
+  "A": {
+   "kind": "prop",
+   "prop": "altar",
+   "solid": true
+  },
+  "i": {
+   "kind": "prop",
+   "prop": "candle_stand",
+   "solid": true
+  },
+  "M": {
+   "kind": "prop",
+   "prop": "map_table",
+   "solid": true
+  },
+  "H": {
+   "kind": "prop",
+   "prop": "throne",
+   "solid": true
+  },
+  "g": {
+   "kind": "prop",
+   "prop": "ledger_stack",
+   "solid": true
+  },
+  "s": {
+   "kind": "prop",
+   "prop": "infirmary_screen",
+   "solid": true
+  },
+  "b": {
+   "kind": "prop",
+   "prop": "bookcase_low",
+   "solid": true
+  },
+  "u": {
+   "kind": "prop",
+   "prop": "cauldron",
+   "solid": true
+  },
+  "x": {
+   "kind": "prop",
+   "prop": "chain_post",
+   "solid": true
+  },
+  "R": {
+   "kind": "prop",
+   "prop": "brazier_hell",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [],
+ "decor": [
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    2,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    6,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    10,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    14,
+    2
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    19,
+    2
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    11,
+    0
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_lc_court",
+   "type": "door",
+   "cell": [
+    21,
+    3
+   ],
+   "use_cell": [
+    20,
+    3
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_clerks_court",
+    "spawn": "from_cells"
+   }
+  },
+  {
+   "id": "door_lc_cells",
+   "type": "door",
+   "cell": [
+    3,
+    0
+   ],
+   "use_cell": [
+    3,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_deferral_cells",
+    "spawn": "from_court"
+   }
+  },
+  {
+   "id": "door_lc_infirmary",
+   "type": "door",
+   "cell": [
+    8,
+    0
+   ],
+   "use_cell": [
+    8,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_infirmary",
+    "spawn": "from_cloister"
+   }
+  },
+  {
+   "id": "door_lc_chapel",
+   "type": "door",
+   "cell": [
+    13,
+    0
+   ],
+   "use_cell": [
+    13,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_chapel",
+    "spawn": "from_cloister"
+   }
+  },
+  {
+   "id": "door_lc_refectory",
+   "type": "door",
+   "cell": [
+    18,
+    0
+   ],
+   "use_cell": [
+    18,
+    1
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_refectory",
+    "spawn": "from_cloister"
+   }
+  },
+  {
+   "id": "door_lc_undercroft",
+   "type": "door",
+   "cell": [
+    0,
+    3
+   ],
+   "use_cell": [
+    1,
+    3
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_undercroft",
+    "spawn": "from_cloister"
+   },
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_undercroft_open"
+    }
+   ],
+   "locked_dialogue": "dlg_undercroft_locked"
+  }
+ ],
+ "spawns": {
+  "default": [
+   20,
+   3
+  ],
+  "from_court": [
+   20,
+   3
+  ],
+  "from_cells": [
+   3,
+   1
+  ],
+  "from_infirmary": [
+   8,
+   1
+  ],
+  "from_chapel": [
+   13,
+   1
+  ],
+  "from_refectory": [
+   18,
+   1
+  ],
+  "from_undercroft": [
+   1,
+   3
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "flows": [],
+  "staff": [
+   {
+    "sprite": "chr_clerk_grey",
+    "count": 2,
+    "rect": [
+     1,
+     2,
+     20,
+     5
+    ],
+    "hours": [
+     7,
+     22
+    ]
+   },
+   {
+    "sprite": "chr_guard",
+    "count": 1,
+    "rect": [
+     1,
+     2,
+     20,
+     5
+    ],
+    "hours": [
+     6,
+     22
+    ]
+   },
+   {
+    "sprite": "chr_guard_night",
+    "count": 2,
+    "rect": [
+     1,
+     2,
+     20,
+     5
+    ],
+    "hours": [
+     22,
+     6
+    ]
+   },
+   {
+    "sprite": "chr_clerk_lilac",
+    "count": 2,
+    "rect": [
+     12,
+     2,
+     20,
+     5
+    ],
+    "hours": [
+     [
+      11,
+      13
+     ],
+     [
+      17,
+      20
+     ]
+    ]
+   }
+  ]
+ }
+}

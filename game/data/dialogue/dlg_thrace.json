@@ -1,0 +1,16 @@
+{
+ "id": "dlg_thrace",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_thrace",
+   "text": "Adjudicator. Your accuracy is noted. Accuracy is a kind of mercy, in a place like this.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_thrace",
+   "text": "The numbers must come out right. Everything else is sentiment, and sentiment started a war once.",
+   "next": "end"
+  }
+ }
+}

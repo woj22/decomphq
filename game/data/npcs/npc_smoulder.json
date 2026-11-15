@@ -1,0 +1,12 @@
+{
+ "id": "npc_smoulder",
+ "name": "Ezekiel Smoulder",
+ "title": "Reclaimer advocate",
+ "sprite": "chr_smoulder",
+ "portrait": "por_smoulder",
+ "dialogue": [
+  {
+   "id": "dlg_smoulder"
+  }
+ ]
+}

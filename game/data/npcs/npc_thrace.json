@@ -1,0 +1,12 @@
+{
+ "id": "npc_thrace",
+ "name": "Corvin Thrace",
+ "title": "Auditor-General",
+ "sprite": "chr_thrace",
+ "portrait": "por_thrace",
+ "dialogue": [
+  {
+   "id": "dlg_thrace"
+  }
+ ]
+}

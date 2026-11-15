@@ -201,7 +201,7 @@ def wall_torch(ctx, axis, f):
     _finish(root, axis)
 
 
-def banner(ctx, f):
+def banner(ctx, f, cloth='b3261e', trim='e0a83e', dark='74161b'):
     """wall-hung banner on a bracket at the cell's near corner (works on both _x and _y wall cells)."""
     m = ctx.m
     root = ctx.empty('banner', (.56, -.56, 0))
@@ -212,11 +212,11 @@ def banner(ctx, f):
         ctx.sphere(.03, (sx, 0, 2.08), m('e0a83e'), parent=root)
     sw = [0, .03][f]
     pts = [(-.22, 2.06), (.22, 2.06), (.22 + sw, .98), (0 + sw, 1.16), (-.22 + sw, .98)]
-    cl = ctx.poly_prism(pts, .02, m('b3261e'), parent=root)
+    cl = ctx.poly_prism(pts, .02, m(cloth), parent=root)
     tr = ctx.poly_prism([(-.22, 2.06), (.22, 2.06), (.22, 1.98), (-.22, 1.98)], .025, m('e0a83e'), parent=root)
     tr.location = (0, -.005, 0)
     for zz in (1.86, 1.2):
-        ctx.poly_prism([(-.22 + sw * (2.06 - zz), zz), (.22 + sw * (2.06 - zz), zz), (.22, zz - .03), (-.22, zz - .03)], .025, m('74161b'), parent=root).location = (0, -.005, 0)
+        ctx.poly_prism([(-.22 + sw * (2.06 - zz), zz), (.22 + sw * (2.06 - zz), zz), (.22, zz - .03), (-.22, zz - .03)], .025, m(dark), parent=root).location = (0, -.005, 0)
     ctx.cyl(.075, .075, -.01, .01, m('e0a83e'), seg=4, loc=(sw * .5, 0), parent=root).rotation_euler = (math.radians(90), 0, 0)
     ctx.cyl(.075, .075, -.01, .01, m('e0a83e'), seg=4, loc=(sw * .5, 0), parent=root).location = (sw * .5, -.02, 1.58)
     ctx.box((-.012 + sw * .5, -.03, 1.36), (.012 + sw * .5, -.015, 1.8), m('e0a83e'), root)
@@ -707,3 +707,184 @@ def cauldron(ctx):
         ctx.sphere(r, (x, y, .58), m('f6d67a', 2.5), scale=(1, 1, .6))
     for k in range(5):  # embers under
         ctx.sphere(.04, (-.12 + k * .06, -.05, .04), m('e8552b', 3.0), seg=6, rings=4)
+
+
+# ------------------------------------------------------------------ map expansion
+def long_table(ctx):
+    m = ctx.m
+    wood = m('5a3f2e')
+    ctx.box((-.5, -.3, .42), (.5, .3, .48), wood)
+    ctx.box((-.5, -.31, .40), (.5, -.29, .44), m('27232f'))
+    ctx.box((-.06, -.22, 0), (.06, .22, .42), m('27232f'))          # trestle (one per segment, rows join)
+    ctx.box((-.12, -.24, 0), (.12, .24, .04), m('27232f'))
+    for x, y in ((-.3, -.12), (.25, .1)):
+        ctx.cyl(.07, .07, .48, .5, m('8a8591'), seg=10, loc=(x, y))       # plates
+        ctx.cyl(.025, .02, .48, .58, m('6b4a1e'), seg=6, loc=(x + .1, y + .06))  # cup
+    ctx.box((-.04, -.04, .48), (.06, .06, .52), m('a8742a'))
+
+
+def bench_long(ctx):
+    m = ctx.m
+    ctx.box((-.5, -.13, .22), (.5, .13, .27), m('5a3f2e'))
+    ctx.box((-.05, -.1, 0), (.05, .1, .22), m('27232f'))
+
+
+def pew(ctx):
+    m = ctx.m
+    wood = m('5a3f2e')
+    ctx.box((-.46, -.18, .22), (.46, .1, .27), wood)
+    ctx.box((-.46, .08, .22), (.46, .14, .68), wood)
+    ctx.box((-.46, .07, .62), (.46, .15, .66), m('6b4a1e'))
+    for sx in (-.48, .44):
+        ctx.box((sx, -.2, 0), (sx + .04, .16, .7), m('27232f'))
+        ctx.cyl(.035, 0, .7, .8, m('27232f'), seg=4, loc=(sx + .02, -.02), smooth=False)
+
+
+def altar(ctx):
+    m = ctx.m
+    ctx.box((-.42, -.28, 0), (.42, .28, .7), ctx.brick('altarbrick', '66616e', '4b4654', '27232f', bw=1 / 3, bh=6 / ZPX, mort=.03))
+    ctx.box((-.46, -.32, .7), (.46, .32, .78), m('8a8591'))
+    ctx.box((-.44, -.3, .78), (0, .3, .8), m('e0a83e'))                # gold half (Heaven side)
+    ctx.box((0, -.3, .78), (.44, .3, .8), m('b3261e'))                 # red half (Hell side)
+    ctx.box((-.44, -.31, .45), (0, -.3, .8), m('e0a83e'))
+    ctx.box((0, -.31, .45), (.44, -.3, .8), m('b3261e'))
+    ctx.box((.3, -.3, .45), (.44, .3, .8), m('b3261e')).location.x = .37
+    ctx.box((-.012, -.02, .8), (.012, .02, 1.2), m('8a8591'))          # plain upright, no emblem
+    ctx.box((-.1, -.02, 1.06), (.1, .02, 1.09), m('8a8591'))
+    for x in (-.32, .32):
+        ctx.cyl(.025, .025, .8, .92, m('b5b0b8'), seg=6, loc=(x, .1))
+        ctx.cyl(.02, 0, .92, .99, m('f6d67a', 3.5), seg=5, loc=(x, .1))
+
+
+def candle_stand(ctx, f):
+    m = ctx.m
+    ctx.cyl(.1, .07, 0, .04, m('27232f'), seg=6)
+    ctx.cyl(.02, .02, .04, .7, m('37323f'), seg=6)
+    ctx.box((-.16, -.015, .66), (.16, .015, .69), m('37323f'))
+    for i, x in enumerate((-.15, 0, .15)):
+        hgt = .14 if x == 0 else .09
+        ctx.cyl(.024, .024, .69, .69 + hgt, m('b5b0b8'), seg=6, loc=(x, 0))
+        fh = [.07, .055, .08, .06][(f + i) % 4]
+        ctx.cyl(.02, 0, .69 + hgt, .69 + hgt + fh, m('f6d67a', 3.5), seg=5, loc=(x + [0, .006, -.006, 0][(f + i) % 4], 0))
+
+
+def wardrobe(ctx):
+    m = ctx.m
+    wood = ctx.brick('wardplank', '5a3f2e', '5a3f2e', '27232f', bw=.16, bh=4, mort=.05)
+    ctx.box((-.42, -.24, .06), (.42, .24, 2.0), wood)
+    ctx.box((-.46, -.28, 2.0), (.46, .28, 2.1), m('6b4a1e'))
+    ctx.box((-.44, -.26, 0), (.44, .26, .08), m('27232f'))
+    ctx.box((-.006, -.255, .2), (.006, -.24, 1.9), m('27232f'))
+    for x in (-.06, .06):
+        ctx.sphere(.02, (x, -.26, 1.05), m('a8742a'))
+    ctx.box((-.38, -.25, 1.6), (-.04, -.24, 1.85), m('6b4a1e')); ctx.box((.04, -.25, 1.6), (.38, -.24, 1.85), m('6b4a1e'))
+    ctx.cyl(.2, 0, 2.1, 2.3, m('5a3f2e'), seg=3, smooth=False).rotation_euler = (0, math.radians(90), 0)
+
+
+def coffer(ctx):
+    m = ctx.m
+    ctx.box((-.34, -.22, 0), (.34, .22, .32), m('5a3f2e'))
+    lid = ctx.cyl(.22, .22, -.34, .34, m('5a3f2e'), seg=12, scale=(1, .55)); lid.rotation_euler = (0, math.radians(90), 0); lid.location = (0, 0, .32)
+    for x in (-.24, 0, .24):
+        ctx.box((x - .03, -.235, 0), (x + .03, .235, .33), m('e0a83e'))
+        b = ctx.cyl(.225, .225, -.03, .03, m('e0a83e'), seg=12, scale=(1, .56)); b.rotation_euler = (0, math.radians(90), 0); b.location = (x, 0, .32)
+    ctx.box((-.05, -.25, .2), (.05, -.22, .3), m('a8742a'))
+
+
+def map_table(ctx):
+    m = ctx.m
+    ctx.box((-.44, -.36, .5), (.44, .36, .56), m('5a3f2e'))
+    for x in (-.38, .38):
+        for y in (-.3, .3):
+            ctx.box((x - .03, y - .03, 0), (x + .03, y + .03, .5), m('27232f'))
+    ctx.box((-.38, -.3, .56), (.38, .3, .57), m('b5b0b8'))            # parchment map
+    for (x0, y0, x1, y1, c) in ((-.3, -.2, -.05, -.18, '8a8591'), (-.1, -.1, .2, -.08, '8a8591'), (.05, .1, .3, .12, '8a8591'),
+                                (-.3, .05, -.1, .22, 'e0a83e'), (.12, -.25, .32, -.05, 'b3261e')):
+        ctx.box((x0, y0, .57), (x1, y1, .575), m(c))
+    ctx.cyl(.02, .02, .57, .62, m('1a1722'), seg=6, loc=(.3, .22))
+    ctx.box((-.36, .18, .57), (-.2, .3, .6), m('6b4a1e'))
+
+
+def throne(ctx):
+    m = ctx.m
+    blk, gold = m('1a1722'), m('e0a83e')
+    ctx.box((-.42, -.38, 0), (.42, .38, .12), m('27232f'))
+    ctx.box((-.3, -.26, .12), (.3, .26, .5), blk)
+    ctx.box((-.3, -.28, .5), (.3, .26, .56), m('74161b'))              # seat cushion
+    ctx.box((-.3, .14, .5), (.3, .26, 2.2), blk)                        # high back
+    ctx.box((-.22, .13, .7), (.22, .14, 1.9), m('2a1f3d'))
+    ctx.cyl(.3, 0, 2.2, 2.55, blk, seg=4, loc=(0, .2), smooth=False).rotation_euler = (0, 0, math.radians(45))
+    ctx.sphere(.05, (0, .2, 2.58), gold)
+    for sx in (-1, 1):
+        ctx.box((sx * .3 - .04, -.26, .5), (sx * .3 + .04, .26, .78), blk)   # arms
+        ctx.box((sx * .3 - .045, -.27, .78), (sx * .3 + .045, .27, .81), gold)
+        ctx.box((sx * .3 - .03, .12, .5), (sx * .3 + .03, .2, 2.3), gold)
+        ctx.cyl(.04, 0, 2.3, 2.45, gold, seg=4, loc=(sx * .3, .16), smooth=False)
+    ctx.box((-.25, .12, 2.0), (.25, .13, 2.06), gold)
+
+
+def ledger_stack(ctx):
+    m = ctx.m
+    z = 0
+    for i, (c, h, r) in enumerate((('74161b', .1, 0), ('43325c', .08, .2), ('5a3f2e', .1, -.15), ('6b4a1e', .07, .35), ('37323f', .09, .1))):
+        b = ctx.box((-.15, -.11, z), (.15, .11, z + h), m(c)); b.rotation_euler = (0, 0, r)
+        ctx.box((-.14, -.1, z + .01), (.14, .1, z + h - .01), m('b5b0b8')).rotation_euler = (0, 0, r)
+        b.scale = (b.scale[0], b.scale[1] * 1.05, b.scale[2])
+        z += h
+
+
+def infirmary_screen(ctx):
+    m = ctx.m
+    for i in range(3):
+        x0 = -.45 + i * .3
+        yo = (i % 2) * .12 - .06
+        ctx.box((x0, yo - .015, .05), (x0 + .3, yo + .015, 1.25), m('8a8591'))
+        ctx.box((x0 + .02, yo - .02, .12), (x0 + .28, yo + .02, 1.18), m('b5b0b8'))
+        for x in (x0, x0 + .3):
+            ctx.box((x - .015, yo - .025, 0), (x + .015, yo + .025, 1.3), m('37323f'))
+    ctx.box((-.05, -.08, .7), (.05, -.07, .9), m('b3261e'))
+    ctx.box((-.1, -.08, .77), (.1, -.07, .83), m('b3261e'))
+
+
+def bookcase_low(ctx):
+    m = ctx.m
+    wood = m('5a3f2e')
+    ctx.box((-.46, -.2, 0), (.46, .24, .9), m('1a1722'))
+    ctx.box((-.48, -.22, 0), (-.42, .24, .9), wood); ctx.box((.42, -.22, 0), (.48, .24, .9), wood)
+    ctx.box((-.48, -.24, .9), (.48, .26, .96), m('6b4a1e'))
+    import random
+    rnd = random.Random(5)
+    cols = ['74161b', '43325c', '5a3f2e', '6b4a1e', '37323f', 'a8742a']
+    for z in (.04, .46):
+        ctx.box((-.44, -.2, z - .04), (.44, .24, z), wood)
+        x = -.41
+        while x < .38:
+            bw = rnd.choice([.05, .06, .07])
+            if x + bw > .41: break
+            ctx.box((x, -.17, z), (x + bw - .008, .2, z + rnd.uniform(.26, .36)), m(rnd.choice(cols)))
+            x += bw
+    ctx.box((.1, -.1, .96), (.3, .1, 1.0), m('b5b0b8'))
+    ctx.cyl(.03, .03, .96, 1.06, m('b5b0b8'), seg=6, loc=(-.25, 0))
+    ctx.cyl(.02, 0, 1.06, 1.12, m('f6d67a', 3.5), seg=5, loc=(-.25, 0))
+
+
+def fireplace(ctx, f):
+    """row-0 wall cell with a chimney breast and burning hearth (origin like wall_plain_x)."""
+    wall(ctx, 'x')
+    m = ctx.m
+    wm = wall_mat(ctx)
+    y0 = Y0 - .16
+    br = ctx.box((-.38, y0, 0), (.38, Y0 + .02, H - .1), wm)
+    cut = ctx.box((-.24, y0 - .1, 0), (.24, Y0 + .0, .62), None, name='cut'); ctx.cut(br, cut)
+    ctx.box((-.24, Y0 - .02, 0), (.24, Y0 + .0, .62), m('0d0b12'))      # sooty back
+    ctx.box((-.44, y0 - .06, .62), (.44, Y0, .72), m('8a8591'))          # mantel
+    ctx.box((-.42, y0 - .03, 0), (-.24, Y0, .62), m('66616e')); ctx.box((.24, y0 - .03, 0), (.42, Y0, .62), m('66616e'))
+    for x in (-.3, .3):
+        ctx.cyl(.025, .025, .72, .84, m('b5b0b8'), seg=6, loc=(x, y0 - .02))
+    # logs + fire
+    ctx.box((-.18, Y0 - .1, .02), (.18, Y0 - .04, .08), m('5a3f2e'))
+    hg = [.3, .26, .34, .28][f]; sw = [0, .02, -.01, -.02][f]
+    for i, x in enumerate((-.1, 0, .1)):
+        h = hg * (1 if i == 1 else .75)
+        ctx.cyl(.07, 0, .06, .06 + h, m('e8552b', 3.0), seg=6, loc=(x + sw, Y0 - .08))
+        ctx.cyl(.04, 0, .06, .06 + h * .6, m('f6d67a', 3.5), seg=5, loc=(x + sw, Y0 - .1))

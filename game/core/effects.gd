@@ -71,7 +71,7 @@ static func apply_one(e: Dictionary, ctx: Dictionary = {}) -> void:
 		"next_docket":
 			GameState.next_docket()
 		"spawn_boss":
-			Combat.spawn_boss(str(e.get("flag", "flag_boss_dead")))
+			Combat.spawn_boss(str(e.get("flag", "flag_boss_dead")), str(e.get("kind", "captain")))
 		"buy_upgrade":
 			Combat.buy_upgrade(str(e.get("id", "")))
 		"breakout":

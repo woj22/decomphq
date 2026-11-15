@@ -178,7 +178,7 @@
    ],
    "style": "plain",
    "to": {
-    "area": "area_clerks_court",
+    "area": "area_lower_cloister",
     "spawn": "from_cells"
    }
   },

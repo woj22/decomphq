@@ -138,5 +138,61 @@
    "area": "area_adjudicator_chamber",
    "object": "obj_secret_cabinet"
   }
+ },
+ "obj_act3_room0": {
+  "text": "Room 0: the Auditor's shelf, at night",
+  "target": {
+   "area": "area_office_auditor",
+   "object": "obj_auditor_shelf"
+  }
+ },
+ "obj_act3_back": {
+  "text": "Meet in the Back Room at night",
+  "target": {
+   "area": "area_adjudicator_chamber",
+   "object": "obj_secret_cabinet"
+  }
+ },
+ "obj_act4_crake": {
+  "text": "Take the Compact to Lady Crake",
+  "target": {
+   "area": "area_legation_dominion",
+   "object": "obj_crake"
+  }
+ },
+ "obj_act4_provost": {
+  "text": "Lay the Compact before the Provost",
+  "target": {
+   "area": "area_office_provost",
+   "object": "obj_provost"
+  }
+ },
+ "obj_act4_glut": {
+  "text": "Confront Glut in his Counting-House",
+  "target": {
+   "area": "area_counting_house",
+   "object": "obj_guild_ledger"
+  }
+ },
+ "obj_act4_vael": {
+  "text": "Confront Archon Vael at the Legation",
+  "target": {
+   "area": "area_legation_auric",
+   "object": "obj_ashgrove"
+  }
+ },
+ "obj_act5_chair": {
+  "text": "Take the Chair",
+  "target": {
+   "area": "area_office_chancellor",
+   "object": "obj_chair"
+  }
+ },
+ "obj_free": {
+  "text": "The Border is yours to keep",
+  "target": {
+   "area": "area_office_chancellor",
+   "object": "obj_chair"
+  }
  }
 }

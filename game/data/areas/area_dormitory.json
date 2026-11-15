@@ -1,6 +1,6 @@
 {
  "id": "area_dormitory",
- "name": "The Staff Dormitory",
+ "name": "The Common Dormitory",
  "size": [
   14,
   10
@@ -185,8 +185,8 @@
    ],
    "style": "plain",
    "to": {
-    "area": "area_clerks_court",
-    "spawn": "from_dorm"
+    "area": "area_residences",
+    "spawn": "from_dormitory"
    }
   },
   {
@@ -203,7 +203,7 @@
    "dialogue": "dlg_dorm_washstand"
   },
   {
-   "id": "obj_my_bed",
+   "id": "obj_spare_cot",
    "type": "inspect",
    "cell": [
     3,
@@ -223,6 +223,10 @@
    4
   ],
   "from_court": [
+   1,
+   4
+  ],
+  "from_gallery": [
    1,
    4
   ]

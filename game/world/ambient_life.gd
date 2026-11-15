@@ -23,6 +23,7 @@ var desks: Array = [] # [{clerk: Vector2i, seat: Vector2i, busy: bool, actor: Ac
 var walkers: Array = [] # live soul walkers
 var _flow_t: Array = [] # countdown per flow
 var _max_walkers := 14
+var _staff_groups: Array = [] # [{def, actors[]}]
 
 
 func setup(m: AreaModel, parent: Node2D) -> void:
@@ -115,27 +116,50 @@ func _open_cells(rect: Array) -> Array:
 
 func _build_staff() -> void:
 	for s: Variant in cfg.get("staff", []):
-		if not (s is Dictionary):
-			continue
-		var sd: Dictionary = s
-		var night := Clock.is_night()
-		if (night and not bool(sd.get("night", false)) and not bool(sd.get("always", false))) or (not night and bool(sd.get("night", false))):
-			continue
-		var cells := _open_cells(sd.get("rect", []))
-		if cells.is_empty():
-			continue
-		for i in int(sd.get("count", 1)):
-			var w := Wanderer.new()
-			w.actor_id = "ambient_staff"
-			w.cells = cells
-			w.rng = rng
-			var pz: Array = sd.get("pause", [1.5, 5.0])
-			w.pause_range = Vector2(float(pz[0]), float(pz[1]))
-			container.add_child(w)
-			w.setup(str(sd.get("sprite", "chr_clerk_grey")), model, Vector2(cells[rng.randi_range(0, cells.size() - 1)]),
-				["sw", "se", "nw", "ne"][rng.randi_range(0, 3)])
-			w.speed = rng.randf_range(1.6, 2.4)
-			w._wait = rng.randf_range(0.0, 3.0)
+		if s is Dictionary:
+			_staff_groups.append({"def": s, "actors": []})
+	refresh_hours()
+
+
+func _group_active(sd: Dictionary) -> bool:
+	if sd.has("hours"):
+		return Clock.in_hours(sd["hours"])
+	var night := Clock.is_night()
+	if bool(sd.get("always", false)):
+		return true
+	return bool(sd.get("night", false)) == night
+
+
+## Spawns or dismisses hour-windowed staff groups (e.g. the Refectory fills at meal times).
+func refresh_hours() -> void:
+	for g: Dictionary in _staff_groups:
+		var sd: Dictionary = g["def"]
+		var want := _group_active(sd)
+		var have: Array = g["actors"]
+		if want and have.is_empty():
+			var cells := _open_cells(sd.get("rect", []))
+			if cells.is_empty():
+				continue
+			for i in int(sd.get("count", 1)):
+				var w := Wanderer.new()
+				w.actor_id = "ambient_staff"
+				w.cells = cells
+				w.rng = rng
+				var pz: Array = sd.get("pause", [1.5, 5.0])
+				w.pause_range = Vector2(float(pz[0]), float(pz[1]))
+				container.add_child(w)
+				w.setup(str(sd.get("sprite", "chr_clerk_grey")), model, Vector2(cells[rng.randi_range(0, cells.size() - 1)]),
+					["sw", "se", "nw", "ne"][rng.randi_range(0, 3)])
+				w.speed = rng.randf_range(1.6, 2.4)
+				w._wait = rng.randf_range(0.0, 3.0)
+				if bool(sd.get("seated", false)):
+					w.cells = [w.cell()]
+				have.append(w)
+		elif not want and not have.is_empty():
+			for a: Variant in have:
+				if is_instance_valid(a):
+					(a as Node).queue_free()
+			have.clear()
 
 
 ## Souls the player stamped DEFERRED drift about this area for good (area key "residents": [x0, y0, x1, y1]).

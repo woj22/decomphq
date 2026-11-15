@@ -1,19 +1,14 @@
 class_name Minimap
 extends Control
-## Static 5-room schematic (prototype): current room lit, objective blip. Also drawn large by the Map screen.
+## Fortress map drawn from Content.map_layout() (derived from doors, so it grows with the fortress).
+## Small (HUD): centred on the current room. Big (Map screen): every visited room, draggable; unexplored doors as stubs.
 
 signal pressed()
 
-const ROOMS := {
-	"area_adjudicator_chamber": Rect2(0.08, 0.06, 0.26, 0.22),
-	"area_records_annexe": Rect2(0.56, 0.06, 0.30, 0.22),
-	"area_clerks_court": Rect2(0.30, 0.34, 0.40, 0.34),
-	"area_arrival_hall": Rect2(0.02, 0.44, 0.24, 0.30),
-	"area_booths": Rect2(0.62, 0.72, 0.36, 0.24),
-}
-const LINKS := [["area_clerks_court", "area_arrival_hall"], ["area_clerks_court", "area_records_annexe"],
-	["area_clerks_court", "area_booths"], ["area_clerks_court", "area_adjudicator_chamber"]]
 var big := false
+var pan := Vector2.ZERO
+const CELL := 36.0 # px per layout unit (big)
+const CELL_SMALL := 16.0
 
 
 func _ready() -> void:
@@ -21,40 +16,72 @@ func _ready() -> void:
 
 
 func _gui_input(e: InputEvent) -> void:
+	if big:
+		if e is InputEventScreenDrag:
+			pan += (e as InputEventScreenDrag).relative
+			queue_redraw()
+		elif e is InputEventMouseMotion and ((e as InputEventMouseMotion).button_mask & MOUSE_BUTTON_MASK_LEFT) != 0:
+			pan += (e as InputEventMouseMotion).relative
+			queue_redraw()
+		return
 	if (e is InputEventMouseButton and (e as InputEventMouseButton).pressed) or (e is InputEventScreenTouch and (e as InputEventScreenTouch).pressed):
 		pressed.emit()
 		accept_event()
 
 
-func room_rect(id: String) -> Rect2:
-	var r: Rect2 = ROOMS.get(id, Rect2(0.4, 0.4, 0.2, 0.2))
-	return Rect2(r.position * size, r.size * size)
+func _process(_d: float) -> void:
+	queue_redraw()
+
+
+func _unit() -> float:
+	return CELL if big else CELL_SMALL
+
+
+func _room_rect(id: String, origin: Vector2) -> Rect2:
+	var lay := Content.map_layout()
+	var p: Vector2i = lay.get(id, Vector2i.ZERO)
+	var sz := JsonUtil.to_vec2i(Content.area(id).get("size", [10, 8]))
+	var u := _unit()
+	var w := clampf(sz.x / 26.0, 0.35, 0.95) * u
+	var h := clampf(sz.y / 14.0, 0.35, 0.8) * u
+	var c := origin + Vector2(p) * u
+	return Rect2(c - Vector2(w, h) * 0.5, Vector2(w, h))
 
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), UiKit.CHARCOAL)
-	draw_rect(Rect2(Vector2.ZERO, size), UiKit.EDGE, false, 1.0)
-	for l: Array in LINKS:
-		var a := room_rect(str(l[0]))
-		var b := room_rect(str(l[1]))
-		draw_line(a.get_center(), b.get_center(), UiKit.EDGE, 2.0 if big else 1.0)
+	var lay := Content.map_layout()
+	var cur: Vector2i = lay.get(World.area_id, Vector2i.ZERO)
+	var origin := size * 0.5 - Vector2(cur) * _unit() + (pan if big else Vector2.ZERO)
 	var obj := Content.objective(GameState.objective)
 	var obj_area := str((obj.get("target", {}) as Dictionary).get("area", ""))
 	var font := get_theme_default_font()
-	for id: String in ROOMS:
-		var r := room_rect(id)
+	var known := GameState.visited.duplicate()
+	known[World.area_id] = true
+	# links (and stubs to unexplored neighbours)
+	for id: String in known:
+		var a := _room_rect(id, origin)
+		for o: Variant in Content.area(id).get("objects", []):
+			if o is Dictionary and str((o as Dictionary).get("type", "")) == "door":
+				var b := str(((o as Dictionary).get("to", {}) as Dictionary).get("area", ""))
+				if not lay.has(b):
+					continue
+				var br := _room_rect(b, origin)
+				if known.has(b):
+					draw_line(a.get_center(), br.get_center(), UiKit.EDGE, 2.0 if big else 1.0)
+				else:
+					var mid := a.get_center().lerp(br.get_center(), 0.45)
+					draw_line(a.get_center(), mid, Color(UiKit.EDGE, 0.5), 1.0)
+	for id: String in known:
+		var r := _room_rect(id, origin)
+		if not Rect2(Vector2.ZERO, size).grow(40).intersects(r):
+			continue
 		var current := id == World.area_id
-		var locked := id == "area_adjudicator_chamber" and GameState.rank < 2
-		var fill := Color("#43325c") if current else Color("#27232f")
-		if locked:
-			fill = Color("#1a1722")
-		draw_rect(r, fill)
+		draw_rect(r, Color("#43325c") if current else Color("#27232f"))
 		draw_rect(r, UiKit.BORDER_GOLD if current else UiKit.SELECT, false, 1.0)
-		if big:
-			var name := str(Content.area(id).get("name", id))
-			if locked:
-				name += " (locked)"
-			draw_string(font, r.position + Vector2(4, 16), name, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 6, 12, UiKit.TEXT)
 		if id == obj_area:
-			var c := r.get_center() + (Vector2(0, 8) if big else Vector2.ZERO)
-			draw_rect(Rect2(c - Vector2(3, 3), Vector2(6, 6)), UiKit.TEXT)
+			draw_rect(Rect2(r.get_center() - Vector2(3, 3), Vector2(6, 6)), Color("#f6d67a"))
+		if big:
+			var nm := str(Content.area(id).get("name", id)).trim_prefix("The ")
+			draw_string(font, Vector2(r.position.x, r.end.y + 11), nm, HORIZONTAL_ALIGNMENT_LEFT, maxf(r.size.x * 2.2, 60.0), 9, UiKit.TEXT)
+	draw_rect(Rect2(Vector2.ZERO, size), UiKit.EDGE, false, 1.0)

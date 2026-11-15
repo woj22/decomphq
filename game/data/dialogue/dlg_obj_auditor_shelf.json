@@ -1,0 +1,55 @@
+{
+ "id": "dlg_obj_auditor_shelf",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The shelf behind the desk, a fraction too deep. Odalys's copied key fits a knot in the wood.",
+   "conditions": [
+    {
+     "op": "is_night"
+    },
+    {
+     "op": "flag",
+     "id": "flag_room0_known"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_thrace_defeated"
+    }
+   ],
+   "next": "ask",
+   "else": "day"
+  },
+  "ask": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Turn the key. Go in.",
+     "next": "go"
+    },
+    {
+     "text": "Not yet.",
+     "next": "end"
+    }
+   ]
+  },
+  "go": {
+   "speaker": "narrator",
+   "text": "The shelf swings inward on oiled hinges. Violet light. The scratch of a pen that never stops.",
+   "effects": [
+    {
+     "op": "teleport",
+     "area": "area_room0",
+     "spawn": "from_office"
+    }
+   ],
+   "next": "end"
+  },
+  "day": {
+   "speaker": "narrator",
+   "text": "Ledgers, perfectly kept. The shelf behind the desk is a fraction too deep. A draught comes from it.",
+   "next": "end"
+  }
+ }
+}

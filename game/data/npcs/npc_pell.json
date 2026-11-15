@@ -14,6 +14,26 @@
  },
  "dialogue": [
   {
+   "id": "dlg_pell_n4",
+   "conditions": [
+    {
+     "op": "is_night"
+    },
+    {
+     "op": "rank_gte",
+     "value": 3
+    },
+    {
+     "op": "flag",
+     "id": "flag_act3"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_room0_known"
+    }
+   ]
+  },
+  {
    "id": "dlg_pell_n0",
    "conditions": [
     {

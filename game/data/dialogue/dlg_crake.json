@@ -1,0 +1,16 @@
+{
+ "id": "dlg_crake",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_crake",
+   "text": "Adjudicator. The Dominion keeps its debts honestly. Not everyone who wears our colours does.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_crake",
+   "text": "If you ever find the Furnace Guild's books, bring them here before you bring them anywhere else.",
+   "next": "end"
+  }
+ }
+}

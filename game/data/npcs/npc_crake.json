@@ -1,0 +1,25 @@
+{
+ "id": "npc_crake",
+ "name": "Lady Malvolia Crake",
+ "title": "Dominion Ambassador, Warden of Debt",
+ "sprite": "chr_crake",
+ "portrait": "por_crake",
+ "dialogue": [
+  {
+   "id": "dlg_crake_compact",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_thrace_defeated"
+    },
+    {
+     "op": "not_flag",
+     "id": "flag_crake_ally"
+    }
+   ]
+  },
+  {
+   "id": "dlg_crake"
+  }
+ ]
+}

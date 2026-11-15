@@ -114,6 +114,7 @@ func load_area(id: String, spawn: String = "default", cell_override: Vector2i = 
 		add_child(backdrop)
 	backdrop.build(str(model.data.get("backdrop", "none")))
 	Audio.set_ambience(str(model.data.get("ambience", "")))
+	GameState.visited[id] = true
 	area_loaded.emit(id)
 
 
@@ -236,6 +237,8 @@ func door_allowed(o: Dictionary) -> bool:
 
 # ---------------------------------------------------------------- interaction
 func verb_for(o: Dictionary) -> String:
+	if bool(o.get("asleep", false)):
+		return "Look"
 	if o.has("verb"):
 		return str(o["verb"])
 	match str(o.get("type", "")):
@@ -311,6 +314,9 @@ func interact(o: Dictionary) -> void:
 		player.face_towards(Vector2(model.object_cell(o)))
 	match str(o.get("type", "")):
 		"npc", "hatch":
+			if bool(o.get("asleep", false)):
+				Dialogue.request("dlg_asleep")
+				return
 			var npc_id := str(o.get("npc", ""))
 			if npc_id != "":
 				var a: NpcActor = view.npcs.get(oid) if view != null else null

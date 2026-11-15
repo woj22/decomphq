@@ -1,0 +1,16 @@
+{
+ "id": "dlg_glut",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_glut",
+   "text": "Come in, come in! Warm, isn't it? Everything's warm down here. Brandy? It's been dead for centuries but it travels.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_glut",
+   "text": "Hands, Adjudicator. The Guild is always short of hands. I'm sure we can come to an arrangement.",
+   "next": "end"
+  }
+ }
+}

@@ -268,6 +268,44 @@ func rank_info(n: int) -> Dictionary:
 	return {}
 
 
+## Fortress map layout, derived from the doors (so it grows as areas are added).
+## A door in an area's far (row 0) wall puts the neighbour north; column 0 = west; last row = south; last column = east.
+var _layout: Dictionary = {}
+
+
+func map_layout() -> Dictionary:
+	if not _layout.is_empty():
+		return _layout
+	var dirs := {}
+	var pos := {"area_clerks_court": Vector2i.ZERO}
+	var taken := {Vector2i.ZERO: "area_clerks_court"}
+	var q: Array = ["area_clerks_court"]
+	while not q.is_empty():
+		var a: String = q.pop_front()
+		var ad := area(a)
+		var sz := JsonUtil.to_vec2i(ad.get("size", [8, 8]))
+		for o: Variant in ad.get("objects", []):
+			if not (o is Dictionary) or str((o as Dictionary).get("type", "")) != "door":
+				continue
+			var od: Dictionary = o
+			var b := str((od.get("to", {}) as Dictionary).get("area", ""))
+			if b == "" or pos.has(b) or area(b).is_empty():
+				continue
+			var c := JsonUtil.to_vec2i(od.get("cell"))
+			var d := Vector2i(0, -1) if c.y == 0 else (Vector2i(-1, 0) if c.x == 0 else (Vector2i(0, 1) if c.y == sz.y - 1 else Vector2i(1, 0)))
+			var p: Vector2i = pos[a] + d
+			var tries := 0
+			while taken.has(p) and tries < 12:
+				tries += 1
+				var side := Vector2i(d.y, d.x) * (1 if tries % 2 == 1 else -1) * ((tries + 1) / 2)
+				p = pos[a] + d * (1 + tries / 4) + side
+			pos[b] = p
+			taken[p] = b
+			q.append(b)
+	_layout = pos
+	return _layout
+
+
 func max_rank() -> int:
 	var m := 1
 	var arr: Variant = ranks.get("ranks", [])

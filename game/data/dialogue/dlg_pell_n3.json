@@ -26,6 +26,11 @@
      "op": "show_card",
      "title": "To Be Continued",
      "text": "Act III: rise to Department Supervisor and take the manifest higher."
+    },
+    {
+     "op": "set_flag",
+     "id": "flag_undercroft_open",
+     "value": true
     }
    ]
   }

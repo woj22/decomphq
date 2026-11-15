@@ -1,0 +1,32 @@
+{
+ "id": "dlg_crake_compact",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_crake",
+   "text": "The Compact. Signed. Glut's paw-print and Vael's perfect hand on the same page.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_crake",
+   "text": "The Dominion keeps its debts honestly, Supervisor. This is not a debt. This is a sale of the dead.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_crake",
+   "text": "Take it to the Provost. He will sign anything. Make him sign this. My Wardens will stand with you after.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_crake_ally",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_act4_provost"
+    }
+   ]
+  }
+ }
+}

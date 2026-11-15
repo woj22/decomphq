@@ -15,6 +15,7 @@ from rig import Rig, DemonRig, CHARS  # noqa: E402
 from spec import SPRITES, CHAR_ANIMS, CHARS as CHAR_TYPES, char_cell, CASE_SOULS, PORTRAITS  # noqa: E402
 
 SAMPLES = 64
+CHAR_SAMPLES = int(os.environ.get('ART_CHAR_SAMPLES', '16'))
 
 
 def shot(ctx, sid, suffix=''):
@@ -66,6 +67,18 @@ def j_torch(ctx):
 def j_banner(ctx):
     for f in range(2):
         kit.banner(ctx, f); shot(ctx, 'banner_red', f'__f{f}')
+    for f in range(2):
+        kit.banner(ctx, f, cloth='b5b0b8', dark='e0a83e'); shot(ctx, 'banner_gold', f'__f{f}')
+
+
+def j_rooms(ctx):
+    for nm in ('long_table', 'bench_long', 'pew', 'altar', 'wardrobe', 'coffer', 'map_table', 'throne', 'ledger_stack',
+               'infirmary_screen', 'bookcase_low'):
+        getattr(kit, nm)(ctx); shot(ctx, nm)
+    for f in range(4):
+        kit.candle_stand(ctx, f); shot(ctx, 'candle_stand', f'__f{f}')
+    for f in range(4):
+        kit.fireplace(ctx, f); shot(ctx, 'fireplace_x', f'__f{f}')
 
 
 def j_desks(ctx):
@@ -130,6 +143,7 @@ def j_statue(ctx):
 
 def j_char(ctx, cid):
     (cw, ch), origin = char_cell(cid)
+    ctx.s.cycles.samples = CHAR_SAMPLES
     rig = (DemonRig if CHARS[cid].get('demon') else Rig)(ctx, CHARS[cid])
     for anim, n, _fps in CHAR_ANIMS[CHAR_TYPES[cid]]:
         for f in range(n):
@@ -138,6 +152,7 @@ def j_char(ctx, cid):
                 rig.face(d)
                 ctx.render(f'{cid}__{anim}_{f}_{d}', cw, ch, origin)
     ctx.new_kit()
+    ctx.s.cycles.samples = SAMPLES
 
 
 # ---- busts & portraits: same rig, magnified camera, facing the viewer (dir 's' = 7)
@@ -209,7 +224,17 @@ def j_busts(ctx):
 
 
 def j_portraits(ctx):
+    from spec import PORTRAIT_NEW
+    global BUST_TZ
+    for pid, (base, tz) in PORTRAIT_NEW.items():
+        BUST_TZ = tz
+        rig = Rig(ctx, CHARS[base]); rig.pose('idle', 0); rig.face(7)
+        bust_shot(ctx, pid, 64, 3.0 if base not in ('chr_glut', 'chr_vael') else 2.3)
+        ctx.new_kit()
+    BUST_TZ = .7
     for pid in PORTRAITS:
+        if pid in PORTRAIT_NEW:
+            continue
         base, extra = PORTRAIT_RIGS[pid]
         extra = dict(extra)
         acc = extra.pop('acc', None)

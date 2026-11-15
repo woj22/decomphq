@@ -15,7 +15,7 @@
   "#....d.....k",
   "D....o.....k",
   "#........l.k",
-  "#..........k",
+  "D..........k",
   "#B........Bk",
   "kkkDkkkkkkkk"
  ],
@@ -76,13 +76,6 @@
    "cell": [
     0,
     3
-   ],
-   "glass": "gold"
-  },
-  {
-   "cell": [
-    0,
-    7
    ],
    "glass": "gold"
   },
@@ -289,6 +282,23 @@
     "spawn": "from_chamber"
    },
    "secret": true
+  },
+  {
+   "id": "door_chamber_cloister",
+   "type": "door",
+   "cell": [
+    0,
+    7
+   ],
+   "use_cell": [
+    1,
+    7
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_upper_cloister",
+    "spawn": "from_chamber"
+   }
   }
  ],
  "spawns": {
@@ -307,6 +317,10 @@
   "from_secret": [
    7,
    2
+  ],
+  "from_cloister": [
+   1,
+   7
   ]
  },
  "zones": {},

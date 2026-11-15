@@ -159,7 +159,8 @@
     },
     "next_docket": {},
     "spawn_boss": {
-      "flag": "str"
+      "flag": "str",
+      "kind": "str"
     }
   },
   "enums": {
@@ -275,6 +276,10 @@
       "new_game_started": [],
       "rank_changed": [
         "rank"
+      ],
+      "flag_changed": [
+        "flag_id",
+        "value"
       ]
     }
   }

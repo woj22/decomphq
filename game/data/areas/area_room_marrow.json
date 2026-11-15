@@ -1,0 +1,249 @@
+{
+ "id": "area_room_marrow",
+ "name": "Marrow's Room",
+ "size": [
+  8,
+  7
+ ],
+ "ambience": "amb_records",
+ "backdrop": "none",
+ "grid": [
+  "########",
+  "#n.W..Sk",
+  "#......k",
+  "#......k",
+  "#w....dk",
+  "#......k",
+  "kkkDkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "n": {
+   "kind": "prop",
+   "prop": "bed",
+   "solid": true
+  },
+  "w": {
+   "kind": "prop",
+   "prop": "washstand",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "e": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "o": {
+   "kind": "prop",
+   "prop": "stool",
+   "solid": false
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  },
+  "W": {
+   "kind": "prop",
+   "prop": "wardrobe",
+   "solid": true
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "coffer",
+   "solid": true
+  },
+  "T": {
+   "kind": "prop",
+   "prop": "long_table",
+   "solid": true
+  },
+  "=": {
+   "kind": "prop",
+   "prop": "bench_long",
+   "solid": false
+  },
+  "p": {
+   "kind": "prop",
+   "prop": "pew",
+   "solid": true
+  },
+  "A": {
+   "kind": "prop",
+   "prop": "altar",
+   "solid": true
+  },
+  "i": {
+   "kind": "prop",
+   "prop": "candle_stand",
+   "solid": true
+  },
+  "M": {
+   "kind": "prop",
+   "prop": "map_table",
+   "solid": true
+  },
+  "H": {
+   "kind": "prop",
+   "prop": "throne",
+   "solid": true
+  },
+  "g": {
+   "kind": "prop",
+   "prop": "ledger_stack",
+   "solid": true
+  },
+  "s": {
+   "kind": "prop",
+   "prop": "infirmary_screen",
+   "solid": true
+  },
+  "b": {
+   "kind": "prop",
+   "prop": "bookcase_low",
+   "solid": true
+  },
+  "u": {
+   "kind": "prop",
+   "prop": "cauldron",
+   "solid": true
+  },
+  "x": {
+   "kind": "prop",
+   "prop": "chain_post",
+   "solid": true
+  },
+  "R": {
+   "kind": "prop",
+   "prop": "brazier_hell",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [
+  {
+   "cell": [
+    2,
+    0
+   ],
+   "glass": "gold"
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "rug_red",
+   "cell": [
+    3,
+    3
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    5,
+    4
+   ]
+  },
+  {
+   "sprite": "wall_torch_x",
+   "cell": [
+    5,
+    0
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_room_marrow_out",
+   "type": "door",
+   "cell": [
+    3,
+    6
+   ],
+   "use_cell": [
+    3,
+    5
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_residences",
+    "spawn": "from_marrow"
+   }
+  },
+  {
+   "id": "obj_keepsake_marrow",
+   "type": "inspect",
+   "cell": [
+    6,
+    4
+   ],
+   "use_cell": [
+    5,
+    4
+   ],
+   "dialogue": "dlg_keepsake_marrow",
+   "verb": "Read"
+  },
+  {
+   "id": "obj_marrow_asleep",
+   "type": "npc",
+   "npc": "npc_marrow",
+   "cell": [
+    1,
+    1
+   ],
+   "facing": "se",
+   "use_cell": [
+    2,
+    2
+   ],
+   "hours": [
+    22,
+    6
+   ],
+   "asleep": true
+  }
+ ],
+ "spawns": {
+  "default": [
+   3,
+   5
+  ],
+  "from_gallery": [
+   3,
+   5
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "staff": [],
+  "flows": []
+ }
+}

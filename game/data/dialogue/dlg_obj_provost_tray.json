@@ -1,0 +1,16 @@
+{
+ "id": "dlg_obj_provost_tray",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The Lord Provost's in-tray. Every document is signed. None appears to have been read.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "Third from the top, signed with a flourish: all Room 0 post to go 'direct to the Auditor-General, unopened'.",
+   "next": "end"
+  }
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "id": "dlg_altar",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The altar is half gold cloth, half red. Neither side would pay for the whole thing.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "Someone has left a candle, a prayer and a filing number. You add nothing. It feels like enough.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "heal"
+    }
+   ]
+  }
+ }
+}

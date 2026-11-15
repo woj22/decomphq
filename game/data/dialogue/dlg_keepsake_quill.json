@@ -1,0 +1,16 @@
+{
+ "id": "dlg_keepsake_quill",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A debt-book bound in something you decide not to identify. Every debt in it is paid, struck through, and initialled.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "One page is headed RECLAIMERS - UNAUTHORISED. It is very long.",
+   "next": "end"
+  }
+ }
+}

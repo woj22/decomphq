@@ -1,0 +1,16 @@
+{
+ "id": "dlg_smoulder",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_smoulder",
+   "text": "You found us. Please - keep your voice down. Every soul here was 'paid up' and sent back. I couldn't just leave them.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_smoulder",
+   "text": "When you're ready to bring down the Compact, they'll speak. All of them. They remember who wrote them down.",
+   "next": "end"
+  }
+ }
+}

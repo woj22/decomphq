@@ -14,7 +14,7 @@
   "#..............k",
   "#..............k",
   "#..............k",
-  "#..x........x..k",
+  "D..x........x..k",
   "#..............k",
   "#rrrrr.........k",
   "#.....r........k",
@@ -176,6 +176,23 @@
     9
    ],
    "night": true
+  },
+  {
+   "id": "door_ember_counting",
+   "type": "door",
+   "cell": [
+    0,
+    6
+   ],
+   "use_cell": [
+    1,
+    6
+   ],
+   "style": "ember",
+   "to": {
+    "area": "area_counting_house",
+    "spawn": "from_gate"
+   }
   }
  ],
  "spawns": {
@@ -186,6 +203,10 @@
   "from_court": [
    8,
    10
+  ],
+  "from_counting": [
+   1,
+   6
   ]
  },
  "zones": {},

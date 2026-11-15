@@ -12,7 +12,7 @@
   "#S..B.Sk",
   "D......k",
   "#..d...k",
-  "#......k",
+  "#......D",
   "#l....Bk",
   "kkkkkkkk"
  ],
@@ -157,7 +157,28 @@
     3,
     5
    ],
-   "verb": "Talk"
+   "verb": "Talk",
+   "hours": [
+    6,
+    22
+   ]
+  },
+  {
+   "id": "door_back_odalys",
+   "type": "door",
+   "cell": [
+    7,
+    4
+   ],
+   "use_cell": [
+    6,
+    4
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_room_odalys",
+    "spawn": "from_back"
+   }
   }
  ],
  "spawns": {
@@ -168,6 +189,10 @@
   "from_chamber": [
    1,
    2
+  ],
+  "from_odalys": [
+   6,
+   4
   ]
  },
  "zones": {},

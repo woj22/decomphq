@@ -1,0 +1,12 @@
+{
+ "id": "npc_bursar",
+ "name": "Ambrose Tallow",
+ "title": "Bursar",
+ "sprite": "chr_clerk_grey",
+ "portrait": "por_registrar",
+ "dialogue": [
+  {
+   "id": "dlg_bursar"
+  }
+ ]
+}

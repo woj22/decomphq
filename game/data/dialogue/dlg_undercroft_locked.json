@@ -1,0 +1,11 @@
+{
+ "id": "dlg_undercroft_locked",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A low iron door, chained. Someone has scratched a word into the lock plate: SMOULDER.",
+   "next": "end"
+  }
+ }
+}

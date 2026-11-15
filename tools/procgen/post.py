@@ -30,16 +30,21 @@ def quantise(arr, mode='world', outline=False, tint=True, alpha=255, gain=1.0):
     if tint and mode != 'soul':
         t = rgbf * AMBIENT * gain
         rgbf = np.where(emis[..., None], rgbf, t)
-    idxs = {'world': NON_SOUL, 'soul': SOUL_SET, 'any': allidx}[mode]
-    q = nearest(np.clip(rgbf, 0, 255), idxs)
-    if mode == 'world':
+    pal = PAL
+    if mode == 'ink':      # world palette + the reserved Room-0 violet (ink wraith / violet bolt only)
+        pal = np.vstack([PAL, np.array(rgb('8b3fd9'), float)])
+        idxs = np.concatenate([NON_SOUL, [len(PAL)]])
+    else:
+        idxs = {'world': NON_SOUL, 'soul': SOUL_SET, 'any': allidx}[mode]
+    q = nearest(np.clip(rgbf, 0, 255), idxs, pal)
+    if mode in ('world', 'ink'):
         # emissive colours only where the render was emissive
         bad = np.isin(q, EMIS_IDX) & ~emis
         if bad.any():
-            q2 = nearest(np.clip(rgbf, 0, 255), np.array([i for i in NON_SOUL if i not in EMIS_IDX]))
+            q2 = nearest(np.clip(rgbf, 0, 255), np.array([i for i in idxs if i not in EMIS_IDX]), pal)
             q = np.where(bad, q2, q)
     out = np.zeros(arr.shape, np.uint8)
-    out[..., :3] = PAL[q].astype(np.uint8)
+    out[..., :3] = pal[q].astype(np.uint8)
     out[..., 3] = np.where(mask, alpha, 0)
     out[~mask] = 0
     if outline:

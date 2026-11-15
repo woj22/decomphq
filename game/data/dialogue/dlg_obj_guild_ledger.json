@@ -1,0 +1,16 @@
+{
+ "id": "dlg_obj_guild_ledger",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The Guild's day-book. Entries in red: 'Souls owed by the Chancery under the Compact.'",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "The column of numbers matches, to the soul, the violet-ink files you have found.",
+   "next": "end"
+  }
+ }
+}

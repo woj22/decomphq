@@ -1,0 +1,16 @@
+{
+ "id": "dlg_keepsake_dorcas",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A private register of every soul Dorcas has ever called forward. Forty thousand names. Each has a tiny tick.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "The ticks mean 'I said their name kindly'. There are no gaps.",
+   "next": "end"
+  }
+ }
+}

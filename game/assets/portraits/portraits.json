@@ -236,7 +236,7 @@
     96
    ]
   },
-  "por_grist": {
+  "por_ashgrove": {
    "kind": "portrait",
    "origin": [
     0,
@@ -249,7 +249,7 @@
     64
    ]
   },
-  "por_marrow": {
+  "por_crake": {
    "kind": "portrait",
    "origin": [
     0,
@@ -262,7 +262,7 @@
     64
    ]
   },
-  "por_nan": {
+  "por_glut": {
    "kind": "portrait",
    "origin": [
     0,
@@ -275,7 +275,7 @@
     64
    ]
   },
-  "por_oddy": {
+  "por_grist": {
    "kind": "portrait",
    "origin": [
     0,
@@ -288,7 +288,7 @@
     64
    ]
   },
-  "por_pell": {
+  "por_marrow": {
    "kind": "portrait",
    "origin": [
     0,
@@ -301,7 +301,7 @@
     64
    ]
   },
-  "por_registrar": {
+  "por_nan": {
    "kind": "portrait",
    "origin": [
     0,
@@ -314,7 +314,7 @@
     64
    ]
   },
-  "por_soul": {
+  "por_odalys": {
    "kind": "portrait",
    "origin": [
     0,
@@ -327,7 +327,7 @@
     64
    ]
   },
-  "por_works": {
+  "por_oddy": {
    "kind": "portrait",
    "origin": [
     0,
@@ -340,7 +340,7 @@
     64
    ]
   },
-  "por_wren": {
+  "por_pell": {
    "kind": "portrait",
    "origin": [
     0,
@@ -348,6 +348,136 @@
    ],
    "rect": [
     192,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_provost": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    256,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_quill": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    320,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_registrar": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    384,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_smoulder": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    448,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_soul": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    512,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_thrace": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    576,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_vael": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    640,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_works": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    704,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_wren": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    768,
+    96,
+    64,
+    64
+   ]
+  },
+  "por_ysolde": {
+   "kind": "portrait",
+   "origin": [
+    0,
+    0
+   ],
+   "rect": [
+    832,
     96,
     64,
     64

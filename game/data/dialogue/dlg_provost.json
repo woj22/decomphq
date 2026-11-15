@@ -1,0 +1,16 @@
+{
+ "id": "dlg_provost",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_provost",
+   "text": "Adjudicator! Splendid. Everything is splendid. Is it? It is. Sign here, would you, while you're up.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_provost",
+   "text": "Room 0? Never heard of it. Well, heard of it. Signed for it, possibly. One signs so much.",
+   "next": "end"
+  }
+ }
+}

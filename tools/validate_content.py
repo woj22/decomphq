@@ -792,6 +792,7 @@ def main():
         walk_conditions(tw, t.get("conditions", []))
         walk_effects(tw, t.get("effects", []))
     used |= {d for d, _ in REFS.dialogues}
+    used |= {"dlg_asleep"}  # requested by the engine for sleeping NPCs
     for did in dialogues:
         if did not in used:
             err("dialogue/%s" % did, "never used (no NPC, object, trigger or start_dialogue refers to it)")

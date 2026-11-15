@@ -1,0 +1,16 @@
+{
+ "id": "dlg_keepsake_odalys",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A copied file in violet ink: 'Wick, Hester. Amended: Ember Gate.' Odalys's sister.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "Below it, in black, in Odalys's careful copying hand, the original. Hester went to Heaven. Then someone changed it.",
+   "next": "end"
+  }
+ }
+}

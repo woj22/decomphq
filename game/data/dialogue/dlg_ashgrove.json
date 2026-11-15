@@ -1,0 +1,16 @@
+{
+ "id": "dlg_ashgrove",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_ashgrove",
+   "text": "Adjudicator - I remember your name, you see, it's my one gift. The Concord admires your verdicts.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_ashgrove",
+   "text": "Admiration is a currency, too. Do come and spend some, when you have a moment.",
+   "next": "end"
+  }
+ }
+}

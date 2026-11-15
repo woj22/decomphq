@@ -1,0 +1,32 @@
+{
+ "id": "npc_provost",
+ "name": "Hadrian Quill",
+ "title": "Lord Provost, acting head of the Chancery",
+ "sprite": "chr_provost",
+ "portrait": "por_provost",
+ "dialogue": [
+  {
+   "id": "dlg_provost_commission",
+   "conditions": [
+    {
+     "op": "flag",
+     "id": "flag_crake_ally"
+    },
+    {
+     "op": "rank_gte",
+     "value": 3
+    },
+    {
+     "op": "not",
+     "of": {
+      "op": "rank_gte",
+      "value": 4
+     }
+    }
+   ]
+  },
+  {
+   "id": "dlg_provost"
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "id": "dlg_keepsake_marrow",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A single file in the desk drawer, worn soft at the corners. The name has been read so often it is almost gone.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "A note in Marrow's hand: 'Sent the wrong way, 1702. Every day since, I check twice.'",
+   "next": "end"
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "id": "dlg_keepsake_grist",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "Dominion conscription papers, folded small. 'H. Grist, Pit Levy, 3rd Draft.' Stamped DESERTER in red, then DEFERRED in black.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "narrator",
+   "text": "Beside them, a child's carved horse. Grist's hands are not made for carving. He kept at it anyway.",
+   "next": "end"
+  }
+ }
+}

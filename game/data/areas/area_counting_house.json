@@ -1,0 +1,349 @@
+{
+ "id": "area_counting_house",
+ "name": "The Furnace Guild Counting-House",
+ "size": [
+  12,
+  9
+ ],
+ "ambience": "amb_hell",
+ "backdrop": "none",
+ "grid": [
+  "############",
+  "#Rg.......Rk",
+  "#..........k",
+  "#..........k",
+  "#.....e....k",
+  "#c........ck",
+  "#..........k",
+  "#..........k",
+  "kkkkkkDkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "n": {
+   "kind": "prop",
+   "prop": "bed",
+   "solid": true
+  },
+  "w": {
+   "kind": "prop",
+   "prop": "washstand",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "e": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "o": {
+   "kind": "prop",
+   "prop": "stool",
+   "solid": false
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  },
+  "W": {
+   "kind": "prop",
+   "prop": "wardrobe",
+   "solid": true
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "coffer",
+   "solid": true
+  },
+  "T": {
+   "kind": "prop",
+   "prop": "long_table",
+   "solid": true
+  },
+  "=": {
+   "kind": "prop",
+   "prop": "bench_long",
+   "solid": false
+  },
+  "p": {
+   "kind": "prop",
+   "prop": "pew",
+   "solid": true
+  },
+  "A": {
+   "kind": "prop",
+   "prop": "altar",
+   "solid": true
+  },
+  "i": {
+   "kind": "prop",
+   "prop": "candle_stand",
+   "solid": true
+  },
+  "M": {
+   "kind": "prop",
+   "prop": "map_table",
+   "solid": true
+  },
+  "H": {
+   "kind": "prop",
+   "prop": "throne",
+   "solid": true
+  },
+  "g": {
+   "kind": "prop",
+   "prop": "ledger_stack",
+   "solid": true
+  },
+  "s": {
+   "kind": "prop",
+   "prop": "infirmary_screen",
+   "solid": true
+  },
+  "b": {
+   "kind": "prop",
+   "prop": "bookcase_low",
+   "solid": true
+  },
+  "u": {
+   "kind": "prop",
+   "prop": "cauldron",
+   "solid": true
+  },
+  "x": {
+   "kind": "prop",
+   "prop": "chain_post",
+   "solid": true
+  },
+  "R": {
+   "kind": "prop",
+   "prop": "brazier_hell",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [
+  {
+   "cell": [
+    9,
+    0
+   ],
+   "glass": "gold"
+  },
+  {
+   "cell": [
+    0,
+    3
+   ],
+   "glass": "gold"
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "rug_red",
+   "cell": [
+    6,
+    4
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    6,
+    3
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    2,
+    0
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "area_counting_house_out",
+   "type": "door",
+   "cell": [
+    6,
+    8
+   ],
+   "use_cell": [
+    6,
+    7
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_ember_gate",
+    "spawn": "from_counting"
+   }
+  },
+  {
+   "id": "obj_glut",
+   "type": "npc",
+   "npc": "npc_glut",
+   "cell": [
+    6,
+    3
+   ],
+   "facing": "sw",
+   "use_cell": [
+    6,
+    5
+   ],
+   "hours": [
+    [
+     20,
+     24
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "visible_if": [
+    {
+     "op": "rank_gte",
+     "value": 3
+    },
+    {
+     "op": "not",
+     "of": {
+      "op": "rank_gte",
+      "value": 4
+     }
+    }
+   ]
+  },
+  {
+   "id": "obj_guild_ledger",
+   "type": "inspect",
+   "cell": [
+    2,
+    1
+   ],
+   "use_cell": [
+    2,
+    2
+   ],
+   "dialogue": "dlg_obj_guild_ledger",
+   "verb": "Read"
+  }
+ ],
+ "spawns": {
+  "default": [
+   6,
+   7
+  ],
+  "from_gate": [
+   6,
+   7
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "flows": [],
+  "staff": [
+   {
+    "sprite": "chr_demon",
+    "count": 2,
+    "rect": [
+     2,
+     2,
+     9,
+     6
+    ],
+    "hours": [
+     [
+      20,
+      24
+     ],
+     [
+      0,
+      4
+     ]
+    ]
+   }
+  ]
+ },
+ "hostiles": {
+  "spawn_cells": [
+   [
+    6,
+    2
+   ]
+  ],
+  "boss_cell": [
+   6,
+   2
+  ],
+  "breakout_every": [
+   9999,
+   9999
+  ],
+  "max_enemies": 10,
+  "defenders": [
+   {
+    "id": "crake",
+    "cell": [
+     4,
+     6
+    ],
+    "sprite": "chr_crake",
+    "night_sprite": "chr_crake",
+    "hp": 220,
+    "flag": "flag_crake_ally"
+   },
+   {
+    "id": "warden",
+    "cell": [
+     8,
+     6
+    ],
+    "sprite": "chr_guard_night",
+    "night_sprite": "chr_guard_night",
+    "hp": 140,
+    "flag": "flag_crake_ally"
+   },
+   {
+    "id": "quill",
+    "cell": [
+     6,
+     7
+    ],
+    "sprite": "chr_guard_night",
+    "night_sprite": "chr_guard_night",
+    "hp": 180,
+    "flag": "flag_quill_ally"
+   }
+  ]
+ }
+}

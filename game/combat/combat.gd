@@ -9,6 +9,7 @@ signal hp_changed(hp: float, max_hp: float)
 signal mana_changed(mana: float, max_mana: float)
 signal hostiles_changed(count: int)
 signal charge_changed(button: String, t: float) # 0..1 while a spell button is held
+signal boss_hp(name: String, frac: float) # frac < 0 hides the bar
 
 const HOLD_S := 0.35
 
@@ -311,8 +312,8 @@ func enemy_died(e: Enemy) -> void:
 	GameState.add_stat("demons_banished", 1)
 	if e.boss_flag != "":
 		GameState.set_flag(e.boss_flag, true)
-		Dialogue.request_modal("card", {"title": "The Manifest", "text":
-			"The Captain dissolves into ash. Its ledger is bound in violet. Every page is countersigned: C. Thrace, Auditor-General."})
+		boss_hp.emit("", -1.0)
+		clear_enemies()
 
 
 # ---------------------------------------------------------------- area hookup
@@ -375,25 +376,54 @@ func breakout(count: int = -1) -> void:
 		hostiles_changed.emit(enemies.size())
 
 
-## Story: the Reclaimer-Captain steps out of the Gate. Killing it sets `flag`.
-func spawn_boss(flag: String) -> void:
-	if World.model == null or _hostile_cfg.is_empty():
+const BOSSES := {
+	"captain": {"sprite": "chr_demon_brute", "name": "The Reclaimer-Captain", "hp": 320.0, "dmg": 22.0, "kind": "brute", "tint": "#d899ff"},
+	"thrace": {"sprite": "chr_thrace", "name": "Corvin Thrace, Auditor-General", "hp": 620.0, "dmg": 18.0, "kind": "thrace", "speed": 1.8},
+	"glut": {"sprite": "chr_glut", "name": "Baron Mordecai Glut", "hp": 950.0, "dmg": 26.0, "kind": "glut", "speed": 1.2},
+	"vael": {"sprite": "chr_vael", "name": "Seraphine Vael, Archon of the Lustrants", "hp": 820.0, "dmg": 20.0, "kind": "vael", "speed": 2.0}}
+
+
+## Story boss. Killing it sets `flag`. `kind` picks the boss (captain, thrace, glut, vael).
+func spawn_boss(flag: String, kind: String = "captain") -> void:
+	if World.model == null:
 		return
-	var spawns: Array = _hostile_cfg.get("spawn_cells", [[7, 2]])
+	var b: Dictionary = BOSSES.get(kind, BOSSES["captain"])
+	var spawns: Array = _hostile_cfg.get("boss_cell", _hostile_cfg.get("spawn_cells", [[World.model.size.x / 2, 2]]))
+	var at: Variant = spawns if (spawns.size() == 2 and not (spawns[0] is Array)) else spawns[spawns.size() / 2]
 	var e := Enemy.new()
 	World.view.sorted.add_child(e)
-	e.setup("chr_demon_brute", World.model, Vector2(JsonUtil.to_vec2i(spawns[spawns.size() / 2])), "sw")
+	e.setup(str(b["sprite"]), World.model, Vector2(JsonUtil.to_vec2i(at)), "sw")
 	e.configure(true)
-	e.max_hp = 320.0
+	e.max_hp = float(b["hp"]) * (1.25 if Clock.is_night() else 1.0)
 	e.hp = e.max_hp
-	e.damage = 22.0
+	e.damage = float(b["dmg"])
+	e.speed = float(b.get("speed", 1.5))
 	e.boss_flag = flag
-	e.self_modulate_base = Color(0.85, 0.6, 1.2)
-	e.modulate = e.self_modulate_base
+	e.boss_kind = str(b["kind"])
+	e.boss_name = str(b["name"])
+	if b.has("tint"):
+		e.self_modulate_base = Color(str(b["tint"]))
+		e.modulate = e.self_modulate_base
 	enemies.append(e)
+	if _hostile_cfg.is_empty():
+		_hostile_cfg = {"spawn_cells": [at], "breakout_every": [9999, 9999], "max_enemies": 10}
 	Audio.sfx("sfx_demon_roar")
 	hostiles_changed.emit(enemies.size())
-	breakout(2)
+	boss_hp.emit(e.boss_name, 1.0)
+	if kind == "captain":
+		breakout(2)
+
+
+## Bosses call help: `count` enemies of `sprite` around `at`.
+func summon(sprite: String, at: Vector2, count: int, brute: bool) -> void:
+	for i in count:
+		var e := Enemy.new()
+		World.view.sorted.add_child(e)
+		var c := World.model.nearest_walkable(Vector2i(roundi(at.x) + randi_range(-2, 2), roundi(at.y) + randi_range(1, 2)), Vector2i(roundi(at.x), roundi(at.y)))
+		e.setup(sprite, World.model, Vector2(c), "sw")
+		e.configure(brute)
+		enemies.append(e)
+	hostiles_changed.emit(enemies.size())
 
 
 func clear_enemies() -> void:

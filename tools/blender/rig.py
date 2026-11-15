@@ -24,6 +24,25 @@ for i in range(4):
 CHARS['chr_guard_night'] = dict(CHARS['chr_guard'], robe='1a1722', tabard='74161b', hem='74161b', lantern=True)
 CHARS['chr_sorcerer'] = dict(robe='2a1f3d', hem='e0a83e', belt='e0a83e', hood='pointed', face='b5b0b8', prop='staff',
                              trim='e0a83e', tallhat=True, cuffs='e0a83e')
+CHARS['chr_thrace'] = dict(robe='27232f', sleeve='43325c', hem='43325c', belt='2a1f3d', hood='bare', face='b5b0b8', hands='6a5484',
+                           hair='1a1722', collar=True, prop='quillstaff', scale=(.95, .95, 1.32), girth=.85)
+CHARS['chr_vael'] = dict(robe='b5b0b8', sleeve='8a8591', hem='e0a83e', belt='e0a83e', hood='bare', face='b5b0b8', hair='f6d67a',
+                         wings=('e0a83e', 1.0), halo=True, scale=(1.15, 1.15, 1.45), glow=.35)
+CHARS['chr_glut'] = dict(robe='3a0f14', sleeve='74161b', hem='e0a83e', belt='1a1722', hood='bare', face='74161b', hands='3a0f14',
+                         eyes='ember', horns=True, tophat=True, belly=True, scale=(1.6, 1.6, 1.62), girth=1.25)
+CHARS['chr_ink_wraith'] = dict(wraith=True, scale=(1.05, 1.05, 1.15))
+CHARS['chr_provost'] = dict(robe='b3261e', sleeve='74161b', hem='e0a83e', belt='e0a83e', hood='bare', face='b5b0b8', hair='8a8591',
+                            chain=True, girth=1.25, prop='scroll')
+CHARS['chr_crake'] = dict(robe='1a1722', sleeve='3a0f14', hem='b3261e', belt='b3261e', hood='bare', face='74161b', hair='0d0b12',
+                          longhair=True, horns='small', eyes='ember', scale=(.92, .92, 1.12), girth=.85)
+CHARS['chr_ashgrove'] = dict(robe='b5b0b8', sleeve='8a8591', hem='e0a83e', belt='e0a83e', hood='bare', face='b5b0b8', hair='e0a83e',
+                             wings=('f6d67a', .6), cuffs='e0a83e', glow=.25)
+CHARS['chr_smoulder'] = dict(robe='66616e', sleeve='4b4654', hem='4b4654', belt='37323f', hood='bare', face='8a8591', hair='4b4654',
+                             hunch=True, papers=True)
+CHARS['chr_odalys'] = dict(robe='37323f', sleeve='4b4654', hem='6a5484', belt='27232f', hood='bare', face='b5b0b8', hair='27232f',
+                           cuffs='6a5484', scarf='6a5484', specs=True, girth=.85, bun=True)
+CHARS['chr_quill_portrait'] = dict(robe='1a1722', sleeve='27232f', hem='74161b', belt='27232f', hood='round', face='74161b',
+                                   horns=True, eyes='ember', lantern=True, prop='ledger')
 CHARS['chr_demon'] = dict(demon=True)
 CHARS['chr_demon_brute'] = dict(demon=True, brute=True)
 
@@ -45,17 +64,35 @@ class Rig:
         c, p = self.ctx, self.p
         self.root = c.empty('root')
         self.body = c.empty('body', parent=self.root)
+        if p.get('scale'):
+            self.root.scale = p['scale']
         soul = p.get('soul')
         if soul:
             return self.build_soul()
+        if p.get('wraith'):
+            return self.build_wraith()
         robe = self.mat(p['robe']); hem = self.mat(p['hem']); face = self.mat(p['face'], .55)
         sleeve = self.mat(p.get('sleeve') or SLEEVE.get(p['robe'], p['robe']))
         b = self.body
         k = 0.92 if p.get('hunch') else 1.0
         self.k = k
         # robe: flared cone, slightly elliptical; hem band; belt
-        c.cyl(.165, .085, 0, .53 * k, robe, seg=16, scale=(1, .86), parent=b)
-        c.cyl(.172, .163, 0, .05, hem, seg=16, scale=(1, .86), parent=b)
+        g = p.get('girth', 1.0)
+        if p.get('glow'):
+            robe = self.mat(p['robe'], p['glow']); sleeve = self.mat(p.get('sleeve') or p['robe'], p['glow'])
+        c.cyl(.165 * g, .085 * g, 0, .53 * k, robe, seg=16, scale=(1, .86), parent=b)
+        c.cyl(.172 * g, .163 * g, 0, .05, hem, seg=16, scale=(1, .86), parent=b)
+        if p.get('belly'):
+            c.sphere(.17, (0, -.06, .3), self.mat('74161b'), scale=(1.1, 1.0, 1.05), parent=b)       # waistcoat
+            c.box((-.07, -.235, .2), (.07, -.2, .34), self.mat('e8552b', 3.5), parent=b)            # furnace door
+            for zz in (.23, .27, .31):
+                c.box((-.075, -.245, zz), (.075, -.235, zz + .012), self.mat('1a1722'), parent=b)
+            for zz in (.4, .14):
+                c.sphere(.014, (0, -.225, zz), self.mat('e0a83e'), parent=b)
+        if p.get('papers'):
+            for i, (x, z) in enumerate(((-.07, .36), (.05, .4), (.0, .28))):
+                pp = c.box((x - .03, -.17, z), (x + .03, -.13, z + .1), self.mat('b5b0b8'), parent=b)
+                pp.rotation_euler = (0, (i - 1) * .3, 0)
         if p.get('tabard'):
             tab = self.mat(p['tabard'])
             c.cyl(.18, .108, .08, .52 * k, tab, seg=16, scale=(.62, .9), loc=(0, -.006), parent=b)
@@ -69,7 +106,25 @@ class Rig:
         if p.get('hunch'):
             hd.location = (0, -.05, .60 * k)
         hood = p['hood']
-        if hood == 'helmet':
+        if p.get('collar'):
+            c.cyl(.1, .145, -.12, .1, robe, seg=12, loc=(0, .035), scale=(1, .8), parent=hd)
+        if hood == 'bare':
+            c.sphere(.092, (0, -.01, .03), face, scale=(.95, .95, 1.08), parent=hd)
+            if p.get('hair'):
+                hm = self.mat(p['hair'], p.get('glow', 0))
+                c.sphere(.096, (0, .025, .055), hm, scale=(1, 1, .95), parent=hd)
+                if p.get('longhair'):
+                    c.cyl(.07, .1, -.2, .02, hm, seg=10, loc=(0, .05), parent=hd)
+                if p.get('bun'):
+                    c.sphere(.045, (0, .08, .11), hm, parent=hd)
+            ecol = self.mat('e8552b', 4.0) if p.get('eyes') == 'ember' else self.mat('1a1722')
+            for sx in (-.034, .034):
+                c.sphere(.016, (sx, -.094, .035), ecol, parent=hd)
+            if p.get('tophat'):
+                c.cyl(.15, .15, .08, .1, self.mat('0d0b12'), seg=14, parent=hd)
+                c.cyl(.085, .095, .1, .3, self.mat('1a1722'), seg=12, parent=hd)
+                c.cyl(.097, .097, .12, .16, self.mat('b3261e'), seg=12, parent=hd)
+        elif hood == 'helmet':
             c.sphere(.105, (0, .015, .02), self.mat('37323f'), scale=(1, 1, 1.05), parent=hd)       # mail coif
             c.sphere(.078, (0, -.055, .015), face, scale=(.95, .7, 1.05), parent=hd)
             c.sphere(.11, (0, 0, .085), self.mat('66616e'), scale=(1, 1, .72), parent=hd)           # kettle hat
@@ -94,9 +149,39 @@ class Rig:
             else:
                 tip = c.cyl(.09, .03, 0, .12, robe, seg=10, parent=hd)
                 tip.location = (0, .06, .15); tip.rotation_euler = (math.radians(20), 0, 0)
-            if p.get('specs'):
-                for sx in (-.03, .03):
-                    c.sphere(.02, (sx, -.145, .03), self.mat('fff3c4', 3.0), parent=hd)
+        if p.get('specs'):
+            yy = -.145 if hood != 'bare' else -.105
+            for sx in (-.034, .034):
+                c.sphere(.02, (sx, yy, .03), self.mat('fff3c4', 3.0), parent=hd)
+        if p.get('horns'):
+            small = p['horns'] == 'small'
+            hz = .2 if p.get('tophat') else .1
+            for sx in (-1, 1):
+                big = p.get('tophat')
+                h1 = c.cyl(.03 if big else .025, 0, 0, .09 if small else (.26 if big else .16), self.mat('4b4654' if not small else '8a8591'), seg=6, parent=hd)
+                h1.location = (sx * (.09 if big else .07), .03, hz); h1.rotation_euler = (math.radians(-35 if small else 0), sx * math.radians(-55 if big else -40), 0)
+        if p.get('halo'):
+            for i in range(10):
+                a = i * math.pi / 5
+                c.sphere(.022, (math.cos(a) * .12, .05 + math.sin(a) * .12 * .5, .2 + math.sin(a) * .03), self.mat('f6d67a', 3.0), parent=hd)
+        if p.get('scarf'):
+            sc = self.mat(p['scarf'])
+            c.cyl(.085, .08, -.1, -.04, sc, seg=12, parent=hd)
+            c.box((.02, -.1, -.3), (.07, -.07, -.08), sc, parent=hd)
+        if p.get('chain'):
+            for i in range(9):
+                a = math.radians(200 + i * 17.5)
+                c.sphere(.017, (math.cos(a) * .12, math.sin(a) * .11, .46 - abs(i - 4) * -.012 - .05), self.mat('e0a83e', .3, 'f6d67a'), parent=b)
+            c.sphere(.03, (0, -.13, .36), self.mat('e0a83e', .4, 'f6d67a'), parent=b)
+        if p.get('wings'):
+            wc, ws = p['wings']
+            wm = self.mat(wc, .4)
+            wing = [(0, 0), (.12, .2), (.2, .45), (.18, .62), (.12, .5), (.1, .3), (.04, .1)]
+            for sx in (-1, 1):
+                pts = [(sx * x * ws, z * ws) for x, z in wing]
+                if sx < 0: pts = pts[::-1]
+                wg = c.poly_prism(pts, .03, wm, parent=b, name='wing')
+                wg.location = (sx * .05, .12, .22); wg.rotation_euler = (math.radians(-12), 0, 0)
         # arms: pivot at shoulder, sleeve hangs along -Z
         self.arms = []
         for sx in (-1, 1):
@@ -104,7 +189,7 @@ class Rig:
             c.cyl(.064, .044, -.27, 0, sleeve, seg=10, parent=pv)
             if p.get('cuffs'):
                 c.cyl(.064, .06, -.27, -.235, self.mat(p['cuffs']), seg=10, parent=pv)
-            c.sphere(.036, (0, -.005, -.295), face, parent=pv)
+            c.sphere(.036, (0, -.005, -.295), self.mat(p['hands']) if p.get('hands') else face, parent=pv)
             self.arms.append(pv)
         if p.get('lantern'):
             lg = self.arms[0]
@@ -135,6 +220,13 @@ class Rig:
             c.box((-.12, -.27, .16), (.12, -.15, .38), self.mat('74161b'), parent=g)
             c.box((-.11, -.28, .17), (.11, -.27, .37), self.mat('b5b0b8'), parent=g)
             c.box((-.12, -.275, .25), (.12, -.265, .28), self.mat('e0a83e'), parent=g)
+            self.prop = g
+        elif pr == 'quillstaff':
+            g = c.empty('qstaff', (0, 0, 0), parent=self.root)
+            c.cyl(.014, .014, .0, .82, self.mat('1a1722'), seg=6, loc=(.21, -.07), parent=g)
+            fe = c.poly_prism([(0, 0), (.05, .1), (.04, .26), (0, .3), (-.03, .2)], .015, self.mat('b5b0b8'), parent=g)
+            fe.location = (.21, -.07, .78)
+            c.cyl(.016, 0, -.06, 0, self.mat('6a5484'), seg=4, loc=(.21, -.07), parent=g)
             self.prop = g
         elif pr == 'staff':
             g = c.empty('staff', (0, 0, 0), parent=self.root)
@@ -188,6 +280,29 @@ class Rig:
         if v == 2:
             self.body.rotation_euler = (math.radians(-8), 0, 0)
 
+    def build_wraith(self):
+        c = self.ctx
+        ink, ink2, vio = self.mat('1a1722', .1), self.mat('2a1f3d', .2), self.mat('8b3fd9', 1.6)
+        b = self.body
+        self.k = 1.0
+        self.tail = c.cyl(.05, .15, .0, .24, ink, seg=10, parent=b, scale=(1, .86))
+        c.cyl(.15, .09, .22, .55, ink2, seg=12, scale=(1, .86), parent=b)
+        c.sphere(.14, (0, .01, .52), ink2, scale=(1.05, .7, .5), parent=b)
+        self.head = c.empty('head', (0, -.03, .66), parent=b)
+        c.sphere(.1, (0, 0, 0), ink, scale=(.9, .95, 1.15), parent=self.head)
+        for sx in (-.035, .035):
+            c.box((sx - .02, -.1, .0), (sx + .02, -.08, .015), vio, parent=self.head)
+        for (x, y, z0, z1) in ((-.1, -.12, .1, .5), (.08, -.13, .05, .45), (0, -.14, .15, .48), (.12, .05, .0, .4)):
+            c.box((x - .012, y - .01, z0), (x + .012, y + .01, z1), vio, parent=b)              # running violet streaks
+        self.arms = []
+        for sx in (-1, 1):
+            pv = c.empty('arm', (sx * .15, .0, .5), parent=b)
+            c.cyl(.05, .03, -.34, 0, ink2, seg=8, parent=pv)
+            c.cyl(.03, 0, -.44, -.34, vio, seg=6, parent=pv)                                   # dripping finger
+            self.arms.append(pv)
+        self.prop = None
+        self.feet = []
+
     # ---------------------------------------------------------------- poses
     def pose(self, anim, f):
         p = self.p
@@ -226,8 +341,19 @@ class Rig:
                 armL = -0.75
         if p.get('lantern'):
             armL = -0.45 if anim != 'walk' else -0.45 - 0.15 * swing
-        if pr == 'staff':
+        if pr in ('staff', 'quillstaff'):
             armR = -0.35 if anim != 'work' else -0.9
+        lean = 0.0
+        if anim == 'cast':
+            armL = [-1.3, -2.5, -1.7][f]; armR = armL if pr not in ('staff', 'quillstaff') else [-.6, -1.2, -.9][f]
+            bob = [0.0, .02, .01][f]
+        elif anim == 'attack':
+            armR = [0.9, -1.8, -1.2][f]; armL = [-.4, .3, .1][f]; lean = [-.08, .15, .1][f]
+        elif anim == 'hit':
+            armL, armR = -1.0, -0.8; lean = -.22; bob = .01
+        if not soul and not p.get('wraith') and p.get('variant') is None:
+            self.body.rotation_euler = (lean, 0, 0)
+            self.body.location = (0, 0, bob)
         if pr == 'spear':
             armR = -0.35
             if anim == 'attention':
@@ -241,7 +367,7 @@ class Rig:
             self.feet[0].location.y = -.06 + fl
             self.feet[1].location.y = -.06 + fr
         if self.prop is not None:
-            if pr == 'staff':
+            if pr in ('staff', 'quillstaff'):
                 self.prop.location = (0, 0, bob)
             if pr == 'spear':
                 self.prop.location = (0, 0.0 if anim != 'attention' else 0.0, bob)

@@ -1,0 +1,32 @@
+{
+ "id": "dlg_pell_n4",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_pell",
+   "text": "Department Supervisor. They gave you the quotas to keep your hands full. Good. Full hands can carry ledgers.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_pell",
+   "text": "Odalys kept a copy of Thrace's key. The shelf behind his desk is Room 0's door. It only turns at night, when he's inside.",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "npc_pell",
+   "text": "Go after the night bell. Odalys and Quill will be at your back. Bring me the books.",
+   "next": "end",
+   "effects": [
+    {
+     "op": "set_flag",
+     "id": "flag_room0_known",
+     "value": true
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_act3_room0"
+    }
+   ]
+  }
+ }
+}

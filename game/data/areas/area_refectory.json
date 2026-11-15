@@ -1,0 +1,388 @@
+{
+ "id": "area_refectory",
+ "name": "The Refectory",
+ "size": [
+  16,
+  10
+ ],
+ "ambience": "amb_hall",
+ "backdrop": "none",
+ "grid": [
+  "################",
+  "#B............Wk",
+  "#..TTTTTTTTTT..k",
+  "#..==========..k",
+  "#..............k",
+  "#..TTTTTTTTTT..k",
+  "#..==========..k",
+  "#..............k",
+  "#u.............k",
+  "kkkkkkkDkkkkkkkk"
+ ],
+ "legend": {
+  "#": {
+   "kind": "wall"
+  },
+  "k": {
+   "kind": "kerb"
+  },
+  "D": {
+   "kind": "door"
+  },
+  ".": {
+   "kind": "floor"
+  },
+  "B": {
+   "kind": "prop",
+   "prop": "brazier_0",
+   "solid": true
+  },
+  "S": {
+   "kind": "prop",
+   "prop": "shelf_books",
+   "solid": true
+  },
+  "n": {
+   "kind": "prop",
+   "prop": "bed",
+   "solid": true
+  },
+  "w": {
+   "kind": "prop",
+   "prop": "washstand",
+   "solid": true
+  },
+  "d": {
+   "kind": "prop",
+   "prop": "desk_clerk",
+   "solid": true
+  },
+  "e": {
+   "kind": "prop",
+   "prop": "desk_superior",
+   "solid": true
+  },
+  "o": {
+   "kind": "prop",
+   "prop": "stool",
+   "solid": false
+  },
+  "l": {
+   "kind": "prop",
+   "prop": "lectern",
+   "solid": true
+  },
+  "W": {
+   "kind": "prop",
+   "prop": "wardrobe",
+   "solid": true
+  },
+  "c": {
+   "kind": "prop",
+   "prop": "coffer",
+   "solid": true
+  },
+  "T": {
+   "kind": "prop",
+   "prop": "long_table",
+   "solid": true
+  },
+  "=": {
+   "kind": "prop",
+   "prop": "bench_long",
+   "solid": false
+  },
+  "p": {
+   "kind": "prop",
+   "prop": "pew",
+   "solid": true
+  },
+  "A": {
+   "kind": "prop",
+   "prop": "altar",
+   "solid": true
+  },
+  "i": {
+   "kind": "prop",
+   "prop": "candle_stand",
+   "solid": true
+  },
+  "M": {
+   "kind": "prop",
+   "prop": "map_table",
+   "solid": true
+  },
+  "H": {
+   "kind": "prop",
+   "prop": "throne",
+   "solid": true
+  },
+  "g": {
+   "kind": "prop",
+   "prop": "ledger_stack",
+   "solid": true
+  },
+  "s": {
+   "kind": "prop",
+   "prop": "infirmary_screen",
+   "solid": true
+  },
+  "b": {
+   "kind": "prop",
+   "prop": "bookcase_low",
+   "solid": true
+  },
+  "u": {
+   "kind": "prop",
+   "prop": "cauldron",
+   "solid": true
+  },
+  "x": {
+   "kind": "prop",
+   "prop": "chain_post",
+   "solid": true
+  },
+  "R": {
+   "kind": "prop",
+   "prop": "brazier_hell",
+   "solid": true
+  }
+ },
+ "floor": "floor_flag",
+ "windows": [
+  {
+   "cell": [
+    4,
+    0
+   ],
+   "glass": "gold"
+  },
+  {
+   "cell": [
+    11,
+    0
+   ],
+   "glass": "gold"
+  },
+  {
+   "cell": [
+    0,
+    5
+   ],
+   "glass": "gold"
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    4,
+    4
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    8,
+    4
+   ]
+  },
+  {
+   "sprite": "light_pool_gold",
+   "cell": [
+    12,
+    4
+   ]
+  },
+  {
+   "sprite": "banner_red",
+   "cell": [
+    7,
+    0
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "door_ref_cloister",
+   "type": "door",
+   "cell": [
+    7,
+    9
+   ],
+   "use_cell": [
+    7,
+    8
+   ],
+   "style": "plain",
+   "to": {
+    "area": "area_lower_cloister",
+    "spawn": "from_refectory"
+   }
+  },
+  {
+   "id": "obj_wren_supper",
+   "type": "npc",
+   "npc": "npc_wren",
+   "cell": [
+    6,
+    3
+   ],
+   "facing": "ne",
+   "use_cell": [
+    6,
+    4
+   ],
+   "hours": [
+    [
+     12,
+     13
+    ],
+    [
+     18,
+     21
+    ]
+   ]
+  },
+  {
+   "id": "obj_grist_supper",
+   "type": "npc",
+   "npc": "npc_grist",
+   "cell": [
+    10,
+    6
+   ],
+   "facing": "ne",
+   "use_cell": [
+    10,
+    7
+   ],
+   "hours": [
+    18,
+    22
+   ]
+  },
+  {
+   "id": "obj_cook",
+   "type": "inspect",
+   "cell": [
+    1,
+    8
+   ],
+   "use_cell": [
+    2,
+    8
+   ],
+   "dialogue": "dlg_cook",
+   "verb": "Eat"
+  }
+ ],
+ "spawns": {
+  "default": [
+   7,
+   8
+  ],
+  "from_cloister": [
+   7,
+   8
+  ]
+ },
+ "zones": {},
+ "ambient": {
+  "desk_clerks": [],
+  "flows": [],
+  "staff": [
+   {
+    "sprite": "chr_clerk_grey",
+    "count": 6,
+    "rect": [
+     3,
+     3,
+     12,
+     7
+    ],
+    "hours": [
+     [
+      12,
+      14
+     ],
+     [
+      18,
+      21
+     ]
+    ],
+    "seated": true
+   },
+   {
+    "sprite": "chr_clerk_lilac",
+    "count": 3,
+    "rect": [
+     3,
+     3,
+     12,
+     7
+    ],
+    "hours": [
+     [
+      12,
+      14
+     ],
+     [
+      18,
+      21
+     ]
+    ],
+    "seated": true
+   },
+   {
+    "sprite": "chr_guard",
+    "count": 2,
+    "rect": [
+     3,
+     3,
+     12,
+     7
+    ],
+    "hours": [
+     18,
+     21
+    ],
+    "seated": true
+   },
+   {
+    "sprite": "chr_archivist",
+    "count": 1,
+    "rect": [
+     1,
+     1,
+     14,
+     8
+    ],
+    "hours": [
+     [
+      12,
+      14
+     ],
+     [
+      18,
+      21
+     ]
+    ]
+   },
+   {
+    "sprite": "chr_clerk_grey",
+    "count": 1,
+    "rect": [
+     1,
+     1,
+     14,
+     8
+    ],
+    "hours": [
+     9,
+     12
+    ]
+   }
+  ]
+ }
+}

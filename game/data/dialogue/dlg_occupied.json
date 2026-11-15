@@ -1,0 +1,11 @@
+{
+ "id": "dlg_occupied",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "A brass card on the door: OCCUPIED. Someone inside is pretending very hard to be out.",
+   "next": "end"
+  }
+ }
+}

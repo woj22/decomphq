@@ -1,0 +1,16 @@
+{
+ "id": "dlg_vael",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_vael",
+   "text": "You are the one who stamps so carefully. Careful is good. Careful is countable.",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "npc_vael",
+   "text": "Heaven is not a crowd, Adjudicator. It is a choir. A choir must be kept in tune.",
+   "next": "end"
+  }
+ }
+}

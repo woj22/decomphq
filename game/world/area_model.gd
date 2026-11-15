@@ -116,6 +116,12 @@ func cell_solid(c: Vector2i) -> bool:
 
 
 func object_visible(o: Dictionary) -> bool:
+	if o.has("hours"):
+		if not Clock.in_hours(o["hours"]):
+			return false
+		if o.has("visible_if"):
+			return Conditions.check(o["visible_if"])
+		return true
 	if str(o.get("type", "")) == "npc" and Clock.is_night() and not bool(o.get("night", false)):
 		return false # asleep in the Dormitory
 	if o.has("day_only") and Clock.is_night():

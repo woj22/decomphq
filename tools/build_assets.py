@@ -20,9 +20,9 @@ WORKERS = int(os.environ.get('ART_WORKERS', str(os.cpu_count() or 4)))
 GAIN = 1.45          # exposure applied with the ambient tint (keeps the cold tint, restores mid-tones)
 
 # Blender jobs with rough cost (s) for load balancing
-JOBS = [('walls', 3.3), ('windows', 2.1), ('doors', 3.4), ('kerbs', .7), ('brazier', 1.2), ('torch', 1.5),
-        ('banner', .6), ('desks', 1.6), ('furn', 2.0), ('shelves', 2.5), ('quarters', 3.0), ('rails', .8), ('booth', .5), ('statue', 1.2),
-        ('busts', 2.0), ('portraits', 2.5), ('hell', 4.0)] + [(f'char:{c}', {'soul': 3.3, 'demon': 7.0, 'brute': 15.0}.get(spec.CHARS[c], 4.2)) for c in spec.CHARS]
+JOBS = [('walls', 4.5), ('windows', 4.8), ('doors', 8.0), ('kerbs', .7), ('brazier', 1.2), ('torch', 1.5),
+        ('banner', .6), ('desks', 1.6), ('furn', 2.0), ('shelves', 2.5), ('quarters', 6.6), ('rails', .8), ('booth', .5), ('statue', 1.2),
+        ('busts', 4.5), ('portraits', 11.3), ('hell', 14.7), ('rooms', 9.8)] + [(f'char:{c}', {'soul': 1.6, 'demon': 5.1, 'brute': 11.5, 'boss': 5.7, 'glut': 17.8, 'wraith': 3.2}.get(spec.CHARS[c], 2.0)) for c in spec.CHARS]
 
 
 def run_blender(raw):
@@ -37,6 +37,8 @@ def run_blender(raw):
     ok = True
     for p in procs:
         out, _ = p.communicate()
+        if os.environ.get('ART_TIMES'):
+            print(' | '.join(l for l in out.splitlines() if l.startswith('JOB')))
         if p.returncode != 0:
             ok = False
             print(out[-4000:])
@@ -76,6 +78,11 @@ def pil_tiles(_):
     out['impact_spark'] = np.hstack([tiles.spark(f) for f in range(4)])
     out['demon_slash'] = np.hstack([tiles.slash(f) for f in range(3)])
     out['hell_glow'] = tiles.light_pool('hell')
+    out['rug_red'] = tiles.rug('red'); out['rug_gold'] = tiles.rug('gold')
+    out['violet_bolt'] = np.hstack([tiles.violet_bolt(f) for f in range(4)])
+    out['holy_beam'] = np.hstack([tiles.holy_beam(f) for f in range(4)])
+    out['hellfire_burst'] = np.hstack([tiles.hellfire_burst(f) for f in range(6)])
+    out['ink_puddle'] = np.hstack([tiles.ink_puddle(f) for f in range(4)])
     return 'tiles', out
 
 
@@ -129,33 +136,41 @@ def world_sprites(raw, tiles_out):
     return groups
 
 
+def char_sheet(args):
+    raw, cid = args
+    t = spec.CHARS[cid]
+    (cw, ch), origin = spec.char_cell(cid)
+    soul = t == 'soul'
+    rows, anims, r = [], {}, 0
+    for anim, n, fps in spec.CHAR_ANIMS[t]:
+        anims[anim] = dict(row=r, frames=n, fps=fps)
+        for f in range(n):
+            row = []
+            for d in range(8):
+                a = post.load(os.path.join(raw, f'{cid}__{anim}_{f}_{d}.png'))
+                mode = 'soul' if soul else ('ink' if cid in spec.VIOLET_OK else 'world')
+                q = post.quantise(a, mode, outline=False, gain=GAIN, alpha=191 if soul else 255)
+                if post.edge_contact(q):
+                    if t not in ('demon', 'brute', 'boss', 'glut', 'wraith'):
+                        raise SystemExit(f'edge contact: {cid} {anim} {f} {d}')
+                    q[0] = q[-1] = 0; q[:, 0] = q[:, -1] = 0     # big attack poses: clip to the cell
+                post.add_outline(q, post.SOUL_OUT if soul else post.INK, 191 if soul else 255)
+                row.append(q)
+            rows.append(np.hstack(row))
+            r += 1
+    sheet = np.vstack(rows)
+    meta = dict(origin=list(origin), kind='character', cell=[cw, ch], dirs=spec.DIRS, anims=anims,
+                _fw=sheet.shape[1], _fh=sheet.shape[0])
+    if soul:
+        meta['alpha_baked'] = 0.75
+    return cid, sheet, meta
+
+
 def char_sheets(raw):
     sprites, meta = {}, {}
-    for cid, t in spec.CHARS.items():
-        (cw, ch), origin = spec.char_cell(cid)
-        soul = t == 'soul'
-        rows, anims, r = [], {}, 0
-        for anim, n, fps in spec.CHAR_ANIMS[t]:
-            anims[anim] = dict(row=r, frames=n, fps=fps)
-            for f in range(n):
-                row = []
-                for d in range(8):
-                    a = post.load(os.path.join(raw, f'{cid}__{anim}_{f}_{d}.png'))
-                    q = post.quantise(a, 'soul' if soul else 'world', outline=False, gain=GAIN, alpha=191 if soul else 255)
-                    if post.edge_contact(q):
-                        if t not in ('demon', 'brute'):
-                            raise SystemExit(f'edge contact: {cid} {anim} {f} {d}')
-                        q[0] = q[-1] = 0; q[:, 0] = q[:, -1] = 0     # big attack poses: clip to the cell
-                    post.add_outline(q, post.SOUL_OUT if soul else post.INK, 191 if soul else 255)
-                    row.append(q)
-                rows.append(np.hstack(row))
-                r += 1
-        sheet = np.vstack(rows)
-        sprites[cid] = sheet
-        meta[cid] = dict(origin=list(origin), kind='character', cell=[cw, ch], dirs=spec.DIRS, anims=anims,
-                         _fw=sheet.shape[1], _fh=sheet.shape[0])
-        if soul:
-            meta[cid]['alpha_baked'] = 0.75
+    with ProcessPoolExecutor(max_workers=WORKERS) as ex:
+        for cid, sheet, m in ex.map(char_sheet, [(raw, c) for c in spec.CHARS]):
+            sprites[cid] = sheet; meta[cid] = m
     return sprites, meta
 
 
@@ -221,6 +236,13 @@ PORTRAIT_FACE = {  # id -> (zh, dist, kind, face colour on hooded figures)
 def portraits(raw):
     sprites, meta = {}, {}
     for pid in spec.PORTRAITS:
+        if pid in spec.PORTRAIT_NEW:
+            a = post.load(os.path.join(raw, pid + '.png'))
+            q = post.quantise(a, 'world', gain=GAIN)
+            post.add_outline(q, post.INK)
+            bg = _bg(64, 'clerk'); m = q[..., 3] > 0; bg[m] = q[m]
+            sprites[pid] = bg; meta[pid] = dict(origin=[0, 0], kind='portrait')
+            continue
         zh, dist, kind = PORTRAIT_FACE[pid]
         a = post.load(os.path.join(raw, pid + '.png'))
         q = post.quantise(a, 'soul' if kind == 'soul' else 'world', gain=GAIN)
@@ -279,10 +301,24 @@ def main():
     errors = []
     groups = world_sprites(raw, res['tiles'])
     cs, cm = char_sheets(raw)
-    groups['characters'] = (cs, cm)
+    B = {'chr_thrace', 'chr_vael', 'chr_glut', 'chr_ink_wraith', 'chr_provost', 'chr_crake', 'chr_ashgrove', 'chr_smoulder', 'chr_odalys'}
+    groups['characters'] = ({k: v for k, v in cs.items() if k not in B}, {k: v for k, v in cm.items() if k not in B})
+    groups['characters_b'] = ({k: v for k, v in cs.items() if k in B}, {k: v for k, v in cm.items() if k in B})
     for g, (sprites, meta) in sorted(groups.items()):
-        img = post.write_atlas(os.path.join(ASSETS, g), g, sprites, meta)
-        bad = post.lint(img, allow_alpha=g in ('fx', 'characters'))
+        gd = 'characters' if g.startswith('characters') else g
+        img = post.write_atlas(os.path.join(ASSETS, gd), g, sprites, meta)
+        chk = img.copy()
+        man = json.load(open(os.path.join(ASSETS, gd, g + '.json')))['sprites']
+        for sid in spec.VIOLET_OK:          # the reserved violet is allowed inside these sprites only
+            if sid in man:
+                x, y, w, h = man[sid]['rect']
+                if man[sid].get('kind') == 'character':
+                    w, h = sprites[sid].shape[1], sprites[sid].shape[0]
+                else:
+                    w = w * man[sid].get('frames', 1)
+                sub = chk[y:y + h, x:x + w]
+                sub[(sub[..., :3] == rgb('8b3fd9')).all(-1)] = 0
+        bad = post.lint(chk, allow_alpha=g in ('fx', 'characters', 'characters_b'))
         if bad:
             errors.append(f'{g}: {bad} off-palette / non-binary-alpha pixels')
     # ui + portraits (UI tokens allowed)
@@ -335,6 +371,10 @@ def required_ids():
     r += ['brazier_0', 'wall_torch_x', 'wall_torch_y', 'banner_red', 'desk_clerk', 'desk_superior', 'dais', 'stool', 'bench',
           'bench_soul', 'lectern', 'shelf_books', 'shelf_empty', 'counter', 'rope_post', 'queue_rail_x', 'queue_post',
           'ticket_booth', 'statue_first_clerk', 'ivy_bench', 'desk_registrar']
+    r += ['chr_thrace', 'chr_vael', 'chr_glut', 'chr_ink_wraith', 'chr_provost', 'chr_crake', 'chr_ashgrove', 'chr_smoulder',
+          'chr_odalys', 'violet_bolt', 'holy_beam', 'hellfire_burst', 'ink_puddle', 'long_table', 'bench_long', 'pew', 'altar',
+          'candle_stand', 'wardrobe', 'coffer', 'map_table', 'throne', 'ledger_stack', 'banner_gold', 'rug_red', 'rug_gold',
+          'infirmary_screen', 'bookcase_low', 'fireplace_x']
     r += ['chr_demon', 'chr_demon_brute', 'chr_guard_night', 'chr_sorcerer', 'spell_lance', 'spell_lance_charged',
           'spell_nova', 'spell_nova_charged', 'impact_spark', 'demon_slash', 'hell_glow', 'hell_gate', 'hell_gate_open',
           'floor_brimstone_0', 'floor_brimstone_1', 'floor_brimstone_2', 'chain_post', 'brazier_hell', 'rune_circle',

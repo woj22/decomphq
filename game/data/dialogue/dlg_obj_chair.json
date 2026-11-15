@@ -1,0 +1,151 @@
+{
+ "id": "dlg_obj_chair",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "The Chair. On the seat, a single file. Your name is on it.",
+   "conditions": [
+    {
+     "op": "rank_gte",
+     "value": 5
+    }
+   ],
+   "next": "sit",
+   "else": "nope"
+  },
+  "nope": {
+   "speaker": "narrator",
+   "text": "The Chair. Black wood, gold leaf, worn at the arms by hands that have not touched it in decades.",
+   "next": "end"
+  },
+  "sit": {
+   "speaker": "narrator",
+   "text": "You sit. The room goes quiet in two directions at once. Two presences arrive, and do not knock.",
+   "conditions": [
+    {
+     "op": "not_flag",
+     "id": "flag_ending_chosen"
+    }
+   ],
+   "next": "p1",
+   "else": "after"
+  },
+  "p1": {
+   "speaker": "narrator",
+   "text": "The Principal: 'You broke a Compact that kept a peace. Tell Us what you will keep instead.'",
+   "next": "c1"
+  },
+  "c1": {
+   "speaker": "narrator",
+   "text": "The Counterparty, amused: 'Choose carefully, Chancellor. We both remember the Tally War.'",
+   "next": "choose"
+  },
+  "choose": {
+   "speaker": "player",
+   "choices": [
+    {
+     "text": "Keep the Rubric. Order, honestly kept.",
+     "next": "e1",
+     "effects": [
+      {
+       "op": "set_flag",
+       "id": "flag_ending_rubric",
+       "value": true
+      },
+      {
+       "op": "set_flag",
+       "id": "flag_ending_chosen",
+       "value": true
+      }
+     ]
+    },
+    {
+     "text": "Restore discretion. Judge every soul.",
+     "next": "e2",
+     "effects": [
+      {
+       "op": "set_flag",
+       "id": "flag_ending_discretion",
+       "value": true
+      },
+      {
+       "op": "set_flag",
+       "id": "flag_ending_chosen",
+       "value": true
+      }
+     ]
+    },
+    {
+     "text": "Charter Purgatory as a third realm.",
+     "next": "e3",
+     "effects": [
+      {
+       "op": "set_flag",
+       "id": "flag_ending_charter",
+       "value": true
+      },
+      {
+       "op": "set_flag",
+       "id": "flag_ending_chosen",
+       "value": true
+      }
+     ]
+    }
+   ]
+  },
+  "e1": {
+   "speaker": "narrator",
+   "text": "The Rubric stands, without violet ink. Fewer miracles, fewer crimes. The queue moves. The Gates stay shut to bribes.",
+   "effects": [
+    {
+     "op": "show_card",
+     "title": "The Rubric Kept",
+     "text": "Order, honestly kept. The Border endures. (The work goes on; so can you.)"
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_free"
+    }
+   ],
+   "next": "end"
+  },
+  "e2": {
+   "speaker": "narrator",
+   "text": "Every file is judged by a person again. It is slower, kinder, and dangerous. Both sides grumble. Neither marches.",
+   "effects": [
+    {
+     "op": "show_card",
+     "title": "Discretion Restored",
+     "text": "Justice, one soul at a time. The backlog grows; so does mercy. (Play on.)"
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_free"
+    }
+   ],
+   "next": "end"
+  },
+  "e3": {
+   "speaker": "narrator",
+   "text": "The DEFERRED are no longer waiting. Purgatory is a realm, with its own name. The Residents weep in the Cells, then open them.",
+   "effects": [
+    {
+     "op": "show_card",
+     "title": "The Third Realm",
+     "text": "Purgatory chartered. Nobody is merely deferred any more. (Play on.)"
+    },
+    {
+     "op": "set_objective",
+     "id": "obj_free"
+    }
+   ],
+   "next": "end"
+  },
+  "after": {
+   "speaker": "narrator",
+   "text": "The Chair is warm now. The file with your name on it waits. You will open it one day. Not today.",
+   "next": "end"
+  }
+ }
+}

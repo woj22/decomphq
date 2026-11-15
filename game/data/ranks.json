@@ -186,7 +186,15 @@
    "privileges": [
     {
      "icon": "icon_key",
-     "text": "(Not yet built - planned for a later milestone)"
+     "text": "The Upper Cloister's doors open to you"
+    },
+    {
+     "icon": "icon_quill",
+     "text": "Quotas cross your desk now"
+    },
+    {
+     "icon": "icon_obol",
+     "text": "Base pay 16 obols"
     }
    ]
   },
@@ -204,7 +212,15 @@
    "privileges": [
     {
      "icon": "icon_key",
-     "text": "(Not yet built - planned for a later milestone)"
+     "text": "The Border Guard answers to you"
+    },
+    {
+     "icon": "icon_quill",
+     "text": "Envoys must receive you"
+    },
+    {
+     "icon": "icon_obol",
+     "text": "Base pay 24 obols"
     }
    ]
   },
@@ -222,7 +238,15 @@
    "privileges": [
     {
      "icon": "icon_key",
-     "text": "(Not yet built - planned for a later milestone)"
+     "text": "The Chair is yours"
+    },
+    {
+     "icon": "icon_quill",
+     "text": "The Principal and the Counterparty will see you"
+    },
+    {
+     "icon": "icon_obol",
+     "text": "Base pay 40 obols"
     }
    ]
   }

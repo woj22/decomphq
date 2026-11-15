@@ -1,0 +1,12 @@
+{
+ "id": "npc_infirmarian",
+ "name": "Sister Bettony Cole",
+ "title": "Infirmarian",
+ "sprite": "chr_clerk_lilac",
+ "portrait": "por_marrow",
+ "dialogue": [
+  {
+   "id": "dlg_infirmarian"
+  }
+ ]
+}

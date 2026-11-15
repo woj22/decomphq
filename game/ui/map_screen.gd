@@ -18,8 +18,8 @@ func _ready() -> void:
 	h.add_child(c)
 	var m := Minimap.new()
 	m.big = true
-	m.custom_minimum_size = Vector2(440, 230)
-	m.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	m.custom_minimum_size = Vector2(560, 250)
+	m.mouse_filter = Control.MOUSE_FILTER_STOP
 	v.add_child(m)
 	var obj := GameState.objective_text()
-	v.add_child(UiKit.label("Objective: " + (obj if obj != "" else "-"), 16, UiKit.TEXT_DIM))
+	v.add_child(UiKit.label("Objective: " + (obj if obj != "" else "-") + "    (drag to pan; rooms appear as you find them)", 12, UiKit.TEXT_DIM))

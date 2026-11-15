@@ -1,0 +1,12 @@
+{
+ "id": "npc_glut",
+ "name": "Baron Mordecai Glut",
+ "title": "Master of the Furnace Guild",
+ "sprite": "chr_glut",
+ "portrait": "por_glut",
+ "dialogue": [
+  {
+   "id": "dlg_glut"
+  }
+ ]
+}

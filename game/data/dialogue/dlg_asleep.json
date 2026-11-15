@@ -1,0 +1,11 @@
+{
+ "id": "dlg_asleep",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "narrator",
+   "text": "Asleep, and breathing out of habit. You let them be.",
+   "next": "end"
+  }
+ }
+}

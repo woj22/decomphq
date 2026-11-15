@@ -48,6 +48,11 @@ func build(m: AreaModel) -> void:
 	Sim.presentation_tick.connect(_on_tick)
 	EventBus.sim_soul_adjudicated.connect(_on_adjudicated)
 	EventBus.flag_changed.connect(func(_a: String, _b: Variant) -> void: refresh_npcs())
+	Clock.hour_changed.connect(func(_h: int) -> void:
+		if is_instance_valid(self):
+			refresh_npcs()
+			if ambient != null:
+				ambient.refresh_hours())
 
 
 func _on_tick() -> void:
@@ -246,6 +251,10 @@ func _build_npcs() -> void:
 		if work != "" and Assets.has_anim(a.sprite_id, work):
 			a.idle_anim = work
 			a.set_anim(work)
+		if bool(od.get("asleep", false)):
+			a.rotation = -1.15 # lying in bed
+			a.idle_anim = "idle"
+			a.modulate = Color(0.85, 0.85, 0.95)
 		npcs[oid] = a
 	refresh_npcs()
 

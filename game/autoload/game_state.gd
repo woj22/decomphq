@@ -13,6 +13,7 @@ var docket: Array = []
 var docket_day := 0
 var objective := ""
 var unlocked_areas: Array = []
+var visited: Dictionary = {} # area_id -> true (the Map shows these)
 var incidents: Dictionary = {}
 var items: Dictionary = {}
 var snapshots: Dictionary = {}
@@ -57,6 +58,7 @@ func reset() -> void:
 	triggers_fired = {}
 	dialogue_log = []
 	back_room_log = []
+	visited = {}
 	last_ledger = {}
 	choices_log = []
 
@@ -569,7 +571,7 @@ func to_dict() -> Dictionary:
 		"docket": docket.duplicate(), "docket_day": docket_day, "objective": objective, "unlocked_areas": unlocked_areas.duplicate(),
 		"incidents": incidents.duplicate(), "items": items.duplicate(), "snapshots": snapshots.duplicate(true),
 		"shift": shift.duplicate(true), "pending_scored": pending_scored.duplicate(), "triggers_fired": triggers_fired.duplicate(),
-		"dialogue_log": dialogue_log.duplicate(true), "back_room_log": back_room_log.duplicate(true), "last_ledger": last_ledger.duplicate(true), "choices_log": choices_log.duplicate(true)}
+		"visited": visited.duplicate(), "dialogue_log": dialogue_log.duplicate(true), "back_room_log": back_room_log.duplicate(true), "last_ledger": last_ledger.duplicate(true), "choices_log": choices_log.duplicate(true)}
 
 
 ## JSON turns ints into floats; restore integral values to int, recursively.
@@ -621,6 +623,7 @@ func from_dict(raw: Dictionary) -> void:
 	triggers_fired = (d.get("triggers_fired", {}) as Dictionary).duplicate()
 	dialogue_log = (d.get("dialogue_log", []) as Array).duplicate(true)
 	back_room_log = (d.get("back_room_log", []) as Array).duplicate(true)
+	visited = (d.get("visited", {}) as Dictionary).duplicate()
 	last_ledger = (d.get("last_ledger", {}) as Dictionary).duplicate(true)
 	choices_log = (d.get("choices_log", []) as Array).duplicate(true)
 	in_game = true

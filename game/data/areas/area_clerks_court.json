@@ -433,7 +433,7 @@
    ],
    "style": "plain",
    "to": {
-    "area": "area_deferral_cells",
+    "area": "area_lower_cloister",
     "spawn": "from_court"
    }
   },
@@ -450,7 +450,7 @@
    ],
    "style": "plain",
    "to": {
-    "area": "area_dormitory",
+    "area": "area_residences",
     "spawn": "from_court"
    }
   },

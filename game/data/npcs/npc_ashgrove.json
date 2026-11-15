@@ -1,0 +1,12 @@
+{
+ "id": "npc_ashgrove",
+ "name": "Celandine Ashgrove",
+ "title": "Auric Envoy to Limen",
+ "sprite": "chr_ashgrove",
+ "portrait": "por_ashgrove",
+ "dialogue": [
+  {
+   "id": "dlg_ashgrove"
+  }
+ ]
+}

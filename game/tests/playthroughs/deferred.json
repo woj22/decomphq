@@ -59,6 +59,17 @@
    "do": "drain"
   },
   {
+   "do": "interact",
+   "object": "door_lc_cells"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.0
+  },
+  {
+   "do": "drain"
+  },
+  {
    "do": "assert",
    "area": "area_deferral_cells"
   },
@@ -88,6 +99,17 @@
   {
    "do": "wait",
    "seconds": 1.5
+  },
+  {
+   "do": "drain"
+  },
+  {
+   "do": "interact",
+   "object": "door_res_dormitory"
+  },
+  {
+   "do": "wait",
+   "seconds": 1.0
   },
   {
    "do": "drain"

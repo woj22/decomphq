@@ -1,0 +1,11 @@
+{
+ "id": "dlg_bursar",
+ "start": "n1",
+ "nodes": {
+  "n1": {
+   "speaker": "npc_bursar",
+   "text": "Pay is issued at the shift ledger, Adjudicator, not by me. I merely count it. Lovingly.",
+   "next": "end"
+  }
+ }
+}

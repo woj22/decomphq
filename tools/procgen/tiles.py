@@ -355,3 +355,95 @@ def slash(f):
             core = (np.abs(dd - 16) < .5) & (ang > .7) & (ang < 1.5)
             out[core, :3] = rgb('f6d67a')
     return out
+
+
+# ------------------------------------------------------------------ map expansion / bosses
+def rug(kind):
+    w, h, ox, oy = 128, 64, 64, 32
+    u, v = uv_grid(w, h, ox, oy)
+    U, V = u + .5, v + .5                      # footprint spans [0,2) in both
+    out = np.zeros((h, w, 4), np.uint8)
+    inside = (U > .08) & (U < 1.92) & (V > .08) & (V < 1.92)
+    field, border, motif, edge = (('74161b', 'b3261e', 'e0a83e', '3a0f14') if kind == 'red'
+                                  else ('a8742a', 'e0a83e', 'fff3c4' if False else 'f6d67a', '6b4a1e'))
+    out[inside, :3] = rgb(field); out[inside, 3] = 255
+    bd = inside & ((U < .26) | (U > 1.74) | (V < .26) | (V > 1.74))
+    out[bd, :3] = rgb(border)
+    ln = inside & ((np.abs(U - .2) < .02) | (np.abs(U - 1.8) < .02) | (np.abs(V - .2) < .02) | (np.abs(V - 1.8) < .02))
+    out[ln, :3] = rgb(motif)
+    dia = inside & ~bd & ((np.abs(U - 1) + np.abs(V - 1)) < .5) & ((np.abs(U - 1) + np.abs(V - 1)) > .38)
+    out[dia, :3] = rgb(motif)
+    out[inside & ~bd & ((np.abs(U - 1) + np.abs(V - 1)) < .1), :3] = rgb(motif)
+    fr = (((U > .02) & (U <= .08)) | ((U >= 1.92) & (U < 1.98))) & (V > .08) & (V < 1.92) & ((np.floor(V * 24) % 2) == 0)
+    out[fr, :3] = rgb(edge); out[fr, 3] = 255
+    return out
+
+
+def violet_bolt(f):
+    out = np.zeros((16, 32, 4), np.uint8)
+    py, px = np.mgrid[0:16, 0:32].astype(float)
+    tipx = 29 - [0, 1, 0, 1][f]
+    x = tipx - (px + .5)
+    wob = np.sin((px + f * 3) * .7) * 1.2
+    rad = 4.2 * np.clip(x / 7, 0, 1) * np.clip((22 - x) / 15, 0, 1)
+    d = np.abs(py + .5 - 8 - wob * np.clip(x / 22, 0, 1)) / np.maximum(rad, 1e-3)
+    body = (x >= 0) & (x <= 22) & (d < 1)
+    out[body, :3] = rgb('2a1f3d'); out[body, 3] = 255
+    out[body & (d < .7), :3] = rgb('8b3fd9')
+    out[body & (d < .25) & (x < 10), :3] = rgb('9a86ad')
+    for k in range(4):
+        sx, sy = int(tipx - 24 - k * 2 + (f % 2)), 6 + (k * 3 + f) % 5
+        if 0 <= sx < 32:
+            out[sy, sx] = (*rgb('8b3fd9'), 255)
+    return out
+
+
+def holy_beam(f):
+    w, h = 32, 96
+    out = np.zeros((h, w, 4), np.uint8)
+    py, px = np.mgrid[0:h, 0:w].astype(float)
+    half = [5, 9, 7, 4][f]
+    dx = np.abs(px + .5 - 16)
+    col = dx < half
+    out[col, :3] = rgb('e0a83e'); out[col, 3] = 130
+    out[dx < half * .6, :3] = rgb('f6d67a'); out[dx < half * .6, 3] = 190
+    out[dx < half * .25, :3] = rgb('fff3c4'); out[dx < half * .25, 3] = 255
+    gd = np.sqrt(ellipse_mask(w, h, 16, 88, 15, 7.5))
+    out[(gd < 1) & (f > 0), :3] = rgb('f6d67a'); out[(gd < 1) & (f > 0), 3] = 170
+    out[(gd < .5) & (f in (1, 2)), :3] = rgb('fff3c4'); out[(gd < .5) & (f in (1, 2)), 3] = 230
+    return out
+
+
+def hellfire_burst(f):
+    w, h = 96, 48
+    out = np.zeros((h, w, 4), np.uint8)
+    d = np.sqrt(ellipse_mask(w, h, 48, 32, 46, 15.5))
+    r = [.35, .6, .85, 1.0, 1.0, .9][f]
+    m = d < r
+    out[m, :3] = rgb('74161b'); out[m, 3] = [220, 200, 180, 150, 110, 70][f]
+    out[m & (d < r * .7), :3] = rgb('b3261e')
+    py, px = np.mgrid[0:h, 0:w].astype(float)
+    hgt = [10, 26, 30, 22, 12, 4][f]
+    for k in range(7):
+        cx = 48 + (k - 3) * 11 + ((k * 7 + f * 3) % 5) - 2
+        fh = hgt * (1 - abs(k - 3) / 5)
+        base = 32 - (1 - ((cx - 48) / 46) ** 2) ** .5 * 4
+        tongue = (np.abs(px + .5 - cx) < 3.2 * np.clip((base - py) / max(fh, 1), 0, 1) ** 0 * (1 - np.clip((base - py) / max(fh, 1), 0, 1))) & (py < base) & (py > base - fh)
+        out[tongue, :3] = rgb('e8552b'); out[tongue, 3] = 230
+        core = tongue & (np.abs(px + .5 - cx) < 1.2) & (py > base - fh * .6)
+        out[core, :3] = rgb('f6d67a')
+    return out
+
+
+def ink_puddle(f):
+    out = np.zeros((32, 64, 4), np.uint8)
+    py, px = np.mgrid[0:32, 0:64].astype(float)
+    ang = np.arctan2(py + .5 - 16, (px + .5 - 32) / 2)
+    rr = 1 + .12 * np.sin(ang * 5 + f * 1.3) + .08 * np.sin(ang * 3 - f)
+    d = np.sqrt(ellipse_mask(64, 32, 32, 16, 26, 11)) / rr
+    m = d < 1
+    out[m, :3] = rgb('1a1722'); out[m, 3] = 255
+    out[m & (d < .75), :3] = rgb('2a1f3d')
+    sh = m & (np.sqrt(ellipse_mask(64, 32, 26 + f, 13, 8, 3)) < 1)
+    out[sh, :3] = rgb('43325c')
+    return out

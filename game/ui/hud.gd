@@ -180,6 +180,8 @@ func _build_bottom(root: Control) -> void:
 				b.pressed.connect(func() -> void: open_pause.emit())
 		b.pressed.connect(func() -> void: Audio.sfx("sfx_tap"))
 	World.touch_blockers.append(bar)
+	var bb := BossBar.new()
+	root.add_child(bb)
 	action_btn = FaceButtons.new()
 	action_btn.name = "FaceButtons"
 	root.add_child(action_btn)
