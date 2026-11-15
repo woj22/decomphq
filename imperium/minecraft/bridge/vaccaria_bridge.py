@@ -686,7 +686,7 @@ def setup(args):
 
 
 async def main():
-    async with websockets.serve(handler, "0.0.0.0", PORT):
+    async with websockets.serve(handler, "0.0.0.0", PORT, ping_interval=None, max_size=None):   # Minecraft ignores keepalive pings
         print(f"Vaccaria bridge running ({'offline test mode' if FAKE else cfg.get('model', DEFAULT_MODEL)}).")
         print(f"In Minecraft type:  /connect localhost:{PORT}")
         await asyncio.Future()
