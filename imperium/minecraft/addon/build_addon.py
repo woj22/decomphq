@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "8fbdd496-9ef3-459c-84a4-4b18f4142a53", "69027871-2e46-44f8-97fd-d9c685aba689"
-VERSION = [1, 3, 0]
+VERSION = [1, 4, 0]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -149,20 +149,33 @@ def behaviour_pack(d):
         "minecraft:home": {"restriction_radius": 12},
         "minecraft:behavior.random_stroll": {"priority": 8, "speed_multiplier": 0.5, "xz_dist": 4},
     }
+    groups[NS + ":awake"] = {
+        "minecraft:movement": {"value": 0.5},
+        "minecraft:behavior.open_door": {"priority": 5, "close_door_after": True},
+        "minecraft:behavior.random_stroll": {"priority": 8, "speed_multiplier": 0.6, "xz_dist": 10},
+        "minecraft:behavior.look_at_player": {"priority": 6, "look_distance": 8, "probability": 0.04},
+        "minecraft:behavior.look_at_entity": {"priority": 7, "look_distance": 6, "probability": 0.03,
+                                              "filters": {"test": "is_family", "subject": "other", "value": "vaccaria"}},
+        "minecraft:behavior.random_look_around": {"priority": 9},
+    }
+    groups[NS + ":asleep"] = {"minecraft:movement": {"value": 0.0}}
     events = {}
     rnd = []
     for rank, title, colour, guard, w in RANKS:
         role = NS + (":guard" if guard else ":civilian")
-        events["%s:make_rank_%d" % (NS, rank)] = {"add": {"component_groups": ["%s:rank_%d" % (NS, rank), role] + ([NS + ":council"] if rank <= 3 else [])}}
+        events["%s:make_rank_%d" % (NS, rank)] = {"add": {"component_groups": ["%s:rank_%d" % (NS, rank), role, NS + ":awake"] + ([NS + ":council"] if rank <= 3 else [])}}
         if w:
-            rnd.append({"weight": w, "add": {"component_groups": ["%s:rank_%d" % (NS, rank), role]}})
+            rnd.append({"weight": w, "add": {"component_groups": ["%s:rank_%d" % (NS, rank), role, NS + ":awake"]}})
     events["minecraft:entity_spawned"] = {"randomize": rnd}
     events[NS + ":make_random"] = {"randomize": rnd}
     events[NS + ":greeted"] = {}
+    events[NS + ":sleep"] = {"remove": {"component_groups": [NS + ":awake"]}, "add": {"component_groups": [NS + ":asleep"]}}
+    events[NS + ":wake"] = {"remove": {"component_groups": [NS + ":asleep"]}, "add": {"component_groups": [NS + ":awake"]}}
     entity = {
         "format_version": "1.20.80",
         "minecraft:entity": {
-            "description": {"identifier": ENTITY, "is_spawnable": True, "is_summonable": True, "is_experimental": False},
+            "description": {"identifier": ENTITY, "is_spawnable": True, "is_summonable": True, "is_experimental": False,
+                            "properties": {NS + ":sleeping": {"type": "bool", "default": False, "client_sync": True}}},
             "component_groups": groups,
             "components": {
                 "minecraft:type_family": {"family": ["vaccaria", "cow_folk", "npc", "mob"]},
@@ -171,18 +184,11 @@ def behaviour_pack(d):
                 "minecraft:physics": {}, "minecraft:pushable": {"is_pushable": True, "is_pushable_by_piston": True},
                 "minecraft:persistent": {},
                 "minecraft:nameable": {"always_show": False, "allow_name_tag_renaming": True},
-                "minecraft:movement": {"value": 0.5},
                 "minecraft:navigation.walk": {"can_path_over_water": False, "avoid_water": True, "can_open_doors": True, "can_pass_doors": True,
                                               "avoid_damage_blocks": True, "can_walk_in_lava": False},
                 "minecraft:movement.basic": {}, "minecraft:jump.static": {}, "minecraft:can_climb": {},
                 "minecraft:annotation.open_door": {},
                 "minecraft:behavior.float": {"priority": 0},
-                "minecraft:behavior.open_door": {"priority": 5, "close_door_after": True},
-                "minecraft:behavior.random_stroll": {"priority": 8, "speed_multiplier": 0.6, "xz_dist": 10},
-                "minecraft:behavior.look_at_player": {"priority": 6, "look_distance": 8, "probability": 0.04},
-                "minecraft:behavior.look_at_entity": {"priority": 7, "look_distance": 6, "probability": 0.03,
-                                                      "filters": {"test": "is_family", "subject": "other", "value": "vaccaria"}},
-                "minecraft:behavior.random_look_around": {"priority": 9},
                 "minecraft:interact": {"interactions": [{"on_interact": {"filters": {"test": "is_family", "subject": "other", "value": "player"},
                                                                          "event": NS + ":greeted", "target": "self"},
                                                          "interact_text": "action.interact.talk"}]},
@@ -289,7 +295,7 @@ function talk(player, entity) {
 }
 
 world.afterEvents.playerInteractWithEntity.subscribe((ev) => {
-  if (ev.target?.typeId === "__ENTITY__") talk(ev.player, ev.target);
+  if (ev.target?.typeId === "__ENTITY__" && ev.itemStack?.typeId !== "vaccaria:ledger") talk(ev.player, ev.target);
 });
 '''.replace("__RANKS__", ranks_js).replace("__COUNCIL__", council_js).replace("__ENTITY__", ENTITY)
     write(os.path.join(d, "scripts", "main.js"), script)
@@ -345,15 +351,24 @@ def resource_pack(d, tex_paths):
             "geometry": {"default": "geometry.vaccaria.cow_folk"},
             "scripts": {"initialize": ["variable.gliding_speed_value = 1.0;"],
                         "pre_animation": ["variable.tcos0 = (math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"],
-                        "animate": ["humanoid_base_pose", "look_at_target_default", "move", "bob", "holding"]},
+                        "animate": ["humanoid_base_pose", {"look_at_target_default": "!q.property('vaccaria:sleeping')"}, "move", "bob", "holding",
+                                    {"sleep_pose": "q.property('vaccaria:sleeping')"}]},
             "animations": {"humanoid_base_pose": "animation.humanoid.base_pose", "look_at_target_default": "animation.humanoid.look_at_target.default",
-                           "move": "animation.humanoid.move", "bob": "animation.humanoid.bob", "holding": "animation.humanoid.holding"},
+                           "move": "animation.humanoid.move", "bob": "animation.humanoid.bob", "holding": "animation.humanoid.holding",
+                           "sleep_pose": "animation.vaccaria.sleep"},
             "render_controllers": ["controller.render.vaccaria.cow_folk"],
             "enable_attachables": True,
             "spawn_egg": {"base_color": "#4a3324", "overlay_color": "#d8a23a"},
         }},
     })
     write(os.path.join(d, "models", "entity", "cow_folk.geo.json"), GEOMETRY)
+    # lying on the back, body stretched out behind the feet (the script lays them along the bed)
+    write(os.path.join(d, "animations", "cow_folk.animation.json"), {
+        "format_version": "1.8.0",
+        "animations": {"animation.vaccaria.sleep": {"loop": True, "bones": {
+            "root": {"rotation": [-90, 0, 0], "position": [0, 2, 0]},
+            "rightArm": {"rotation": [0, 0, 0]}, "leftArm": {"rotation": [0, 0, 0]},
+            "rightLeg": {"rotation": [0, 0, 0]}, "leftLeg": {"rotation": [0, 0, 0]}, "head": {"rotation": [0, 0, 0]}}}}})
     write(os.path.join(d, "render_controllers", "cow_folk.render_controllers.json"), {
         "format_version": "1.8.0",
         "render_controllers": {"controller.render.vaccaria.cow_folk": {
@@ -386,6 +401,9 @@ def main():
     bp, rp = os.path.join(a.out, "Vaccaria_BP"), os.path.join(a.out, "Vaccaria_RP")
     behaviour_pack(bp)
     resource_pack(rp, tex)
+    import assign_addon
+    with open(os.path.join(bp, "scripts", "main.js"), "a") as f:
+        f.write(assign_addon.add_assign(bp, rp))
     if a.world_map and a.campaign and a.realm_pos:
         import maps_addon
         extra = maps_addon.add_maps(bp, rp, a.world_map, a.campaign, json.load(open(a.realm_pos)))
