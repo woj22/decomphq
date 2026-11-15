@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "5c5a844e-3048-4853-a07f-c21dc13f39a0", "0ca0ec24-6ce0-4046-a896-a28910270aeb"   # new in 1.6.0 so worlds cannot keep an older resource pack in its place
-VERSION = [1, 8, 0]
+VERSION = [1, 9, 0]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -116,10 +116,23 @@ def write(path, data):
             json.dump(data, f, indent=2)
 
 
+# what NPCs want, best first (lower priority = preferred); they swap a worse piece for a better one
+_TIERS = ["netherite", "diamond", "iron", "chainmail", "golden", "copper", "leather", "stone", "wooden"]
+SHAREABLES = []
+for _slot in ("helmet", "chestplate", "leggings", "boots", "sword", "axe"):
+    for _i, _t in enumerate(_TIERS):
+        if _t == "chainmail" and _slot in ("sword", "axe"): continue
+        if _t in ("stone", "wooden") and _slot not in ("sword", "axe"): continue
+        if _t == "leather" and _slot in ("sword", "axe"): continue
+        SHAREABLES.append({"item": "minecraft:%s_%s" % (_t, _slot), "priority": _i, "want_amount": 1, "surplus_amount": 1})
+SHAREABLES += [{"item": "minecraft:turtle_helmet", "priority": 3, "want_amount": 1, "surplus_amount": 1},
+               {"item": "minecraft:shield", "priority": 0, "want_amount": 1, "surplus_amount": 1}]
+
+
 def behaviour_pack(d):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - the Imperial court (16 named NPCs); Map Lectern; ledger; clear_maps; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
+        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - armoured guards; NPCs pick up and wear/hold thrown items; the Imperial court (16 named NPCs); Map Lectern; ledger; clear_maps; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
                    "uuid": BP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "data", "uuid": BP_DATA, "version": VERSION},
                     {"type": "script", "language": "javascript", "uuid": BP_SCRIPT, "entry": "scripts/main.js", "version": VERSION}],
@@ -159,11 +172,17 @@ def behaviour_pack(d):
         "minecraft:behavior.random_look_around": {"priority": 9},
     }
     groups[NS + ":asleep"] = {"minecraft:movement": {"value": 0.0}}
+    # pick up whatever the player throws them: armour goes on, anything else is held
+    pickup = {"minecraft:behavior.pickup_items": {"priority": 3, "max_dist": 6, "goal_radius": 1.5, "speed_multiplier": 0.9,
+                                                  "can_pickup_any_item": True, "pickup_based_on_chance": False,
+                                                  "excluded_items": ["vaccaria:ledger"]}}
+    groups[NS + ":awake"].update(pickup)
     groups[NS + ":following"] = {
         "minecraft:movement": {"value": 0.5},
         "minecraft:behavior.open_door": {"priority": 5, "close_door_after": True},
         "minecraft:behavior.look_at_player": {"priority": 6, "look_distance": 8, "probability": 0.2},
     }
+    groups[NS + ":following"].update(pickup)
     events = {}
     rnd = []
     for rank, title, colour, guard, w in RANKS:
@@ -199,13 +218,16 @@ def behaviour_pack(d):
                                                                          "event": NS + ":greeted", "target": "self"},
                                                          "interact_text": "action.interact.talk"}]},
                 "minecraft:conditional_bandwidth_optimization": {},
+                "minecraft:equip_item": {"excluded_items": [{"item": "minecraft:banner:15"}]},
+                "minecraft:shareables": {"items": SHAREABLES},
             },
             "events": events,
         },
     }
     write(os.path.join(d, "entities", "cow_folk.json"), entity)
     write(os.path.join(d, "loot_tables", "vaccaria", "guard_gear.json"),
-          {"pools": [{"rolls": 1, "entries": [{"type": "item", "name": "minecraft:iron_sword", "weight": 1}]}]})
+          {"pools": [{"rolls": 1, "entries": [{"type": "item", "name": "minecraft:iron_" + piece, "weight": 1}]}
+                     for piece in ("helmet", "chestplate", "leggings", "boots", "sword")]})
     # summoning helpers
     council = ["# The Vaccaria delegation to the Emperor's council: five named councillors around you"]
     offs = [(0, 3), (-3, 2), (3, 2), (-2, 4), (2, 4)]
