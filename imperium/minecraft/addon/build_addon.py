@@ -1,9 +1,9 @@
-"""Build the Hornvale Council add-on (behaviour pack + resource pack) as a .mcaddon.
+"""Build the Vaccaria Council add-on (behaviour pack + resource pack) as a .mcaddon.
 
   python build_addon.py SKIN.png [--out DIR]
 
 SKIN.png is the cow skin (64x64). The script paints a rank sash onto it in 12 colours, writes both packs, and zips them.
-The Kingdom of Hornvale: 12 ranks of cow-folk NPCs who walk, open doors, look at you and each other, talk
+The Kingdom of Vaccaria: 12 ranks of cow-folk NPCs who walk, open doors, look at you and each other, talk
 (a dialogue window when you interact), and either flee danger or (guard ranks) fight hostile mobs. Ranks 1-3 are
 reserved for five named councillors who sit with you on the Emperor's council.
 """
@@ -16,15 +16,15 @@ import zipfile
 from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-NS = "hornvale"
+NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "8fbdd496-9ef3-459c-84a4-4b18f4142a53", "69027871-2e46-44f8-97fd-d9c685aba689"
-VERSION = [1, 0, 0]
+VERSION = [1, 1, 0]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
-    (1, "Lord Chancellor of Hornvale", (232, 184, 48), False, 0),
+    (1, "Lord Chancellor of Vaccaria", (232, 184, 48), False, 0),
     (2, "High Steward", (106, 44, 154), False, 0),
     (3, "Envoy to the Imperial Council", (160, 30, 42), False, 0),
     (4, "Magistrate", (42, 63, 154), False, 4),
@@ -119,7 +119,7 @@ def write(path, data):
 def behaviour_pack(d):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Hornvale Council (behaviour)", "description": "The cow-folk of the Kingdom of Hornvale: 12 ranks of humanlike NPCs.",
+        "header": {"name": "Vaccaria Council (behaviour)", "description": "The cow-folk of the Kingdom of Vaccaria: 12 ranks of humanlike NPCs.",
                    "uuid": BP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "data", "uuid": BP_DATA, "version": VERSION},
                     {"type": "script", "language": "javascript", "uuid": BP_SCRIPT, "entry": "scripts/main.js", "version": VERSION}],
@@ -130,7 +130,7 @@ def behaviour_pack(d):
     for rank, title, colour, guard, w in RANKS:
         groups["%s:rank_%d" % (NS, rank)] = {"minecraft:variant": {"value": rank}}
     groups[NS + ":guard"] = {
-        "minecraft:equipment": {"table": "loot_tables/hornvale/guard_gear.json"},
+        "minecraft:equipment": {"table": "loot_tables/vaccaria/guard_gear.json"},
         "minecraft:attack": {"damage": 5},
         "minecraft:behavior.melee_attack": {"priority": 2, "speed_multiplier": 1.15, "track_target": True},
         "minecraft:behavior.hurt_by_target": {"priority": 1},
@@ -165,7 +165,7 @@ def behaviour_pack(d):
             "description": {"identifier": ENTITY, "is_spawnable": True, "is_summonable": True, "is_experimental": False},
             "component_groups": groups,
             "components": {
-                "minecraft:type_family": {"family": ["hornvale", "cow_folk", "npc", "mob"]},
+                "minecraft:type_family": {"family": ["vaccaria", "cow_folk", "npc", "mob"]},
                 "minecraft:collision_box": {"width": 0.6, "height": 1.9},
                 "minecraft:health": {"value": 24, "max": 24},
                 "minecraft:physics": {}, "minecraft:pushable": {"is_pushable": True, "is_pushable_by_piston": True},
@@ -181,7 +181,7 @@ def behaviour_pack(d):
                 "minecraft:behavior.random_stroll": {"priority": 8, "speed_multiplier": 0.6, "xz_dist": 10},
                 "minecraft:behavior.look_at_player": {"priority": 6, "look_distance": 8, "probability": 0.04},
                 "minecraft:behavior.look_at_entity": {"priority": 7, "look_distance": 6, "probability": 0.03,
-                                                      "filters": {"test": "is_family", "subject": "other", "value": "hornvale"}},
+                                                      "filters": {"test": "is_family", "subject": "other", "value": "vaccaria"}},
                 "minecraft:behavior.random_look_around": {"priority": 9},
                 "minecraft:interact": {"interactions": [{"on_interact": {"filters": {"test": "is_family", "subject": "other", "value": "player"},
                                                                          "event": NS + ":greeted", "target": "self"},
@@ -192,24 +192,24 @@ def behaviour_pack(d):
         },
     }
     write(os.path.join(d, "entities", "cow_folk.json"), entity)
-    write(os.path.join(d, "loot_tables", "hornvale", "guard_gear.json"),
+    write(os.path.join(d, "loot_tables", "vaccaria", "guard_gear.json"),
           {"pools": [{"rolls": 1, "entries": [{"type": "item", "name": "minecraft:iron_sword", "weight": 1}]}]})
     # summoning helpers
-    council = ["# The Hornvale delegation to the Emperor's council: five named councillors around you"]
+    council = ["# The Vaccaria delegation to the Emperor's council: five named councillors around you"]
     offs = [(0, 3), (-3, 2), (3, 2), (-2, 4), (2, 4)]
     for (rank, name), (dx, dz) in zip(COUNCIL, offs):
         council.append('summon %s ~%d ~ ~%d %s:make_rank_%d "%s"' % (ENTITY, dx, dz, NS, rank, name))
-    write(os.path.join(d, "functions", "hornvale", "council.mcfunction"), "\n".join(council) + "\n")
-    folk = ["# A dozen Hornvale cow-folk of random ranks (4-12) around you"]
+    write(os.path.join(d, "functions", "vaccaria", "council.mcfunction"), "\n".join(council) + "\n")
+    folk = ["# A dozen Vaccaria cow-folk of random ranks (4-12) around you"]
     for k in range(12):
         folk.append("summon %s ~%d ~ ~%d %s:make_random" % (ENTITY, (k % 4) * 2 - 3, (k // 4) * 2 + 2, NS))
-    write(os.path.join(d, "functions", "hornvale", "folk.mcfunction"), "\n".join(folk) + "\n")
+    write(os.path.join(d, "functions", "vaccaria", "folk.mcfunction"), "\n".join(folk) + "\n")
     for rank, title, colour, guard, w in RANKS:
-        write(os.path.join(d, "functions", "hornvale", "rank_%d.mcfunction" % rank), "summon %s ~ ~ ~2 %s:make_rank_%d\n" % (ENTITY, NS, rank))
+        write(os.path.join(d, "functions", "vaccaria", "rank_%d.mcfunction" % rank), "summon %s ~ ~ ~2 %s:make_rank_%d\n" % (ENTITY, NS, rank))
     # dialogue script
     ranks_js = json.dumps({r: t for r, t, *_ in RANKS})
     council_js = json.dumps({n: r for r, n in COUNCIL})
-    script = r'''// Hornvale cow-folk: talk to any of them. The named councillors have their own lines.
+    script = r'''// Vaccaria cow-folk: talk to any of them. The named councillors have their own lines.
 import { world } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 
@@ -221,12 +221,12 @@ const FAMILY = ["Hornwick", "Clovermere", "Brindle", "Moorlow", "Dunhorn", "Mead
 const LINES = {
   council: {
     "Lord Chancellor Bram Hornwick": [
-      "Majesty. When the Emperor's council sits, Hornvale will speak with one voice: yours. I will see to it the others remember that.",
+      "Majesty. When the Emperor's council sits, Vaccaria will speak with one voice: yours. I will see to it the others remember that.",
       "The other kingdoms count their legions. We count our friends. Ours is the longer list, if we are careful.",
     ],
     "High Steward Odalie Clovermere": [
       "The treasury ledgers are in order, Majesty. If the Imperial assessors ask for more, I will show them exactly what we have, and not a coin more.",
-      "Hornvale's granaries could feed half the province. That is a fact the Emperor's council will want to hear, and pay for.",
+      "Vaccaria's granaries could feed half the province. That is a fact the Emperor's council will want to hear, and pay for.",
     ],
     "High Steward Tamsin Brindle": [
       "I have the guest lists for the council feast. Seat the southern kings far from the northern ones, and the night may end without a duel.",
@@ -242,10 +242,10 @@ const LINES = {
     ],
   },
   rank: {
-    4: ["Justice in Hornvale is swift and fair, Majesty. Mostly swift."],
+    4: ["Justice in Vaccaria is swift and fair, Majesty. Mostly swift."],
     5: ["The roads are safe while the Knight-Wardens ride them."],
     6: ["The Herd Guard stands ready, Majesty. Say the word."],
-    7: ["Every treaty Hornvale ever signed is in my archive. Some of them twice."],
+    7: ["Every treaty Vaccaria ever signed is in my archive. Some of them twice."],
     8: ["Trade is good this season. The guilds send their respects, and their invoices."],
     9: ["Keep close to the guard, Majesty. These streets are busy tonight."],
     10: ["Hear ye! Make way for the King!"],
@@ -275,14 +275,14 @@ function talk(player, entity) {
   const opening = own ? own[0] : pick(LINES.rank[who.rank] ?? LINES.rank[12], hash(entity.id));
   const form = new ActionFormData()
     .title(who.name)
-    .body(`§7${who.title} of Hornvale§r\n\n${opening}`)
-    .button("Tell me about Hornvale")
+    .body(`§7${who.title} of Vaccaria§r\n\n${opening}`)
+    .button("Tell me about Vaccaria")
     .button("What news of the Emperor's council?")
     .button("Carry on");
   form.show(player).then((r) => {
     if (r.canceled || r.selection === 2) return;
     const reply = r.selection === 0
-      ? "Hornvale: green hills, deep wells and the stubbornest cattle in the Empire. We are a small kingdom, Majesty, but we are a loyal one, and the Emperor knows it."
+      ? "Vaccaria: green hills, deep wells and the stubbornest cattle in the Empire. We are a small kingdom, Majesty, but we are a loyal one, and the Emperor knows it."
       : (own ? own[1] : "The council sits soon, Majesty. The Lord Chancellor and the envoys will stand beside you. The rest of us will keep the kingdom running while you are gone.");
     new ActionFormData().title(who.name).body(reply).button("Thank you").show(player);
   });
@@ -293,13 +293,13 @@ world.afterEvents.playerInteractWithEntity.subscribe((ev) => {
 });
 '''.replace("__RANKS__", ranks_js).replace("__COUNCIL__", council_js).replace("__ENTITY__", ENTITY)
     write(os.path.join(d, "scripts", "main.js"), script)
-    write(os.path.join(d, "texts", "en_US.lang"), "pack.name=Hornvale Council\n")
+    write(os.path.join(d, "texts", "en_US.lang"), "pack.name=Vaccaria Council\n")
 
 
 GEOMETRY = {
     "format_version": "1.12.0",
     "minecraft:geometry": [{
-        "description": {"identifier": "geometry.hornvale.cow_folk", "texture_width": 64, "texture_height": 64,
+        "description": {"identifier": "geometry.vaccaria.cow_folk", "texture_width": 64, "texture_height": 64,
                         "visible_bounds_width": 2, "visible_bounds_height": 3, "visible_bounds_offset": [0, 1.5, 0]},
         "bones": [
             {"name": "root", "pivot": [0, 0, 0]},
@@ -326,29 +326,29 @@ GEOMETRY = {
 def resource_pack(d, tex_paths):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Hornvale Council (resources)", "description": "Skins and model for the cow-folk of Hornvale.",
+        "header": {"name": "Vaccaria Council (resources)", "description": "Skins and model for the cow-folk of Vaccaria.",
                    "uuid": RP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "resources", "uuid": RP_RES, "version": VERSION}],
         "dependencies": [{"uuid": BP_UUID, "version": VERSION}],
     })
-    tdir = os.path.join(d, "textures", "entity", "hornvale")
+    tdir = os.path.join(d, "textures", "entity", "vaccaria")
     os.makedirs(tdir, exist_ok=True)
     for p in tex_paths:
         shutil.copy(p, os.path.join(tdir, os.path.basename(p)))
-    textures = {"rank_%d" % r: "textures/entity/hornvale/rank_%02d" % r for r, *_ in RANKS}
+    textures = {"rank_%d" % r: "textures/entity/vaccaria/rank_%02d" % r for r, *_ in RANKS}
     write(os.path.join(d, "entity", "cow_folk.entity.json"), {
         "format_version": "1.10.0",
         "minecraft:client_entity": {"description": {
             "identifier": ENTITY,
             "materials": {"default": "entity_alphatest"},
             "textures": textures,
-            "geometry": {"default": "geometry.hornvale.cow_folk"},
+            "geometry": {"default": "geometry.vaccaria.cow_folk"},
             "scripts": {"initialize": ["variable.gliding_speed_value = 1.0;"],
                         "pre_animation": ["variable.tcos0 = (math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"],
                         "animate": ["humanoid_base_pose", "look_at_target_default", "move", "bob", "holding"]},
             "animations": {"humanoid_base_pose": "animation.humanoid.base_pose", "look_at_target_default": "animation.humanoid.look_at_target.default",
                            "move": "animation.humanoid.move", "bob": "animation.humanoid.bob", "holding": "animation.humanoid.holding"},
-            "render_controllers": ["controller.render.hornvale.cow_folk"],
+            "render_controllers": ["controller.render.vaccaria.cow_folk"],
             "enable_attachables": True,
             "spawn_egg": {"base_color": "#4a3324", "overlay_color": "#d8a23a"},
         }},
@@ -356,13 +356,13 @@ def resource_pack(d, tex_paths):
     write(os.path.join(d, "models", "entity", "cow_folk.geo.json"), GEOMETRY)
     write(os.path.join(d, "render_controllers", "cow_folk.render_controllers.json"), {
         "format_version": "1.8.0",
-        "render_controllers": {"controller.render.hornvale.cow_folk": {
+        "render_controllers": {"controller.render.vaccaria.cow_folk": {
             "arrays": {"textures": {"Array.skins": ["Texture.rank_%d" % r for r, *_ in RANKS]}},
             "geometry": "Geometry.default", "materials": [{"*": "Material.default"}],
             "textures": ["Array.skins[math.clamp(query.variant - 1, 0, 11)]"]}},
     })
     write(os.path.join(d, "texts", "en_US.lang"),
-          "entity.%s.name=Hornvale Cow-Folk\nitem.spawn_egg.entity.%s.name=Spawn Hornvale Cow-Folk\npack.name=Hornvale Council\n" % (ENTITY, ENTITY))
+          "entity.%s.name=Vaccaria Cow-Folk\nitem.spawn_egg.entity.%s.name=Spawn Vaccaria Cow-Folk\npack.name=Vaccaria Council\n" % (ENTITY, ENTITY))
     write(os.path.join(d, "texts", "languages.json"), ["en_US"])
 
 
@@ -380,13 +380,13 @@ def main():
     a = ap.parse_args()
     shutil.rmtree(a.out, ignore_errors=True)
     tex = textures(a.skin, os.path.join(a.out, "textures"))
-    bp, rp = os.path.join(a.out, "Hornvale_BP"), os.path.join(a.out, "Hornvale_RP")
+    bp, rp = os.path.join(a.out, "Vaccaria_BP"), os.path.join(a.out, "Vaccaria_RP")
     behaviour_pack(bp)
     resource_pack(rp, tex)
-    out = os.path.join(a.out, "Hornvale_Council.mcaddon")
+    out = os.path.join(a.out, "Vaccaria_Council.mcaddon")
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
-        zipdir(bp, z, "Hornvale_BP")
-        zipdir(rp, z, "Hornvale_RP")
+        zipdir(bp, z, "Vaccaria_BP")
+        zipdir(rp, z, "Vaccaria_RP")
     print("wrote", out)
 
 
