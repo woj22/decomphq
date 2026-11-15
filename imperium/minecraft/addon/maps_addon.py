@@ -142,7 +142,7 @@ function buildWall(p) {
     const loc = { x: bx + r[0] * (col - 2), y: by + 4 - row, z: bz + r[1] * (col - 2) };
     p.dimension.getBlock(loc)?.setType(`vaccaria:wall_${row}_${col}`);
   }
-  p.sendMessage("§6The map of the world hangs before you. Use it to open the campaign map.");
+  notify(p, "§6The map of the world hangs before you. Use it to open the campaign map.");
 }
 
 function buildTable(p) {
@@ -156,7 +156,7 @@ function buildTable(p) {
     }
   }
   mapWorld.setDynamicProperty("vaccaria:table", JSON.stringify({ x: x0, y, z: z0, dim: p.dimension.id }));
-  p.sendMessage(`§6The campaign table is ready, 20 blocks above you at ${x0 + 8} ${y} ${z0 + 8}.`);
+  notify(p, `§6The campaign table is ready, 20 blocks above you at ${x0 + 8} ${y} ${z0 + 8}.`);
 }
 
 function look(p, t, u, v, height, ease) {
@@ -205,7 +205,7 @@ function realm(p, t, r) {
 function openCampaign(p) {
   if (busy.has(p.id)) return;
   const raw = mapWorld.getDynamicProperty("vaccaria:table");
-  if (!raw) { p.sendMessage("§eBuild the campaign table first: /function vaccaria/campaign_table"); return; }
+  if (!raw) { notify(p, "§eBuild the campaign table first: /function vaccaria/campaign_table"); return; }
   busy.add(p.id);
   overview(p, JSON.parse(raw));
 }

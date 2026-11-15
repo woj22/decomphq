@@ -71,23 +71,23 @@ function menu(p, e) {
     .button("Show assignment").button("§cClear assignment").button("Done")
     .show(p).then((r) => {
       if (r.canceled) return;
-      if (r.selection === 0) { pending.set(p.id, { mode: "cornerA", target: e.id }); p.sendMessage("§6Ledger: tap the first corner block of the roaming area."); }
-      if (r.selection === 1) { pending.set(p.id, { mode: "bed", target: e.id }); p.sendMessage("§6Ledger: tap the bed that will be their quarters."); }
+      if (r.selection === 0) { pending.set(p.id, { mode: "cornerA", target: e.id }); notify(p, "§6Ledger: tap the first corner block of the roaming area."); }
+      if (r.selection === 1) { pending.set(p.id, { mode: "bed", target: e.id }); notify(p, "§6Ledger: tap the bed that will be their quarters."); }
       if (r.selection === 2) copyArea(p, e);
       if (r.selection === 3) show(e);
-      if (r.selection === 4) { setJSON(e, "vaccaria:area", null); setJSON(e, "vaccaria:bed", null); p.sendMessage(`§6${label(e)} may roam freely again.`); }
+      if (r.selection === 4) { setJSON(e, "vaccaria:area", null); setJSON(e, "vaccaria:bed", null); notify(p, `§6${label(e)} may roam freely again.`); }
     });
 }
 
 function copyArea(p, e) {
   const area = getJSON(e, "vaccaria:area");
-  if (!area) { p.sendMessage("§eSet a roaming area for this one first."); return; }
+  if (!area) { notify(p, "§eSet a roaming area for this one first."); return; }
   let n = 0;
   for (const o of e.dimension.getEntities({ type: COW, location: e.location, maxDistance: 12 })) {
     if (o.id === e.id) continue;
     setJSON(o, "vaccaria:area", area); n++;
   }
-  p.sendMessage(`§6Copied the roaming area to ${n} cow-folk nearby.`);
+  notify(p, `§6Copied the roaming area to ${n} cow-folk nearby.`);
 }
 
 function show(e) {
@@ -128,11 +128,11 @@ aw.afterEvents.playerInteractWithBlock.subscribe((ev) => {
   if (asys.currentTick - (lastClick.get(p.id) ?? -99) < 6) return;
   lastClick.set(p.id, asys.currentTick);
   const e = aw.getEntity(job.target);
-  if (!e) { pending.delete(p.id); p.sendMessage("§eThat cow-folk is no longer nearby."); return; }
+  if (!e) { pending.delete(p.id); notify(p, "§eThat cow-folk is no longer nearby."); return; }
   const b = ev.block.location;
   if (job.mode === "cornerA") {
     pending.set(p.id, { mode: "cornerB", target: job.target, a: { x: b.x, y: b.y, z: b.z } });
-    p.sendMessage("§6Ledger: now tap the opposite corner.");
+    notify(p, "§6Ledger: now tap the opposite corner.");
   } else if (job.mode === "cornerB") {
     const a = job.a;
     const area = { x0: Math.min(a.x, b.x), x1: Math.max(a.x, b.x), y0: Math.min(a.y, b.y), y1: Math.max(a.y, b.y), z0: Math.min(a.z, b.z), z1: Math.max(a.z, b.z) };
@@ -141,14 +141,14 @@ aw.afterEvents.playerInteractWithBlock.subscribe((ev) => {
     const l = e.location;
     if (l.x < area.x0 || l.x > area.x1 + 1 || l.z < area.z0 || l.z > area.z1 + 1)
       e.teleport({ x: (area.x0 + area.x1 + 1) / 2, y: area.y0 + 1, z: (area.z0 + area.z1 + 1) / 2 });
-    p.sendMessage(`§6${label(e)} will roam within ${area.x1 - area.x0 + 1} x ${area.z1 - area.z0 + 1} blocks.`);
+    notify(p, `§6${label(e)} will roam within ${area.x1 - area.x0 + 1} x ${area.z1 - area.z0 + 1} blocks.`);
     show(e);
   } else if (job.mode === "bed") {
     const bed = bedAt(ev.block);
-    if (!bed) { p.sendMessage("§eThat isn't a bed. Tap one of the two halves of a bed."); return; }
+    if (!bed) { notify(p, "§eThat isn't a bed. Tap one of the two halves of a bed."); return; }
     setJSON(e, "vaccaria:bed", bed);
     pending.delete(p.id);
-    p.sendMessage(`§6${label(e)} will sleep there at night.`);
+    notify(p, `§6${label(e)} will sleep there at night.`);
     show(e);
   }
 });
@@ -163,7 +163,7 @@ aw.afterEvents.itemUse.subscribe((ev) => {
       if (r.canceled || r.selection !== 0) return;
       const near = p.dimension.getEntities({ type: COW, location: p.location, maxDistance: 32 });
       near.forEach(show);
-      p.sendMessage(`§6Showing ${near.length} cow-folk within 32 blocks.`);
+      notify(p, `§6Showing ${near.length} cow-folk within 32 blocks.`);
     });
 });
 
@@ -183,11 +183,11 @@ asys.afterEvents.scriptEventReceive.subscribe((ev) => {
   if (ev.id === "vaccaria:follow") {
     const near = p.dimension.getEntities({ type: COW, location: p.location, maxDistance: 10 });
     near.forEach((e) => startFollowing(e, p));
-    p.sendMessage(`§6${near.length} cow-folk fall in behind you.`);
+    notify(p, `§6${near.length} cow-folk fall in behind you.`);
   } else if (ev.id === "vaccaria:stay") {
     let n = 0;
     for (const e of p.dimension.getEntities({ type: COW })) if (e.getDynamicProperty("vaccaria:follow") === p.id) { stopFollowing(e); n++; }
-    p.sendMessage(`§6${n} cow-folk return to their posts.`);
+    notify(p, `§6${n} cow-folk return to their posts.`);
   }
 });
 function steer(e, p) {

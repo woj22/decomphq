@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "8fbdd496-9ef3-459c-84a4-4b18f4142a53", "69027871-2e46-44f8-97fd-d9c685aba689"
-VERSION = [1, 5, 0]
+VERSION = [1, 5, 1]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -218,7 +218,7 @@ def behaviour_pack(d):
     write(os.path.join(d, "functions", "vaccaria", "folk.mcfunction"), "\n".join(folk) + "\n")
     for rank, title, colour, guard, w in RANKS:
         write(os.path.join(d, "functions", "vaccaria", "rank_%d.mcfunction" % rank), "summon %s ~ ~ ~2 0 0 %s:make_rank_%d\n" % (ENTITY, NS, rank))
-    write(os.path.join(d, "functions", "vaccaria", "test.mcfunction"), "say The Vaccaria Council pack is active.\n")
+    write(os.path.join(d, "functions", "vaccaria", "test.mcfunction"), "title @s title §6Vaccaria\ntitle @s subtitle The council pack is active\n")
     write(os.path.join(d, "functions", "vaccaria", "follow.mcfunction"), "# Every cow-folk within 10 blocks follows you\nscriptevent vaccaria:follow me\n")
     write(os.path.join(d, "functions", "vaccaria", "stay.mcfunction"), "# Cow-folk following you stop and return to their posts\nscriptevent vaccaria:stay me\n")
     # dialogue script
@@ -270,6 +270,10 @@ const LINES = {
 };
 
 const pick = (a, seed) => a[Math.abs(seed) % a.length];
+function notify(p, msg) {
+  try { p.sendMessage(msg); } catch (x) { }
+  try { p.onScreenDisplay.setActionBar(msg); } catch (x) { }
+}
 function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return h; }
 
 function identity(entity) {
@@ -298,8 +302,8 @@ function talk(player, entity) {
   form.show(player).then((r) => {
     if (r.canceled || r.selection === 3) return;
     if (r.selection === 2) {
-      if (entity.getDynamicProperty("vaccaria:follow") === player.id) { stopFollowing(entity); player.sendMessage(`§6${who.name} returns to their post.`); }
-      else { startFollowing(entity, player); player.sendMessage(`§6${who.name} falls in behind you.`); }
+      if (entity.getDynamicProperty("vaccaria:follow") === player.id) { stopFollowing(entity); notify(player, `§6${who.name} returns to their post.`); }
+      else { startFollowing(entity, player); notify(player, `§6${who.name} falls in behind you.`); }
       return;
     }
     const reply = r.selection === 0
