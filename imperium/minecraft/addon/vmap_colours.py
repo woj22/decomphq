@@ -1,0 +1,10 @@
+"""Minecraft map base colours (the 4-shade map palette bases)."""
+# Minecraft map base colours
+MC = dict(NONE=None, GRASS=(127, 178, 56), SAND=(247, 233, 163), WOOL=(199, 199, 199), FIRE=(255, 0, 0), ICE=(160, 160, 255), METAL=(167, 167, 167),
+          PLANT=(0, 124, 0), SNOW=(255, 255, 255), CLAY=(164, 168, 184), DIRT=(151, 109, 77), STONE=(112, 112, 112), WATER=(64, 64, 255),
+          WOOD=(143, 119, 72), QUARTZ=(255, 252, 245), ORANGE=(216, 127, 51), MAGENTA=(178, 76, 216), LIGHT_BLUE=(102, 153, 216), YELLOW=(229, 229, 51),
+          LIME=(127, 204, 25), PINK=(242, 127, 165), GRAY=(76, 76, 76), LIGHT_GRAY=(153, 153, 153), CYAN=(76, 127, 153), PURPLE=(127, 63, 178),
+          BLUE=(51, 76, 178), BROWN=(102, 76, 51), GREEN=(102, 127, 51), RED=(153, 51, 51), BLACK=(25, 25, 25), GOLD=(250, 238, 77),
+          DIAMOND=(92, 219, 213), LAPIS=(74, 128, 255), EMERALD=(0, 217, 58), PODZOL=(129, 86, 49), NETHER=(112, 2, 0),
+          T_WHITE=(209, 177, 161), T_ORANGE=(159, 82, 36), T_YELLOW=(186, 133, 36), T_LIGHT_GRAY=(135, 107, 98), T_RED=(142, 60, 46),
+          T_BROWN=(76, 50, 35), T_BLACK=(37, 22, 16), DEEPSLATE=(100, 100, 100), RAW_IRON=(216, 175, 147), LICHEN=(127, 167, 150))

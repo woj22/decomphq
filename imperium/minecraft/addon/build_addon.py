@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "8fbdd496-9ef3-459c-84a4-4b18f4142a53", "69027871-2e46-44f8-97fd-d9c685aba689"
-VERSION = [1, 2, 0]
+VERSION = [1, 3, 0]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -377,12 +377,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("skin")
     ap.add_argument("--out", default=os.path.join(HERE, "build"))
+    ap.add_argument("--world-map", help="world map image (512x512) for the 4x4 map wall")
+    ap.add_argument("--campaign", help="campaign map image (1024x1024) for the 16x16 campaign table")
+    ap.add_argument("--realm-pos", help="JSON of realm name -> [u, v] centre on the campaign map")
     a = ap.parse_args()
     shutil.rmtree(a.out, ignore_errors=True)
     tex = textures(a.skin, os.path.join(a.out, "textures"))
     bp, rp = os.path.join(a.out, "Vaccaria_BP"), os.path.join(a.out, "Vaccaria_RP")
     behaviour_pack(bp)
     resource_pack(rp, tex)
+    if a.world_map and a.campaign and a.realm_pos:
+        import maps_addon
+        extra = maps_addon.add_maps(bp, rp, a.world_map, a.campaign, json.load(open(a.realm_pos)))
+        with open(os.path.join(bp, "scripts", "main.js"), "a") as f:
+            f.write(extra)
     out = os.path.join(a.out, "Vaccaria_Council.mcaddon")
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         zipdir(bp, z, "Vaccaria_BP")
