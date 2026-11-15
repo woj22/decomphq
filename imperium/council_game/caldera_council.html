@@ -210,7 +210,7 @@ const WORLD = `The Empire is ruled by Emperor Aurex IV Valerran from a palace ca
 // =====================================================================================================
 // The game state
 // =====================================================================================================
-const fresh = () => ({ season: 1, gold: 60, grain: 80, influence: 20, favour: 20, tribute: 12, income: 22, grainIncome: 25,
+const fresh = () => ({ season: 1, gold: 50, grain: 60, influence: 20, favour: 20, tribute: 12, income: 18, grainIncome: 22,
   att: { E: 5, L: 15, V: 0, K: 10, D: 15, T: 0, M: 5 }, promises: {}, theirPromise: {}, chronicle: [], motion: null, audiences: 2,
   kingdom: false, over: null, used: [], army: 10, suspicion: 0, plot: {}, ill: false, mutiny: false, mustered: false, seen: [] });
 let G = fresh();
@@ -789,7 +789,10 @@ function decide(m, prince) {
     G.att[k] = clamp(G.att[k] + d, -100, 100);
   }
   // the season turns: income, tribute and the granaries
-  ch.gold += G.income - G.tribute; ch.grain += G.grainIncome - 10;
+  // Vaccaria grows hungrier, and every sixth season the Throne raises its demands
+  const eaten = Math.min(30, 12 + Math.floor(G.season / 2));
+  if (G.season % 6 === 0) G.tribute += 2;
+  ch.gold += G.income - G.tribute; ch.grain += G.grainIncome - eaten;
   if (G.kingdom) { ch.grain -= Math.floor(G.army / 10) * 2; ch.suspicion = (ch.suspicion || 0) - 5; }
   G.chronicle.push({ season: G.season, text: m.text, outcome, prince, veto });
   G.used.push(m.id);
@@ -806,7 +809,7 @@ function decide(m, prince) {
   const verdict = veto ? "The Emperor raises his hand. The Throne will not have it: the motion is set aside." : outcome === "passed" ? "Aurex inclines his head. So it is decreed." : "The motion fails. Aurex moves on without a word.";
   setFocus(outcome === "passed" ? (m.by === "P" ? "P" : m.by) : "E");
   screen({ title: outcome === "passed" ? "The motion passes" : "The motion fails", small: `${ayes} aye · ${nays} nay`,
-    body: `<p class="motion">${esc(m.text)}</p><div class="tally">${rows}</div><p>${verdict}</p>${notes.map((n) => `<p class="down">${n}</p>`).join("")}<p class="muted">The season turns: ${G.income} gold income, ${G.tribute} gold tribute, ${G.grainIncome} grain harvested, 10 grain eaten.</p>`,
+    body: `<p class="motion">${esc(m.text)}</p><div class="tally">${rows}</div><p>${verdict}</p>${notes.map((n) => `<p class="down">${n}</p>`).join("")}<p class="muted">The season turns: ${G.income} gold income, ${G.tribute} gold tribute, ${G.grainIncome} grain harvested, ${eaten} grain eaten.${G.season % 6 === 1 && G.season > 1 ? " The Throne has raised the tribute." : ""}</p>`,
     foot: `<button class="primary" id="n">${G.over ? "The end of your reign" : "The next season"}</button>` });
   on("n", () => G.over ? ending() : G.crownedNow ? crowned() : seasonStart());
 }
