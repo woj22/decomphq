@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "8fbdd496-9ef3-459c-84a4-4b18f4142a53", "69027871-2e46-44f8-97fd-d9c685aba689"
-VERSION = [1, 4, 1]
+VERSION = [1, 5, 0]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -119,7 +119,7 @@ def write(path, data):
 def behaviour_pack(d):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - fixed functions; Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
+        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - follow me / stay here; Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
                    "uuid": BP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "data", "uuid": BP_DATA, "version": VERSION},
                     {"type": "script", "language": "javascript", "uuid": BP_SCRIPT, "entry": "scripts/main.js", "version": VERSION}],
@@ -159,6 +159,11 @@ def behaviour_pack(d):
         "minecraft:behavior.random_look_around": {"priority": 9},
     }
     groups[NS + ":asleep"] = {"minecraft:movement": {"value": 0.0}}
+    groups[NS + ":following"] = {
+        "minecraft:movement": {"value": 0.5},
+        "minecraft:behavior.open_door": {"priority": 5, "close_door_after": True},
+        "minecraft:behavior.look_at_player": {"priority": 6, "look_distance": 8, "probability": 0.2},
+    }
     events = {}
     rnd = []
     for rank, title, colour, guard, w in RANKS:
@@ -170,7 +175,8 @@ def behaviour_pack(d):
     events[NS + ":make_random"] = {"randomize": rnd}
     events[NS + ":greeted"] = {}
     events[NS + ":sleep"] = {"remove": {"component_groups": [NS + ":awake"]}, "add": {"component_groups": [NS + ":asleep"]}}
-    events[NS + ":wake"] = {"remove": {"component_groups": [NS + ":asleep"]}, "add": {"component_groups": [NS + ":awake"]}}
+    events[NS + ":wake"] = {"remove": {"component_groups": [NS + ":asleep", NS + ":following"]}, "add": {"component_groups": [NS + ":awake"]}}
+    events[NS + ":follow"] = {"remove": {"component_groups": [NS + ":awake", NS + ":asleep"]}, "add": {"component_groups": [NS + ":following"]}}
     entity = {
         "format_version": "1.20.80",
         "minecraft:entity": {
@@ -213,6 +219,8 @@ def behaviour_pack(d):
     for rank, title, colour, guard, w in RANKS:
         write(os.path.join(d, "functions", "vaccaria", "rank_%d.mcfunction" % rank), "summon %s ~ ~ ~2 0 0 %s:make_rank_%d\n" % (ENTITY, NS, rank))
     write(os.path.join(d, "functions", "vaccaria", "test.mcfunction"), "say The Vaccaria Council pack is active.\n")
+    write(os.path.join(d, "functions", "vaccaria", "follow.mcfunction"), "# Every cow-folk within 10 blocks follows you\nscriptevent vaccaria:follow me\n")
+    write(os.path.join(d, "functions", "vaccaria", "stay.mcfunction"), "# Cow-folk following you stop and return to their posts\nscriptevent vaccaria:stay me\n")
     # dialogue script
     ranks_js = json.dumps({r: t for r, t, *_ in RANKS})
     council_js = json.dumps({n: r for r, n in COUNCIL})
@@ -285,9 +293,15 @@ function talk(player, entity) {
     .body(`§7${who.title} of Vaccaria§r\n\n${opening}`)
     .button("Tell me about Vaccaria")
     .button("What news of the Emperor's council?")
+    .button(entity.getDynamicProperty("vaccaria:follow") === player.id ? "Stay here" : "Follow me")
     .button("Carry on");
   form.show(player).then((r) => {
-    if (r.canceled || r.selection === 2) return;
+    if (r.canceled || r.selection === 3) return;
+    if (r.selection === 2) {
+      if (entity.getDynamicProperty("vaccaria:follow") === player.id) { stopFollowing(entity); player.sendMessage(`§6${who.name} returns to their post.`); }
+      else { startFollowing(entity, player); player.sendMessage(`§6${who.name} falls in behind you.`); }
+      return;
+    }
     const reply = r.selection === 0
       ? "Vaccaria: green hills, deep wells and the stubbornest cattle in the Empire. We are a small principality, Highness, but we are a loyal one, and the Emperor knows it."
       : (own ? own[1] : "The council sits soon, Highness. The Lord Chancellor and the envoys will stand beside you. The rest of us will keep the principality running while you are gone.");

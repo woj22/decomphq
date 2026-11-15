@@ -167,8 +167,60 @@ aw.afterEvents.itemUse.subscribe((ev) => {
     });
 });
 
+// following: they walk after their player, catch up if left far behind, and hop up single steps
+function startFollowing(e, p) {
+  e.setDynamicProperty("vaccaria:follow", p.id);
+  if (e.getProperty("vaccaria:sleeping")) e.setProperty("vaccaria:sleeping", false);
+  e.triggerEvent("vaccaria:follow");
+}
+function stopFollowing(e) {
+  e.setDynamicProperty("vaccaria:follow", undefined);
+  e.triggerEvent("vaccaria:wake");
+}
+asys.afterEvents.scriptEventReceive.subscribe((ev) => {
+  const p = ev.sourceEntity;
+  if (!p || p.typeId !== "minecraft:player") return;
+  if (ev.id === "vaccaria:follow") {
+    const near = p.dimension.getEntities({ type: COW, location: p.location, maxDistance: 10 });
+    near.forEach((e) => startFollowing(e, p));
+    p.sendMessage(`§6${near.length} cow-folk fall in behind you.`);
+  } else if (ev.id === "vaccaria:stay") {
+    let n = 0;
+    for (const e of p.dimension.getEntities({ type: COW })) if (e.getDynamicProperty("vaccaria:follow") === p.id) { stopFollowing(e); n++; }
+    p.sendMessage(`§6${n} cow-folk return to their posts.`);
+  }
+});
+function steer(e, p) {
+  const l = e.location, t = p.location;
+  const dx = t.x - l.x, dz = t.z - l.z, dist = Math.hypot(dx, dz);
+  if (dist > 24 || e.dimension.id !== p.dimension.id) {
+    e.teleport({ x: t.x - (dx / (dist || 1)) * 2, y: t.y, z: t.z - (dz / (dist || 1)) * 2 }, { dimension: p.dimension });
+    return;
+  }
+  try { e.setRotation({ x: 0, y: Math.atan2(-dx, dz) * 180 / Math.PI }); } catch (x) { }
+  if (dist < 2.6) return;
+  const v = e.getVelocity();
+  const speed = dist > 8 ? 0.26 : 0.19;
+  let vy = v.y;
+  const ahead = e.dimension.getBlock({ x: Math.floor(l.x + dx / dist * 0.8), y: Math.floor(l.y), z: Math.floor(l.z + dz / dist * 0.8) });
+  if (ahead && ahead.isSolid && e.isOnGround) vy = 0.42;
+  e.clearVelocity();
+  e.applyImpulse({ x: dx / dist * speed, y: vy, z: dz / dist * speed });
+}
+asys.runInterval(() => {
+  for (const p of aw.getAllPlayers()) {
+    for (const e of p.dimension.getEntities({ type: COW, location: p.location, maxDistance: 64 })) {
+      if (e.getDynamicProperty("vaccaria:follow") === p.id) { try { steer(e, p); } catch (x) { } }
+    }
+  }
+}, 1);
+
 // the daily round: every half second keep each cow-folk inside its area, put it to bed at night, wake it at dawn
 function tend(e, night) {
+  if (e.getDynamicProperty("vaccaria:follow")) {          // followers keep company with their player, not their routine
+    const owner = aw.getAllPlayers().find((q) => q.id === e.getDynamicProperty("vaccaria:follow"));
+    if (owner) return;
+  }
   if (!e.getDynamicProperty("vaccaria:v14")) {          // cow-folk summoned before this version need their walking legs back
     try { e.triggerEvent("vaccaria:wake"); } catch (x) { }
     e.setDynamicProperty("vaccaria:v14", true);
