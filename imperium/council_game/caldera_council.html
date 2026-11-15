@@ -157,7 +157,54 @@ const OWN_MOTIONS = [
   { id: "kingdom", text: "Raise the Principality of Vaccaria to a Kingdom", by: "P", cost: 20, needs: 60, lean: { E: -.5, L: -.7, V: -.2, K: 0, D: .1, T: -.1, M: -.3 },
     pass: { crown: true }, note: "Vaccaria becomes a Kingdom." },
 ];
-const ALL_MOTIONS = [...MOTIONS, ...OWN_MOTIONS];
+// once Vaccaria is a Kingdom, the council turns to darker business
+const KING_MOTIONS = [
+  { id: "praetorians", text: "Grant the Praetorians the power to search every envoy", by: "E", lean: { E: .8, L: 0, V: -.4, K: .1, D: -.7, T: -.4, M: .5 },
+    pass: { suspicion: 15 }, note: "Plotting becomes far more dangerous: suspicion +15." },
+  { id: "coruler", text: "Name Crown Prince Valen co-ruler with his father", by: "E", lean: { E: .6, L: .1, V: .2, K: .2, D: -.4, T: 0, M: .4 },
+    pass: { favourIfAye: 6 }, note: "The succession is secured. Valen remembers who stood for him." },
+  { id: "disband", text: "Disband the private armies of the client kings", by: "E", lean: { E: .9, L: -.5, V: -.2, K: -.6, D: -1, T: -.7, M: .3 },
+    pass: { armyHalf: true }, note: "Every king's army is halved, Vaccaria's included." },
+  { id: "assessors", text: "Abolish the Imperial tax assessors", by: "D", lean: { E: -.9, L: .4, V: .3, K: .4, D: 1, T: .6, M: -.4 },
+    pass: { tribute: -3, favourIfAye: -8 }, note: "Tribute falls by 3, and the Throne is furious with those who voted for it." },
+  { id: "legion_pay", text: "Double the pay of the Legions from the client realms' purses", by: "E", lean: { E: .8, L: -.6, V: -.5, K: .2, D: -.6, T: -.5, M: .2 },
+    pass: { tribute: 5, favourIfAye: 4 }, note: "Tribute rises by 5, and the Legions grow more loyal to the Throne." },
+];
+// the last motion of all: only conspirators dare second it
+const COUP = { id: "coup", text: "Declare the Imperial Throne vacant", by: "P", lean: {}, pass: {}, note: "Aurex IV is deposed, if the Legions can be held off." };
+const PLOT = { L: .05, V: .15, K: -.15, D: .55, T: .35, M: -.45 };   // how ready each realm is to turn on the Throne
+const ALL_MOTIONS = [...MOTIONS, ...OWN_MOTIONS, ...KING_MOTIONS, COUP];
+const plotters = () => Object.keys(G.plot).filter((k) => G.plot[k]);
+
+// between seasons, the world does not stand still
+const EVENTS = [
+  { id: "harvest_bad", text: "A wet summer rots the barley. The granaries run low.",
+    choices: [["Tighten belts", { grain: -20 }], ["Buy grain from Meridia", { gold: -20, grain: 5, att: { M: 4 } }]] },
+  { id: "harvest_good", text: "The best harvest in a generation fills every barn in Vaccaria.",
+    choices: [["Store it", { grain: 30 }], ["Sell the surplus", { gold: 25, grain: 5 }]] },
+  { id: "raid", when: (g) => g.att.L < 15, text: "Lucernan nobles drive their herds onto Vaccarian border pastures.",
+    choices: [["Send the Herd Guard (needs 10 strength)", { army: -3, influence: 5, att: { L: -4 } }, (g) => g.army >= 10], ["Complain to Marcellan", { grain: -15, att: { L: -3 } }]] },
+  { id: "cheese", text: "Velithran merchants offer to buy Vaccarian cheese for the northern markets.",
+    choices: [["Agree", { gold: 20, att: { V: 6 } }], ["Refuse: Vaccaria feeds its own first", { grain: 10 }]] },
+  { id: "illness", once: true, when: (g) => g.season >= 6, text: "Rumour runs through the caldera: the Emperor coughs blood behind closed doors. The Throne is weaker than it looks.",
+    fx: { ill: true }, choices: [["Send him Vaccaria's best physician", { favour: 8, att: { E: 6 } }], ["Say nothing, and watch", {}]] },
+  { id: "valen", text: "Crown Prince Valen slips away from his tutors and turns up at your quarters, wanting company his own age.",
+    choices: [["Spend the evening with him", { favour: 4, influence: 3 }], ["Send him back politely", {}]] },
+  { id: "search", when: (g) => g.suspicion >= 30, text: "Cassia Varro's Praetorians search your envoys' baggage. Twice.",
+    choices: [["Lie low this season", { suspicion: -15, influence: -3 }], ["Protest to the Emperor", { suspicion: 5, favour: -4 }]] },
+  { id: "auxilia", once: true, when: (g) => g.kingdom, text: "Korrach's auxilia have not been paid in a year. A sergeant asks, very quietly, who would pay them better.",
+    choices: [["Pay them in secret", { gold: -30, suspicion: 10, mutiny: true }, (g) => g.gold >= 30], ["Report it to the Marshal", { favour: 6 }]] },
+  { id: "dagger", once: true, when: (g) => g.att.D >= 30, text: "Thrask sends you a crocodile-tooth dagger and a note: 'Kings who stand together need fear no Throne.'",
+    choices: [["Send a gift in return", { gold: -10, att: { D: 10 } }], ["Show the note to the Emperor", { favour: 10, att: { D: -30 } }]] },
+  { id: "rot", text: "Hoof-rot spreads through the eastern herds.",
+    choices: [["Burn the sick pastures", { grain: -15 }], ["Pray and hope", { grain: -5, gold: -5 }]] },
+  { id: "assassin", once: true, when: (g) => g.kingdom && g.season >= 8, text: "An assassin is caught in your quarters. He carries no seal, but his boots are Lucernan leather.",
+    choices: [["Have him questioned", { suspicion: -10, influence: 5, att: { L: -8 } }], ["Send him back to whoever sent him, alive", { att: { L: 5 }, favour: 2 }]] },
+  { id: "mines", when: (g) => g.season >= 4, text: "Oduvar's envoy offers Karst Odun steel for your Herd Guard, at a friend's price.",
+    choices: [["Buy arms", { gold: -25, army: 12, att: { K: 5 } }, (g) => g.gold >= 25], ["Decline", {}]] },
+  { id: "omen", text: "The volcano rumbles all night, and ash falls on the council chamber. Priests call it an omen against the Throne.",
+    choices: [["Let the rumour spread", { suspicion: 4, influence: 4 }], ["Make an offering for the Emperor", { gold: -5, favour: 4 }]] },
+];
 const WORLD = `The Empire is ruled by Emperor Aurex IV Valerran from a palace carved into the caldera of a great volcano, where the Imperial Council of client realms meets around a basalt table, each representative seated on a cushion. Realms: the Empire; Lucerna (rich lowlands, Vaccaria's eastern neighbour, King Marcellan); Velithra (merchant north, Queen Ilsaveth); Karst Odun (mountain smiths, King Oduvar); Khar-Dumeth (warrior river kingdom, King Thrask); Tor-Ilun (copper deserts, Queen Vashka); Meridia (southern isles, Governor Halvana); and the small Principality of Vaccaria, a realm of cow-folk with green hills and rich granaries, whose young Prince is the player. No modern ideas, no mention of games or AI.`;
 
 // =====================================================================================================
@@ -165,7 +212,7 @@ const WORLD = `The Empire is ruled by Emperor Aurex IV Valerran from a palace ca
 // =====================================================================================================
 const fresh = () => ({ season: 1, gold: 60, grain: 80, influence: 20, favour: 20, tribute: 12, income: 22, grainIncome: 25,
   att: { E: 5, L: 15, V: 0, K: 10, D: 15, T: 0, M: 5 }, promises: {}, theirPromise: {}, chronicle: [], motion: null, audiences: 2,
-  kingdom: false, over: null, used: [] });
+  kingdom: false, over: null, used: [], army: 10, suspicion: 0, plot: {}, ill: false, mutiny: false, mustered: false, seen: [] });
 let G = fresh();
 let prev = null;   // stats before the last change, for the little deltas
 
@@ -189,18 +236,62 @@ async function load() {
 }
 
 // Claude gives the court its voice when the page can ask
-let sample = null, voices = true;
-async function initVoices() { try { sample = await window.claude?.use("sample"); } catch (e) { sample = null; } }
-const live = () => !!sample && voices;
+// Who gives the court its voice: Claude (on claude.ai, using the player's own Claude plan), an OpenAI key the
+// player enters (in the Android app, kept only on the device), or nobody (written lines).
+let sample = null, aiDown = "";
+const inViewer = !!window.claude;              // claude.ai blocks calls to other sites, so no OpenAI there
+const settings = (() => { try { return JSON.parse(localStorage.getItem("caldera-settings")) || {}; } catch (e) { return {}; } })();
+function saveSettings() { try { localStorage.setItem("caldera-settings", JSON.stringify(settings)); } catch (e) { } }
+async function initVoices() { try { sample = window.claude ? await window.claude.use("sample") : null; } catch (e) { sample = null; } }
+function provider() {
+  if (settings.voice === "written") return null;
+  if (sample && settings.voice !== "openai") return "claude";
+  if (!inViewer && settings.key) return "openai";
+  return null;
+}
+const live = () => !!provider() && !aiDown;
 function voiceOff(e) {
-  if (e && (e.code === "not_granted" || e.code === "sampling_disabled" || e.code === "capability_disabled")) voices = false;
+  const c = e && e.code;
+  if (c === "not_granted" || c === "sampling_disabled" || c === "capability_disabled") aiDown = "Claude voices were declined, so the court uses its written lines.";
+  if (c === "bad_key") aiDown = "OpenAI rejected the API key. Check it under Voices.";
+}
+const pendingHttp = {};
+window.__nativeDone = (id, ok, text) => { const p = pendingHttp[id]; delete pendingHttp[id]; if (p) (ok ? p.res(text) : p.rej({ code: "upstream_error", message: text })); };
+function httpPost(url, key, body) {
+  if (window.NativeHttp) return new Promise((res, rej) => { const id = "r" + Math.random().toString(36).slice(2); pendingHttp[id] = { res, rej }; window.NativeHttp.post(id, url, key, body); });
+  return fetch(url, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + key }, body }).then((r) => r.text(), (e) => { throw { code: "upstream_error", message: String(e) }; });
+}
+async function aiJSON(prompt) {
+  const pv = provider();
+  if (pv === "claude") return sample.json(prompt, { modelTier: "quick", cache: false });
+  if (pv !== "openai") throw { code: "not_granted" };
+  const text = await httpPost("https://api.openai.com/v1/chat/completions", settings.key, JSON.stringify({
+    model: settings.model || "gpt-4.1-mini", messages: [{ role: "user", content: prompt }], response_format: { type: "json_object" }, max_completion_tokens: 1200 }));
+  let j; try { j = JSON.parse(text); } catch (e) { throw { code: "upstream_error", message: text.slice(0, 200) }; }
+  if (j.error) throw { code: j.error.code === "invalid_api_key" || j.error.type === "invalid_request_error" && /key/i.test(j.error.message) ? "bad_key" : j.error.code === "rate_limit_exceeded" ? "rate_limited" : "upstream_error", message: j.error.message };
+  return JSON.parse(j.choices[0].message.content);
+}
+function settingsScreen(back) {
+  const pv = provider();
+  screen({ title: "Voices", small: "Who speaks for the court",
+    body: `<p>${pv === "claude" ? "The court speaks with Claude, using your Claude plan's usage." : pv === "openai" ? `The court speaks with OpenAI (${esc(settings.model || "gpt-4.1-mini")}), billed to your API key.` : "The court speaks its written lines. Votes and consequences work the same either way."}</p>
+      ${aiDown ? `<p class="down">${aiDown}</p>` : ""}
+      ${!inViewer ? `<p><label for="key">OpenAI API key</label><br><input id="key" type="password" autocomplete="off" placeholder="sk-..." style="width:100%;font:inherit;color:var(--bone);background:var(--basalt);border:1px solid #4a3c35;border-radius:9px;padding:9px 12px" value="${esc(settings.key || "")}"></p>
+        <p><label for="model">Model</label><br><input id="model" autocomplete="off" style="width:100%;font:inherit;color:var(--bone);background:var(--basalt);border:1px solid #4a3c35;border-radius:9px;padding:9px 12px" value="${esc(settings.model || "gpt-4.1-mini")}"></p>
+        <p class="muted">The key stays on this device and is only ever sent to OpenAI.</p>` : `<p class="muted">On claude.ai the court can only use Claude. The Android app can use your OpenAI key instead.</p>`}`,
+    foot: `${sample ? `<button id="vc" ${pv === "claude" ? 'class="primary"' : ""}>Use Claude</button>` : ""}${!inViewer ? `<button id="vo" ${pv === "openai" ? 'class="primary"' : ""}>Use OpenAI key</button>` : ""}<button id="vw" ${!pv ? 'class="primary"' : ""}>Written lines</button><button id="back">Done</button>` });
+  const keep = () => { const k = document.getElementById("key"), m = document.getElementById("model"); if (k) settings.key = k.value.trim(); if (m) settings.model = m.value.trim() || "gpt-4.1-mini"; };
+  on("vc", () => { keep(); settings.voice = "claude"; aiDown = ""; saveSettings(); settingsScreen(back); });
+  on("vo", () => { keep(); settings.voice = "openai"; aiDown = ""; saveSettings(); settingsScreen(back); });
+  on("vw", () => { keep(); settings.voice = "written"; saveSettings(); settingsScreen(back); });
+  on("back", () => { keep(); saveSettings(); back(); });
 }
 function personaText(k) {
   const p = PEOPLE[k];
-  return `${p.full}. ${p.persona} Attitude to the Prince: ${G.att[k]} (-100 hostile .. 100 devoted).`;
+  return `${p.full}. ${p.persona} Attitude to the Prince: ${G.att[k]} (-100 hostile .. 100 devoted).${G.plot[k] ? " You are secretly sworn to the Prince's conspiracy to depose the Emperor; never say so where others could hear." : ""}`;
 }
 function recentChronicle() {
-  return G.chronicle.slice(-5).map((c) => `Season ${c.season}: "${c.text}" ${c.outcome}; Vaccaria voted ${c.prince}.`).join(" ") || "None yet.";
+  return (G.kingdom ? "Vaccaria has been raised to a Kingdom; its Prince is now its King, though still called Prince by old habit. " : "") + (G.ill ? "The Emperor is rumoured to be gravely ill. " : "") + G.chronicle.slice(-5).map((c) => `Season ${c.season}: "${c.text}" ${c.outcome}; Vaccaria voted ${c.prince}.`).join(" ") || "None yet.";
 }
 
 // =====================================================================================================
@@ -402,10 +493,19 @@ function ledger() {
     <span class="stat"><b>Gold</b><span>${G.gold}</span>${d("gold")}</span>
     <span class="stat"><b>Grain</b><span>${G.grain}</span>${d("grain")}</span>
     <span class="stat"><b>Influence</b><span>${G.influence}</span>${d("influence")}</span>
-    <span class="stat"><b>Favour</b><span>${G.favour}</span>${d("favour")}</span></div>`;
+    <span class="stat"><b>Favour</b><span>${G.favour}</span>${d("favour")}</span>
+    ${G.kingdom ? `<span class="stat"><b>Strength</b><span>${G.army}</span>${d("army")}</span><span class="stat"><b>Suspicion</b><span class="${G.suspicion >= 60 ? "down" : ""}">${G.suspicion}</span>${d("suspicion")}</span>` : ""}</div>`;
 }
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-function bump(changes) { prev = { ...G }; for (const [k, v] of Object.entries(changes)) G[k] = Math.round(G[k] + v); G.favour = clamp(G.favour, -100, 100); G.influence = Math.max(0, G.influence); ledger(); }
+function bump(changes) { prev = { ...G }; for (const [k, v] of Object.entries(changes)) G[k] = Math.round(G[k] + v); G.favour = clamp(G.favour, -100, 100); G.influence = Math.max(0, G.influence); G.army = Math.max(0, G.army); G.suspicion = clamp(G.suspicion, 0, 100); ledger(); }
+function applyFx(fx) {
+  const nums = {};
+  for (const k of ["gold", "grain", "influence", "favour", "army", "suspicion"]) if (fx[k]) nums[k] = fx[k];
+  for (const [k, v] of Object.entries(fx.att || {})) G.att[k] = clamp(G.att[k] + v, -100, 100);
+  if (fx.ill) G.ill = true;
+  if (fx.mutiny) G.mutiny = true;
+  bump(nums);
+}
 function feel(a) { return a >= 50 ? "devoted" : a >= 25 ? "warm" : a >= 8 ? "cordial" : a > -8 ? "neutral" : a > -25 ? "cool" : "hostile"; }
 
 // ---------- the title -------------------------------------------------------------------------------
@@ -414,29 +514,49 @@ async function title() {
   const saved = await load();
   screen({ title: "", body: `<div class="title-card"><div class="sub">The Imperial Council · Season by season</div><h1>The Caldera Council</h1>
     <p class="muted">You are the young Prince of Vaccaria, newest and least of the realms at the Emperor's table. Win friends, keep your promises, feed your people, and one day put a crown on your principality.</p>
-    <p class="voice">${sample ? "The court speaks with Claude's voice: you can say anything to them. The first time, you'll be asked to allow it." : "The court speaks its written lines."}</p></div>`,
-    foot: `${saved && !saved.over ? `<button class="primary" id="cont">Continue: season ${saved.season}</button>` : ""}<button ${saved && !saved.over ? "" : 'class="primary"'} id="new">Begin a new reign</button>${sample ? `<button id="vt">${voices ? "Voices: Claude" : "Voices: written"}</button>` : ""}` });
-  on("cont", () => { G = saved; ledger(); seasonStart(); });
+    <p class="voice">${provider() === "claude" ? "The court speaks with Claude: you can say anything to them. The first time, you'll be asked to allow it." : provider() === "openai" ? "The court speaks through your OpenAI key: you can say anything to them." : inViewer ? "The court speaks its written lines." : "The court speaks its written lines. Add an OpenAI key under Voices to talk to them freely."}</p></div>`,
+    foot: `${saved && !saved.over ? `<button class="primary" id="cont">Continue: season ${saved.season}</button>` : ""}<button ${saved && !saved.over ? "" : 'class="primary"'} id="new">Begin a new reign</button><button id="vt">Voices</button>` });
+  on("cont", () => { G = { ...fresh(), ...saved }; ledger(); seasonStart(); });
   on("new", () => { G = fresh(); prev = null; ledger(); seasonStart(true); });
-  on("vt", () => { voices = !voices; title(); });
+  on("vt", () => settingsScreen(title));
 }
 
 // ---------- each season ------------------------------------------------------------------------------
 function pickMotion() {
-  const pool = MOTIONS.filter((m) => !G.used.slice(-4).includes(m.id));
+  const pool = [...MOTIONS, ...(G.kingdom ? KING_MOTIONS : [])].filter((m) => !G.used.slice(-4).includes(m.id));
   return pool[Math.floor(Math.random() * pool.length)].id;
 }
+function seasonEvent() {
+  const pool = EVENTS.filter((e) => (!e.once || !G.seen.includes(e.id)) && (!e.when || e.when(G)) && G.seen.slice(-3).indexOf(e.id) < 0);
+  if (G.season < 2 || !pool.length || Math.random() > .65) return false;
+  const e = pool[Math.floor(Math.random() * pool.length)];
+  G.seen.push(e.id); if (e.fx) applyFx(e.fx); save();
+  setFocus(null);
+  screen({ title: "News from the realm", small: `Season ${G.season}`, body: `<p class="speech">${e.text}</p>`,
+    foot: e.choices.map((c, i) => `<button id="ev${i}" ${c[2] && !c[2](G) ? "disabled" : ""} ${i === 0 ? 'class="primary"' : ""}>${c[0]}</button>`).join("") });
+  e.choices.forEach((c, i) => on("ev" + i, () => { applyFx(c[1]); save(); seasonStart(); }));
+  return true;
+}
 function seasonStart(first) {
-  if (!G.motion) { G.motion = pickMotion(); G.audiences = 2; G.promises = {}; G.theirPromise = {}; save(); }
+  if (!G.motion) {
+    G.motion = pickMotion(); G.audiences = 2; G.promises = {}; G.theirPromise = {}; G.mustered = false; save();
+    if (!first && seasonEvent()) return;
+  }
   const m = ALL_MOTIONS.find((x) => x.id === G.motion);
   setFocus(m.by === "P" ? null : m.by);
   screen({ title: first ? "Your first council" : `Season ${G.season}`, small: "Before the session",
     body: `${first ? `<p>The Herald strikes his staff. The realms gather in the caldera, each to a cushion, and the Emperor takes the high seat.</p>` : ""}
       <p>The motion before the council this season:</p><p class="motion">${esc(m.text)}</p>
       <p class="muted">Proposed by ${m.by === "P" ? "you, for Vaccaria" : PEOPLE[m.by].full}. If it passes: ${m.note}</p>
-      <p>You may seek a private audience before the session (${G.audiences} left this season), or put a motion of your own in its place.</p>`,
-    foot: `<button id="aud" ${G.audiences ? "" : "disabled"}>Seek an audience</button><button id="own">Propose your own motion</button><button id="chron">The chronicle</button><button class="primary" id="go">Enter the council</button>` });
-  on("aud", audiencePick); on("own", ownMotion); on("go", council); on("chron", chronicle);
+      <p>You may seek a private audience before the session (${G.audiences} left this season), or put a motion of your own in its place.</p>
+      ${G.kingdom ? `<p class="muted">${plotters().length ? `Sworn to your cause: ${plotters().map((k) => PEOPLE[k].who).join(", ")}.` : "No ruler is yet sworn to move against the Throne. Sound them out in private audiences."}${G.ill ? " The Emperor is ailing." : ""}</p>` : ""}`,
+    foot: `<button id="aud" ${G.audiences ? "" : "disabled"}>Seek an audience</button><button id="own">Propose your own motion</button>
+      ${G.kingdom ? `<button id="muster" ${G.mustered || G.gold < 15 || G.grain < 15 ? "disabled" : ""}>Muster the Herd Guard</button>` : ""}
+      ${G.kingdom && plotters().length >= 3 ? `<button class="nay" id="coup">Move against the Throne</button>` : ""}
+      <button id="chron">The chronicle</button><button id="opts">Voices</button><button class="primary" id="go">Enter the council</button>` });
+  on("aud", audiencePick); on("own", ownMotion); on("go", council); on("chron", chronicle); on("opts", () => settingsScreen(() => seasonStart()));
+  on("muster", () => { G.mustered = true; bump({ gold: -15, grain: -15, army: 10, suspicion: 4 }); save(); seasonStart(); });
+  on("coup", coupStart);
 }
 function chronicle() {
   setFocus(null);
@@ -447,7 +567,7 @@ function chronicle() {
   on("back", () => seasonStart());
 }
 function ownMotion() {
-  const list = OWN_MOTIONS.map((m) => {
+  const list = OWN_MOTIONS.filter((m) => !(m.id === "kingdom" && G.kingdom)).map((m) => {
     const can = G.influence >= m.cost && (!m.needs || G.influence >= m.needs);
     return `<button id="m_${m.id}" ${can ? "" : "disabled"}><strong>${esc(m.text)}</strong><em>Costs ${m.cost} influence${m.needs ? `, needs ${m.needs}` : ""}. ${m.note}</em></button>`;
   }).join("");
@@ -477,13 +597,13 @@ function audience(k) {
       foot: `${live() ? `<form class="say" id="sayf"><input id="say" maxlength="400" placeholder="Say anything to ${p.who}…" autocomplete="off" ${busy ? "disabled" : ""}><button class="primary" ${busy ? "disabled" : ""}>Say</button></form>` : ""}
         <div class="chips"><button id="ask" ${busy ? "disabled" : ""}>Ask their vote</button><button id="gift" ${busy || G.grain < 15 ? "disabled" : ""}>Gift 15 grain</button>
         <button id="ra" ${busy || G.theirPromise[k] ? "disabled" : ""}>Ask for an aye</button><button id="rn" ${busy || G.theirPromise[k] ? "disabled" : ""}>Ask for a nay</button>
-        <button id="pa" ${busy || G.promises[k] ? "disabled" : ""}>Pledge Vaccaria's aye</button><button id="pn" ${busy || G.promises[k] ? "disabled" : ""}>Pledge Vaccaria's nay</button><button id="bye" ${busy ? "disabled" : ""}>Take your leave</button></div>` });
+        <button id="pa" ${busy || G.promises[k] ? "disabled" : ""}>Pledge Vaccaria's aye</button><button id="pn" ${busy || G.promises[k] ? "disabled" : ""}>Pledge Vaccaria's nay</button>${G.kingdom && k !== "E" && !G.plot[k] ? `<button class="nay" id="plot" ${busy ? "disabled" : ""}>Sound them out about the Throne</button>` : ""}<button id="bye" ${busy ? "disabled" : ""}>Take your leave</button></div>` });
     sb.scrollTop = sb.scrollHeight;
     const f = document.getElementById("sayf");
     if (f) f.onsubmit = (e) => { e.preventDefault(); const v = document.getElementById("say").value.trim(); if (v) speak(v); };
     if (f && !busy) document.getElementById("say").focus({ preventScroll: true });
     on("ask", () => scripted("ask")); on("gift", () => scripted("gift")); on("pa", () => scripted("aye")); on("pn", () => scripted("nay"));
-    on("ra", () => scripted("req_aye")); on("rn", () => scripted("req_nay"));
+    on("ra", () => scripted("req_aye")); on("rn", () => scripted("req_nay")); on("plot", () => scripted("plot"));
     on("bye", leave);
   };
   const lean = () => leaning(k, null);
@@ -496,6 +616,12 @@ function audience(k) {
       bump({ grain: -15 }); G.att[k] = clamp(G.att[k] + 8, -100, 100);
       turns.push({ me: true, text: "Accept fifteen measures of Vaccarian grain, as a token of friendship." });
       turns.push({ text: G.att[k] >= 25 ? "Generous. Vaccaria knows how to make friends." : "A kind gift. It will be remembered." });
+    } else if (kind === "plot") {
+      turns.push({ me: true, text: "The Emperor is old, and the Throne bleeds us all. If the realms stood together, the high seat could have a new master." });
+      const will = G.att[k] / 100 + PLOT[k] + (G.ill ? .15 : 0) + plotters().length * .05 + (G.mutiny ? .05 : 0);
+      if (will > .55) { G.plot[k] = true; bump({ suspicion: 8 }); turns.push({ text: { L: "A new master… who might be generous to his friends in Lucerna. Count me in, neighbour. Quietly.", V: "How deliciously dangerous. Velithra will stand with you, as long as you are winning.", K: "Hm. I do not like it. But I like Aurex's assessors less. My axes are yours.", D: "At last a prince with teeth! Khar-Dumeth's spears are yours. Name the day.", T: "The desert has waited long for this. Tor-Ilun is with you.", M: "I… serve the Throne. But perhaps not this Emperor. Very well. Meridia will not stand in your way." }[k] }); }
+      else if (G.att[k] < 20) { G.att[k] = clamp(G.att[k] - 10, -100, 100); bump({ suspicion: 35 }); turns.push({ text: "I will pretend I did not hear that. Others, I think, will not." }); }
+      else { bump({ suspicion: 15 }); turns.push({ text: "Treason, Highness, is a word that carries in this chamber. I will forget this conversation. Do not make me remember it." }); }
     } else if (kind === "req_aye" || kind === "req_nay") {
       const want = kind === "req_aye" ? "aye" : "nay", sign = want === "aye" ? 1 : -1;
       turns.push({ me: true, text: `I ask ${REALMS[k].name} to vote ${want} on this motion.` });
@@ -514,14 +640,14 @@ function audience(k) {
     const convo = turns.slice(-10).map((t) => `${t.me ? "Prince" : p.who}: ${t.text}`).join("\n");
     const prompt = `${WORLD}\n\nYou are ${personaText(k)}\nThe motion before the council this season: "${m.text}" (proposed by ${m.by === "P" ? "Vaccaria" : PEOPLE[m.by].full}). Your realm's natural position: ${m.lean[k] > .2 ? "for it" : m.lean[k] < -.2 ? "against it" : "undecided"}.${G.theirPromise[k] ? ` You have already promised the Prince to vote ${G.theirPromise[k]}.` : ""} Recent decrees: ${recentChronicle()}\n\nYou are in a private audience with the Prince of Vaccaria. Conversation so far:\n${convo}\n\nReply in character, 1 to 3 sentences, plain spoken words, no stage directions. Pursue your own goals; do not simply agree. Then judge the exchange. Answer only as JSON: {"reply": "...", "attitude_change": integer from -8 to 8, "promise_vote": "aye" or "nay" or null (only if you now explicitly commit your realm's vote to the Prince)}`;
     try {
-      const r = await sample.json(prompt, { modelTier: "quick", cache: false });
+      const r = await aiJSON(prompt);
       turns.push({ text: String(r.reply || "…") });
       G.att[k] = clamp(G.att[k] + clamp(Number(r.attitude_change) || 0, -8, 8), -100, 100);
       if ((r.promise_vote === "aye" || r.promise_vote === "nay") && !G.theirPromise[k]) { G.theirPromise[k] = r.promise_vote; turns.push({ text: `(${p.who} has promised to vote ${r.promise_vote}.)` }); }
       save();
     } catch (e) {
       voiceOff(e);
-      turns.push({ text: e.code === "rate_limited" ? "(The court needs a moment. Try again shortly.)" : live() ? "(They fall silent. Try again.)" : "(The court's free voices are unavailable; use the choices below.)" });
+      turns.push({ text: e.code === "rate_limited" ? "(The court needs a moment. Try again shortly.)" : live() ? "(They fall silent. Try again.)" : `(${aiDown || "The court's free voices are unavailable"}; use the choices below.)` });
     }
     busy = false; draw();
   }
@@ -552,7 +678,7 @@ async function council() {
       ["E", ...speakers].map((k) => `- ${PEOPLE[k].who}: ${personaText(k)} Stance: ${leaning(k) > .2 ? "for" : leaning(k) < -.2 ? "against" : "undecided, weighing both sides"}.`).join("\n") +
       `\n\nWrite the debate. Aurex opens briefly (put the motion, invite debate, give no verdict). Then each other speaker in order speaks 1 to 3 sentences in character, arguing their realm's interest, sometimes answering earlier speakers by name. Plain spoken words, no stage directions. Answer only as JSON: {"speeches": [{"who": "Aurex", "text": "..."}, ...]}`;
     try {
-      const r = await sample.json(prompt, { modelTier: "quick" });
+      const r = await aiJSON(prompt);
       if (Array.isArray(r.speeches)) lines = r.speeches.filter((s) => s && s.text);
     } catch (e) { voiceOff(e); lines = null; }
   }
@@ -596,7 +722,7 @@ async function address(m, text) {
     `.\n\nThe Prince of Vaccaria addresses the council:\n"${text}"\n\nJudge how persuasive this is to each member, given their interests and their attitude to the Prince. Then pick at most two members who answer him aloud, each in 1 or 2 sentences in character. Answer only as JSON: {"shifts": {"Aurex": number from -0.5 (pushed against the motion) to 0.5 (pushed for it), ... one for each member}, "answers": [{"who": "...", "text": "..."}]}`;
   let answers = [];
   try {
-    const r = await sample.json(prompt, { modelTier: "quick", cache: false });
+    const r = await aiJSON(prompt);
     const byName = Object.fromEntries(ORDER.map((k) => [PEOPLE[k].who, k]));
     for (const [n, v] of Object.entries(r.shifts || {})) if (byName[n] && byName[n] !== "P") swayed[byName[n]] = (swayed[byName[n]] || 0) + clamp(Number(v) || 0, -.5, .5);
     answers = (r.answers || []).filter((a) => byName[a.who] && byName[a.who] !== "P").slice(0, 2).map((a) => ({ k: byName[a.who], text: String(a.text) }));
@@ -629,7 +755,8 @@ function decide(m, prince) {
   const ayes = ORDER.filter((k) => votes[k] === "aye").length, nays = ORDER.filter((k) => votes[k] === "nay").length;
   let outcome = ayes > nays ? "passed" : "rejected", veto = false;
   // the Throne may overrule a motion that threatens it, unless the Prince stands high in its favour
-  if (outcome === "passed" && (m.lean.E ?? 0) <= -.5 && votes.E !== "aye" && G.favour < (m.id === "kingdom" ? 50 : 35)) { outcome = "rejected"; veto = true; }
+  if (m.id !== "coup" && outcome === "passed" && (m.lean.E ?? 0) <= -.5 && votes.E !== "aye" && G.favour < (m.id === "kingdom" ? 50 : 35)) { outcome = "rejected"; veto = true; }
+  if (m.id === "coup") return coupVote(votes, outcome);
   // consequences
   const before = { ...G };
   const ch = { gold: 0, grain: 0, influence: 0, favour: 0 };
@@ -639,9 +766,11 @@ function decide(m, prince) {
     if (e.income) G.income += e.income;
     if (e.grainIncome) G.grainIncome += e.grainIncome;
     ch.gold += e.gold || 0; ch.grain += e.grain || 0; ch.influence += e.influence || 0; ch.favour += e.favour || 0;
+    if (e.suspicion) ch.suspicion = e.suspicion;
+    if (e.armyHalf) ch.army = -Math.floor(G.army / 2);
     if (e.favourIfAye) ch.favour += prince === "aye" ? e.favourIfAye : prince === "nay" ? -Math.round(e.favourIfAye / 2) : 0;
     for (const [k, v] of Object.entries(e.att || {})) G.att[k] = clamp(G.att[k] + v, -100, 100);
-    if (e.crown) G.kingdom = true;
+    if (e.crown) { G.kingdom = true; G.crownedNow = true; }
   }
   const winner = outcome === "passed" ? "aye" : "nay";
   if (prince === winner) ch.influence += m.by === "P" ? 10 : 4;
@@ -661,16 +790,17 @@ function decide(m, prince) {
   }
   // the season turns: income, tribute and the granaries
   ch.gold += G.income - G.tribute; ch.grain += G.grainIncome - 10;
+  if (G.kingdom) { ch.grain -= Math.floor(G.army / 10) * 2; ch.suspicion = (ch.suspicion || 0) - 5; }
   G.chronicle.push({ season: G.season, text: m.text, outcome, prince, veto });
   G.used.push(m.id);
   bump(ch); prev = before;
   ledger();
   G.season++; G.motion = null;
   for (const k in swayed) delete swayed[k];
-  if (G.kingdom) G.over = "crowned";
-  else if (G.gold < 0) G.over = "bankrupt";
+  if (G.gold < 0) G.over = "bankrupt";
   else if (G.grain < 0) G.over = "famine";
   else if (G.favour <= -50) G.over = "deposed";
+  else if (G.suspicion >= 100) G.over = "arrested";
   save();
   const rows = ORDER.map((k) => `<span>${k === "P" ? "You" : PEOPLE[k].who} <span class="muted">· ${REALMS[k].short}</span></span><span class="v ${votes[k]}">${votes[k]}${G.theirPromise[k] && k !== "P" ? " (as promised)" : ""}</span>`).join("");
   const verdict = veto ? "The Emperor raises his hand. The Throne will not have it: the motion is set aside." : outcome === "passed" ? "Aurex inclines his head. So it is decreed." : "The motion fails. Aurex moves on without a word.";
@@ -678,16 +808,61 @@ function decide(m, prince) {
   screen({ title: outcome === "passed" ? "The motion passes" : "The motion fails", small: `${ayes} aye · ${nays} nay`,
     body: `<p class="motion">${esc(m.text)}</p><div class="tally">${rows}</div><p>${verdict}</p>${notes.map((n) => `<p class="down">${n}</p>`).join("")}<p class="muted">The season turns: ${G.income} gold income, ${G.tribute} gold tribute, ${G.grainIncome} grain harvested, 10 grain eaten.</p>`,
     foot: `<button class="primary" id="n">${G.over ? "The end of your reign" : "The next season"}</button>` });
-  on("n", () => G.over ? ending() : seasonStart());
+  on("n", () => G.over ? ending() : G.crownedNow ? crowned() : seasonStart());
+}
+function crowned() {
+  G.crownedNow = false; save();
+  setFocus("P");
+  screen({ title: "Long live the King of Vaccaria", small: "A new chapter", body: `<p class="speech">The Emperor lays the circlet on your horns himself. The principality is a kingdom, and you are its first King.</p>
+    <p>But a crown given by the Throne can be taken by it. From now on you can muster the Herd Guard, and in private audiences you can sound out the other rulers about a different master for the high seat. Each whisper raises the Praetorians' suspicion; at 100, Cassia comes for you.</p>
+    <p class="muted">With three rulers sworn to your cause, you can move against the Throne.</p>`, foot: `<button class="primary" id="n">The next season</button>` });
+  on("n", () => seasonStart());
+}
+
+// ---------- the coup ---------------------------------------------------------------------------------
+function coupStart() {
+  const ours = G.army + plotters().length * 15 + (G.mutiny ? 20 : 0), theirs = 75 - (G.ill ? 20 : 0);
+  const odds = ours - theirs;
+  screen({ title: "Move against the Throne", small: `${plotters().length} rulers sworn`,
+    body: `<p>You will rise in open council and move that the Throne be declared vacant. If the council carries it, the Legions will still have to be faced.</p>
+      <p>Your strength: the Herd Guard (${G.army}), ${plotters().length} sworn realms${G.mutiny ? ", and the auxilia you have been paying" : ""}. The Legions${G.ill ? ", led by an ailing Emperor," : ""} are ${odds > 15 ? "fewer than you feared" : odds > -5 ? "evenly matched against you" : "far stronger than your forces"}.</p>
+      <p class="down">If you fail, there is no second chance.</p>`,
+    foot: `<button id="back">Not yet</button><button class="nay" id="go">Rise in council</button>` });
+  on("back", () => seasonStart());
+  on("go", () => {
+    COUP.lean = {};
+    for (const k of ORDER) if (k !== "P") COUP.lean[k] = k === "E" ? -1 : G.plot[k] ? .9 : clamp(PLOT[k] + G.att[k] / 100 - .35, -1, 1);
+    G.motion = "coup"; G.promises = {}; G.theirPromise = {}; save(); council();
+  });
+}
+function coupVote(votes, outcome) {
+  const rows = ORDER.map((k) => `<span>${k === "P" ? "You" : PEOPLE[k].who}</span><span class="v ${votes[k]}">${votes[k]}</span>`).join("");
+  if (outcome !== "passed") {
+    G.over = "arrested"; save();
+    setFocus("E");
+    screen({ title: "The council will not follow", small: "Treason", body: `<div class="tally">${rows}</div><p class="speech">Silence. Then Aurex says, very softly: "Cassia." The Praetorians step out from behind the pillars.</p>`,
+      foot: `<button class="primary" id="n">The end of your reign</button>` });
+    on("n", ending); return;
+  }
+  const ours = G.army + plotters().length * 15 + (G.mutiny ? 20 : 0) + Math.floor(Math.random() * 25);
+  const theirs = 75 - (G.ill ? 20 : 0) + Math.floor(Math.random() * 25);
+  G.over = ours >= theirs ? "emperor" : "executed"; save();
+  setFocus(G.over === "emperor" ? "P" : "E");
+  screen({ title: "The Throne is declared vacant", small: "And the Legions march", body: `<div class="tally">${rows}</div>
+    <p class="speech">${G.over === "emperor" ? "The Legions come up the caldera road at dawn and find the kings' banners waiting. Decimar looks at the numbers, and at the ailing old man behind him, and lowers his sword." : "The Legions come up the caldera road at dawn. There are more of them than anyone counted. By noon the kings' banners are in the lava."}</p>`,
+    foot: `<button class="primary" id="n">See what becomes of you</button>` });
+  on("n", ending);
 }
 function ending() {
   const text = {
-    crowned: ["Long live the King of Vaccaria", "The Emperor lays the circlet on your horns himself. The principality is a kingdom, and you are its first King."],
+    emperor: ["Long live the Emperor", "You climb the steps of the high seat as the first Emperor of the cow-folk. Aurex is sent to a comfortable exile in Meridia; Valen kneels, and you raise him up. The realms that stood with you will expect their reward."],
+    executed: ["The lava takes the traitors", "Aurex IV rules on. Your name is struck from the council rolls, and Vaccaria is handed to a Lucernan governor."],
+    arrested: ["Cassia's Praetorians", "They come for you at night, as the Praetorians always do. Vaccaria's seat at the table stays empty for a generation."],
     bankrupt: ["The treasury is empty", "Vaccaria cannot pay its tribute. Imperial assessors arrive to run your principality for you."],
     famine: ["The granaries are bare", "Your people go hungry, and the hills empty. Lucerna's nobles move in to 'help'."],
     deposed: ["The Throne has had enough", "Praetorians escort you from the caldera. A more obliging cousin will rule Vaccaria."],
   }[G.over];
-  setFocus(G.over === "crowned" ? "P" : "E");
+  setFocus(G.over === "emperor" ? "P" : "E");
   screen({ title: text[0], small: `After ${G.season - 1} seasons`, body: `<p class="speech">${text[1]}</p><p class="muted">Decrees passed in your reign: ${G.chronicle.filter((c) => c.outcome === "passed").length}. Friends at the table: ${ORDER.filter((k) => k !== "P" && G.att[k] >= 25).map((k) => PEOPLE[k].who).join(", ") || "none"}.</p>`,
     foot: `<button class="primary" id="n">Begin a new reign</button>` });
   on("n", () => { G = fresh(); prev = null; ledger(); save(); seasonStart(true); });
