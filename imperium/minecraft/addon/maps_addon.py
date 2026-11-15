@@ -114,9 +114,9 @@ def add_maps(bp, rp, world_png, campaign_png, realm_pos):
     fdir = os.path.join(bp, "functions", NS)
     os.makedirs(fdir, exist_ok=True)
     open(os.path.join(fdir, "mapwall.mcfunction"), "w").write(
-        "# Build the 4x4 world map wall three blocks in front of you, facing you\nscriptevent vaccaria:mapwall\n")
+        "# Build the 4x4 world map wall three blocks in front of you, facing you\nscriptevent vaccaria:mapwall build\n")
     open(os.path.join(fdir, "campaign_table.mcfunction"), "w").write(
-        "# Build the realms campaign table 20 blocks above you (stand somewhere with open sky)\nscriptevent vaccaria:campaign_table\n")
+        "# Build the realms campaign table 20 blocks above you (stand somewhere with open sky)\nscriptevent vaccaria:campaign_table build\n")
     realms = [dict(r, u=realm_pos[r["key"]][0], v=realm_pos[r["key"]][1]) for r in REALM_INFO if r["key"] in realm_pos]
     return MAP_SCRIPT.replace("__REALMS__", json.dumps(realms))
 

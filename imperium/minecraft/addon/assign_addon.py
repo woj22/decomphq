@@ -29,10 +29,10 @@ def ledger_icon(path):
 
 
 def add_assign(bp, rp):
-    item = {"format_version": "1.21.40", "minecraft:item": {
+    item = {"format_version": "1.20.80", "minecraft:item": {
         "description": {"identifier": NS + ":ledger", "menu_category": {"category": "items"}},
-        "components": {"minecraft:icon": NS + "_ledger", "minecraft:display_name": {"value": "Steward's Ledger"},
-                       "minecraft:max_stack_size": 1, "minecraft:hand_equipped": False}}}
+        "components": {"minecraft:icon": {"texture": NS + "_ledger"}, "minecraft:display_name": {"value": "Steward's Ledger"},
+                       "minecraft:max_stack_size": 1}}}
     os.makedirs(os.path.join(bp, "items"), exist_ok=True)
     json.dump(item, open(os.path.join(bp, "items", "ledger.json"), "w"), indent=1)
     os.makedirs(os.path.join(rp, "textures", "items"), exist_ok=True)

@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "8fbdd496-9ef3-459c-84a4-4b18f4142a53", "69027871-2e46-44f8-97fd-d9c685aba689"
-VERSION = [1, 4, 0]
+VERSION = [1, 4, 1]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -204,14 +204,15 @@ def behaviour_pack(d):
     council = ["# The Vaccaria delegation to the Emperor's council: five named councillors around you"]
     offs = [(0, 3), (-3, 2), (3, 2), (-2, 4), (2, 4)]
     for (rank, name), (dx, dz) in zip(COUNCIL, offs):
-        council.append('summon %s ~%d ~ ~%d %s:make_rank_%d "%s"' % (ENTITY, dx, dz, NS, rank, name))
+        council.append('summon %s ~%d ~ ~%d 0 0 %s:make_rank_%d "%s"' % (ENTITY, dx, dz, NS, rank, name))
     write(os.path.join(d, "functions", "vaccaria", "council.mcfunction"), "\n".join(council) + "\n")
     folk = ["# A dozen Vaccaria cow-folk of random ranks (4-12) around you"]
     for k in range(12):
-        folk.append("summon %s ~%d ~ ~%d %s:make_random" % (ENTITY, (k % 4) * 2 - 3, (k // 4) * 2 + 2, NS))
+        folk.append("summon %s ~%d ~ ~%d 0 0 %s:make_random" % (ENTITY, (k % 4) * 2 - 3, (k // 4) * 2 + 2, NS))
     write(os.path.join(d, "functions", "vaccaria", "folk.mcfunction"), "\n".join(folk) + "\n")
     for rank, title, colour, guard, w in RANKS:
-        write(os.path.join(d, "functions", "vaccaria", "rank_%d.mcfunction" % rank), "summon %s ~ ~ ~2 %s:make_rank_%d\n" % (ENTITY, NS, rank))
+        write(os.path.join(d, "functions", "vaccaria", "rank_%d.mcfunction" % rank), "summon %s ~ ~ ~2 0 0 %s:make_rank_%d\n" % (ENTITY, NS, rank))
+    write(os.path.join(d, "functions", "vaccaria", "test.mcfunction"), "say The Vaccaria Council pack is active.\n")
     # dialogue script
     ranks_js = json.dumps({r: t for r, t, *_ in RANKS})
     council_js = json.dumps({n: r for r, n in COUNCIL})
