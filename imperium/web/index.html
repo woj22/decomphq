@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Imperium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.js", "three/addons/": "./vendor/jsm/" } }
+</script>
+</head>
+<body>
+<div id="game"></div>
+
+<div id="title">
+  <div class="crest">❦</div>
+  <h1>IMPERIUM</h1>
+  <p class="sub">An evening at the Imperial Palace</p>
+  <p class="lore">You are <b>Cassian Arvel, King of Seravel</b> — one crown among many beneath the Emperor's. Tonight the court gathers on the great terrace above the capital, and everyone wants something from you.</p>
+  <button id="enter" disabled>Loading…</button>
+  <p id="loading">Preparing the palace…</p>
+  <p class="keys"><kbd>WASD</kbd> walk · <kbd>Shift</kbd> stride · drag to look · click or tap to walk · <kbd>E</kbd> speak</p>
+</div>
+
+<div id="hud">
+  <div id="stats"></div>
+  <div id="clock"></div>
+  <div id="objective"></div>
+</div>
+<div id="prompt"></div>
+
+<div id="dialogue">
+  <div class="who"></div>
+  <div class="title"></div>
+  <div class="text"></div>
+  <div class="choices"></div>
+</div>
+
+<div id="end">
+  <div class="crest">❦</div>
+  <h2></h2>
+  <p></p>
+  <button id="again">Another evening</button>
+</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

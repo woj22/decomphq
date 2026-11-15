@@ -1,0 +1,83 @@
+:root {
+  --gold: #e8c27a; --gold2: #b8862e; --ink: #f6ead6; --dim: #cdb9a0; --panel: rgba(28, 16, 22, 0.78); --edge: rgba(232, 194, 122, 0.45);
+  --crimson: #8e1f24; --good: #9be08a; --bad: #ff8a7a;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1018; color: var(--ink); font-family: 'Cormorant Garamond', Georgia, serif; -webkit-user-select: none; user-select: none; touch-action: none; }
+#game, #game canvas { position: fixed; inset: 0; display: block; }
+kbd { font-family: 'Cinzel', serif; font-size: 0.72em; padding: 1px 6px; border: 1px solid var(--edge); border-radius: 4px; background: rgba(0, 0, 0, 0.3); color: var(--gold); }
+
+#title { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px 16px;
+  background: radial-gradient(ellipse at 50% 45%, rgba(30, 14, 26, 0.35), rgba(16, 8, 16, 0.82)); transition: opacity 1.2s ease; z-index: 10; }
+#title.hide { opacity: 0; pointer-events: none; }
+.crest { font-size: 34px; color: var(--gold); opacity: 0.85; }
+#title h1 { font-family: 'Cinzel', serif; font-weight: 900; letter-spacing: 0.32em; font-size: clamp(44px, 9vw, 104px); margin: 6px 0 0 0.32em; color: var(--gold);
+  text-shadow: 0 2px 0 #6a3a10, 0 0 40px rgba(255, 170, 80, 0.35); }
+#title .sub { font-family: 'Cinzel', serif; letter-spacing: 0.25em; text-transform: uppercase; font-size: 13px; color: var(--dim); margin: 6px 0 22px; }
+#title .lore { max-width: 520px; font-size: 19px; line-height: 1.45; color: var(--ink); margin: 0 0 26px; }
+#title .lore b { color: var(--gold); font-weight: 600; }
+button { font-family: 'Cinzel', serif; cursor: pointer; }
+#enter, #again { font-size: 16px; letter-spacing: 0.18em; text-transform: uppercase; color: #2a1408; padding: 13px 34px; border: 1px solid #f3d79a; border-radius: 3px;
+  background: linear-gradient(#f0cf86, #c99236); box-shadow: 0 4px 24px rgba(255, 160, 60, 0.35); transition: transform 0.15s, box-shadow 0.15s; }
+#enter:hover:not(:disabled), #again:hover { transform: translateY(-1px); box-shadow: 0 6px 30px rgba(255, 170, 70, 0.55); }
+#enter:disabled { opacity: 0.6; cursor: wait; }
+#loading { font-style: italic; color: var(--dim); min-height: 1.2em; margin: 12px 0 0; }
+#title .keys { position: absolute; bottom: 20px; left: 16px; right: 16px; font-size: 15px; color: var(--dim); }
+
+#hud { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease 0.6s; z-index: 5; }
+#hud.show { opacity: 1; }
+#stats { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 14px; display: grid; gap: 6px; padding: 10px 12px; background: var(--panel); border: 1px solid var(--edge); border-radius: 4px; backdrop-filter: blur(4px); }
+.stat { display: grid; grid-template-columns: 18px 118px 92px 26px; align-items: center; gap: 6px; font-size: 15px; }
+.stat .ic { color: var(--gold); text-align: center; }
+.stat .lb { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+.stat .bar { height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; }
+.stat .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold2), var(--gold)); transition: width 0.9s ease; }
+.stat b { font-family: 'Cinzel', serif; font-size: 13px; text-align: right; }
+.stat.up { animation: up 1.4s ease; } .stat.down { animation: down 1.4s ease; }
+@keyframes up { 30% { color: var(--good); text-shadow: 0 0 10px var(--good); } }
+@keyframes down { 30% { color: var(--bad); text-shadow: 0 0 10px var(--bad); } }
+#clock { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 16px; font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6); }
+#objective { position: absolute; top: calc(max(16px, env(safe-area-inset-top)) + 24px); right: 16px; max-width: 360px; text-align: right; font-size: 17px; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7); }
+#objective span { display: block; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+#objective em { color: var(--dim); }
+
+#prompt { position: fixed; left: 50%; bottom: 120px; transform: translate(-50%, 10px); padding: 8px 16px; background: var(--panel); border: 1px solid var(--edge); border-radius: 3px; font-size: 18px;
+  opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 6; white-space: nowrap; }
+#prompt.show { opacity: 1; transform: translate(-50%, 0); }
+#prompt b { color: var(--gold); font-weight: 600; }
+
+#dialogue { position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translate(-50%, 30px); width: min(760px, calc(100vw - 24px)); padding: 18px 22px 16px;
+  background: linear-gradient(rgba(34, 18, 26, 0.9), rgba(22, 12, 18, 0.94)); border: 1px solid var(--edge); border-radius: 4px; box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+  opacity: 0; pointer-events: none; transition: opacity 0.35s, transform 0.35s; z-index: 7; }
+#dialogue.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+#dialogue .who { font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: var(--gold); letter-spacing: 0.06em; }
+#dialogue .who em { display: block; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-style: italic; font-size: 15px; color: var(--dim); letter-spacing: 0; }
+#dialogue .title { position: absolute; top: 18px; right: 22px; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+#dialogue .text { font-size: 20px; line-height: 1.42; margin: 10px 0 14px; min-height: 3em; }
+#dialogue .choices { display: grid; gap: 7px; }
+#dialogue .choices button { display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; align-items: center; text-align: left; font-family: 'Cormorant Garamond', serif; font-size: 17px; color: var(--ink);
+  padding: 9px 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(232, 194, 122, 0.22); border-radius: 3px; transition: background 0.15s, border-color 0.15s; }
+#dialogue .choices button:hover { background: rgba(232, 194, 122, 0.12); border-color: var(--edge); }
+#dialogue .choices .k { font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold); border: 1px solid var(--edge); border-radius: 50%; width: 22px; height: 22px; display: grid; place-items: center; }
+.fx i, .result i { font-style: normal; font-family: 'Cinzel', serif; font-size: 12px; margin-left: 8px; white-space: nowrap; }
+.fx .p, .result .p { color: var(--good); } .fx .n, .result .n { color: var(--bad); }
+.result { font-size: 16px; }
+#dialogue .choices button.cont { display: block; justify-self: end; font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #2a1408; background: linear-gradient(#f0cf86, #c99236); border-color: #f3d79a; padding: 9px 22px; }
+
+#end { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; background: rgba(10, 8, 20, 0.55);
+  opacity: 0; pointer-events: none; transition: opacity 1.5s; z-index: 9; }
+#end.show { opacity: 1; pointer-events: auto; }
+#end h2 { font-family: 'Cinzel', serif; font-size: clamp(28px, 5vw, 52px); color: var(--gold); margin: 6px 0; letter-spacing: 0.08em; }
+#end p { font-size: 21px; max-width: 520px; margin: 0 0 24px; }
+
+@media (max-width: 640px) {
+  .stat { grid-template-columns: 16px 64px 18px; font-size: 13px; }
+  .stat .lb { display: none; }
+  .stat b { display: none; }
+  .stat { grid-template-columns: 16px 70px; }
+  #objective { font-size: 14px; max-width: 200px; }
+  #dialogue .text { font-size: 17px; }
+  #dialogue .choices button { font-size: 15px; }
+  #prompt { bottom: 90px; }
+}
