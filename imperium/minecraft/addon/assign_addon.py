@@ -65,18 +65,22 @@ const setJSON = (e, k, v) => e.setDynamicProperty(k, v === null ? undefined : JS
 const label = (e) => e.nameTag || "this cow-folk";
 
 function menu(p, e) {
-  const area = getJSON(e, "vaccaria:area"), bed = getJSON(e, "vaccaria:bed");
-  const now = `Roaming area: ${area ? `${area.x1 - area.x0 + 1} x ${area.z1 - area.z0 + 1} blocks` : "§7none (roams freely)§r"}\nQuarters: ${bed ? `bed at ${bed.foot.x} ${bed.foot.y} ${bed.foot.z}` : "§7none§r"}`;
+  const area = getJSON(e, "vaccaria:area"), bed = getJSON(e, "vaccaria:bed"), cushion = getJSON(e, "vaccaria:cushion");
+  const now = `Roaming area: ${area ? `${area.x1 - area.x0 + 1} x ${area.z1 - area.z0 + 1} blocks` : "§7none (roams freely)§r"}\nQuarters: ${bed ? `bed at ${bed.foot.x} ${bed.foot.y} ${bed.foot.z}` : "§7none§r"}\nCouncil cushion: ${cushion ? `${cushion.x} ${cushion.y} ${cushion.z} (for ${realmOf(e)})` : "§7none§r"}`;
   new AF().title(`Assign ${label(e)}`).body(now)
-    .button("Set roaming area").button("Set sleeping quarters").button("Copy roaming area to cow-folk nearby")
+    .button("Set roaming area").button("Set sleeping quarters").button("Set council cushion").button("Copy roaming area to cow-folk nearby")
     .button("Show assignment").button("§cClear assignment").button("Done")
     .show(p).then((r) => {
       if (r.canceled) return;
       if (r.selection === 0) { pending.set(p.id, { mode: "cornerA", target: e.id }); notify(p, "§6Ledger: tap the first corner block of the roaming area."); }
       if (r.selection === 1) { pending.set(p.id, { mode: "bed", target: e.id }); notify(p, "§6Ledger: tap the bed that will be their quarters."); }
-      if (r.selection === 2) copyArea(p, e);
-      if (r.selection === 3) show(e);
-      if (r.selection === 4) { setJSON(e, "vaccaria:area", null); setJSON(e, "vaccaria:bed", null); notify(p, `§6${label(e)} may roam freely again.`); }
+      if (r.selection === 2) {
+        if (realmOf(e) === "Vaccaria") { notify(p, "§eYou hold Vaccaria's seat yourself. Use the Ledger in the air and choose Set my council cushion."); return; }
+        pending.set(p.id, { mode: "cushion", target: e.id }); notify(p, `§6Ledger: tap ${label(e)}'s cushion at the council table (a carpet works well).`);
+      }
+      if (r.selection === 3) copyArea(p, e);
+      if (r.selection === 4) show(e);
+      if (r.selection === 5) { setJSON(e, "vaccaria:area", null); setJSON(e, "vaccaria:bed", null); setJSON(e, "vaccaria:cushion", null); notify(p, `§6${label(e)} may roam freely again.`); }
     });
 }
 
@@ -106,6 +110,19 @@ function show(e) {
   }, 10);
 }
 
+function cushionAt(block) {
+  const l = block.location, id = block.typeId;
+  let top = 1;
+  if (id.includes("carpet")) top = 0.07;
+  else if (id.endsWith("_slab")) { try { if (block.permutation.getState("minecraft:vertical_half") === "bottom") top = 0.5; } catch (x) { } }
+  return { x: l.x, y: l.y, z: l.z, top: l.y + top, dim: block.dimension.id };
+}
+function allNpcs() {
+  const out = [];
+  for (const id of ["overworld", "nether", "the_end"]) { try { out.push(...aw.getDimension(id).getEntities({ families: ["vaccaria"] })); } catch (x) { } }
+  return out;
+}
+
 function bedAt(block) {
   if (!block || block.typeId !== "minecraft:bed") return null;
   const isHead = !!block.permutation.getState("head_piece_bit");
@@ -129,8 +146,8 @@ function ledgerTap(p, block) {
   if (asys.currentTick - (lastClick.get(p.id) ?? -99) < 15) return true;   // one tap, not a held finger
   lastClick.set(p.id, asys.currentTick);
   const ev = { block };
-  const e = aw.getEntity(job.target);
-  if (!e) { pending.delete(p.id); notify(p, "§eThat cow-folk is no longer nearby."); return; }
+  const e = job.mode === "mycushion" ? p : aw.getEntity(job.target);
+  if (!e) { pending.delete(p.id); notify(p, "§eThat cow-folk is no longer nearby."); return true; }
   const b = ev.block.location;
   if (job.mode === "cornerA") {
     pending.set(p.id, { mode: "cornerB", target: job.target, a: { x: b.x, y: b.y, z: b.z } });
@@ -145,6 +162,24 @@ function ledgerTap(p, block) {
       e.teleport({ x: (area.x0 + area.x1 + 1) / 2, y: area.y0 + 1, z: (area.z0 + area.z1 + 1) / 2 });
     notify(p, `§6${label(e)} will roam within ${area.x1 - area.x0 + 1} x ${area.z1 - area.z0 + 1} blocks.`);
     show(e);
+  } else if (job.mode === "cushion" || job.mode === "mycushion") {
+    const c = cushionAt(ev.block);
+    pending.delete(p.id);
+    if (job.mode === "cushion") {
+      const realm = realmOf(e);
+      for (const o of allNpcs()) {
+        if (o.id !== e.id && realmOf(o) === realm && getJSON(o, "vaccaria:cushion")) {
+          setJSON(o, "vaccaria:cushion", null);
+          notify(p, `§e${label(o)} gives up ${realm}'s cushion: each realm sends one representative.`);
+        }
+      }
+      setJSON(e, "vaccaria:cushion", c);
+      notify(p, `§6${label(e)} will sit there for ${realm} when the council meets.`);
+    } else {
+      setJSON(p, "vaccaria:cushion", c);
+      notify(p, "§6That is your seat for Vaccaria at the council table.");
+    }
+    for (let k = 0; k < 6; k++) p.dimension.spawnParticle("minecraft:villager_happy", { x: c.x + 0.5, y: c.top + 0.3 + k * 0.2, z: c.z + 0.5 });
   } else if (job.mode === "bed") {
     const bed = bedAt(ev.block);
     if (!bed) { notify(p, "§eThat isn't a bed. Tap one of the two halves of a bed."); return; }
@@ -180,10 +215,13 @@ aw.afterEvents.itemUse.subscribe((ev) => {
   }
   if (asys.currentTick - (lastClick.get(p.id) ?? -99) < 10) return;
   new AF().title("Steward's Ledger")
-    .body("Use the ledger on a cow-folk to give them a roaming area (two corner blocks) and sleeping quarters (a bed).\n\nBy day they wander inside their area. At nightfall they go to bed, and at dawn they rise.")
-    .button("Show assignments near me").button("Close")
+    .body("Use the ledger on a cow-folk or courtier to give them a roaming area (two corner blocks), sleeping quarters (a bed) and a council cushion.\n\nBy day they wander inside their area. At nightfall they go to bed, and at dawn they rise. When the council is convened, each realm's representative takes their cushion.")
+    .button("Show assignments near me").button("Set my council cushion").button("Convene the council").button("Close")
     .show(p).then((r) => {
-      if (r.canceled || r.selection !== 0) return;
+      if (r.canceled) return;
+      if (r.selection === 1) { pending.set(p.id, { mode: "mycushion", target: p.id }); notify(p, "§6Ledger: tap your own cushion at the council table."); return; }
+      if (r.selection === 2) { convene(p); return; }
+      if (r.selection !== 0) return;
       const near = p.dimension.getEntities({ families: ["vaccaria"], location: p.location, maxDistance: 32 });
       near.forEach(show);
       notify(p, `§6Showing ${near.length} cow-folk within 32 blocks.`);
@@ -244,6 +282,16 @@ function tend(e, night) {
   const tag = e.nameTag;
   if (tag && OLD_NAMES[tag]) e.nameTag = OLD_NAMES[tag];
   else if (tag && tag.includes(" ") && !COUNCIL[tag] && e.typeId === COW) e.nameTag = tag.split(" ")[0];
+  const seat = councilSeat(e);
+  if (seat) {                                           // the council is in session: take your cushion
+    if (e.getDynamicProperty("vaccaria:follow")) e.setDynamicProperty("vaccaria:follow", undefined);
+    if (e.getProperty("vaccaria:sleeping")) e.setProperty("vaccaria:sleeping", false);
+    if (!e.getProperty("vaccaria:seated")) { e.triggerEvent("vaccaria:sit"); e.setProperty("vaccaria:seated", true); }
+    const l = e.location;
+    if (Math.abs(l.x - seat.pos.x) + Math.abs(l.y - seat.pos.y) + Math.abs(l.z - seat.pos.z) > 0.3) e.teleport(seat.pos, { rotation: { x: 0, y: seat.yaw } });
+    return;
+  }
+  if (e.getProperty("vaccaria:seated")) { e.setProperty("vaccaria:seated", false); e.triggerEvent("vaccaria:wake"); }
   if (e.getDynamicProperty("vaccaria:follow")) {          // followers keep company with their player, not their routine
     const owner = aw.getAllPlayers().find((q) => q.id === e.getDynamicProperty("vaccaria:follow"));
     if (owner) return;
@@ -282,7 +330,7 @@ function remember(e) {
   const bed = getJSON(e, "vaccaria:bed");
   if (!bed) { known.delete(e.id); return; }
   known.set(e.id, { type: e.typeId, variant: e.getComponent("minecraft:variant")?.value ?? 1, name: e.nameTag || "",
-                    area: getJSON(e, "vaccaria:area"), bed, dim: e.dimension.id });
+                    area: getJSON(e, "vaccaria:area"), cushion: getJSON(e, "vaccaria:cushion"), bed, dim: e.dimension.id });
 }
 const queue = () => { try { return JSON.parse(aw.getDynamicProperty("vaccaria:respawns") ?? "[]"); } catch (x) { return []; } };
 const saveQueue = (q) => aw.setDynamicProperty("vaccaria:respawns", JSON.stringify(q));
@@ -306,6 +354,7 @@ function respawn(r) {
   if (!e) return false;
   setJSON(e, "vaccaria:bed", r.bed);
   if (r.area) setJSON(e, "vaccaria:area", r.area);
+  if (r.cushion) setJSON(e, "vaccaria:cushion", r.cushion);
   e.setDynamicProperty("vaccaria:v14", true);
   if (r.name) e.nameTag = r.name;
   remember(e);

@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "5c5a844e-3048-4853-a07f-c21dc13f39a0", "0ca0ec24-6ce0-4046-a896-a28910270aeb"   # new in 1.6.0 so worlds cannot keep an older resource pack in its place
-VERSION = [1, 9, 1]
+VERSION = [2, 0, 0]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -132,7 +132,7 @@ SHAREABLES += [{"item": "minecraft:turtle_helmet", "priority": 3, "want_amount":
 def behaviour_pack(d):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - respawn at their beds; ledger corner taps fixed; armoured guards; NPCs pick up and wear/hold thrown items; the Imperial court (16 named NPCs); Map Lectern; ledger; clear_maps; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
+        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - council sessions and free conversation via the Termux bridge; council cushions; respawn at their beds; ledger corner taps fixed; armoured guards; NPCs pick up and wear/hold thrown items; the Imperial court (16 named NPCs); Map Lectern; ledger; clear_maps; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
                    "uuid": BP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "data", "uuid": BP_DATA, "version": VERSION},
                     {"type": "script", "language": "javascript", "uuid": BP_SCRIPT, "entry": "scripts/main.js", "version": VERSION}],
@@ -172,6 +172,8 @@ def behaviour_pack(d):
         "minecraft:behavior.random_look_around": {"priority": 9},
     }
     groups[NS + ":asleep"] = {"minecraft:movement": {"value": 0.0}}
+    groups[NS + ":seated"] = {"minecraft:movement": {"value": 0.0},
+                              "minecraft:behavior.look_at_player": {"priority": 6, "look_distance": 10, "probability": 0.3}}
     # pick up whatever the player throws them: armour goes on, anything else is held
     pickup = {"minecraft:behavior.pickup_items": {"priority": 3, "max_dist": 6, "goal_radius": 1.5, "speed_multiplier": 0.9,
                                                   "can_pickup_any_item": True, "pickup_based_on_chance": False,
@@ -194,13 +196,15 @@ def behaviour_pack(d):
     events[NS + ":make_random"] = {"randomize": rnd}
     events[NS + ":greeted"] = {}
     events[NS + ":sleep"] = {"remove": {"component_groups": [NS + ":awake"]}, "add": {"component_groups": [NS + ":asleep"]}}
-    events[NS + ":wake"] = {"remove": {"component_groups": [NS + ":asleep", NS + ":following"]}, "add": {"component_groups": [NS + ":awake"]}}
-    events[NS + ":follow"] = {"remove": {"component_groups": [NS + ":awake", NS + ":asleep"]}, "add": {"component_groups": [NS + ":following"]}}
+    events[NS + ":wake"] = {"remove": {"component_groups": [NS + ":asleep", NS + ":following", NS + ":seated"]}, "add": {"component_groups": [NS + ":awake"]}}
+    events[NS + ":follow"] = {"remove": {"component_groups": [NS + ":awake", NS + ":asleep", NS + ":seated"]}, "add": {"component_groups": [NS + ":following"]}}
+    events[NS + ":sit"] = {"remove": {"component_groups": [NS + ":awake", NS + ":asleep", NS + ":following"]}, "add": {"component_groups": [NS + ":seated"]}}
     entity = {
         "format_version": "1.20.80",
         "minecraft:entity": {
             "description": {"identifier": ENTITY, "is_spawnable": True, "is_summonable": True, "is_experimental": False,
-                            "properties": {NS + ":sleeping": {"type": "bool", "default": False, "client_sync": True}}},
+                            "properties": {NS + ":sleeping": {"type": "bool", "default": False, "client_sync": True},
+                                           NS + ":seated": {"type": "bool", "default": False, "client_sync": True}}},
             "component_groups": groups,
             "components": {
                 "minecraft:type_family": {"family": ["vaccaria", "cow_folk", "npc", "mob"]},
@@ -323,9 +327,11 @@ function talk(player, entity) {
     .button("Tell me about Vaccaria")
     .button("What news of the Emperor's council?")
     .button(entity.getDynamicProperty("vaccaria:follow") === player.id ? "Stay here" : "Follow me")
+    .button("Speak freely")
     .button("Carry on");
   form.show(player).then((r) => {
-    if (r.canceled || r.selection === 3) return;
+    if (r.canceled || r.selection === 4) return;
+    if (r.selection === 3) { speakFreely(player, { who: who.name, kind: "cow_folk", rank: who.rank }); return; }
     if (r.selection === 2) {
       if (entity.getDynamicProperty("vaccaria:follow") === player.id) { stopFollowing(entity); notify(player, `§6${who.name} returns to their post.`); }
       else { startFollowing(entity, player); notify(player, `§6${who.name} falls in behind you.`); }
@@ -396,10 +402,10 @@ def resource_pack(d, tex_paths):
             "scripts": {"initialize": ["variable.gliding_speed_value = 1.0;"],
                         "pre_animation": ["variable.tcos0 = (math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"],
                         "animate": ["humanoid_base_pose", {"look_at_target_default": "!q.property('vaccaria:sleeping')"}, "move", "bob", "holding",
-                                    {"sleep_pose": "q.property('vaccaria:sleeping')"}]},
+                                    {"sleep_pose": "q.property('vaccaria:sleeping')"}, {"sit_pose": "q.property('vaccaria:seated')"}]},
             "animations": {"humanoid_base_pose": "animation.humanoid.base_pose", "look_at_target_default": "animation.humanoid.look_at_target.default",
                            "move": "animation.humanoid.move", "bob": "animation.humanoid.bob", "holding": "animation.humanoid.holding",
-                           "sleep_pose": "animation.vaccaria.sleep"},
+                           "sleep_pose": "animation.vaccaria.sleep", "sit_pose": "animation.vaccaria.sit"},
             "render_controllers": ["controller.render.vaccaria.cow_folk"],
             "enable_attachables": True,
             "spawn_egg": {"base_color": "#4a3324", "overlay_color": "#d8a23a"},
@@ -412,7 +418,12 @@ def resource_pack(d, tex_paths):
         "animations": {"animation.vaccaria.sleep": {"loop": True, "bones": {
             "root": {"rotation": [-90, 0, 0], "position": [0, 2, 0]},
             "rightArm": {"rotation": [0, 0, 0]}, "leftArm": {"rotation": [0, 0, 0]},
-            "rightLeg": {"rotation": [0, 0, 0]}, "leftLeg": {"rotation": [0, 0, 0]}, "head": {"rotation": [0, 0, 0]}}}}})
+            "rightLeg": {"rotation": [0, 0, 0]}, "leftLeg": {"rotation": [0, 0, 0]}, "head": {"rotation": [0, 0, 0]}}},
+            # sitting on a cushion: hips on the floor, legs out in front, hands on the knees
+            "animation.vaccaria.sit": {"loop": True, "bones": {
+                "root": {"position": [0, -10, 0]},
+                "rightLeg": {"rotation": [-90, 8, 0]}, "leftLeg": {"rotation": [-90, -8, 0]},
+                "rightArm": {"rotation": [-35, 0, 0]}, "leftArm": {"rotation": [-35, 0, 0]}}}}})
     write(os.path.join(d, "render_controllers", "cow_folk.render_controllers.json"), {
         "format_version": "1.8.0",
         "render_controllers": {"controller.render.vaccaria.cow_folk": {
@@ -460,6 +471,9 @@ def main():
         extra = court_addon.add_court(bp, rp, a.court_pack, a.court_cast)
         with open(os.path.join(bp, "scripts", "main.js"), "a") as f:
             f.write(extra)
+    import council_addon
+    with open(os.path.join(bp, "scripts", "main.js"), "a") as f:
+        f.write(council_addon.add_council(bp))
     out = os.path.join(a.out, "Vaccaria_Council_v%d.%d.%d.mcaddon" % tuple(VERSION))
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         zipdir(bp, z, "Vaccaria_BP")

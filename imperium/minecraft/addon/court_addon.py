@@ -150,9 +150,11 @@ function talkCourt(player, e) {
     .body(`§7${c.full}, ${c.title}${c.realm !== "the Empire" ? " (" + c.realm + ")" : ""}§r\n\n${c.lines[0]}`)
     .button("What news of the council?")
     .button(following ? "Stay here" : "Walk with me")
+    .button("Speak freely")
     .button("Farewell")
     .show(player).then((r) => {
-      if (r.canceled || r.selection === 2) return;
+      if (r.canceled || r.selection === 3) return;
+      if (r.selection === 2) { speakFreely(player, { who: c.tag, kind: "courtier", variant: n }); return; }
       if (r.selection === 1) {
         if (following) { stopFollowing(e); notify(player, `§6${c.tag} returns to their post.`); }
         else { startFollowing(e, player); notify(player, `§6${c.tag} walks with you.`); }
