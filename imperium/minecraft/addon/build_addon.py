@@ -119,7 +119,7 @@ def write(path, data):
 def behaviour_pack(d):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Vaccaria Council (behaviour)", "description": "The cow-folk of the Principality of Vaccaria: 12 ranks of humanlike NPCs.",
+        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - fixed functions; Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
                    "uuid": BP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "data", "uuid": BP_DATA, "version": VERSION},
                     {"type": "script", "language": "javascript", "uuid": BP_SCRIPT, "entry": "scripts/main.js", "version": VERSION}],
@@ -333,7 +333,7 @@ GEOMETRY = {
 def resource_pack(d, tex_paths):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Vaccaria Council (resources)", "description": "Skins and model for the cow-folk of Vaccaria.",
+        "header": {"name": "Vaccaria Council v%d.%d.%d (resources)" % tuple(VERSION), "description": "v%d.%d.%d - skins, models and map textures for the Vaccaria Council pack." % tuple(VERSION),
                    "uuid": RP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "resources", "uuid": RP_RES, "version": VERSION}],
         "dependencies": [{"uuid": BP_UUID, "version": VERSION}],
@@ -410,7 +410,7 @@ def main():
         extra = maps_addon.add_maps(bp, rp, a.world_map, a.campaign, json.load(open(a.realm_pos)))
         with open(os.path.join(bp, "scripts", "main.js"), "a") as f:
             f.write(extra)
-    out = os.path.join(a.out, "Vaccaria_Council.mcaddon")
+    out = os.path.join(a.out, "Vaccaria_Council_v%d.%d.%d.mcaddon" % tuple(VERSION))
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         zipdir(bp, z, "Vaccaria_BP")
         zipdir(rp, z, "Vaccaria_RP")
