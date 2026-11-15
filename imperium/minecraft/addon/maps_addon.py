@@ -115,6 +115,8 @@ def add_maps(bp, rp, world_png, campaign_png, realm_pos):
     os.makedirs(fdir, exist_ok=True)
     open(os.path.join(fdir, "mapwall.mcfunction"), "w").write(
         "# Build the 4x4 world map wall three blocks in front of you, facing you\nscriptevent vaccaria:mapwall build\n")
+    open(os.path.join(fdir, "clear_maps.mcfunction"), "w").write(
+        "# Remove every map wall and campaign table (and any stray map blocks within 32 blocks of you)\nscriptevent vaccaria:clear_maps all\n")
     open(os.path.join(fdir, "campaign_table.mcfunction"), "w").write(
         "# Build the realms campaign table 20 blocks above you (stand somewhere with open sky)\nscriptevent vaccaria:campaign_table build\n")
     realms = [dict(r, u=realm_pos[r["key"]][0], v=realm_pos[r["key"]][1]) for r in REALM_INFO if r["key"] in realm_pos]
@@ -135,13 +137,60 @@ function facing(p) {
   return { f, r: [-f[1], f[0]] };                                    // forward, and the viewer's right
 }
 
+function record(entry) {
+  let list = [];
+  try { list = JSON.parse(mapWorld.getDynamicProperty("vaccaria:builds") ?? "[]"); } catch (e) { }
+  list.push(entry);
+  mapWorld.setDynamicProperty("vaccaria:builds", JSON.stringify(list));
+}
+
+const isMapBlock = (id) => id?.startsWith("vaccaria:wall_") || id?.startsWith("vaccaria:table_");
+
+function clearMaps(p) {
+  let removed = 0;
+  const wipe = (dim, loc) => { const b = dim.getBlock(loc); if (b && isMapBlock(b.typeId)) { b.setType("minecraft:air"); removed++; } };
+  let list = [];
+  try { list = JSON.parse(mapWorld.getDynamicProperty("vaccaria:builds") ?? "[]"); } catch (e) { }
+  const t = mapWorld.getDynamicProperty("vaccaria:table");
+  if (t) { const o = JSON.parse(t); list.push({ kind: "table", dim: o.dim, x: o.x, y: o.y, z: o.z }); }
+  for (const b of list) {
+    let dim;
+    try { dim = mapWorld.getDimension(b.dim); } catch (e) { continue; }
+    try {
+      if (b.kind === "table") { for (let r = 0; r < 16; r++) for (let c = 0; c < 16; c++) wipe(dim, { x: b.x + c, y: b.y, z: b.z + r }); }
+      else for (const l of b.blocks) wipe(dim, l);
+    } catch (e) { }   // far away and not loaded: the nearby sweep below or a later run will catch it
+  }
+  mapWorld.setDynamicProperty("vaccaria:builds", undefined);
+  mapWorld.setDynamicProperty("vaccaria:table", undefined);
+  // sweep for stray map blocks around the player, a slice at a time so the game never stalls
+  const dim = p.dimension, cx = Math.floor(p.location.x), cy = Math.floor(p.location.y), cz = Math.floor(p.location.z);
+  const R = 32, Y0 = -24, Y1 = 48;
+  let x = -R;
+  notify(p, "§6Clearing map walls and campaign tables...");
+  const id = mapSystem.runInterval(() => {
+    for (let k = 0; k < 2 && x <= R; k++, x++) {
+      for (let z = -R; z <= R; z++) for (let y = Y0; y <= Y1; y++) {
+        try { wipe(dim, { x: cx + x, y: cy + y, z: cz + z }); } catch (e) { }
+      }
+    }
+    if (x > R) {
+      mapSystem.clearRun(id);
+      notify(p, `§6Removed ${removed} map blocks. Rebuild with /function vaccaria/campaign_table and /function vaccaria/mapwall.`);
+    } else if (x % 16 === 0) notify(p, `§6Clearing... ${Math.round((x + R) / (2 * R) * 100)}%`);
+  }, 1);
+}
+
 function buildWall(p) {
   const { f, r } = facing(p);
   const bx = Math.floor(p.location.x) + f[0] * 3, by = Math.floor(p.location.y), bz = Math.floor(p.location.z) + f[1] * 3;
+  const blocks = [];
   for (let row = 0; row < 4; row++) for (let col = 0; col < 4; col++) {
     const loc = { x: bx + r[0] * (col - 2), y: by + 4 - row, z: bz + r[1] * (col - 2) };
     p.dimension.getBlock(loc)?.setType(`vaccaria:wall_${row}_${col}`);
+    blocks.push(loc);
   }
+  record({ kind: "wall", dim: p.dimension.id, blocks });
   notify(p, "§6The map of the world hangs before you. Use it to open the campaign map.");
 }
 
@@ -156,6 +205,7 @@ function buildTable(p) {
     }
   }
   mapWorld.setDynamicProperty("vaccaria:table", JSON.stringify({ x: x0, y, z: z0, dim: p.dimension.id }));
+  record({ kind: "table", dim: p.dimension.id, x: x0, y, z: z0 });
   notify(p, `§6The campaign table is ready, 20 blocks above you at ${x0 + 8} ${y} ${z0 + 8}.`);
 }
 
@@ -216,6 +266,7 @@ mapSystem.afterEvents.scriptEventReceive.subscribe((ev) => {
   if (ev.id === "vaccaria:mapwall") buildWall(p);
   else if (ev.id === "vaccaria:campaign_table") buildTable(p);
   else if (ev.id === "vaccaria:open_map") openCampaign(p);
+  else if (ev.id === "vaccaria:clear_maps") clearMaps(p);
 });
 
 mapWorld.afterEvents.playerInteractWithBlock.subscribe((ev) => {
