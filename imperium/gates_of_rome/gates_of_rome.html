@@ -1,0 +1,545 @@
+<title>The Gates of Rome</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Spectral:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+/* Layout: one low-poly scene of the night city fills the screen; a wax-tablet dialogue sits at the bottom, the soldier's kit across the top. */
+:root {
+  --night: #0d1018; --slate: #191d29; --slate-2: #262b3a; --torch: #f0913a; --marble: #ebe5d8;
+  --stone: #9b9688; --purple: #8e3f8a; --bronze: #c79a52; --blood: #cf5547; --olive: #8fae6a;
+  --display: "Cinzel", "Trajan Pro", "Palatino Linotype", Georgia, serif;
+  --body: "Spectral", "Iowan Old Style", Georgia, serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--night); color: var(--marble); font-family: var(--body); font-size: 16px; overflow: hidden; }
+#stage { position: fixed; inset: 0; }
+#stage canvas { display: block; width: 100%; height: 100%; }
+.ui { position: fixed; left: 0; right: 0; pointer-events: none; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.ui > * { pointer-events: auto; }
+#kit { top: 0; padding-top: calc(env(safe-area-inset-top, 0px) + 10px); display: flex; justify-content: center; }
+.kit { display: flex; flex-wrap: wrap; gap: 4px 12px; justify-content: center; align-items: baseline; background: color-mix(in srgb, var(--night) 80%, transparent); border: 1px solid var(--slate-2); border-radius: 12px; padding: 7px 14px; backdrop-filter: blur(6px); max-width: 680px; }
+.kit .hour { font-family: var(--display); color: var(--torch); letter-spacing: .06em; font-size: 13px; }
+.kit .it { font-size: 14px; color: var(--stone); font-variant-numeric: tabular-nums; }
+.kit .it b { color: var(--marble); font-weight: 500; }
+.chip { font-size: 12px; font-family: var(--display); letter-spacing: .05em; border: 1px solid var(--bronze); color: var(--bronze); border-radius: 999px; padding: 1px 8px; }
+#tablet { bottom: 0; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); display: flex; justify-content: center; }
+.slab { width: 100%; max-width: 680px; max-height: 60vh; display: flex; flex-direction: column; background: linear-gradient(180deg, color-mix(in srgb, var(--slate) 95%, transparent), color-mix(in srgb, var(--night) 97%, transparent)); border: 1px solid var(--slate-2); border-top: 2px solid color-mix(in srgb, var(--torch) 60%, var(--slate-2)); border-radius: 14px; box-shadow: 0 -12px 40px rgba(0,0,0,.55); overflow: hidden; }
+.head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 14px 18px 4px; }
+.head h2 { font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: .04em; margin: 0; text-wrap: balance; }
+.head small { font-size: 14px; font-style: italic; color: var(--stone); }
+.body { padding: 4px 18px 10px; overflow-y: auto; min-height: 0; line-height: 1.55; }
+.body p { margin: .45em 0; max-width: 62ch; }
+.chat { display: flex; flex-direction: column; gap: 8px; }
+.me { align-self: flex-end; background: var(--slate-2); padding: 6px 11px; border-radius: 10px 10px 2px 10px; max-width: 85%; }
+.them { max-width: 94%; font-size: 17px; }
+.them .who { font-family: var(--display); color: var(--bronze); font-size: 14px; letter-spacing: .04em; }
+.narr { font-style: italic; color: var(--stone); }
+.warn { color: var(--blood); }
+.good { color: var(--olive); }
+.foot { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 18px 14px; border-top: 1px solid var(--slate-2); }
+.say { display: flex; gap: 8px; width: 100%; }
+.say input, .field { flex: 1; min-width: 0; font: inherit; color: var(--marble); background: var(--night); border: 1px solid #3a4054; border-radius: 9px; padding: 9px 12px; }
+.field { width: 100%; }
+.mode { display: flex; gap: 6px; }
+button { font: inherit; font-family: var(--display); font-size: 13px; letter-spacing: .05em; color: var(--marble); background: var(--slate-2); border: 1px solid #3a4054; border-radius: 9px; padding: 9px 13px; cursor: pointer; min-height: 40px; }
+button:hover { border-color: var(--bronze); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
+button.primary { background: var(--torch); border-color: var(--torch); color: #1f1206; }
+button.on { border-color: var(--torch); color: var(--torch); }
+button:disabled { opacity: .45; cursor: default; }
+.go { background: transparent; border-style: dashed; }
+.meter { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--stone); }
+.meter .bar { width: 90px; height: 6px; background: var(--slate-2); border-radius: 3px; overflow: hidden; }
+.meter .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--olive), var(--torch), var(--blood)); }
+.thinking::after { content: "…"; animation: dots 1.2s steps(4) infinite; display: inline-block; width: 1.2em; overflow: hidden; vertical-align: bottom; }
+@keyframes dots { from { width: 0; } to { width: 1.2em; } }
+.title { text-align: center; padding: 16px 18px 4px; }
+.title h1 { font-family: var(--display); font-weight: 600; font-size: clamp(30px, 8vw, 44px); letter-spacing: .06em; margin: 0; }
+.title .date { font-family: var(--display); color: var(--torch); letter-spacing: .16em; font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { .thinking::after { animation: none; width: 1.2em; } }
+</style>
+
+<div id="stage"></div>
+<div class="ui" id="kit"></div>
+<div class="ui" id="tablet"><div class="slab" id="slab"><div class="body"><p class="narr">Night falls on Rome…</p></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+"use strict";
+// =====================================================================================================
+// Rome, the last night of AD 192
+// =====================================================================================================
+const WORLD = `Rome, the night of 31 December AD 192. Emperor Commodus, who believes he is Hercules reborn, means to appear at tomorrow's New Year ceremonies dressed as a gladiator, and the city whispers that he will have the new consuls killed. He fears plots and has ordered a tight watch on the gates and the palace. It is cold; braziers burn at every post. Everyone speaks Latin, as Romans of the time would, but render it in plain modern English without anachronisms.`;
+const STEPS = 40;                         // quarter-hours until the plotters strike
+const hourName = (s) => ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh"][Math.floor(s / 4)] + " hour of the night";
+
+const PEOPLE = {
+  varro: { name: "Sextus Varro", role: "Optio of the night watch, Porta Capena", place: "gate", start: 40,
+    persona: "A grizzled, sarcastic veteran at the end of a long, cold watch. Resents the Praetorians, who are paid three times what a legionary earns. Fond of dice and wine. His nephew serves with the Legio I Minervia on the Danube.",
+    orders: "No armed soldier enters the city tonight without written orders, leave papers, or a very good reason: the Emperor fears plots.",
+    knows: "Nothing of any plot. He knows the Praetorian camp lies in the north-east of the city and the palace is on the Palatine.",
+    rules: `"allow" if he is genuinely convinced the soldier has a believable reason, if the soldier wins his sympathy as a fellow legionary, or for a discreet bribe of at least 3 denarii. Be sceptical of grand claims and of lies that clash with what the soldier is carrying. "arrest" only for threats, violence or open treason.`,
+    decisions: ["none", "allow", "arrest"], reveals: [], greet: "Halt. Nobody comes through this gate tonight without a reason I like. Who are you, soldier, and what's your business in Rome?" },
+  phoebe: { name: "Phoebe", role: "a Greek wine-seller in the Forum", place: "forum", start: 10,
+    persona: "Chatty, shrewd, warm, always selling something. Hears every rumour from slaves and soldiers who drink at her stall, and sells the good ones.",
+    orders: "Make money. Stay out of trouble with the Praetorians.",
+    knows: "Rumours: the Emperor's mistress Marcia has been seen whispering with the chamberlain Eclectus and the Praetorian Prefect Laetus; a palace slave boy found a wax tablet in which the Emperor listed people to be killed tomorrow, and Marcia's name was on it; the wrestler Narcissus, who trains with the Emperor, was summoned to the palace tonight. She knows the Praetorians use a nightly watchword, but not what it is. The palace gate is held by a hard centurion called Atticus, who admits only Praetorians or those the chamberlain Eclectus sends for. The Praetorian camp's watchtower sentry tonight is young Fulvius, who drinks at her stall and boasts too much.",
+    rules: `She never stops anyone going anywhere. Her decision is always "none". She gives small talk freely but sells the juicier rumours for a coin or two, or gives them to someone who charms her. When she tells about Marcia, Eclectus and Laetus, include "plot_rumour" in reveals.`,
+    decisions: ["none"], reveals: ["plot_rumour"], greet: "Wine, soldier? Warm spiced wine, the best on the Via Sacra. Or perhaps you're thirsty for news instead." },
+  fulvius: { name: "Gaius Fulvius", role: "Praetorian sentry on the watchtower of the Castra Praetoria", place: "tower", start: 35,
+    persona: "Young, bored, boastful and homesick for his family's farm in Etruria. Loves flattery, owes gambling debts, and looks down on ordinary legionaries.",
+    orders: "Nobody enters the Praetorian camp at night except Praetorians. Tonight's watchword is \"Hercules Invictus\": never give it to an outsider.",
+    knows: "The watchword. That the Prefect Laetus went to the palace this evening and told the guard to keep the Emperor undisturbed tonight. That spare uniforms are kept in the storeroom by the east barracks.",
+    rules: `"allow" (open the postern and let the soldier into the camp) if convinced by a good story such as a message for a centurion inside, by real flattery and friendship, or for a bribe of at least 5 denarii. He may let the watchword slip if tricked, flattered, or bribed heavily; include "watchword" in reveals only if the exact words "Hercules Invictus" appear in his reply. "arrest" if the soldier threatens him or tries to force his way in.`,
+    decisions: ["none", "allow", "arrest"], reveals: ["watchword"], greet: "You there, legionary! This is the Praetorian camp, not a tavern. State your business or move along." },
+  atticus: { name: "Atticus Bassus", role: "Centurion of the Praetorian night watch at the palace gate on the Palatine", place: "palace", start: 55,
+    persona: "Sharp, cold, disciplined, few words. Loyal to his Prefect, Laetus. Despises bribes and despises liars more.",
+    orders: "Admit no one tonight except Praetorians who give the watchword, or persons summoned by the chamberlain Eclectus. The Prefect said: keep the Emperor undisturbed tonight.",
+    knows: "Tonight's watchword is \"Hercules Invictus\". Nothing about any plot, though tonight's orders strike him as odd.",
+    rules: `"allow" a man in Praetorian uniform who gives the exact watchword "Hercules Invictus" as a relief guard; otherwise "allow" only for an extraordinary and believable reason, such as urgent news he cannot ignore (then he passes the man on to the chamberlain). A bribe insults him: suspicion rises sharply. "arrest" anyone who tries to force entry, is caught in an obvious lie, or speaks of harming the Emperor. A man warning of danger to the Emperor might be passed on to the chamberlain or arrested, depending on how believable he is.`,
+    decisions: ["none", "allow", "arrest"], reveals: [], greet: "Stop where you are. State your name, your unit and your business at the house of the Emperor." },
+  eclectus: { name: "Eclectus", role: "chamberlain (cubicularius) of the Emperor, an Egyptian freedman", place: "ante", start: 45,
+    persona: "Smooth, courteous, watchful; frightened underneath it all tonight, and hiding it well.",
+    orders: "Decide who may see the Emperor.",
+    knows: "SECRET: he is a leader of the plot to kill Commodus tonight, with Marcia and the Prefect Laetus. Marcia will give the Emperor poisoned wine after his bath; if the poison fails, the wrestler Narcissus will strangle him. They act because the Emperor has listed them for death tomorrow. He must keep anyone dangerous away from the Emperor tonight.",
+    rules: `"allow" (grant the audience) if the soldier seems harmless and refusing him would look stranger than admitting him, or if he convincingly claims the Emperor himself sent for him. If the soldier shows knowledge of the plot, Eclectus must either win him over or silence him: "recruit" if the soldier convincingly offers to join or keep silent for a reward; "arrest" (quietly removed by guards loyal to Laetus) if he cannot be trusted. Never admit the plot to someone who has not shown they know of it.`,
+    decisions: ["none", "allow", "arrest", "recruit"], reveals: [], greet: "A soldier, at this hour, in the Emperor's own house. How unusual. I am Eclectus, the Emperor's chamberlain. What brings you here?" },
+  commodus: { name: "Commodus", role: "Emperor of Rome", place: "throne", start: 30,
+    persona: "Vain, theatrical, paranoid; cruel and generous by turns. Believes he is Hercules reborn, wears a lion skin and carries a club. Bored, half-drunk, loves flattery, gladiators and being feared.",
+    orders: "He answers to no one.",
+    knows: "Nothing of the plot. But he has himself written a list of enemies to be killed tomorrow, including Marcia, Eclectus and Laetus, so a warning that names them with specifics (poisoned wine after his bath, the wrestler Narcissus) will strike him hard. A vague warning bores or angers him.",
+    rules: `"reward" if the soldier's warning or service genuinely convinces him (he calls guards he trusts and rewards the soldier richly); "execute" if insulted, bored beyond patience, or he catches the soldier in a stupid lie; "dismiss" if the soldier wastes his time without offending him. Otherwise "none".`,
+    decisions: ["none", "reward", "execute", "dismiss"], reveals: [], greet: "Well? Hercules does not wait. A common soldier, in my hall, at night. Speak, and make it worth my while." },
+};
+
+const PLACES = {
+  gate: { name: "Porta Capena", sub: "the southern gate of Rome", npc: "varro" },
+  forum: { name: "The Forum", sub: "the Via Sacra, by night", npc: "phoebe" },
+  tower: { name: "Castra Praetoria", sub: "the watchtower of the Praetorian camp", npc: "fulvius" },
+  camp: { name: "Inside the camp", sub: "between the barracks, in the dark", npc: null,
+    narr: "Inside the Praetorian camp at night: long barrack blocks, a few braziers, sentries walking slow rounds. The storeroom by the east barracks holds spare Praetorian uniforms. A drowsy quartermaster sits by its door with a jug." },
+  palace: { name: "The Palatine", sub: "the gate of the Emperor's house", npc: "atticus" },
+  ante: { name: "The antechamber", sub: "beyond the palace gate", npc: "eclectus" },
+  throne: { name: "The Emperor's hall", sub: "the Domus Augustana", npc: "commodus" },
+};
+const EXITS = {
+  gate: () => (G.passed.gate ? [["forum", "Into the city"]] : []),
+  forum: () => [["tower", "To the Praetorian camp"], ["palace", "To the palace on the Palatine"]],
+  tower: () => [["forum", "Back to the Forum"], ...(G.passed.tower ? [["camp", "Through the postern"]] : [])],
+  camp: () => [["tower", "Slip back out"], ["forum", "Back to the Forum"]],
+  palace: () => [["forum", "Back to the Forum"], ...(G.passed.palace ? [["ante", "Through the gate"]] : [])],
+  ante: () => (G.passed.ante ? [["throne", "Into the Emperor's hall"]] : []),
+  throne: () => [],
+};
+
+// =====================================================================================================
+// State and saving
+// =====================================================================================================
+const fresh = (name = "Titus") => ({ name, place: "gate", step: 0, coins: 15, attire: "legionary", know: [], passed: {}, talk: {}, over: null, started: false });
+let G = fresh();
+const attireText = () => G.attire === "praetorian"
+  ? "a stolen Praetorian uniform (white-plumed helmet, polished cuirass, red cloak) that fits him a little badly, with a legionary's gladius at his hip"
+  : "an ordinary legionary's kit: travel-stained red tunic, mail shirt, hobnailed caligae, a plain helmet and a gladius. He carries no papers";
+let store = null;
+async function initStore() {
+  try {
+    if (!window.claude) return;
+    const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (db && user) { const id = await user.id(); if (id) store = db.doc(`data/users/${id}/save`); }
+  } catch (e) { store = null; }
+}
+async function save() {
+  const data = JSON.stringify(G);
+  try { localStorage.setItem("gates-of-rome", data); } catch (e) { }
+  if (store) { try { await store.set({ game: data }); } catch (e) { } }
+}
+async function load() {
+  if (store) { try { const s = await store.get(); if (s.exists && s.data().game) return JSON.parse(s.data().game); } catch (e) { } }
+  try { const v = localStorage.getItem("gates-of-rome"); if (v) return JSON.parse(v); } catch (e) { }
+  return null;
+}
+
+// =====================================================================================================
+// Voices: Claude on claude.ai, the player's OpenAI key in the app
+// =====================================================================================================
+let sample = null, aiDown = "";
+const inViewer = !!window.claude;
+const settings = (() => { try { return JSON.parse(localStorage.getItem("gates-settings")) || {}; } catch (e) { return {}; } })();
+function saveSettings() { try { localStorage.setItem("gates-settings", JSON.stringify(settings)); } catch (e) { } }
+async function initVoices() { try { sample = window.claude ? await window.claude.use("sample") : null; } catch (e) { sample = null; } }
+function provider() {
+  if (sample && settings.voice !== "openai") return "claude";
+  if (!inViewer && settings.key) return "openai";
+  return null;
+}
+const pendingHttp = {};
+window.__nativeDone = (id, ok, text) => { const p = pendingHttp[id]; delete pendingHttp[id]; if (p) (ok ? p.res(text) : p.rej({ code: "upstream_error", message: text })); };
+function httpPost(url, key, body) {
+  if (window.NativeHttp) return new Promise((res, rej) => { const id = "r" + Math.random().toString(36).slice(2); pendingHttp[id] = { res, rej }; window.NativeHttp.post(id, url, key, body); });
+  return fetch(url, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + key }, body }).then((r) => r.text(), (e) => { throw { code: "upstream_error", message: String(e) }; });
+}
+async function aiJSON(prompt) {
+  const pv = provider();
+  if (pv === "claude") return sample.json(prompt, { modelTier: "quick", cache: false });
+  if (pv !== "openai") throw { code: "no_voice" };
+  const text = await httpPost("https://api.openai.com/v1/chat/completions", settings.key, JSON.stringify({
+    model: settings.model || "gpt-4.1-mini", messages: [{ role: "user", content: prompt }], response_format: { type: "json_object" }, max_completion_tokens: 700 }));
+  let j; try { j = JSON.parse(text); } catch (e) { throw { code: "upstream_error", message: text.slice(0, 200) }; }
+  if (j.error) throw { code: /key/i.test(j.error.message || "") ? "bad_key" : j.error.code === "rate_limit_exceeded" ? "rate_limited" : "upstream_error", message: j.error.message };
+  return JSON.parse(j.choices[0].message.content);
+}
+function errText(e) {
+  const c = e && e.code;
+  if (c === "not_granted" || c === "sampling_disabled" || c === "capability_disabled") return "Claude wasn't allowed to speak for the characters. Choose Voices to set it up.";
+  if (c === "bad_key") return "OpenAI rejected your API key. Check it under Voices.";
+  if (c === "rate_limited") return "Too many requests at once. Wait a moment and try again.";
+  if (c === "no_voice") return "The characters need a voice. Choose Voices to set one up.";
+  return "No answer came back. Try again.";
+}
+
+// =====================================================================================================
+// The night city, low poly
+// =====================================================================================================
+const stage = document.getElementById("stage");
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0d1018);
+scene.fog = new THREE.Fog(0x0d1018, 12, 32);
+const camera = new THREE.PerspectiveCamera(45, 1, .1, 100);
+const flat = (c, x = {}) => new THREE.MeshStandardMaterial({ color: c, flatShading: true, roughness: .9, ...x });
+scene.add(new THREE.HemisphereLight(0x5a6a9a, 0x1a120c, .7));
+const moon = new THREE.DirectionalLight(0x9fb2e0, .45); moon.position.set(-6, 10, 4); scene.add(moon);
+const flames = [];
+const box = (w, h, d, c, x, y, z, g) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), flat(c)); m.position.set(x, y, z); g.add(m); return m; };
+const col = (r, h, c, x, y, z, g, seg = 8) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r * 1.08, h, seg), flat(c)); m.position.set(x, y + h / 2, z); g.add(m); return m; };
+function torch(x, y, z, g) {
+  col(.07, 1.1, 0x4a3420, x, y, z, g, 5);
+  const f = new THREE.Mesh(new THREE.ConeGeometry(.16, .4, 5), new THREE.MeshBasicMaterial({ color: 0xffa040 })); f.position.set(x, y + 1.3, z); g.add(f);
+  const l = new THREE.PointLight(0xff9a40, 9, 9, 1.8); l.position.set(x, y + 1.5, z); g.add(l);
+  flames.push({ f, l, s: Math.random() * 10 });
+}
+function person(o) {
+  const g = new THREE.Group();
+  const skin = o.skin ?? 0xc89a76;
+  const legC = o.legs ?? skin;
+  for (const s of [-1, 1]) box(.16, .7, .18, legC, s * .13, .35, 0, g);
+  if (o.boots !== false) for (const s of [-1, 1]) box(.18, .14, .24, 0x4a3426, s * .13, .07, .03, g);
+  const body = box(.56, .75, .32, o.tunic, 0, 1.08, 0, g);
+  if (o.robe) { const r = new THREE.Mesh(new THREE.CylinderGeometry(.3, .42, 1.15, 7), flat(o.tunic)); r.position.y = .78; g.add(r); }
+  if (o.armour) box(.6, .5, .36, o.armour, 0, 1.2, 0, g);
+  if (o.cloak) box(.62, 1.05, .08, o.cloak, 0, 1.0, -.2, g);
+  for (const s of [-1, 1]) { box(.15, .62, .15, o.sleeve ?? o.tunic, s * .37, 1.1, 0, g); box(.13, .13, .13, skin, s * .37, .74, .02, g); }
+  const head = new THREE.Mesh(new THREE.IcosahedronGeometry(.22, 0), flat(skin)); head.position.y = 1.72; g.add(head);
+  for (const s of [-1, 1]) box(.05, .05, .03, 0x15100c, s * .08, 1.75, .2, g);
+  if (o.hair) { const h = new THREE.Mesh(new THREE.IcosahedronGeometry(.23, 0), flat(o.hair)); h.position.set(0, 1.78, -.05); h.scale.set(1, .85, 1); g.add(h); }
+  if (o.beard) box(.3, .14, .1, o.beard, 0, 1.6, .15, g);
+  if (o.helmet) {
+    const hm = new THREE.Mesh(new THREE.SphereGeometry(.25, 7, 4, 0, Math.PI * 2, 0, Math.PI / 2), flat(o.helmet, { metalness: .5, roughness: .5 })); hm.position.y = 1.78; g.add(hm);
+    if (o.crest) { const c = box(o.crestSide ? .5 : .08, .16, o.crestSide ? .08 : .45, o.crest, 0, 2.08, 0, g); }
+  }
+  if (o.spear) { col(.025, 2.4, 0x5a4028, .45, 0, .1, g, 4); const tip = new THREE.Mesh(new THREE.ConeGeometry(.05, .2, 4), flat(0xb0b4b8)); tip.position.set(.45, 2.5, .1); g.add(tip); }
+  if (o.shield) { const sh = box(.7, 1, .08, o.shield, -.42, 1, .18, g); sh.rotation.y = .3; box(.16, .16, .1, 0xd8b050, -.4, 1, .24, g); }
+  if (o.lion) { const pelt = new THREE.Mesh(new THREE.IcosahedronGeometry(.3, 0), flat(0xc89a4a)); pelt.position.set(0, 1.85, -.04); pelt.scale.set(1.05, .75, 1.1); g.add(pelt); box(.8, .9, .1, 0xb88a3a, 0, 1.2, -.22, g); }
+  if (o.club) { const c = new THREE.Mesh(new THREE.CylinderGeometry(.06, .13, 1.2, 6), flat(0x6a4a28)); c.position.set(.5, 1.1, .1); c.rotation.z = -.3; g.add(c); }
+  if (o.jug) { const j = new THREE.Mesh(new THREE.CylinderGeometry(.1, .14, .3, 6), flat(0xb8643a)); j.position.set(-.36, .72, .15); g.add(j); }
+  g.userData.bob = Math.random() * 6;
+  return g;
+}
+const legionary = { tunic: 0x9a2a24, armour: 0x6c7074, helmet: 0x8a8e92, crest: 0x9a2a24, crestSide: false, shield: 0x9a2a24, spear: true };
+const praetorian = { tunic: 0xe8e2d4, sleeve: 0xe8e2d4, armour: 0xc8a050, cloak: 0xa02a28, helmet: 0xc8a050, crest: 0xf4f0e8, shield: 0x5a2a6a };
+
+const sets = {};
+function build() {
+  // Porta Capena: two towers, an arch, the wall running off into the dark
+  let g = new THREE.Group(); sets.gate = g;
+  box(30, .2, 30, 0x2a2622, 0, -.1, 0, g); box(3, .05, 20, 0x3a3530, 0, .03, 0, g);
+  for (const s of [-1, 1]) { box(2.4, 6, 2.4, 0x8a8070, s * 3.1, 3, -3, g); box(2.7, .4, 2.7, 0x7a7062, s * 3.1, 6.2, -3, g); box(9, 4.5, 1.6, 0x7e7568, s * 8.5, 2.25, -3, g); }
+  box(3.8, 1.6, 2.2, 0x8a8070, 0, 4.6, -3, g);
+  const arch = new THREE.Mesh(new THREE.TorusGeometry(1.9, .2, 4, 10, Math.PI), flat(0x9a907e)); arch.position.set(0, 3.8, -1.9); g.add(arch);
+  const door = box(3.8, 3.8, .2, 0x3a2816, 0, 1.9, -3.8, g);
+  torch(-1.8, 0, -1.6, g); torch(1.8, 0, -1.6, g);
+  const v = person({ ...legionary, crest: 0xd8d0c0, crestSide: true, beard: 0x5a5048 }); v.position.set(.2, 0, -1.2); g.add(v); g.userData.npc = v;
+  const v2 = person(legionary); v2.position.set(-1.6, 0, -2.2); g.add(v2);
+  g.userData.cam = [0, 2.4, 7.5]; g.userData.look = [0, 2.2, -1.5];
+  // the Forum: columns, a temple front, Phoebe's wine stall
+  g = new THREE.Group(); sets.forum = g;
+  box(30, .2, 30, 0x5a544a, 0, -.1, 0, g);
+  for (let i = -3; i <= 3; i++) col(.32, 5, 0xd8d0c0, i * 1.5, .9, -5, g);
+  for (let i = 0; i < 3; i++) box(11, .3, 1.6 - i * .2, 0xc8c0b0, 0, .15 + i * .3, -4.2 - i * .3, g);
+  box(11, .6, 1.2, 0xd0c8b8, 0, 6.2, -5, g);
+  const ped = new THREE.Mesh(new THREE.CylinderGeometry(.01, 6.2, 1.6, 3), flat(0xd8d0c0)); ped.rotation.set(Math.PI / 2, 0, Math.PI / 2); ped.scale.set(1, .25, 1); ped.position.set(0, 7.1, -5); g.add(ped);
+  box(2.4, 1, 1, 0x7a5030, 1.6, .5, -.6, g); const aw = box(2.8, .1, 1.6, 0xb84a2a, 1.6, 2.3, -.6, g); aw.rotation.x = .2;
+  for (const s of [-1, 1]) col(.05, 2.2, 0x5a4028, 1.6 + s * 1.3, 0, -.1, g, 4);
+  for (let i = 0; i < 4; i++) { const a = new THREE.Mesh(new THREE.CylinderGeometry(.12, .16, .4, 6), flat(0xb8643a)); a.position.set(.9 + i * .45, 1.2, -.6); g.add(a); }
+  const ph = person({ tunic: 0x3a6a8a, robe: true, hair: 0x2a1a10, skin: 0xd8a888, boots: false, jug: true }); ph.position.set(1.6, 0, -1.4); g.add(ph); g.userData.npc = ph;
+  torch(-.4, 0, -.8, g);
+  g.userData.cam = [-.6, 2, 4.8]; g.userData.look = [1.2, 1.5, -1.2];
+  // the watchtower of the Castra Praetoria
+  g = new THREE.Group(); sets.tower = g;
+  box(30, .2, 30, 0x2a2622, 0, -.1, 0, g);
+  box(20, 4, 1, 0x8a5a3a, 0, 2, -4, g); for (let i = -9; i <= 9; i++) box(.6, .5, 1.05, 0x8a5a3a, i, 4.25, -4, g);
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) col(.12, 6, 0x5a4028, 2 + sx * .9, 0, -3 + sz * .9, g, 5);
+  box(2.4, .2, 2.4, 0x6a4a2a, 2, 5.6, -3, g); const roof = new THREE.Mesh(new THREE.ConeGeometry(1.9, 1.2, 4), flat(0x5a3020)); roof.position.set(2, 7.8, -3); roof.rotation.y = Math.PI / 4; g.add(roof);
+  for (const s of [-1, 1]) box(2.4, .6, .1, 0x6a4a2a, 2, 6, -3 + s * 1.15, g);
+  const fv = person({ ...praetorian, hair: 0x6a4a2a }); fv.position.set(2, 5.7, -2.6); g.add(fv); g.userData.npc = fv;
+  box(1.2, 2, .15, 0x3a2614, -2, 1, -3.45, g);
+  torch(1, 0, -2.6, g); torch(-3, 0, -3.2, g);
+  g.userData.cam = [-1.5, 2.2, 5.5]; g.userData.look = [1.4, 3.8, -2.8];
+  // inside the camp: barracks, crates, an armour stand
+  g = new THREE.Group(); sets.camp = g;
+  box(30, .2, 30, 0x3a3228, 0, -.1, 0, g);
+  for (const s of [-1, 1]) box(2.6, 2.6, 14, 0x9a8a72, s * 4, 1.3, -4, g);
+  for (const s of [-1, 1]) { const r = box(3, .2, 14.2, 0x7a3a2a, s * 4, 2.75, -4, g); r.rotation.z = s * -.15; }
+  box(3, 2.4, 2, 0x8a7a62, 0, 1.2, -7, g); box(1, 1.8, .1, 0x3a2614, 0, .9, -5.95, g);
+  for (let i = 0; i < 3; i++) box(.7, .6, .7, 0x7a5a32, -1.4 + i * .3, .3 + (i === 1 ? .6 : 0), -5.4 + (i === 2 ? .7 : 0), g);
+  for (let i = 0; i < 3; i++) { const st = person({ ...praetorian, skin: 0x000000 }); st.children.forEach((m) => { if (m.material && m.material.color.getHex() === 0x000000) m.visible = false; }); st.position.set(1.3 + i * .6, 0, -5.6); st.scale.setScalar(.8); g.add(st); }
+  const qm = person({ tunic: 0x7a6a50, beard: 0x4a3a30, jug: true }); qm.position.set(-.9, 0, -4.8); qm.rotation.y = .5; g.add(qm); g.userData.npc = qm;
+  torch(-2, 0, -3, g);
+  g.userData.cam = [0, 2.3, 4]; g.userData.look = [0, 1.2, -5.5];
+  // the palace gate on the Palatine
+  g = new THREE.Group(); sets.palace = g;
+  box(30, .2, 30, 0xb8b0a0, 0, -.1, 0, g);
+  for (let i = 0; i < 4; i++) box(9 - i, .25, 1, 0xe0d8c8, 0, .12 + i * .25, -1 - i * .6, g);
+  box(16, 7, 1.4, 0xe2dacb, 0, 3.5, -4.2, g);
+  box(3, 4.4, .3, 0x9a6a2a, 0, 2.2 + 1, -3.4, g); box(.06, 4.4, .32, 0x5a3a1a, 0, 3.2, -3.38, g);
+  for (const s of [-1, 1]) { col(.4, 6.5, 0xf0e8da, s * 2.6, 0, -3.2, g); }
+  const at = person({ ...praetorian, crest: 0xb02a28, crestSide: true }); at.position.set(.9, 1, -2.3); g.add(at); g.userData.npc = at;
+  for (const s of [-1, 1]) { const p = person({ ...praetorian, spear: true }); p.position.set(s * 2.1, 1, -2.6); g.add(p); }
+  torch(-3.4, 1, -2.6, g); torch(3.4, 1, -2.6, g);
+  g.userData.cam = [0, 2.6, 5.6]; g.userData.look = [.4, 2.4, -2.5];
+  // the antechamber
+  g = new THREE.Group(); sets.ante = g;
+  box(30, .2, 30, 0x6a5a4e, 0, -.1, 0, g);
+  for (let i = -2; i <= 2; i++) if (i) col(.35, 5.5, 0xc8b8a0, i * 1.8, 0, -3.5, g);
+  box(3.2, 5, .1, 0x5e2458, 0, 2.5, -4.2, g); box(14, 6, .3, 0x4a3a32, 0, 3, -5, g);
+  for (const s of [-1, 1]) { const b = col(.3, .5, 0x8a6a3a, s * 2.6, 0, -1.5, g, 6); const f = new THREE.Mesh(new THREE.ConeGeometry(.25, .5, 5), new THREE.MeshBasicMaterial({ color: 0xffa040 })); f.position.set(s * 2.6, .8, -1.5); g.add(f); const l = new THREE.PointLight(0xff9a40, 7, 8, 1.8); l.position.set(s * 2.6, 1.2, -1.5); g.add(l); flames.push({ f, l, s: s * 3 }); }
+  const ec = person({ tunic: 0xe8e0c8, robe: true, cloak: 0x3a6a5a, skin: 0x9a6a4a, hair: 0x1a1410, boots: false }); ec.position.set(.4, 0, -2.6); g.add(ec); g.userData.npc = ec;
+  g.userData.cam = [0, 2, 4.6]; g.userData.look = [.2, 1.6, -2.6];
+  // the Emperor's hall: a dais, a throne, Hercules in a lion skin
+  g = new THREE.Group(); sets.throne = g;
+  box(30, .2, 30, 0x4a3a40, 0, -.1, 0, g); box(4, .5, 3, 0x7a6a5a, 0, .25, -4, g);
+  box(1.8, 3, .4, 0x5e2458, 0, 2, -5, g); box(1.8, .3, 1.2, 0xc8a050, 0, 1.1, -4.4, g);
+  for (const s of [-1, 1]) { col(.45, 8, 0x6a5a62, s * 3.4, 0, -5, g); const st = col(.5, 2.4, 0xd8d0c0, s * 5.5, 0, -6, g, 6); }
+  for (const s of [-1, 1]) { const b = col(.35, .7, 0x8a6a3a, s * 2.2, 0, -2.8, g, 6); const f = new THREE.Mesh(new THREE.ConeGeometry(.3, .6, 5), new THREE.MeshBasicMaterial({ color: 0xffa040 })); f.position.set(s * 2.2, 1.05, -2.8); g.add(f); const l = new THREE.PointLight(0xff9a40, 9, 10, 1.8); l.position.set(s * 2.2, 1.5, -2.8); g.add(l); flames.push({ f, l, s: s * 5 }); }
+  const cm = person({ tunic: 0x6a2a5a, lion: true, club: true, beard: 0xa07a3a, hair: 0xa07a3a, skin: 0xd8b08a, boots: false }); cm.position.set(0, .5, -4.1); g.add(cm); g.userData.npc = cm;
+  g.userData.cam = [0, 2.6, 4.2]; g.userData.look = [0, 2.1, -4];
+  for (const k in sets) { sets[k].visible = false; scene.add(sets[k]); }
+}
+build();
+const camPos = new THREE.Vector3(0, 2, 6), camLook = new THREE.Vector3(0, 1.5, 0);
+let shown = null;
+function showSet(k) {
+  if (shown) sets[shown].visible = false;
+  shown = k; sets[k].visible = true;
+  camPos.set(...sets[k].userData.cam).add(new THREE.Vector3(0, .5, 1.2)); camLook.set(...sets[k].userData.look);
+}
+function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < h ? 64 : 45; camera.updateProjectionMatrix(); }
+addEventListener("resize", resize); resize();
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let speaking = false, t0 = performance.now();
+function frame(now) {
+  const t = (now - t0) / 1000;
+  if (shown) {
+    const s = sets[shown].userData, portrait = stage.clientWidth < stage.clientHeight;
+    const want = new THREE.Vector3(...s.cam).add(new THREE.Vector3(reduce ? 0 : Math.sin(t * .2) * .25, portrait ? .8 : 0, portrait ? 1.6 : 0));
+    camPos.lerp(want, .04); camLook.lerp(new THREE.Vector3(...s.look).add(new THREE.Vector3(0, portrait ? -.9 : 0, 0)), .05);
+    camera.position.copy(camPos); camera.lookAt(camLook);
+    const n = s.npc;
+    if (n) { n.rotation.y = Math.sin(t * .5) * .08; n.position.y = (n.userData.baseY ??= n.position.y) + (speaking && !reduce ? Math.abs(Math.sin(t * 8)) * .03 : 0); }
+  }
+  for (const f of flames) { const k = 1 + Math.sin(t * 9 + f.s) * .12; f.f.scale.set(k, 1 + Math.sin(t * 7 + f.s) * .2, k); f.l.intensity = 8 + Math.sin(t * 11 + f.s) * 1.5; }
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+// =====================================================================================================
+// The tablet
+// =====================================================================================================
+const slab = document.getElementById("slab");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const on = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+function screen({ title, small = "", body = "", foot = "" }) {
+  slab.innerHTML = `<div class="head"><h2>${title}</h2><small>${small}</small></div><div class="body" id="sb">${body}</div>${foot ? `<div class="foot">${foot}</div>` : ""}`;
+  return document.getElementById("sb");
+}
+function kit() {
+  if (!G.started) { document.getElementById("kit").innerHTML = ""; return; }
+  const chips = [G.attire === "praetorian" ? "Praetorian uniform" : null, G.know.includes("plot_rumour") ? "Rumour of a plot" : null, G.know.includes("watchword") ? "Watchword" : null].filter(Boolean);
+  document.getElementById("kit").innerHTML = `<div class="kit"><span class="hour">${G.step >= STEPS ? "Midnight" : hourName(G.step)}</span>
+    <span class="it"><b>${G.coins}</b> denarii</span><span class="it">${G.attire === "praetorian" ? "in Praetorian kit" : "in legionary kit"}</span>${chips.map((c) => `<span class="chip">${c}</span>`).join("")}</div>`;
+}
+function tick(n = 1) { G.step += n; kit(); if (G.step >= STEPS && !G.over) { tooLate(); return true; } return false; }
+
+// ---------- the start --------------------------------------------------------------------------------
+async function title() {
+  showSet("gate"); kit();
+  const saved = await load();
+  const voice = provider();
+  screen({ title: "", body: `<div class="title"><div class="date">Pridie Kalendas Ianuarias · AD 192</div><h1>The Gates of Rome</h1>
+    <p>You are a common legionary, back from the frontier, standing at the gates of Rome on the last night of the year. Somewhere beyond the walls, on the Palatine, sits the Emperor Commodus.</p>
+    <p>Talk, lie, bribe or tell the truth. Get past the gate, through the city, past the Praetorians, and into the Emperor's presence before the night is out.</p>
+    <p class="narr">${voice === "claude" ? "Every character is played by Claude. The first time, you'll be asked to allow it; it uses your Claude plan's usage." : voice === "openai" ? "Every character is played through your OpenAI key." : "The characters need a voice: set one up under Voices before you begin."}</p>
+    <p><label for="nm">Your name</label><br><input class="field" id="nm" maxlength="40" value="${esc(saved?.name || "Titus")}"></p></div>`,
+    foot: `${saved && saved.started && !saved.over ? `<button class="primary" id="cont">Continue the night</button>` : ""}<button ${saved && saved.started && !saved.over ? "" : 'class="primary"'} id="new">Begin at the gate</button><button id="vo">Voices</button>` });
+  on("cont", () => { G = { ...fresh(), ...saved }; go(G.place); });
+  on("new", () => { G = fresh(document.getElementById("nm").value.trim() || "Titus"); G.started = true; save(); go("gate"); });
+  on("vo", () => voicesScreen(title));
+}
+function voicesScreen(back) {
+  const pv = provider();
+  screen({ title: "Voices", small: "who plays the characters",
+    body: `<p>${pv === "claude" ? "Claude plays the characters, using your Claude plan's usage." : pv === "openai" ? `Your OpenAI key plays the characters (${esc(settings.model || "gpt-4.1-mini")}), billed by OpenAI.` : "No voice is set up yet."}</p>
+      ${!inViewer ? `<p><label for="key">OpenAI API key</label><br><input class="field" id="key" type="password" autocomplete="off" placeholder="sk-..." value="${esc(settings.key || "")}"></p>
+        <p><label for="model">Model</label><br><input class="field" id="model" autocomplete="off" value="${esc(settings.model || "gpt-4.1-mini")}"></p>
+        <p class="narr">The key stays on this device and is only ever sent to OpenAI.</p>` : `<p class="narr">On claude.ai the characters can only be played by Claude. The Android app can use your OpenAI key instead.</p>`}`,
+    foot: `${sample ? `<button id="vc" ${pv === "claude" ? 'class="primary"' : ""}>Use Claude</button>` : ""}${!inViewer ? `<button id="vk" ${pv === "openai" ? 'class="primary"' : ""}>Use my OpenAI key</button>` : ""}<button id="back">Done</button>` });
+  const keep = () => { const k = document.getElementById("key"), m = document.getElementById("model"); if (k) settings.key = k.value.trim(); if (m) settings.model = m.value.trim() || "gpt-4.1-mini"; saveSettings(); };
+  on("vc", () => { keep(); settings.voice = "claude"; saveSettings(); voicesScreen(back); });
+  on("vk", () => { keep(); settings.voice = "openai"; saveSettings(); voicesScreen(back); });
+  on("back", () => { keep(); back(); });
+}
+
+// ---------- a place: talk to whoever is there, or do something ---------------------------------------
+let mode = "say", busy = false;
+function go(place) {
+  G.place = place; save(); showSet(place); kit(); mode = "say";
+  draw();
+}
+function draw() {
+  const P = PLACES[G.place], id = P.npc, who = id && PEOPLE[id];
+  const hist = id ? (G.talk[id] ??= { sus: who.start, log: [] }) : null;
+  const lines = id ? [`<div class="them"><span class="who">${who.name}:</span> ${esc(who.greet)}</div>`, ...hist.log.map((l) => l.me ? `<div class="me">${esc(l.text)}</div>` : l.narr ? `<div class="narr">${esc(l.text)}</div>` : `<div class="them"><span class="who">${who.name}:</span> ${esc(l.text)}</div>`)]
+    : [`<div class="narr">${esc(P.narr)}</div>`, ...(G.campLog || []).map((l) => l.me ? `<div class="me">${esc(l.text)}</div>` : `<div class="narr">${esc(l.text)}</div>`)];
+  const exits = EXITS[G.place]();
+  const sb = screen({ title: P.name, small: who ? `${who.name}, ${who.role}` : P.sub,
+    body: `<div class="chat">${lines.join("")}${busy ? `<div class="narr thinking">${who ? `${who.name} weighs your words` : "You try it"}</div>` : ""}</div>`,
+    foot: `${who ? `<div class="meter" title="How suspicious ${who.name} is of you">Suspicion <span class="bar"><i style="width:${hist.sus}%"></i></span></div>` : ""}
+      <form class="say" id="sayf"><input id="say" maxlength="500" autocomplete="off" ${busy ? "disabled" : ""} placeholder="${mode === "say" && who ? `Say something to ${who.name.split(" ")[0]}…` : "Do something: sneak, look around, take…"}"><button class="primary" ${busy ? "disabled" : ""}>${mode === "say" && who ? "Say" : "Do"}</button></form>
+      ${who ? `<div class="mode"><button id="mSay" class="${mode === "say" ? "on" : ""}" ${busy ? "disabled" : ""}>Speak</button><button id="mDo" class="${mode === "do" ? "on" : ""}" ${busy ? "disabled" : ""}>Act</button></div>` : ""}
+      ${exits.map(([to, label], i) => `<button class="go" id="ex${i}" ${busy ? "disabled" : ""}>${label}</button>`).join("")}
+      <button id="vo2" ${busy ? "disabled" : ""}>Voices</button>` });
+  sb.scrollTop = sb.scrollHeight;
+  const f = document.getElementById("sayf");
+  f.onsubmit = (e) => { e.preventDefault(); const v = document.getElementById("say").value.trim(); if (!v || busy) return; (mode === "say" && who ? speak : act)(v); };
+  on("mSay", () => { mode = "say"; draw(); }); on("mDo", () => { mode = "do"; draw(); });
+  exits.forEach(([to], i) => on("ex" + i, () => { if (tick()) return; go(to); }));
+  on("vo2", () => voicesScreen(draw));
+  if (!busy && matchMedia("(hover: hover)").matches) document.getElementById("say").focus({ preventScroll: true });
+}
+
+function situation() {
+  return `The soldier calls himself ${G.name}. He is wearing ${attireText()}. It is now the ${G.step >= STEPS ? "middle of the night" : hourName(G.step)}.`;
+}
+async function speak(text) {
+  const id = PLACES[G.place].npc, who = PEOPLE[id], h = G.talk[id];
+  h.log.push({ me: true, text }); busy = true; speaking = true; draw();
+  const convo = [`${who.name}: ${who.greet}`, ...h.log.slice(-14).map((l) => (l.me ? "Soldier: " : l.narr ? "(" : `${who.name}: `) + l.text + (l.narr ? ")" : ""))].join("\n");
+  const prompt = `${WORLD}
+
+You are ${who.name}, ${who.role}.
+Character: ${who.persona}
+Your orders: ${who.orders}
+What you know: ${who.knows}
+${situation()} He says he has ${G.coins} denarii if he mentions money at all; you cannot see his purse.
+Your suspicion of him so far: ${h.sus} out of 100.
+
+The conversation so far:
+${convo}
+
+Answer the soldier's last words in character, in 1 to 4 sentences of plain speech, with no stage directions and no narration. Judge his claims sharply: notice lies that clash with what he wears and carries, flattery, threats and bribes. Do not be a pushover, but reward a clever, believable approach.
+Decision rules: ${who.rules}
+Answer only as JSON: {"reply": "...", "suspicion": integer 0-100 (your new suspicion), "decision": one of ${JSON.stringify(who.decisions)}, "coins_taken": integer (denarii you accept from him this turn, 0 if none offered or refused), "reveals": array, subset of ${JSON.stringify(who.reveals)}}`;
+  try {
+    const r = await aiJSON(prompt);
+    const reply = String(r.reply || "…");
+    h.log.push({ text: reply });
+    h.sus = Math.max(0, Math.min(100, Number(r.suspicion) || h.sus));
+    const took = Math.max(0, Math.min(G.coins, Math.round(Number(r.coins_taken) || 0)));
+    if (took) { G.coins -= took; h.log.push({ narr: true, text: `You hand over ${took} denarii.` }); }
+    for (const k of r.reveals || []) if (who.reveals.includes(k) && !G.know.includes(k)) { G.know.push(k); h.log.push({ narr: true, text: k === "watchword" ? "You have learned tonight's Praetorian watchword." : "You have heard a rumour of a plot against the Emperor." }); }
+    const d = who.decisions.includes(r.decision) ? r.decision : "none";
+    busy = false; speaking = false;
+    if (tick()) return;
+    save();
+    if (h.sus >= 100 && d === "none") return ending("arrest", id, reply);
+    if (d !== "none") return decide(id, d, reply);
+  } catch (e) {
+    h.log.push({ narr: true, text: errText(e) }); h.log.splice(h.log.length - 2, 1);
+    busy = false; speaking = false;
+  }
+  draw();
+}
+
+// actions: sneaking, stealing, looking around, judged by a narrator
+async function act(text) {
+  const P = PLACES[G.place], id = P.npc, logTo = id ? G.talk[id].log : (G.campLog ??= []);
+  logTo.push({ me: true, text: `(${text})` }); busy = true; draw();
+  const prompt = `${WORLD}
+
+You are the narrator of a game. Place: ${P.name}, ${P.sub}. ${P.narr || ""}${id ? ` ${PEOPLE[id].name} (${PEOPLE[id].role}) is here, ${G.talk[id].sus >= 60 ? "watching the soldier closely" : "not especially watchful"}.` : ""}
+${situation()}
+The soldier tries to: "${text}"
+
+Decide fairly what happens, as a game master would: bold or clumsy actions near watchful people often fail; quiet, clever actions in the dark often succeed. Narrate it in 1 to 3 sentences, second person ("You..."), present tense.
+Outcomes: "gain_uniform" only if this is inside the Praetorian camp and he actually gets hold of a Praetorian uniform and puts it on; "caught" if he is seized by guards; "suspicious" if someone notices something wrong; otherwise "none".
+Answer only as JSON: {"narration": "...", "outcome": "none" or "gain_uniform" or "caught" or "suspicious"}`;
+  try {
+    const r = await aiJSON(prompt);
+    logTo.push({ narr: true, text: String(r.narration || "Nothing happens.") });
+    busy = false;
+    if (tick()) return;
+    if (r.outcome === "gain_uniform" && G.place === "camp" && G.attire !== "praetorian") { G.attire = "praetorian"; logTo.push({ narr: true, text: "You are now dressed as a Praetorian." }); kit(); }
+    if (r.outcome === "suspicious" && id) G.talk[id].sus = Math.min(100, G.talk[id].sus + 15);
+    save();
+    if (r.outcome === "caught") return ending("caught", id, r.narration);
+  } catch (e) { logTo.pop(); logTo.push({ narr: true, text: errText(e) }); busy = false; }
+  draw();
+}
+
+// ---------- what the characters decide ---------------------------------------------------------------
+function decide(id, d, reply) {
+  const P = PEOPLE[id];
+  if (d === "allow") {
+    G.passed[P.place] = true; save();
+    const next = { gate: "The optio jerks his head at the gate. The wicket creaks open onto the dark streets of Rome.", tower: "Fulvius disappears from the platform. A moment later, the postern door in the palisade scrapes open.", palace: "The centurion steps aside. The bronze doors open a crack.", ante: "Eclectus draws back the purple curtain." }[P.place];
+    screen({ title: "The way is open", small: P.name, body: `<div class="them"><span class="who">${P.name}:</span> ${esc(reply)}</div><p class="narr">${next}</p>`,
+      foot: `<button class="primary" id="n">${{ gate: "Into the city", tower: "Through the postern", palace: "Through the gate", ante: "Into the Emperor's hall" }[P.place]}</button><button id="stay">Stay a moment</button>` });
+    on("n", () => go({ gate: "forum", tower: "camp", palace: "ante", ante: "throne" }[P.place]));
+    on("stay", draw);
+    return;
+  }
+  if (d === "arrest") return ending("arrest", id, reply);
+  if (d === "recruit") return ending("conspirator", id, reply);
+  if (d === "reward") return ending(G.know.includes("plot_rumour") || /marcia|eclectus|laetus|narcissus|poison/i.test(G.talk.commodus.log.filter((l) => l.me).map((l) => l.text).join(" ")) ? "saviour" : "favour", id, reply);
+  if (d === "execute") return ending("executed", id, reply);
+  if (d === "dismiss") return ending("dismissed", id, reply);
+}
+function tooLate() {
+  ending("late", null, "");
+}
+function ending(kind, id, line) {
+  G.over = kind; save();
+  const P = id && PEOPLE[id];
+  const E = {
+    arrest: ["Seized", P && P.place === "ante" ? "Two Praetorians loyal to Laetus take you by the arms. They walk you, very politely, to a small room with no windows. The Emperor dies before dawn, and nobody ever asks what became of you." : "Hands close on your arms. You spend the rest of the night in a cell, listening to the city celebrate the new year without you."],
+    caught: ["Caught", "The alarm goes up. You are thrown to the ground, and by morning a Praetorian tribune is deciding exactly what kind of thief you are."],
+    conspirator: ["One of them now", "Eclectus smiles. 'Then we understand each other.' Before dawn, Commodus is dead in his bath. By morning the Praetorians have hailed old Pertinax as Emperor, and a quiet legionary is quietly rich."],
+    saviour: ["Saviour of the Emperor", "Commodus roars for the guard. Marcia is seized with the cup still in her hand; Eclectus and Laetus are dragged from their beds. History turns: Commodus lives to see the new year, and you are made a tribune of the Praetorian Guard. Whether that was a kindness to Rome is another matter."],
+    favour: ["The Emperor's favour", "Commodus laughs, throws you a purse of gold and names you to his personal guard. Tomorrow you will stand beside Hercules in the arena. Behind the curtain, Marcia pours his wine."],
+    executed: ["Hercules is displeased", "The Emperor waves his club. You are taken to the arena cells, to meet him again tomorrow, at the New Year games, from the wrong side of the sand."],
+    dismissed: ["Dismissed", "The Emperor loses interest and waves you away. You are walked to the street. Before dawn the bells ring out: Commodus is dead. You were in the room."],
+    late: ["Too late", "Somewhere on the Palatine, Marcia hands the Emperor his wine after his bath. When the poison is slow, Narcissus the wrestler finishes the work. By dawn Rome has a new Emperor, Pertinax, and nobody remembers the soldier at the gate."],
+  }[kind];
+  screen({ title: E[0], small: `${G.name}, ${hourName(Math.min(G.step, STEPS - 1))}`,
+    body: `${line ? `<div class="them"><span class="who">${P ? P.name : ""}:</span> ${esc(line)}</div>` : ""}<p class="${kind === "saviour" || kind === "favour" || kind === "conspirator" ? "good" : "warn"}">${E[1]}</p>`,
+    foot: `<button class="primary" id="again">Another night</button>` });
+  on("again", () => { G = fresh(G.name); G.started = true; save(); go("gate"); });
+}
+
+// =====================================================================================================
+Promise.all([initStore(), initVoices()]).finally(title);
+</script>
