@@ -123,11 +123,12 @@ aw.afterEvents.playerInteractWithEntity.subscribe((ev) => {
   if (isNpc(ev.target) && ev.itemStack?.typeId === LEDGER) menu(ev.player, ev.target);
 });
 
-aw.afterEvents.playerInteractWithBlock.subscribe((ev) => {
-  const p = ev.player, job = pending.get(p.id);
-  if (!job || ev.itemStack?.typeId !== LEDGER) return;
-  if (asys.currentTick - (lastClick.get(p.id) ?? -99) < 6) return;
+function ledgerTap(p, block) {
+  const job = pending.get(p.id);
+  if (!job || !block) return false;
+  if (asys.currentTick - (lastClick.get(p.id) ?? -99) < 15) return true;   // one tap, not a held finger
   lastClick.set(p.id, asys.currentTick);
+  const ev = { block };
   const e = aw.getEntity(job.target);
   if (!e) { pending.delete(p.id); notify(p, "§eThat cow-folk is no longer nearby."); return; }
   const b = ev.block.location;
@@ -152,11 +153,32 @@ aw.afterEvents.playerInteractWithBlock.subscribe((ev) => {
     notify(p, `§6${label(e)} will sleep there at night.`);
     show(e);
   }
+  return true;
+}
+
+// Tapping an ordinary block (grass, stone...) with an item that does nothing never counts as a block
+// interaction, so listen for the attempt itself, and also take the block you're looking at when the
+// tap arrives as an item use instead (that's what happens on touch screens).
+aw.beforeEvents.playerInteractWithBlock.subscribe((ev) => {
+  if (ev.itemStack?.typeId !== LEDGER || !pending.has(ev.player.id) || ev.isFirstEvent === false) return;
+  const p = ev.player, b = ev.block;
+  asys.run(() => ledgerTap(p, b));
 });
+aw.afterEvents.playerInteractWithBlock.subscribe((ev) => {
+  if (ev.itemStack?.typeId === LEDGER) ledgerTap(ev.player, ev.block);
+});
+const lookedAt = (p) => { try { return p.getBlockFromViewDirection({ maxDistance: 10 })?.block; } catch (x) { return undefined; } };
 
 aw.afterEvents.itemUse.subscribe((ev) => {
   if (ev.itemStack?.typeId !== LEDGER) return;
   const p = ev.source;
+  if (pending.has(p.id)) {                     // mid-assignment: the tap is for the block you're pointing at
+    const b = lookedAt(p);
+    if (!b) notify(p, "§eLook at a block within 10 blocks and tap it with the ledger.");
+    else ledgerTap(p, b);
+    return;
+  }
+  if (asys.currentTick - (lastClick.get(p.id) ?? -99) < 10) return;
   new AF().title("Steward's Ledger")
     .body("Use the ledger on a cow-folk to give them a roaming area (two corner blocks) and sleeping quarters (a bed).\n\nBy day they wander inside their area. At nightfall they go to bed, and at dawn they rise.")
     .button("Show assignments near me").button("Close")
@@ -218,6 +240,7 @@ asys.runInterval(() => {
 
 // the daily round: every half second keep each cow-folk inside its area, put it to bed at night, wake it at dawn
 function tend(e, night) {
+  remember(e);
   const tag = e.nameTag;
   if (tag && OLD_NAMES[tag]) e.nameTag = OLD_NAMES[tag];
   else if (tag && tag.includes(" ") && !COUNCIL[tag] && e.typeId === COW) e.nameTag = tag.split(" ")[0];
@@ -251,6 +274,55 @@ function tend(e, night) {
     if (x !== l.x || z !== l.z) e.teleport({ x, y: l.y, z });
   }
 }
+
+// ---- respawning: anyone with a bed comes back to it a little after they die ------------------------------
+const known = new Map();          // entity id -> what we need to bring them back
+const RESPAWN_MS = 10000;
+function remember(e) {
+  const bed = getJSON(e, "vaccaria:bed");
+  if (!bed) { known.delete(e.id); return; }
+  known.set(e.id, { type: e.typeId, variant: e.getComponent("minecraft:variant")?.value ?? 1, name: e.nameTag || "",
+                    area: getJSON(e, "vaccaria:area"), bed, dim: e.dimension.id });
+}
+const queue = () => { try { return JSON.parse(aw.getDynamicProperty("vaccaria:respawns") ?? "[]"); } catch (x) { return []; } };
+const saveQueue = (q) => aw.setDynamicProperty("vaccaria:respawns", JSON.stringify(q));
+aw.afterEvents.entityDie.subscribe((ev) => {
+  const e = ev.deadEntity;
+  if (!isNpc(e)) return;
+  let rec = known.get(e.id);
+  try { remember(e); rec = known.get(e.id) ?? rec; } catch (x) { }
+  if (!rec) return;
+  known.delete(e.id);
+  const q = queue(); q.push({ ...rec, at: Date.now() + RESPAWN_MS }); saveQueue(q);
+  for (const p of aw.getAllPlayers()) notify(p, `§6${rec.name || "A cow-folk"} has fallen. They will return to their bed.`);
+});
+function respawn(r) {
+  const d = aw.getDimension(r.dim), b = r.bed.foot;
+  const pos = { x: b.x + 0.5, y: b.y + 0.6, z: b.z + 0.5 };
+  const ev = r.type === "vaccaria:courtier" ? `vaccaria:make_char_${r.variant}` : `vaccaria:make_rank_${r.variant}`;
+  const before = new Set(d.getEntities({ type: r.type, location: pos, maxDistance: 3 }).map((x) => x.id));
+  d.runCommand(`summon ${r.type} ${b.x} ${b.y + 1} ${b.z} 0 0 ${ev} "${r.name.replace(/"/g, "")}"`);
+  const e = d.getEntities({ type: r.type, location: pos, maxDistance: 3 }).find((x) => !before.has(x.id));
+  if (!e) return false;
+  setJSON(e, "vaccaria:bed", r.bed);
+  if (r.area) setJSON(e, "vaccaria:area", r.area);
+  e.setDynamicProperty("vaccaria:v14", true);
+  if (r.name) e.nameTag = r.name;
+  remember(e);
+  for (const p of aw.getAllPlayers()) notify(p, `§6${r.name || "A cow-folk"} is back on their feet.`);
+  return true;
+}
+asys.runInterval(() => {
+  const q = queue();
+  if (!q.length) return;
+  const now = Date.now(), left = [];
+  for (const r of q) {
+    let done = false;
+    if (r.at <= now) { try { done = respawn(r); } catch (x) { done = false; } }   // fails while the bed's area isn't loaded; try again later
+    if (!done) left.push(r);
+  }
+  if (left.length !== q.length) saveQueue(left);
+}, 40);
 
 asys.runInterval(() => {
   const t = aw.getTimeOfDay();
