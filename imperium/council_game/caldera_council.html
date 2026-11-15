@@ -1,0 +1,699 @@
+<title>The Caldera Council</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<style>
+/* Layout: the chamber fills the screen; a basalt tablet of dialogue sits at the bottom, the realm's ledger across the top. */
+:root {
+  --basalt: #14100e; --ash: #241d1a; --ash-2: #322824; --ember: #ff7a35; --gold: #d8a84a;
+  --bone: #efe3cc; --dust: #a6978a; --pasture: #8cbc63; --blood: #d0574a;
+  --display: "Marcellus", "Palatino Linotype", Palatino, Georgia, serif;
+  --caps: "Marcellus SC", "Palatino Linotype", Georgia, serif;
+  --body: "Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--basalt); color: var(--bone); font-family: var(--body); font-size: 16px; overflow: hidden; }
+#stage { position: fixed; inset: 0; }
+#stage canvas { display: block; width: 100%; height: 100%; }
+.ui { position: fixed; left: 0; right: 0; pointer-events: none; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.ui > * { pointer-events: auto; }
+
+/* the ledger */
+#ledger { top: 0; padding-top: calc(env(safe-area-inset-top, 0px) + 10px); display: flex; justify-content: center; }
+.stats { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; background: color-mix(in srgb, var(--basalt) 78%, transparent); border: 1px solid var(--ash-2); border-radius: 999px; padding: 6px 12px; backdrop-filter: blur(6px); }
+.stat { display: flex; align-items: baseline; gap: 5px; padding: 0 6px; font-variant-numeric: tabular-nums; }
+.stat b { font-family: var(--caps); font-weight: 400; font-size: 11px; letter-spacing: .08em; color: var(--dust); }
+.stat span { font-size: 15px; font-weight: 700; }
+.stat .d { font-size: 11px; font-weight: 500; }
+.up { color: var(--pasture); } .down { color: var(--blood); }
+.season { font-family: var(--caps); letter-spacing: .06em; color: var(--gold); font-size: 13px; padding-right: 8px; border-right: 1px solid var(--ash-2); }
+
+/* the tablet */
+#tablet { bottom: 0; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); display: flex; justify-content: center; }
+.slab { width: 100%; max-width: 680px; max-height: 58vh; display: flex; flex-direction: column; background: linear-gradient(180deg, color-mix(in srgb, var(--ash) 94%, transparent), color-mix(in srgb, var(--basalt) 96%, transparent)); border: 1px solid var(--ash-2); border-top: 2px solid color-mix(in srgb, var(--ember) 55%, var(--ash-2)); border-radius: 14px; box-shadow: 0 -12px 40px rgba(0,0,0,.5); overflow: hidden; }
+.slab-head { display: flex; align-items: baseline; gap: 10px; padding: 14px 18px 4px; }
+.slab-head h2 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0; text-wrap: balance; }
+.slab-head small { font-family: var(--caps); font-size: 12px; letter-spacing: .08em; color: var(--dust); }
+.slab-body { padding: 4px 18px 10px; overflow-y: auto; min-height: 0; line-height: 1.5; }
+.slab-body p { margin: .4em 0; max-width: 62ch; }
+.speech { font-size: 17px; }
+.speech .who { font-family: var(--caps); color: var(--gold); letter-spacing: .05em; }
+.motion { font-family: var(--display); font-size: 19px; color: var(--bone); border-left: 2px solid var(--ember); padding-left: 10px; margin: 8px 0; }
+.muted { color: var(--dust); }
+.chat { display: flex; flex-direction: column; gap: 8px; }
+.chat .me { align-self: flex-end; background: var(--ash-2); padding: 6px 10px; border-radius: 10px 10px 2px 10px; max-width: 85%; }
+.chat .them { max-width: 92%; }
+.slab-foot { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 18px 14px; border-top: 1px solid var(--ash-2); }
+button { font: inherit; font-family: var(--caps); letter-spacing: .05em; font-size: 14px; color: var(--bone); background: var(--ash-2); border: 1px solid #4a3c35; border-radius: 9px; padding: 9px 14px; cursor: pointer; min-height: 40px; }
+button:hover { border-color: var(--gold); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+button.primary { background: var(--ember); border-color: var(--ember); color: #1c0d05; }
+button.primary:hover { filter: brightness(1.08); }
+button.aye { background: #2f4a25; border-color: var(--pasture); }
+button.nay { background: #4d2420; border-color: var(--blood); }
+button:disabled { opacity: .45; cursor: default; }
+.say { display: flex; gap: 8px; width: 100%; }
+.say input { flex: 1; min-width: 0; font: inherit; color: var(--bone); background: var(--basalt); border: 1px solid #4a3c35; border-radius: 9px; padding: 9px 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 8px 0; }
+.grid button { text-align: left; font-family: var(--body); letter-spacing: 0; display: flex; flex-direction: column; gap: 2px; }
+.grid button strong { font-family: var(--caps); font-weight: 400; letter-spacing: .04em; }
+.grid button em { font-style: normal; font-size: 13px; color: var(--dust); }
+.tally { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 15px; margin: 8px 0; }
+.tally .v { font-family: var(--caps); }
+.v.aye { color: var(--pasture); } .v.nay { color: var(--blood); } .v.abstain { color: var(--dust); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.bar { height: 6px; background: var(--ash-2); border-radius: 3px; overflow: hidden; width: 100%; margin-top: 3px; }
+.bar i { display: block; height: 100%; background: var(--gold); }
+.thinking::after { content: "…"; animation: dots 1.2s steps(4) infinite; display: inline-block; width: 1.2em; overflow: hidden; vertical-align: bottom; }
+@keyframes dots { from { width: 0; } to { width: 1.2em; } }
+.title-card { text-align: center; padding: 18px 18px 6px; }
+.title-card h1 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 8vw, 46px); margin: 0; letter-spacing: .02em; text-wrap: balance; }
+.title-card .sub { font-family: var(--caps); color: var(--gold); letter-spacing: .14em; font-size: 12px; }
+.voice { font-size: 13px; color: var(--dust); }
+@media (prefers-reduced-motion: reduce) { .thinking::after { animation: none; width: 1.2em; } }
+@media (min-width: 900px) { .slab { max-height: 46vh; } }
+</style>
+
+<div id="stage"></div>
+<div class="ui" id="ledger"></div>
+<div class="ui" id="tablet"><div class="slab" id="slab"><div class="slab-body"><p class="muted">The chamber is being carved…</p></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+"use strict";
+// =====================================================================================================
+// The people and the realms
+// =====================================================================================================
+const REALMS = {
+  E: { name: "the Empire", short: "Empire", robe: 0x7a1f2b, trim: 0xd8a84a },
+  L: { name: "Lucerna", short: "Lucerna", robe: 0x2d4f8a, trim: 0xe0c070 },
+  V: { name: "Velithra", short: "Velithra", robe: 0xd98fae, trim: 0xf4e7ef },
+  K: { name: "Karst Odun", short: "Karst Odun", robe: 0x5d6a74, trim: 0xb9c3c9 },
+  D: { name: "Khar-Dumeth", short: "Khar-Dumeth", robe: 0x8a5a24, trim: 0x3b2a18 },
+  T: { name: "Tor-Ilun", short: "Tor-Ilun", robe: 0xb4532c, trim: 0xe8b36a },
+  M: { name: "Meridia", short: "Meridia", robe: 0x1f7a7a, trim: 0xe7f2ee },
+  P: { name: "Vaccaria", short: "Vaccaria", robe: 0x3f6b2e, trim: 0xd8a84a },
+};
+const ORDER = ["E", "L", "V", "K", "D", "T", "M", "P"];   // order of precedence; Vaccaria last
+const PEOPLE = {
+  E: { who: "Aurex", full: "Emperor Aurex IV Valerran", head: "human", skin: 0xc79a78, crown: "laurel",
+       persona: "Old, patient, dry, utterly sure of his authority. Speaks last and briefly. Keeps the client realms divided and paying; keeps the Legions fed.",
+       aye: "The Throne finds merit in this. Let it be weighed with care, and voted with loyalty.",
+       nay: "This council forgets whose fire warms it. The Throne does not favour this motion." },
+  L: { who: "Marcellan", full: "King Marcellan Dorr of Lucerna", head: "human", skin: 0xe2b896, crown: "crown",
+       persona: "Jovial, expansive, greedy; all warmth on the surface and hungry for Vaccaria's pastures underneath. Calls the Prince 'neighbour'.",
+       aye: "Friends, friends! This is good for trade, good for roads, good for Lucerna. And for my neighbours, naturally.",
+       nay: "I love a bold idea, but Lucerna's coffers are not a well for every bucket. I cannot support it." },
+  V: { who: "Ilsaveth", full: "Queen Ilsaveth Anorai of Velithra", head: "cat", skin: 0xe9e4da, spots: true, crown: "circlet",
+       persona: "Elegant, witty snow-leopard merchant queen; condescending and playful, always calculating; wants free trade and influence on every side.",
+       aye: "How refreshing. A motion that even a merchant can love. Velithra approves.",
+       nay: "Charming. Truly. But Velithra did not grow rich by agreeing with charming things." },
+  K: { who: "Oduvar", full: "King Oduvar Brunnhak of Karst Odun", head: "badger", skin: 0x3a3634, crown: "iron",
+       persona: "Taciturn badger-folk mountain king; honest, stubborn, few words; sells steel to the Legions and wants to be left alone.",
+       aye: "Hm. It is sound. Karst Odun stands for it.",
+       nay: "No. The mountains see no profit in this, and no honour." },
+  D: { who: "Thrask", full: "King Thrask Ur-Vashen of Khar-Dumeth", head: "croc", skin: 0x5f7a3a, crown: "spikes",
+       persona: "Loud, proud crocodile-folk warrior king; bullies and boasts but keeps his word to allies; hates the Imperial tax assessors and wants the client kings to stand together.",
+       aye: "At last, a motion with teeth! Khar-Dumeth roars for it, and so should every king who is tired of being bled!",
+       nay: "Another chain dressed as a gift. Khar-Dumeth will not bow to it, and neither should any of you!" },
+  T: { who: "Vashka", full: "Queen Vashka of Tor-Ilun", head: "gecko", skin: 0x6fa59b, crown: "band",
+       persona: "Dry, patient, unsentimental gecko-folk desert queen; bargains hard, wastes no words; wants fair copper prices and less Imperial meddling.",
+       aye: "The desert does not waste water, and I do not waste words. Tor-Ilun votes for it.",
+       nay: "Tor-Ilun has heard this song before. It ends with our copper in someone else's purse." },
+  M: { who: "Halvana", full: "Governor Halvana Pryce of Meridia", head: "human", skin: 0x9a6a4a, crown: "cap",
+       persona: "Correct, careful Imperial governor of the southern isles; loyal to the Throne but quietly favours her islanders; cares about sea lanes and grain trade.",
+       aye: "Meridia finds this prudent, and in the Throne's interest. The isles support it.",
+       nay: "With respect to the council, the isles see more risk here than reward." },
+  P: { who: "You", full: "the Prince of Vaccaria", head: "cow", skin: 0xf2efe8, crown: "prince" },
+};
+
+// motions: who proposes, how each realm leans (-1 against .. +1 for), and what passing does to Vaccaria
+const MOTIONS = [
+  { id: "tribute_up", text: "Raise the Imperial tribute by a tenth", by: "E", lean: { E: .9, L: -.3, V: -.4, K: -.2, D: -.9, T: -.6, M: .3 },
+    pass: { tribute: 4, favourIfAye: 6 }, note: "Tribute rises by 4 gold a season." },
+  { id: "tribute_down", text: "Cut the tribute paid by the client kingdoms", by: "D", lean: { E: -.9, L: .4, V: .3, K: .3, D: .9, T: .6, M: -.2 },
+    pass: { tribute: -4, favourIfAye: -6 }, note: "Tribute falls by 4 gold a season. The Throne remembers who voted for it." },
+  { id: "levies", text: "Raise new auxiliary levies for the Khar border", by: "E", lean: { E: .8, L: -.2, V: -.5, K: .5, D: -.8, T: -.1, M: .2 },
+    pass: { grain: -20, favourIfAye: 5 }, note: "Every realm sends levies: Vaccaria loses 20 grain feeding them." },
+  { id: "road", text: "Build a road from Lucerna to Vaccaria at the Treasury's expense", by: "L", lean: { E: -.3, L: .9, V: -.1, K: .1, D: -.2, T: -.3, M: -.1 },
+    pass: { income: 4, att: { L: 10 } }, note: "Trade flows: +4 gold a season. Lucerna's merchants, and nobles, come closer." },
+  { id: "sealanes", text: "Guarantee open sea lanes to the southern isles", by: "M", lean: { E: .2, L: .1, V: .6, K: -.1, D: -.3, T: 0, M: .9 },
+    pass: { gold: 10 }, note: "Grain sells abroad: +10 gold." },
+  { id: "copper", text: "Fix the price of copper across the Empire", by: "T", lean: { E: -.2, L: -.1, V: -.6, K: .3, D: .2, T: .9, M: -.1 },
+    pass: { gold: -8 }, note: "Tools and coin cost more: -8 gold." },
+  { id: "steel", text: "Grant Karst Odun the sole contract to arm the Legions", by: "K", lean: { E: .1, L: -.4, V: -.3, K: .9, D: -.5, T: -.2, M: 0 },
+    pass: {}, note: "No direct effect on Vaccaria, but Karst Odun grows richer." },
+  { id: "harbours", text: "Open Velithra's harbours to every realm free of duty", by: "V", lean: { E: -.3, L: .3, V: .8, K: .2, D: .1, T: .2, M: -.4 },
+    pass: { income: 3 }, note: "Cheaper trade: +3 gold a season." },
+  { id: "grain_buy", text: "Buy Vaccarian grain for the Legions at a fixed price", by: "E", lean: { E: .6, L: .2, V: -.1, K: .1, D: -.3, T: 0, M: -.3 },
+    pass: { grain: -25, gold: 30, favourIfAye: 4 }, note: "The Legions take 25 grain and pay 30 gold." },
+];
+const OWN_MOTIONS = [
+  { id: "small_levies", text: "Exempt the small realms from the frontier levies", by: "P", cost: 10, lean: { E: -.6, L: .1, V: .2, K: -.1, D: .3, T: .3, M: 0 },
+    pass: { grainIncome: 8, favour: -6 }, note: "+8 grain a season, but the Throne is displeased." },
+  { id: "grain_board", text: "Grant Vaccaria a seat on the Imperial grain board", by: "P", cost: 10, lean: { E: -.1, L: -.3, V: 0, K: 0, D: 0, T: 0, M: -.4 },
+    pass: { influence: 15, income: 5 }, note: "+15 influence and +5 gold a season." },
+  { id: "kingdom", text: "Raise the Principality of Vaccaria to a Kingdom", by: "P", cost: 20, needs: 60, lean: { E: -.5, L: -.7, V: -.2, K: 0, D: .1, T: -.1, M: -.3 },
+    pass: { crown: true }, note: "Vaccaria becomes a Kingdom." },
+];
+const ALL_MOTIONS = [...MOTIONS, ...OWN_MOTIONS];
+const WORLD = `The Empire is ruled by Emperor Aurex IV Valerran from a palace carved into the caldera of a great volcano, where the Imperial Council of client realms meets around a basalt table, each representative seated on a cushion. Realms: the Empire; Lucerna (rich lowlands, Vaccaria's eastern neighbour, King Marcellan); Velithra (merchant north, Queen Ilsaveth); Karst Odun (mountain smiths, King Oduvar); Khar-Dumeth (warrior river kingdom, King Thrask); Tor-Ilun (copper deserts, Queen Vashka); Meridia (southern isles, Governor Halvana); and the small Principality of Vaccaria, a realm of cow-folk with green hills and rich granaries, whose young Prince is the player. No modern ideas, no mention of games or AI.`;
+
+// =====================================================================================================
+// The game state
+// =====================================================================================================
+const fresh = () => ({ season: 1, gold: 60, grain: 80, influence: 20, favour: 20, tribute: 12, income: 22, grainIncome: 25,
+  att: { E: 5, L: 15, V: 0, K: 10, D: 15, T: 0, M: 5 }, promises: {}, theirPromise: {}, chronicle: [], motion: null, audiences: 2,
+  kingdom: false, over: null, used: [] });
+let G = fresh();
+let prev = null;   // stats before the last change, for the little deltas
+
+// saving: the viewer's own Claude storage when available, the browser otherwise
+let store = null;
+async function initStore() {
+  try {
+    const [db, user] = await Promise.all([window.claude?.use("db"), window.claude?.use("user")]);
+    if (db && user) { const id = await user.id(); if (id) store = db.doc(`data/users/${id}/save`); }
+  } catch (e) { store = null; }
+}
+async function save() {
+  const data = JSON.stringify(G);
+  try { localStorage.setItem("caldera-council", data); } catch (e) { }
+  if (store) { try { await store.set({ game: data }); } catch (e) { } }
+}
+async function load() {
+  if (store) { try { const s = await store.get(); if (s.exists && s.data().game) return JSON.parse(s.data().game); } catch (e) { } }
+  try { const v = localStorage.getItem("caldera-council"); if (v) return JSON.parse(v); } catch (e) { }
+  return null;
+}
+
+// Claude gives the court its voice when the page can ask
+let sample = null, voices = true;
+async function initVoices() { try { sample = await window.claude?.use("sample"); } catch (e) { sample = null; } }
+const live = () => !!sample && voices;
+function voiceOff(e) {
+  if (e && (e.code === "not_granted" || e.code === "sampling_disabled" || e.code === "capability_disabled")) voices = false;
+}
+function personaText(k) {
+  const p = PEOPLE[k];
+  return `${p.full}. ${p.persona} Attitude to the Prince: ${G.att[k]} (-100 hostile .. 100 devoted).`;
+}
+function recentChronicle() {
+  return G.chronicle.slice(-5).map((c) => `Season ${c.season}: "${c.text}" ${c.outcome}; Vaccaria voted ${c.prince}.`).join(" ") || "None yet.";
+}
+
+// =====================================================================================================
+// The chamber (three.js, low poly)
+// =====================================================================================================
+const stage = document.getElementById("stage");
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x120c0a);
+scene.fog = new THREE.Fog(0x120c0a, 14, 34);
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+const flat = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: .85, metalness: 0, ...extra });
+
+scene.add(new THREE.HemisphereLight(0xffb27a, 0x1a0d08, .55));
+const lavaLight = new THREE.PointLight(0xff5a1a, 60, 30, 1.6); lavaLight.position.set(0, -1, -9); scene.add(lavaLight);
+const brazier = [];
+const key = new THREE.DirectionalLight(0xffd2a6, .9); key.position.set(4, 10, 6); key.castShadow = true;
+key.shadow.mapSize.set(1024, 1024); Object.assign(key.shadow.camera, { left: -8, right: 8, top: 8, bottom: -8 }); scene.add(key);
+const spot = new THREE.SpotLight(0xffe2b0, 0, 12, .45, .6, 1); spot.position.set(0, 8, 0); scene.add(spot); scene.add(spot.target);
+
+// the caldera: a ring of jagged basalt, a floor, and lava glowing through a great rent in the wall
+(function chamber() {
+  const floor = new THREE.Mesh(new THREE.CylinderGeometry(9, 9, .4, 10), flat(0x2b2220)); floor.position.y = -.2; floor.receiveShadow = true; scene.add(floor);
+  const dais = new THREE.Mesh(new THREE.CylinderGeometry(5.6, 5.9, .25, 10), flat(0x3a2e29)); dais.position.y = .12; dais.receiveShadow = true; scene.add(dais);
+  const wallG = new THREE.CylinderGeometry(13, 15, 16, 22, 4, true);
+  const pos = wallG.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i), y = pos.getY(i), a = Math.atan2(z, x);
+    const jag = 1 + (Math.sin(a * 7 + y) * .06 + Math.sin(a * 13) * .04);
+    pos.setX(i, x * jag); pos.setZ(i, z * jag);
+  }
+  wallG.computeVertexNormals();
+  const wall = new THREE.Mesh(wallG, flat(0x1d1513, { side: THREE.BackSide })); wall.position.y = 6; scene.add(wall);
+  // lava river beyond the arches
+  const lava = new THREE.Mesh(new THREE.CylinderGeometry(12, 12, .2, 22, 1, true, Math.PI * .35, Math.PI * .3), new THREE.MeshBasicMaterial({ color: 0xff6a1a, side: THREE.DoubleSide }));
+  const lavaPool = new THREE.Mesh(new THREE.RingGeometry(9.2, 12.8, 22, 1), new THREE.MeshBasicMaterial({ color: 0xff5512 }));
+  lavaPool.rotation.x = -Math.PI / 2; lavaPool.position.y = -.6; scene.add(lavaPool);
+  // pillars
+  for (let i = 0; i < 10; i++) {
+    const a = i / 10 * Math.PI * 2 + .3;
+    const col = new THREE.Mesh(new THREE.CylinderGeometry(.45, .55, 9, 6), flat(0x3d302a));
+    col.position.set(Math.cos(a) * 8.4, 4.3, Math.sin(a) * 8.4); col.castShadow = true; scene.add(col);
+    const cap = new THREE.Mesh(new THREE.BoxGeometry(1.4, .4, 1.4), flat(0x4a3a32)); cap.position.set(col.position.x, 8.9, col.position.z); scene.add(cap);
+    if (i % 2 === 0) {
+      const bowl = new THREE.Mesh(new THREE.CylinderGeometry(.45, .2, .5, 6), flat(0x5a4632)); bowl.position.set(Math.cos(a) * 7.4, 1.5, Math.sin(a) * 7.4); scene.add(bowl);
+      const fire = new THREE.Mesh(new THREE.ConeGeometry(.3, .7, 5), new THREE.MeshBasicMaterial({ color: 0xffa040 })); fire.position.set(bowl.position.x, 2.05, bowl.position.z); scene.add(fire);
+      const l = new THREE.PointLight(0xff8a3a, 6, 7, 2); l.position.set(bowl.position.x, 2.4, bowl.position.z); scene.add(l);
+      brazier.push({ fire, l, seed: i });
+    }
+  }
+  // the table: an octagon of basalt with a gold-inlaid map of the realms
+  const table = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 2.6, .28, 8), flat(0x2a211e)); table.position.y = .95; table.castShadow = true; table.receiveShadow = true; scene.add(table);
+  const leg = new THREE.Mesh(new THREE.CylinderGeometry(.8, 1.2, .75, 8), flat(0x231b18)); leg.position.y = .5; scene.add(leg);
+  const inlay = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 1.9, .02, 8), flat(0x8a6a2a, { metalness: .6, roughness: .4 })); inlay.position.y = 1.1; scene.add(inlay);
+  const map = new THREE.Mesh(new THREE.CylinderGeometry(1.75, 1.75, .03, 8), flat(0x3d5a2d)); map.position.y = 1.11; scene.add(map);
+  const volcano = new THREE.Mesh(new THREE.ConeGeometry(.35, .35, 6), flat(0x4a2a1a)); volcano.position.y = 1.29; scene.add(volcano);
+  const crater = new THREE.Mesh(new THREE.ConeGeometry(.12, .08, 6), new THREE.MeshBasicMaterial({ color: 0xff6a1a })); crater.position.y = 1.43; crater.rotation.x = Math.PI; scene.add(crater);
+  // the Emperor's raised seat
+  const throne = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2.6, .5), flat(0x3a1a20)); throne.position.set(0, 1.4, -4.55); throne.castShadow = true; scene.add(throne);
+  const tcap = new THREE.Mesh(new THREE.ConeGeometry(.9, .7, 4), flat(0xd8a84a, { metalness: .5, roughness: .4 })); tcap.position.set(0, 3.05, -4.55); tcap.rotation.y = Math.PI / 4; scene.add(tcap);
+})();
+
+// embers rising from the lava
+const emberN = 160, emberG = new THREE.BufferGeometry(), emberP = new Float32Array(emberN * 3), emberV = [];
+for (let i = 0; i < emberN; i++) {
+  const a = Math.random() * Math.PI * 2, r = 9.5 + Math.random() * 3;
+  emberP.set([Math.cos(a) * r, Math.random() * 12 - .5, Math.sin(a) * r], i * 3); emberV.push(.3 + Math.random() * .7);
+}
+emberG.setAttribute("position", new THREE.BufferAttribute(emberP, 3));
+scene.add(new THREE.Points(emberG, new THREE.PointsMaterial({ color: 0xffa04a, size: .09, transparent: true, opacity: .85 })));
+
+// the council, each on their cushion
+const seats = {};
+function figure(k) {
+  const p = PEOPLE[k], r = REALMS[k], g = new THREE.Group();
+  const cushion = new THREE.Mesh(new THREE.CylinderGeometry(.62, .66, .22, 8), flat(r.robe, { roughness: 1 })); cushion.position.y = .36; cushion.receiveShadow = true; g.add(cushion);
+  const tassel = new THREE.Mesh(new THREE.BoxGeometry(.08, .08, .08), flat(r.trim)); tassel.position.set(.6, .3, .2); g.add(tassel);
+  const body = new THREE.Group(); body.position.y = .47; g.add(body);
+  const robe = new THREE.Mesh(new THREE.CylinderGeometry(.24, .48, .95, 6), flat(r.robe)); robe.position.y = .48; robe.castShadow = true; body.add(robe);
+  const sash = new THREE.Mesh(new THREE.CylinderGeometry(.33, .37, .1, 6), flat(r.trim)); sash.position.y = .38; body.add(sash);
+  const lap = new THREE.Mesh(new THREE.BoxGeometry(.7, .2, .55), flat(r.robe)); lap.position.set(0, .1, .25); body.add(lap);
+  for (const s of [-1, 1]) {
+    const arm = new THREE.Mesh(new THREE.BoxGeometry(.14, .5, .14), flat(r.robe)); arm.position.set(s * .32, .55, .08); arm.rotation.x = -.5; body.add(arm);
+    const hand = new THREE.Mesh(new THREE.BoxGeometry(.12, .12, .12), flat(p.skin)); hand.position.set(s * .32, .33, .25); body.add(hand);
+  }
+  const head = new THREE.Group(); head.position.y = 1.15; body.add(head);
+  const skull = new THREE.Mesh(new THREE.IcosahedronGeometry(.26, 0), flat(p.skin)); skull.castShadow = true; head.add(skull);
+  const eye = (x, y, z, c = 0x111111) => { const e = new THREE.Mesh(new THREE.BoxGeometry(.05, .05, .03), flat(c)); e.position.set(x, y, z); head.add(e); };
+  const add = (geo, color, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = new THREE.Mesh(geo, flat(color)); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); head.add(m); return m; };
+  if (p.head === "cow") {
+    add(new THREE.BoxGeometry(.3, .18, .14), 0xe8b8a8, 0, -.08, .24);
+    add(new THREE.ConeGeometry(.05, .2, 5), 0xe8dcc0, -.2, .2, 0, 0, 0, .9); add(new THREE.ConeGeometry(.05, .2, 5), 0xe8dcc0, .2, .2, 0, 0, 0, -.9);
+    add(new THREE.BoxGeometry(.16, .07, .1), p.skin, -.3, .05, 0, 0, 0, -.3); add(new THREE.BoxGeometry(.16, .07, .1), p.skin, .3, .05, 0, 0, 0, .3);
+    add(new THREE.BoxGeometry(.14, .12, .02), 0x2a2420, -.1, .1, .22); eye(-.1, .05, .24, 0x0d0d0d); eye(.1, .05, .24);
+  } else if (p.head === "cat") {
+    add(new THREE.ConeGeometry(.08, .16, 4), p.skin, -.15, .25, 0); add(new THREE.ConeGeometry(.08, .16, 4), p.skin, .15, .25, 0);
+    add(new THREE.BoxGeometry(.16, .1, .1), 0xf4f0ea, 0, -.07, .22); eye(-.09, .04, .23, 0x3a8a8a); eye(.09, .04, .23, 0x3a8a8a);
+    for (let i = 0; i < 6; i++) add(new THREE.BoxGeometry(.05, .05, .02), 0x4a4a4a, Math.sin(i * 2.3) * .2, Math.cos(i * 1.7) * .15, .17 + Math.random() * .02);
+  } else if (p.head === "badger") {
+    add(new THREE.BoxGeometry(.08, .3, .3), 0xf2f2f2, 0, .04, .1); add(new THREE.BoxGeometry(.14, .1, .14), 0x2a2725, 0, -.08, .25);
+    eye(-.1, .03, .22, 0xf0f0f0); eye(.1, .03, .22, 0xf0f0f0);
+  } else if (p.head === "croc") {
+    add(new THREE.BoxGeometry(.2, .12, .38), p.skin, 0, -.07, .3); add(new THREE.BoxGeometry(.18, .03, .34), 0xe8e0c0, 0, -.12, .3);
+    eye(-.1, .1, .18, 0xd8b030); eye(.1, .1, .18, 0xd8b030);
+  } else if (p.head === "gecko") {
+    add(new THREE.BoxGeometry(.24, .1, .2), p.skin, 0, -.06, .22); eye(-.16, .06, .14, 0xe0a030); eye(.16, .06, .14, 0xe0a030);
+  } else {
+    add(new THREE.BoxGeometry(.06, .08, .06), p.skin, 0, -.02, .26); eye(-.09, .05, .24); eye(.09, .05, .24);
+    add(new THREE.IcosahedronGeometry(.27, 0), k === "M" ? 0x1a1414 : 0x5a3a24, 0, .08, -.05);
+  }
+  const gold = 0xd8a84a;
+  if (p.crown === "laurel") { const t = add(new THREE.TorusGeometry(.25, .04, 4, 10), 0xd8b84a, 0, .14, 0, Math.PI / 2); t.material.metalness = .5; }
+  if (p.crown === "crown") { add(new THREE.CylinderGeometry(.22, .2, .14, 6, 1, true), gold, 0, .27, 0); }
+  if (p.crown === "circlet") { add(new THREE.TorusGeometry(.24, .02, 4, 10), 0xe8e8f4, 0, .16, 0, Math.PI / 2); }
+  if (p.crown === "iron") { add(new THREE.CylinderGeometry(.22, .23, .1, 6, 1, true), 0x6a6e72, 0, .25, 0); }
+  if (p.crown === "spikes") { for (let i = 0; i < 5; i++) add(new THREE.ConeGeometry(.04, .14, 4), 0x3a2a18, -.16 + i * .08, .3, -.02); }
+  if (p.crown === "band") { add(new THREE.TorusGeometry(.25, .03, 4, 10), 0xc87a3a, 0, .1, 0, Math.PI / 2); }
+  if (p.crown === "cap") { add(new THREE.CylinderGeometry(.2, .26, .14, 6), 0x1f7a7a, 0, .27, 0); }
+  if (p.crown === "prince") { for (let i = 0; i < 3; i++) add(new THREE.ConeGeometry(.035, .1, 4), gold, -.08 + i * .08, .3, 0); add(new THREE.TorusGeometry(.16, .025, 4, 8), gold, 0, .25, 0, Math.PI / 2); }
+  g.userData = { body, head };
+  return g;
+}
+const SEAT_ANGLE = { E: -Math.PI / 2, L: -Math.PI / 4, V: 0, K: Math.PI / 4, D: Math.PI * 3 / 4, T: Math.PI, M: -Math.PI * 3 / 4, P: Math.PI / 2 };
+ORDER.forEach((k) => {
+  // the Emperor sits opposite the Prince, by the throne; the kings fill the ring between
+  const a = SEAT_ANGLE[k];
+  const f = figure(k), rad = 3.55;
+  f.position.set(Math.cos(a) * rad, .25, Math.sin(a) * rad);
+  f.lookAt(0, .25, 0);
+  scene.add(f);
+  seats[k] = f;
+});
+
+let focus = null, camT = 0, t0 = performance.now();
+const camPos = new THREE.Vector3(0, 7, 9.5), camLook = new THREE.Vector3(0, 1, 0);
+function setFocus(k) {
+  focus = k;
+  spot.intensity = k ? 40 : 0;
+  if (k) { const s = seats[k].position; spot.position.set(s.x * .6, 6, s.z * .6); spot.target.position.set(s.x, 1, s.z); }
+}
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < h ? 62 : 45; camera.updateProjectionMatrix();
+}
+addEventListener("resize", resize); resize();
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function frame(now) {
+  const t = (now - t0) / 1000;
+  // camera: a slow drift round the table, or across the table to whoever speaks
+  const portrait = stage.clientWidth < stage.clientHeight;
+  let want, look;
+  if (focus && focus !== "P") {
+    const s = seats[focus].position, d = s.clone().normalize();
+    want = new THREE.Vector3(-d.x * 3.2, 3.2, -d.z * 3.2).add(new THREE.Vector3(d.z, 0, -d.x).multiplyScalar(1.2));
+    look = new THREE.Vector3(s.x, 1.6, s.z);
+  } else {
+    const a = Math.PI / 2 + (reduce ? 0 : Math.sin(t * .05) * .5);
+    const r = portrait ? 11 : 9.5;
+    want = new THREE.Vector3(Math.cos(a) * r, portrait ? 8.5 : 6.5, Math.sin(a) * r);
+    look = new THREE.Vector3(0, portrait ? -.6 : .6, 0);
+  }
+  camPos.lerp(want, .035); camLook.lerp(look, .05);
+  camera.position.copy(camPos); camera.lookAt(camLook);
+  for (const [k, f] of Object.entries(seats)) {
+    const talking = k === focus && !reduce;
+    f.userData.body.position.y = .47 + (talking ? Math.abs(Math.sin(t * 7)) * .04 : Math.sin(t * 1.3 + k.charCodeAt(0)) * .008);
+    f.userData.head.rotation.y = talking ? Math.sin(t * 2.3) * .15 : Math.sin(t * .4 + k.charCodeAt(0)) * .25;
+  }
+  for (const b of brazier) { const s = 1 + Math.sin(t * 9 + b.seed) * .12; b.fire.scale.set(s, 1 + Math.sin(t * 7 + b.seed) * .2, s); b.l.intensity = 5 + Math.sin(t * 11 + b.seed) * 1.2; }
+  lavaLight.intensity = 55 + Math.sin(t * .8) * 10;
+  if (!reduce) {
+    const ps = emberG.attributes.position;
+    for (let i = 0; i < emberN; i++) { let y = ps.getY(i) + emberV[i] * .02; if (y > 12) y = -.5; ps.setY(i, y); }
+    ps.needsUpdate = true;
+  }
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+// =====================================================================================================
+// The tablet: every screen of the game
+// =====================================================================================================
+const slab = document.getElementById("slab");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function screen({ title, small = "", body = "", foot = "" }) {
+  slab.innerHTML = `<div class="slab-head"><h2>${title}</h2><small>${small}</small></div><div class="slab-body" id="sb">${body}</div>${foot ? `<div class="slab-foot">${foot}</div>` : ""}`;
+  const sb = document.getElementById("sb"); sb.scrollTop = 0;
+  return sb;
+}
+function on(id, fn) { const el = document.getElementById(id); if (el) el.onclick = fn; }
+function ledger() {
+  const d = (k) => { if (!prev || prev[k] === G[k]) return ""; const v = G[k] - prev[k]; return `<span class="d ${v > 0 ? "up" : "down"}">${v > 0 ? "+" : ""}${v}</span>`; };
+  document.getElementById("ledger").innerHTML = `<div class="stats" role="status">
+    <span class="season">${G.kingdom ? "Kingdom" : "Principality"} · Season ${G.season}</span>
+    <span class="stat"><b>Gold</b><span>${G.gold}</span>${d("gold")}</span>
+    <span class="stat"><b>Grain</b><span>${G.grain}</span>${d("grain")}</span>
+    <span class="stat"><b>Influence</b><span>${G.influence}</span>${d("influence")}</span>
+    <span class="stat"><b>Favour</b><span>${G.favour}</span>${d("favour")}</span></div>`;
+}
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+function bump(changes) { prev = { ...G }; for (const [k, v] of Object.entries(changes)) G[k] = Math.round(G[k] + v); G.favour = clamp(G.favour, -100, 100); G.influence = Math.max(0, G.influence); ledger(); }
+function feel(a) { return a >= 50 ? "devoted" : a >= 25 ? "warm" : a >= 8 ? "cordial" : a > -8 ? "neutral" : a > -25 ? "cool" : "hostile"; }
+
+// ---------- the title -------------------------------------------------------------------------------
+async function title() {
+  setFocus(null);
+  const saved = await load();
+  screen({ title: "", body: `<div class="title-card"><div class="sub">The Imperial Council · Season by season</div><h1>The Caldera Council</h1>
+    <p class="muted">You are the young Prince of Vaccaria, newest and least of the realms at the Emperor's table. Win friends, keep your promises, feed your people, and one day put a crown on your principality.</p>
+    <p class="voice">${sample ? "The court speaks with Claude's voice: you can say anything to them. The first time, you'll be asked to allow it." : "The court speaks its written lines."}</p></div>`,
+    foot: `${saved && !saved.over ? `<button class="primary" id="cont">Continue: season ${saved.season}</button>` : ""}<button ${saved && !saved.over ? "" : 'class="primary"'} id="new">Begin a new reign</button>${sample ? `<button id="vt">${voices ? "Voices: Claude" : "Voices: written"}</button>` : ""}` });
+  on("cont", () => { G = saved; ledger(); seasonStart(); });
+  on("new", () => { G = fresh(); prev = null; ledger(); seasonStart(true); });
+  on("vt", () => { voices = !voices; title(); });
+}
+
+// ---------- each season ------------------------------------------------------------------------------
+function pickMotion() {
+  const pool = MOTIONS.filter((m) => !G.used.slice(-4).includes(m.id));
+  return pool[Math.floor(Math.random() * pool.length)].id;
+}
+function seasonStart(first) {
+  if (!G.motion) { G.motion = pickMotion(); G.audiences = 2; G.promises = {}; G.theirPromise = {}; save(); }
+  const m = ALL_MOTIONS.find((x) => x.id === G.motion);
+  setFocus(m.by === "P" ? null : m.by);
+  screen({ title: first ? "Your first council" : `Season ${G.season}`, small: "Before the session",
+    body: `${first ? `<p>The Herald strikes his staff. The realms gather in the caldera, each to a cushion, and the Emperor takes the high seat.</p>` : ""}
+      <p>The motion before the council this season:</p><p class="motion">${esc(m.text)}</p>
+      <p class="muted">Proposed by ${m.by === "P" ? "you, for Vaccaria" : PEOPLE[m.by].full}. If it passes: ${m.note}</p>
+      <p>You may seek a private audience before the session (${G.audiences} left this season), or put a motion of your own in its place.</p>`,
+    foot: `<button id="aud" ${G.audiences ? "" : "disabled"}>Seek an audience</button><button id="own">Propose your own motion</button><button id="chron">The chronicle</button><button class="primary" id="go">Enter the council</button>` });
+  on("aud", audiencePick); on("own", ownMotion); on("go", council); on("chron", chronicle);
+}
+function chronicle() {
+  setFocus(null);
+  const rel = ORDER.filter((k) => k !== "P").map((k) => `<p><span class="who" style="font-family:var(--caps);color:var(--gold)">${PEOPLE[k].who}</span> <span class="muted">· ${REALMS[k].name} · ${feel(G.att[k])}</span><span class="bar"><i style="width:${(G.att[k] + 100) / 2}%"></i></span></p>`).join("");
+  const past = G.chronicle.slice().reverse().map((c) => `<p><b>Season ${c.season}.</b> ${esc(c.text)}: <span class="v ${c.outcome === "passed" ? "aye" : "nay"}">${c.outcome}</span> <span class="muted">(you voted ${c.prince})</span></p>`).join("") || `<p class="muted">Nothing has been decided yet.</p>`;
+  screen({ title: "The chronicle", small: "Friends, rivals and decrees", body: `<p class="muted">Tribute ${G.tribute} gold a season · income ${G.income} gold, ${G.grainIncome} grain</p>${rel}<h3 style="font-family:var(--display);font-weight:400">Decrees</h3>${past}`,
+    foot: `<button class="primary" id="back">Back</button>` });
+  on("back", () => seasonStart());
+}
+function ownMotion() {
+  const list = OWN_MOTIONS.map((m) => {
+    const can = G.influence >= m.cost && (!m.needs || G.influence >= m.needs);
+    return `<button id="m_${m.id}" ${can ? "" : "disabled"}><strong>${esc(m.text)}</strong><em>Costs ${m.cost} influence${m.needs ? `, needs ${m.needs}` : ""}. ${m.note}</em></button>`;
+  }).join("");
+  screen({ title: "A motion of your own", small: `${G.influence} influence`, body: `<p>Putting your own motion before the council spends influence, and replaces this season's motion.</p><div class="grid">${list}</div>`,
+    foot: `<button id="back">Back</button>` });
+  for (const m of OWN_MOTIONS) on("m_" + m.id, () => { bump({ influence: -m.cost }); G.motion = m.id; save(); seasonStart(); });
+  on("back", () => seasonStart());
+}
+
+// ---------- audiences ----------------------------------------------------------------------------------
+function audiencePick() {
+  const list = ORDER.filter((k) => k !== "P").map((k) => `<button id="a_${k}"><strong>${PEOPLE[k].who}</strong><em>${REALMS[k].name} · ${feel(G.att[k])}${G.theirPromise[k] ? " · promised" : ""}</em></button>`).join("");
+  screen({ title: "Seek an audience", small: `${G.audiences} left this season`, body: `<div class="grid">${list}</div>`, foot: `<button id="back">Back</button>` });
+  for (const k of ORDER) on("a_" + k, () => { G.audiences--; save(); audience(k); });
+  on("back", () => seasonStart());
+}
+function audience(k) {
+  const p = PEOPLE[k], m = ALL_MOTIONS.find((x) => x.id === G.motion);
+  setFocus(k);
+  const turns = [];
+  let busy = false;
+  const greeting = G.att[k] >= 25 ? `Highness. Sit, sit. What can ${REALMS[k].name} do for its friend?` : G.att[k] > -8 ? `Prince of Vaccaria. You have a moment of my time. Use it well.` : `You. I wonder that you dare ask for an audience.`;
+  const draw = () => {
+    const chat = turns.map((t) => t.me ? `<div class="me">${esc(t.text)}</div>` : `<div class="them speech"><span class="who">${p.who}:</span> ${esc(t.text)}</div>`).join("");
+    const sb = screen({ title: p.who, small: `${REALMS[k].name} · ${feel(G.att[k])}`,
+      body: `<div class="chat"><div class="them speech"><span class="who">${p.who}:</span> ${greeting}</div>${chat}${busy ? `<div class="them muted thinking">${p.who} considers your words</div>` : ""}</div>`,
+      foot: `${live() ? `<form class="say" id="sayf"><input id="say" maxlength="400" placeholder="Say anything to ${p.who}…" autocomplete="off" ${busy ? "disabled" : ""}><button class="primary" ${busy ? "disabled" : ""}>Say</button></form>` : ""}
+        <div class="chips"><button id="ask" ${busy ? "disabled" : ""}>Ask their vote</button><button id="gift" ${busy || G.grain < 15 ? "disabled" : ""}>Gift 15 grain</button>
+        <button id="ra" ${busy || G.theirPromise[k] ? "disabled" : ""}>Ask for an aye</button><button id="rn" ${busy || G.theirPromise[k] ? "disabled" : ""}>Ask for a nay</button>
+        <button id="pa" ${busy || G.promises[k] ? "disabled" : ""}>Pledge Vaccaria's aye</button><button id="pn" ${busy || G.promises[k] ? "disabled" : ""}>Pledge Vaccaria's nay</button><button id="bye" ${busy ? "disabled" : ""}>Take your leave</button></div>` });
+    sb.scrollTop = sb.scrollHeight;
+    const f = document.getElementById("sayf");
+    if (f) f.onsubmit = (e) => { e.preventDefault(); const v = document.getElementById("say").value.trim(); if (v) speak(v); };
+    if (f && !busy) document.getElementById("say").focus({ preventScroll: true });
+    on("ask", () => scripted("ask")); on("gift", () => scripted("gift")); on("pa", () => scripted("aye")); on("pn", () => scripted("nay"));
+    on("ra", () => scripted("req_aye")); on("rn", () => scripted("req_nay"));
+    on("bye", leave);
+  };
+  const lean = () => leaning(k, null);
+  function scripted(kind) {
+    if (kind === "ask") {
+      const l = lean();
+      turns.push({ me: true, text: "How will you vote on the motion?" });
+      turns.push({ text: G.theirPromise[k] ? `As I promised you: ${G.theirPromise[k]}.` : l > .2 ? `I am inclined to support it. ${p.aye}` : l < -.2 ? `I expect to oppose it. ${p.nay}` : "I have not decided. Persuade me, if you can." });
+    } else if (kind === "gift") {
+      bump({ grain: -15 }); G.att[k] = clamp(G.att[k] + 8, -100, 100);
+      turns.push({ me: true, text: "Accept fifteen measures of Vaccarian grain, as a token of friendship." });
+      turns.push({ text: G.att[k] >= 25 ? "Generous. Vaccaria knows how to make friends." : "A kind gift. It will be remembered." });
+    } else if (kind === "req_aye" || kind === "req_nay") {
+      const want = kind === "req_aye" ? "aye" : "nay", sign = want === "aye" ? 1 : -1;
+      turns.push({ me: true, text: `I ask ${REALMS[k].name} to vote ${want} on this motion.` });
+      // they agree when their own interest and their friendship with you outweigh the cost
+      if (sign * lean() + G.att[k] / 100 > .3) { G.theirPromise[k] = want; turns.push({ text: `For you, Highness, yes. ${REALMS[k].name} will vote ${want}. You have my word.` }); }
+      else { G.att[k] = clamp(G.att[k] - 2, -100, 100); turns.push({ text: sign * lean() > 0 ? "I may well, but I make no promises yet. Show me Vaccaria is a friend worth having." : "You ask a great deal and offer little. No." }); }
+    } else {
+      G.promises[k] = kind; G.att[k] = clamp(G.att[k] + 6, -100, 100);
+      turns.push({ me: true, text: `You have my word: Vaccaria will vote ${kind} on this motion.` });
+      turns.push({ text: (kind === "aye") === (lean() >= 0) ? "Then we understand each other. I will remember it at the vote." : "Hm. An odd promise, but I will hold you to it." });
+    }
+    save(); draw();
+  }
+  async function speak(text) {
+    turns.push({ me: true, text }); busy = true; draw();
+    const convo = turns.slice(-10).map((t) => `${t.me ? "Prince" : p.who}: ${t.text}`).join("\n");
+    const prompt = `${WORLD}\n\nYou are ${personaText(k)}\nThe motion before the council this season: "${m.text}" (proposed by ${m.by === "P" ? "Vaccaria" : PEOPLE[m.by].full}). Your realm's natural position: ${m.lean[k] > .2 ? "for it" : m.lean[k] < -.2 ? "against it" : "undecided"}.${G.theirPromise[k] ? ` You have already promised the Prince to vote ${G.theirPromise[k]}.` : ""} Recent decrees: ${recentChronicle()}\n\nYou are in a private audience with the Prince of Vaccaria. Conversation so far:\n${convo}\n\nReply in character, 1 to 3 sentences, plain spoken words, no stage directions. Pursue your own goals; do not simply agree. Then judge the exchange. Answer only as JSON: {"reply": "...", "attitude_change": integer from -8 to 8, "promise_vote": "aye" or "nay" or null (only if you now explicitly commit your realm's vote to the Prince)}`;
+    try {
+      const r = await sample.json(prompt, { modelTier: "quick", cache: false });
+      turns.push({ text: String(r.reply || "…") });
+      G.att[k] = clamp(G.att[k] + clamp(Number(r.attitude_change) || 0, -8, 8), -100, 100);
+      if ((r.promise_vote === "aye" || r.promise_vote === "nay") && !G.theirPromise[k]) { G.theirPromise[k] = r.promise_vote; turns.push({ text: `(${p.who} has promised to vote ${r.promise_vote}.)` }); }
+      save();
+    } catch (e) {
+      voiceOff(e);
+      turns.push({ text: e.code === "rate_limited" ? "(The court needs a moment. Try again shortly.)" : live() ? "(They fall silent. Try again.)" : "(The court's free voices are unavailable; use the choices below.)" });
+    }
+    busy = false; draw();
+  }
+  function leave() { setFocus(null); seasonStart(); }
+  draw();
+}
+
+// ---------- the council ------------------------------------------------------------------------------
+// how a realm leans on the current motion: its interest, its friendship with you, your words and its promises
+const swayed = {};
+function leaning(k, princeStance) {
+  const m = ALL_MOTIONS.find((x) => x.id === G.motion);
+  let s = m.lean[k] ?? 0;
+  s += swayed[k] || 0;
+  if (princeStance) s += (princeStance === "aye" ? 1 : -1) * G.att[k] / 100 * .6;
+  return s;
+}
+async function council() {
+  const m = ALL_MOTIONS.find((x) => x.id === G.motion);
+  for (const k in swayed) delete swayed[k];
+  const others = ORDER.filter((k) => k !== "P" && k !== "E");
+  const speakers = m.by !== "P" && m.by !== "E" ? [m.by, ...others.filter((k) => k !== m.by)] : others;
+  let lines = null;
+  setFocus("E");
+  screen({ title: "The council", small: m.text, body: `<p class="thinking">The council takes its seats</p>` });
+  if (live()) {
+    const prompt = `${WORLD}\n\nThe council is in session. The motion: "${m.text}" (proposed by ${m.by === "P" ? "the Prince of Vaccaria" : PEOPLE[m.by].full}). Recent decrees: ${recentChronicle()}\nThe speakers, in order, with their character and their stance (each must argue the stance given):\n` +
+      ["E", ...speakers].map((k) => `- ${PEOPLE[k].who}: ${personaText(k)} Stance: ${leaning(k) > .2 ? "for" : leaning(k) < -.2 ? "against" : "undecided, weighing both sides"}.`).join("\n") +
+      `\n\nWrite the debate. Aurex opens briefly (put the motion, invite debate, give no verdict). Then each other speaker in order speaks 1 to 3 sentences in character, arguing their realm's interest, sometimes answering earlier speakers by name. Plain spoken words, no stage directions. Answer only as JSON: {"speeches": [{"who": "Aurex", "text": "..."}, ...]}`;
+    try {
+      const r = await sample.json(prompt, { modelTier: "quick" });
+      if (Array.isArray(r.speeches)) lines = r.speeches.filter((s) => s && s.text);
+    } catch (e) { voiceOff(e); lines = null; }
+  }
+  const byName = Object.fromEntries(ORDER.map((k) => [PEOPLE[k].who, k]));
+  const script = (lines && lines.length >= 3)
+    ? lines.map((s) => ({ k: byName[s.who] || null, text: String(s.text) })).filter((s) => s.k && s.k !== "P")
+    : [{ k: "E", text: `The council will hear the motion: ${m.text}. Let each realm speak in its turn.` }, ...speakers.map((k) => ({ k, text: leaning(k) >= 0 ? PEOPLE[k].aye : PEOPLE[k].nay }))];
+  let i = 0;
+  const next = () => {
+    if (i >= script.length) return princeFloor(m);
+    const s = script[i++];
+    setFocus(s.k);
+    screen({ title: PEOPLE[s.k].who, small: REALMS[s.k].name, body: `<p class="speech">${esc(s.text)}</p>`,
+      foot: `<button class="primary" id="n">Continue</button><span class="muted" style="align-self:center">${i} of ${script.length}</span>` });
+    on("n", next);
+  };
+  next();
+}
+function princeFloor(m) {
+  setFocus("E");
+  screen({ title: "The floor is yours", small: "Aurex turns to you",
+    body: `<p class="speech"><span class="who">Aurex:</span> The council recognises the Prince of Vaccaria.</p><p class="motion">${esc(m.text)}</p>`,
+    foot: `${live() ? `<form class="say" id="sayf"><input id="say" maxlength="500" placeholder="Address the council…" autocomplete="off"><button class="primary">Speak</button></form>` : ""}
+      <div class="chips"><button id="for">Speak for it</button><button id="against">Speak against it</button><button id="yield">Yield the floor</button></div>` });
+  const f = document.getElementById("sayf");
+  if (f) f.onsubmit = (e) => { e.preventDefault(); const v = document.getElementById("say").value.trim(); if (v) address(m, v); };
+  on("for", () => rhetoric(m, "aye")); on("against", () => rhetoric(m, "nay")); on("yield", () => vote(m));
+}
+function rhetoric(m, stance) {
+  // a plain speech moves those who like you
+  for (const k of ORDER) if (k !== "P") swayed[k] = (swayed[k] || 0) + (stance === "aye" ? 1 : -1) * Math.max(0, G.att[k]) / 100 * .5;
+  const text = stance === "aye" ? "Vaccaria speaks for this motion. It serves the Empire, and it serves the small realms who feed it." : "Vaccaria speaks against this motion. The small realms cannot carry this weight, and the Empire is stronger when they prosper.";
+  setFocus("P");
+  screen({ title: "You", small: "Vaccaria", body: `<p class="speech">${text}</p><p class="muted">Those who think well of you lean your way.</p>`, foot: `<button class="primary" id="n">Call the vote</button>` });
+  on("n", () => vote(m));
+}
+async function address(m, text) {
+  setFocus("P");
+  screen({ title: "You", small: "Vaccaria", body: `<p class="speech">${esc(text)}</p><p class="muted thinking">The council weighs your words</p>` });
+  const prompt = `${WORLD}\n\nThe council debates: "${m.text}". Present: ` + ORDER.filter((k) => k !== "P").map((k) => `${PEOPLE[k].who} (${personaText(k)} Leaning: ${leaning(k) > .2 ? "for" : leaning(k) < -.2 ? "against" : "undecided"})`).join("; ") +
+    `.\n\nThe Prince of Vaccaria addresses the council:\n"${text}"\n\nJudge how persuasive this is to each member, given their interests and their attitude to the Prince. Then pick at most two members who answer him aloud, each in 1 or 2 sentences in character. Answer only as JSON: {"shifts": {"Aurex": number from -0.5 (pushed against the motion) to 0.5 (pushed for it), ... one for each member}, "answers": [{"who": "...", "text": "..."}]}`;
+  let answers = [];
+  try {
+    const r = await sample.json(prompt, { modelTier: "quick", cache: false });
+    const byName = Object.fromEntries(ORDER.map((k) => [PEOPLE[k].who, k]));
+    for (const [n, v] of Object.entries(r.shifts || {})) if (byName[n] && byName[n] !== "P") swayed[byName[n]] = (swayed[byName[n]] || 0) + clamp(Number(v) || 0, -.5, .5);
+    answers = (r.answers || []).filter((a) => byName[a.who] && byName[a.who] !== "P").slice(0, 2).map((a) => ({ k: byName[a.who], text: String(a.text) }));
+  } catch (e) { voiceOff(e); }
+  let i = 0;
+  const next = () => {
+    if (i >= answers.length) return vote(m);
+    const a = answers[i++]; setFocus(a.k);
+    screen({ title: PEOPLE[a.k].who, small: `${REALMS[a.k].name} answers you`, body: `<p class="speech">${esc(a.text)}</p>`, foot: `<button class="primary" id="n">${i < answers.length ? "Continue" : "Call the vote"}</button>` });
+    on("n", next);
+  };
+  if (!answers.length) { screen({ title: "You", small: "Vaccaria", body: `<p class="speech">${esc(text)}</p><p class="muted">The council murmurs.</p>`, foot: `<button class="primary" id="n">Call the vote</button>` }); on("n", () => vote(m)); }
+  else next();
+}
+function vote(m) {
+  setFocus("E");
+  const promised = Object.entries(G.promises).map(([k, v]) => `${PEOPLE[k].who} (${v})`).join(", ");
+  screen({ title: "The vote", small: "Aurex calls the question", body: `<p class="motion">${esc(m.text)}</p><p class="muted">If it passes: ${m.note}</p>${promised ? `<p>You promised your vote to ${promised}.</p>` : ""}<p>How does Vaccaria vote?</p>`,
+    foot: `<button class="aye" id="aye">Aye</button><button class="nay" id="nay">Nay</button><button id="abs">Abstain</button>` });
+  on("aye", () => decide(m, "aye")); on("nay", () => decide(m, "nay")); on("abs", () => decide(m, "abstain"));
+}
+function decide(m, prince) {
+  const votes = {};
+  for (const k of ORDER) {
+    if (k === "P") { votes[k] = prince; continue; }
+    if (G.theirPromise[k]) { votes[k] = G.theirPromise[k]; continue; }
+    const s = leaning(k, prince === "abstain" ? null : prince);
+    votes[k] = s > .15 ? "aye" : s < -.15 ? "nay" : "abstain";
+  }
+  const ayes = ORDER.filter((k) => votes[k] === "aye").length, nays = ORDER.filter((k) => votes[k] === "nay").length;
+  let outcome = ayes > nays ? "passed" : "rejected", veto = false;
+  // the Throne may overrule a motion that threatens it, unless the Prince stands high in its favour
+  if (outcome === "passed" && (m.lean.E ?? 0) <= -.5 && votes.E !== "aye" && G.favour < (m.id === "kingdom" ? 50 : 35)) { outcome = "rejected"; veto = true; }
+  // consequences
+  const before = { ...G };
+  const ch = { gold: 0, grain: 0, influence: 0, favour: 0 };
+  if (outcome === "passed") {
+    const e = m.pass;
+    if (e.tribute) G.tribute += e.tribute;
+    if (e.income) G.income += e.income;
+    if (e.grainIncome) G.grainIncome += e.grainIncome;
+    ch.gold += e.gold || 0; ch.grain += e.grain || 0; ch.influence += e.influence || 0; ch.favour += e.favour || 0;
+    if (e.favourIfAye) ch.favour += prince === "aye" ? e.favourIfAye : prince === "nay" ? -Math.round(e.favourIfAye / 2) : 0;
+    for (const [k, v] of Object.entries(e.att || {})) G.att[k] = clamp(G.att[k] + v, -100, 100);
+    if (e.crown) G.kingdom = true;
+  }
+  const winner = outcome === "passed" ? "aye" : "nay";
+  if (prince === winner) ch.influence += m.by === "P" ? 10 : 4;
+  ch.favour += votes.E === prince && prince !== "abstain" ? 3 : prince !== "abstain" && votes.E !== "abstain" ? -3 : 0;
+  // friendships and promises
+  const notes = [];
+  for (const k of ORDER) {
+    if (k === "P") continue;
+    let d = 0;
+    if (prince !== "abstain" && votes[k] !== "abstain") d = votes[k] === prince ? 4 : -3;
+    if (k === m.by) d *= 2;
+    if (G.promises[k]) {
+      if (G.promises[k] === prince) { d += 6; }
+      else { d -= 25; notes.push(`${PEOPLE[k].who} will not forget that you broke your word.`); for (const o of ORDER) if (o !== "P" && o !== k) G.att[o] = clamp(G.att[o] - 4, -100, 100); }
+    }
+    G.att[k] = clamp(G.att[k] + d, -100, 100);
+  }
+  // the season turns: income, tribute and the granaries
+  ch.gold += G.income - G.tribute; ch.grain += G.grainIncome - 10;
+  G.chronicle.push({ season: G.season, text: m.text, outcome, prince, veto });
+  G.used.push(m.id);
+  bump(ch); prev = before;
+  ledger();
+  G.season++; G.motion = null;
+  for (const k in swayed) delete swayed[k];
+  if (G.kingdom) G.over = "crowned";
+  else if (G.gold < 0) G.over = "bankrupt";
+  else if (G.grain < 0) G.over = "famine";
+  else if (G.favour <= -50) G.over = "deposed";
+  save();
+  const rows = ORDER.map((k) => `<span>${k === "P" ? "You" : PEOPLE[k].who} <span class="muted">· ${REALMS[k].short}</span></span><span class="v ${votes[k]}">${votes[k]}${G.theirPromise[k] && k !== "P" ? " (as promised)" : ""}</span>`).join("");
+  const verdict = veto ? "The Emperor raises his hand. The Throne will not have it: the motion is set aside." : outcome === "passed" ? "Aurex inclines his head. So it is decreed." : "The motion fails. Aurex moves on without a word.";
+  setFocus(outcome === "passed" ? (m.by === "P" ? "P" : m.by) : "E");
+  screen({ title: outcome === "passed" ? "The motion passes" : "The motion fails", small: `${ayes} aye · ${nays} nay`,
+    body: `<p class="motion">${esc(m.text)}</p><div class="tally">${rows}</div><p>${verdict}</p>${notes.map((n) => `<p class="down">${n}</p>`).join("")}<p class="muted">The season turns: ${G.income} gold income, ${G.tribute} gold tribute, ${G.grainIncome} grain harvested, 10 grain eaten.</p>`,
+    foot: `<button class="primary" id="n">${G.over ? "The end of your reign" : "The next season"}</button>` });
+  on("n", () => G.over ? ending() : seasonStart());
+}
+function ending() {
+  const text = {
+    crowned: ["Long live the King of Vaccaria", "The Emperor lays the circlet on your horns himself. The principality is a kingdom, and you are its first King."],
+    bankrupt: ["The treasury is empty", "Vaccaria cannot pay its tribute. Imperial assessors arrive to run your principality for you."],
+    famine: ["The granaries are bare", "Your people go hungry, and the hills empty. Lucerna's nobles move in to 'help'."],
+    deposed: ["The Throne has had enough", "Praetorians escort you from the caldera. A more obliging cousin will rule Vaccaria."],
+  }[G.over];
+  setFocus(G.over === "crowned" ? "P" : "E");
+  screen({ title: text[0], small: `After ${G.season - 1} seasons`, body: `<p class="speech">${text[1]}</p><p class="muted">Decrees passed in your reign: ${G.chronicle.filter((c) => c.outcome === "passed").length}. Friends at the table: ${ORDER.filter((k) => k !== "P" && G.att[k] >= 25).map((k) => PEOPLE[k].who).join(", ") || "none"}.</p>`,
+    foot: `<button class="primary" id="n">Begin a new reign</button>` });
+  on("n", () => { G = fresh(); prev = null; ledger(); save(); seasonStart(true); });
+}
+
+// =====================================================================================================
+ledger();
+Promise.all([initStore(), initVoices()]).finally(title);
+</script>
