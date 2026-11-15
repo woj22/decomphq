@@ -20,7 +20,7 @@ NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
 RP_UUID, RP_RES = "8fbdd496-9ef3-459c-84a4-4b18f4142a53", "69027871-2e46-44f8-97fd-d9c685aba689"
-VERSION = [1, 5, 2]
+VERSION = [1, 5, 3]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -38,11 +38,11 @@ RANKS = [
     (12, "Herdhand", (230, 230, 230), False, 22),
 ]
 COUNCIL = [
-    (1, "Lord Chancellor Bram Hornwick"),
-    (2, "High Steward Odalie Clovermere"),
-    (2, "High Steward Tamsin Brindle"),
-    (3, "Envoy Fennick Moorlow"),
-    (3, "Envoy Hesper Dunhorn"),
+    (1, "Bram"),
+    (2, "Odalie"),
+    (2, "Tamsin"),
+    (3, "Fennick"),
+    (3, "Hesper"),
 ]
 
 
@@ -119,7 +119,7 @@ def write(path, data):
 def behaviour_pack(d):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - cow-folk fixed for current Minecraft; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
+        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - short names; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
                    "uuid": BP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "data", "uuid": BP_DATA, "version": VERSION},
                     {"type": "script", "language": "javascript", "uuid": BP_SCRIPT, "entry": "scripts/main.js", "version": VERSION}],
@@ -230,28 +230,29 @@ import { ActionFormData } from "@minecraft/server-ui";
 
 const RANKS = __RANKS__;
 const COUNCIL = __COUNCIL__;
+const OLD_NAMES = {"Lord Chancellor Bram Hornwick": "Bram", "High Steward Odalie Clovermere": "Odalie", "High Steward Tamsin Brindle": "Tamsin", "Envoy Fennick Moorlow": "Fennick", "Envoy Hesper Dunhorn": "Hesper"};
 const GIVEN = ["Alda", "Bertram", "Clover", "Dunstan", "Elsbeth", "Fenwick", "Gilda", "Hamlin", "Isolde", "Jory", "Kestrel", "Linden", "Marlow", "Nell", "Osric", "Primrose", "Quill", "Rowan", "Sorrel", "Tobin", "Una", "Varo", "Wynn", "Yarrow"];
 const FAMILY = ["Hornwick", "Clovermere", "Brindle", "Moorlow", "Dunhorn", "Meadowby", "Fallowfield", "Oxley", "Barleycombe", "Stillwater", "Hayward", "Thistledown"];
 
 const LINES = {
   council: {
-    "Lord Chancellor Bram Hornwick": [
+    "Bram": [
       "Highness. When the Emperor's council sits, Vaccaria will speak with one voice: yours. I will see to it the others remember that.",
       "The other kingdoms count their legions. We count our friends. Ours is the longer list, if we are careful.",
     ],
-    "High Steward Odalie Clovermere": [
+    "Odalie": [
       "The treasury ledgers are in order, Highness. If the Imperial assessors ask for more, I will show them exactly what we have, and not a coin more.",
       "Vaccaria's granaries could feed half the province. That is a fact the Emperor's council will want to hear, and pay for.",
     ],
-    "High Steward Tamsin Brindle": [
+    "Tamsin": [
       "I have the guest lists for the council feast. Seat the southern kings far from the northern ones, and the night may end without a duel.",
       "Your quarters in the palace are ready, Highness. I had the cushions aired twice.",
     ],
-    "Envoy Fennick Moorlow": [
+    "Fennick": [
       "I have spoken to the envoys of three kingdoms this week. Two want our support. One wants our pastures. I told none of them anything.",
       "At the council, watch the Chancellor of the Treasury's hands. He taps the table before he lies.",
     ],
-    "Envoy Hesper Dunhorn": [
+    "Hesper": [
       "The Emperor's herald has confirmed our seats, Highness: second row, left of the throne. Closer than last year.",
       "If the council calls a vote on the frontier levies, let me speak first. I know what the Legions will accept.",
     ],
@@ -279,10 +280,12 @@ function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) 
 function identity(entity) {
   const rank = entity.getComponent("minecraft:variant")?.value ?? 12;
   let name = entity.nameTag;
+  if (OLD_NAMES[name]) { name = OLD_NAMES[name]; try { entity.nameTag = name; } catch (e) { } }
+  else if (name && name.includes(" ") && !COUNCIL[name]) { name = name.split(" ")[0]; try { entity.nameTag = name; } catch (e) { } }
   if (!name) {
     // ordinary cow-folk get a stable name from their id the first time you speak to them
     const h = hash(entity.id);
-    name = `${pick(GIVEN, h)} ${pick(FAMILY, h >> 5)}`;
+    name = pick(GIVEN, h);
     try { entity.nameTag = name; } catch (e) { /* ignore */ }
   }
   return { rank, name, title: RANKS[rank] };

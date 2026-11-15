@@ -217,6 +217,9 @@ asys.runInterval(() => {
 
 // the daily round: every half second keep each cow-folk inside its area, put it to bed at night, wake it at dawn
 function tend(e, night) {
+  const tag = e.nameTag;
+  if (tag && OLD_NAMES[tag]) e.nameTag = OLD_NAMES[tag];
+  else if (tag && tag.includes(" ") && !COUNCIL[tag]) e.nameTag = tag.split(" ")[0];
   if (e.getDynamicProperty("vaccaria:follow")) {          // followers keep company with their player, not their routine
     const owner = aw.getAllPlayers().find((q) => q.id === e.getDynamicProperty("vaccaria:follow"));
     if (owner) return;
