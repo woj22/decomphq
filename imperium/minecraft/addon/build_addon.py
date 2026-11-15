@@ -218,7 +218,7 @@ def behaviour_pack(d):
     write(os.path.join(d, "functions", "vaccaria", "folk.mcfunction"), "\n".join(folk) + "\n")
     for rank, title, colour, guard, w in RANKS:
         write(os.path.join(d, "functions", "vaccaria", "rank_%d.mcfunction" % rank), "summon %s ~ ~ ~2 0 0 %s:make_rank_%d\n" % (ENTITY, NS, rank))
-    write(os.path.join(d, "functions", "vaccaria", "test.mcfunction"), "title @s title §6Vaccaria\ntitle @s subtitle The council pack is active\n")
+    write(os.path.join(d, "functions", "vaccaria", "test.mcfunction"), "title @s subtitle The council pack is active\ntitle @s title §6Vaccaria\n")
     write(os.path.join(d, "functions", "vaccaria", "follow.mcfunction"), "# Every cow-folk within 10 blocks follows you\nscriptevent vaccaria:follow me\n")
     write(os.path.join(d, "functions", "vaccaria", "stay.mcfunction"), "# Cow-folk following you stop and return to their posts\nscriptevent vaccaria:stay me\n")
     # dialogue script
