@@ -19,8 +19,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 NS = "vaccaria"
 ENTITY = NS + ":cow_folk"
 BP_UUID, BP_DATA, BP_SCRIPT = "a7986c19-ab18-4eb7-b874-55b91b19a090", "f69b767d-d95f-4566-8649-ba4bc105351c", "f2150648-13c5-45b0-8766-bfea44bed88a"
-RP_UUID, RP_RES = "8fbdd496-9ef3-459c-84a4-4b18f4142a53", "69027871-2e46-44f8-97fd-d9c685aba689"
-VERSION = [1, 5, 4]
+RP_UUID, RP_RES = "5c5a844e-3048-4853-a07f-c21dc13f39a0", "0ca0ec24-6ce0-4046-a896-a28910270aeb"   # new in 1.6.0 so worlds cannot keep an older resource pack in its place
+VERSION = [1, 6, 0]
 
 # rank, title, sash colour, guard?, weight when spawned at random (0 = reserved for named characters)
 RANKS = [
@@ -119,7 +119,7 @@ def write(path, data):
 def behaviour_pack(d):
     write(os.path.join(d, "manifest.json"), {
         "format_version": 2,
-        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - clear_maps; short names; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
+        "header": {"name": "Vaccaria Council v%d.%d.%d (behaviour)" % tuple(VERSION), "description": "v%d.%d.%d - new resource pack ID (map textures); clear_maps; follow / stay, Steward's Ledger, map wall, campaign table, cow-folk NPCs." % tuple(VERSION),
                    "uuid": BP_UUID, "version": VERSION, "min_engine_version": [1, 21, 50]},
         "modules": [{"type": "data", "uuid": BP_DATA, "version": VERSION},
                     {"type": "script", "language": "javascript", "uuid": BP_SCRIPT, "entry": "scripts/main.js", "version": VERSION}],
