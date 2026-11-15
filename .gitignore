@@ -6,3 +6,4 @@ __pycache__/
 imperium/blend/*.blend
 !imperium/blend/roman_city_final.blend
 imperium/renders/walk_frames/
+imperium/dist_artifact/
