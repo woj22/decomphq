@@ -5,7 +5,7 @@ A small, explorable, low-poly alien world. It is made procedurally in **Blender*
 ![spawn](screenshots/01_spawn.jpg)
 
 ## What's in it
-- **Terrain:** a ~180 m explorable bowl enclosed by terraced, strata-banded cliffs. It also has four stepped mesas, wind-carved ridges and a basin holding a **glowing teal lake**.
+- **Terrain:** a ~180 m explorable bowl enclosed by terraced, strata-banded cliffs. It also has four stepped mesas, wind-carved ridges and a lake basin with a sandy shelf.
 - **Unusual landforms:** **floating rock islands** with plants on top (they bob slowly), a huge **natural rock arch**, a **hexagonal basalt column field**, curved **thorn spires** and balanced **hoodoo** stacks.
 - **Alien vegetation:**
   - magenta/coral **parasol trees** with hanging bioluminescent seed bulbs
@@ -14,11 +14,12 @@ A small, explorable, low-poly alien world. It is made procedurally in **Blender*
   - tri-colour grass tufts
   - all plants sway in the wind on the GPU
 - **Ancient ruins:**
-  - a **ring shrine** on the temple mesa: a broken stone ring aligned to the gas giant, with a floating glowing core, a monolith circle and grand stairs
+  - a **ring shrine** on the temple mesa: a broken standing stone ring with a floating glowing core, a monolith circle and grand stairs
   - a ruined **colonnade** with fallen pillars
   - a half-sunk **gateway**
   - glyph-lit **monoliths** and wall fragments
-- **Sky:** a huge **ringed gas giant** with bands, ring shadows and a terminator, plus a low dusk sun, a small moon, stars and a faint nebula. It is all analytic in one shader, with no textures.
+- **Water:** transparent lake water with Gerstner waves, rippling highlights, sky reflections and sun glints. Its colour deepens with depth, you can see the lake bed in the shallows, and foam laps the shore.
+- **Sky:** a natural dusk gradient with a low sun and halo, a small moon and faint stars. It is all analytic in one shader, with no textures.
 - **Atmosphere:** height + distance fog with sun scatter, soft glow on emissives, drifting spore particles and baked ambient occlusion.
 
 ## Explore it
@@ -46,8 +47,8 @@ alien_planet/shots.sh OUTDIR [WxH] [--touch]    renders the screenshot gallery h
   - `solid` for terrain, rocks and ruins
   - `flora` for sway and leaf translucency
   - `glow` for unshaded pulsing emissives
-  - `liquid` for the lake
-  - `sky` for the gas giant and sky
+  - `water` for the transparent lake (waves, depth tint, foam)
+  - `sky` for the dusk sky
 
 ### Naming conventions (Blender object → Godot behaviour)
 | Prefix | Behaviour |
@@ -62,7 +63,7 @@ alien_planet/shots.sh OUTDIR [WxH] [--touch]    renders the screenshot gallery h
 - ~70k triangles in the whole world, in 58 merged objects chunked on a 4×4 grid so the engine can frustum-cull them.
 - Typically 50–150 draw calls per frame, shadow pass included.
 - No textures at all. Colour is per-face vertex colour, and ambient occlusion is baked into it, so it costs nothing at runtime.
-- 5 shader materials, 1 shadowed directional light (2 cascades, 80 m), 1 unshadowed fill light and 1 omni light.
+- 5 shader materials plus the water (one transparent ~13k-triangle plane, which reads the depth buffer), 1 shadowed directional light (2 cascades, 80 m), 1 unshadowed fill light and 1 omni light.
 - The sky is static, so its radiance and ambient are computed once.
 - Not yet profiled on a real device. Levers if needed: `directional_shadow_max_distance`, the `Detail_` visibility range, the Glow setting, and `scaling_3d_scale`.
 

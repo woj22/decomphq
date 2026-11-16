@@ -43,7 +43,7 @@ MESAS = [TEMPLE + (2.0,), (-58.0, -8.0, 11.0, 6.5, 1.6), (54.0, -46.0, 13.0, 11.
          (-24.0, 58.0, 9.0, 5.0, 1.4)]
 SPAWN = (-36.0, 16.0)
 STAIR_DIR = Vector((-0.86, -0.51))                     # from temple centre towards spawn
-PLANET_AZ = math.radians(20)                           # ringed planet: azimuth from +X (east) towards +Y
+PLANET_AZ = math.radians(20)                           # view axis: spawn facing and the shrine ring's facing
 SUN_AZ, SUN_EL = math.radians(-62), math.radians(21)   # low warm sun in the south-east
 
 CHUNK = 57.5
@@ -96,7 +96,7 @@ def base_height(x, y):
     # lake basin, warped edge
     lx, ly, lr = LAKE
     d = (math.hypot(x - lx, y - ly) + fbm(x * 0.05, y * 0.05, 2, 9.0) * 5.0) / lr
-    h = lerp(-4.6, h, smooth(0.45, 1.25, d))
+    h = lerp(-3.4 + fbm(x * 0.08, y * 0.08, 2, 15.0) * 0.8, h, smooth(0.35, 1.2, d))
     # terraced mesas with flat tops
     for i, (mx, my, mr, mh, st) in enumerate(MESAS):
         dd = math.hypot(x - mx, y - my) + fbm(x * 0.09, y * 0.09, 2, 20.0 + i) * (1.0 if i == 0 else 3.0)
@@ -147,14 +147,15 @@ def jit(c, amt=0.05, rng=R):
 
 
 C = {k: hexc(v) for k, v in dict(
-    dust='#5c4277', mauve='#7d4f86', dune='#a4637f', moss='#2f7a78', mossl='#3f9a8a', shore='#c97f5c',
-    wet='#3d2c5c', bed='#2a2050', cliff1='#a3524b', cliff2='#7c3f58', cliff3='#c98a5f', cliff4='#5b3d63',
-    rock='#6e4870', rock2='#9a5450', rockt='#b8796a', slate='#55497a', slatet='#8a76b0',
-    ruin='#d7c4a0', ruind='#a99479', ruinm='#6f9a8c', bone='#e8dcc0',
-    trunk='#3a2848', trunk2='#5c3a68', canopy='#d9488f', canopy2='#f27aa8', coral='#ff7a59',
-    teal='#28b39c', tealtip='#7ff0d0', amber='#f2a93b', amberd='#ff5e3a', lime='#a4e05a',
-    grass1='#3fa58f', grass2='#7fd1a0', grass3='#d36ba6', grass4='#e0a24f',
-    gcyan='#6ff7ff', glime='#c4ff70', gpink='#ff6fd8', gviolet='#9a84ff', gglyph='#5ff2dc',
+    # Vibrant-but-natural palette: alien hues kept, saturation pulled towards real rock, sand and foliage.
+    dust='#6a5468', mauve='#836272', dune='#b27f6c', moss='#3f7a66', mossl='#568c6c', shore='#bf9a74',
+    wet='#9a8a66', bed='#7c7660', cliff1='#a8644c', cliff2='#7c5052', cliff3='#c9a070', cliff4='#5d4c5a',
+    rock='#6c5a62', rock2='#96644e', rockt='#b48e72', slate='#4f4b60', slatet='#7c7690',
+    ruin='#d6c6a4', ruind='#a8977c', ruinm='#7d9a7a', bone='#e6dcc4',
+    trunk='#3e3038', trunk2='#5c4852', canopy='#c4486e', canopy2='#dc7890', coral='#e07450',
+    teal='#33a084', tealtip='#78d2b0', amber='#e2a444', amberd='#d4603a', lime='#a4d85e',
+    grass1='#4f9c6c', grass2='#88c28a', grass3='#c47490', grass4='#cc9e56',
+    gcyan='#7ae6ee', glime='#c4f474', gpink='#f07cc6', gviolet='#9a8cf0', gglyph='#62eedc',
 ).items()}
 
 
@@ -364,7 +365,8 @@ def build_terrain():
                 c = mix(c, C['cliff4'], 0.3)
             return shade(c, 0.8 + 0.3 * slope)
         if z < WATER - 0.2:
-            return mix(C['bed'], C['wet'], smooth(-4.5, WATER, z))
+            c = mix(C['bed'], C['wet'], smooth(-3.6, WATER, z))
+            return mix(c, C['moss'], 0.35 * smooth(0.0, 0.4, fbm(x * 0.1, y * 0.1, 2, 21.0)))   # weed patches
         dl = math.hypot(x - lx, y - ly) / lr
         b_forest = fbm(x * 0.025 + 100, y * 0.025, 3)
         b_meadow = fbm(x * 0.03 - 50, y * 0.03, 3, 2.0)

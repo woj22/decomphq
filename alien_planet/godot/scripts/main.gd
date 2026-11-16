@@ -9,15 +9,14 @@ const WORLD_GLB := "res://assets/world.glb"
 const WATER := -1.2
 const LAKE := Vector3(14.0, -10.0, 25.0)       # blender x, y, radius
 const SPAWN_B := Vector2(-36.0, 16.0)
-const PLANET_AZ := 20.0                         # degrees, from east (+X) towards north (+Y)
-const PLANET_EL := 27.0
+const VIEW_AZ := 20.0                           # spawn facing / shrine ring axis, degrees from east (+X) towards north (+Y)
 const SUN_AZ := -62.0
 const SUN_EL := 21.0
 
 const SOLID := preload("res://shaders/solid.gdshader")
 const FLORA := preload("res://shaders/flora.gdshader")
 const GLOW := preload("res://shaders/glow.gdshader")
-const LIQUID := preload("res://shaders/liquid.gdshader")
+const WATER_SHADER := preload("res://shaders/water.gdshader")
 const SKY := preload("res://shaders/sky.gdshader")
 
 var mats := {}
@@ -81,18 +80,10 @@ func _make_materials() -> void:
 # ---------------------------------------------------------------------------------------- sky, light, fog
 func _make_environment() -> void:
 	var sun_dir := dir_from(SUN_AZ, SUN_EL)
-	var planet_dir := dir_from(PLANET_AZ, PLANET_EL)
-	var side := planet_dir.cross(Vector3.UP).normalized()
-	var ring_axis := (Vector3.UP + (-planet_dir) * 0.95 + side * 0.4).normalized()
-	# light the giant from over the viewer's shoulder so we see a broad gibbous face, not its night side
-	var planet_light := (sun_dir - planet_dir * 0.9 + Vector3.UP * 0.2).normalized()
 
 	var sky_mat := ShaderMaterial.new()
 	sky_mat.shader = SKY
 	sky_mat.set_shader_parameter("sun_dir", sun_dir)
-	sky_mat.set_shader_parameter("planet_dir", planet_dir)
-	sky_mat.set_shader_parameter("ring_axis", ring_axis)
-	sky_mat.set_shader_parameter("planet_light", planet_light)
 	sky_mat.set_shader_parameter("moon_dir", dir_from(150.0, 38.0))
 	var sky := Sky.new()
 	sky.sky_material = sky_mat
@@ -103,7 +94,7 @@ func _make_environment() -> void:
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	env.ambient_light_sky_contribution = 0.75
-	env.ambient_light_color = Color(0.5, 0.42, 0.72)
+	env.ambient_light_color = Color(0.5, 0.52, 0.68)
 	env.ambient_light_energy = 1.0
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
@@ -111,22 +102,22 @@ func _make_environment() -> void:
 	env.tonemap_white = 1.6
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
-	env.fog_light_color = Color(0.66, 0.5, 0.72)
+	env.fog_light_color = Color(0.72, 0.66, 0.72)
 	env.fog_light_energy = 1.0
 	env.fog_sun_scatter = 0.55
-	env.fog_density = 0.0062
+	env.fog_density = 0.005
 	env.fog_sky_affect = 0.0
 	env.fog_height = 1.0
 	env.fog_height_density = 0.012
 	env.glow_enabled = true
-	env.glow_intensity = 0.75
+	env.glow_intensity = 0.5
 	env.glow_strength = 1.0
 	env.glow_bloom = 0.04
 	env.glow_hdr_threshold = 0.85
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
 	env.adjustment_enabled = true
-	env.adjustment_saturation = 1.12
-	env.adjustment_contrast = 1.08
+	env.adjustment_saturation = 1.1
+	env.adjustment_contrast = 1.06
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
@@ -135,7 +126,7 @@ func _make_environment() -> void:
 	sun.name = "Sun"
 	add_child(sun)
 	sun.look_at_from_position(Vector3.ZERO, -sun_dir, Vector3.UP)
-	sun.light_color = Color(1.0, 0.79, 0.6)
+	sun.light_color = Color(1.0, 0.84, 0.68)
 	sun.light_energy = 1.5
 	sun.light_angular_distance = 1.2      # soft penumbra with the PCF filter
 	sun.shadow_enabled = true
@@ -150,12 +141,12 @@ func _make_environment() -> void:
 	sun.shadow_blur = 1.6
 	sun.shadow_opacity = 0.92
 
-	var fill := DirectionalLight3D.new()   # cool bounce light from the giant planet, no shadows
-	fill.name = "PlanetShine"
+	var fill := DirectionalLight3D.new()   # cool skylight from the opposite side, no shadows
+	fill.name = "SkyFill"
 	add_child(fill)
-	fill.look_at_from_position(Vector3.ZERO, -planet_dir, Vector3.UP)
-	fill.light_color = Color(0.62, 0.55, 0.95)
-	fill.light_energy = 0.28
+	fill.look_at_from_position(Vector3.ZERO, -dir_from(SUN_AZ + 180.0, 35.0), Vector3.UP)
+	fill.light_color = Color(0.6, 0.68, 0.95)
+	fill.light_energy = 0.22
 	fill.shadow_enabled = false
 
 
@@ -204,10 +195,12 @@ func _setup_mesh(mi: MeshInstance3D) -> void:
 func _make_lake() -> void:
 	var pm := PlaneMesh.new()
 	pm.size = Vector2(120, 120)
-	pm.subdivide_width = 24
-	pm.subdivide_depth = 24
+	pm.subdivide_width = 80   # ~1.5 m quads for the Gerstner waves (~13k tris)
+	pm.subdivide_depth = 80
 	var m := ShaderMaterial.new()
-	m.shader = LIQUID
+	m.shader = WATER_SHADER
+	if _arg("--debug-water") != "":
+		m.set_shader_parameter("debug_depth", true)
 	var lake := MeshInstance3D.new()
 	lake.name = "Lake"
 	lake.mesh = pm
@@ -222,7 +215,7 @@ func _make_player() -> void:
 	player.name = "Explorer"
 	add_child(player)
 	var p := b2g(SPAWN_B.x, SPAWN_B.y, 0.0)
-	player.spawn_at(Vector3(p.x, 3.0, p.z), dir_from(PLANET_AZ, 0.0))
+	player.spawn_at(Vector3(p.x, 3.0, p.z), dir_from(VIEW_AZ, 0.0))
 	var ui := preload("res://scripts/touch_controls.gd").new()
 	ui.explorer = player
 	ui.force_touch = _arg("--touch") != ""
@@ -260,6 +253,7 @@ func _run_shots(dir: String) -> void:
 		["07_colonnade", Vector3(-34, 9, 1.7), Vector3(-6, -2, 3)],
 		["08_gateway", Vector3(-8, 28, 1.7), Vector3(-16, 42, 7)],
 		["09_ring_shrine", Vector3(34, 25, 1.7), Vector3(44, 32, 14)],
+		["11_water_close", Vector3(-11, -15, 2.4), Vector3(-2, -12, -2.5)],
 		["10_basalt", Vector3(-27, -31, 7.0), Vector3(-42, -40, 1)],
 	]
 	player.frozen = true

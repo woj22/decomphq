@@ -2,7 +2,7 @@
 shader_type spatial;
 render_mode unshaded, cull_back, shadows_disabled;
 
-uniform float intensity = 1.25;
+uniform float intensity = 1.1;
 uniform float pulse = 0.18;
 uniform float sway_amount = 0.22;
 uniform float sway_speed = 1.1;
