@@ -1,0 +1,4 @@
+blender/*.blend1
+blender/__pycache__/
+godot/.godot/
+build/
