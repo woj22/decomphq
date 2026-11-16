@@ -34,8 +34,8 @@ func _ready() -> void:
 	hint.add_theme_font_size_override("font_size", 17)
 	hint.add_theme_color_override("font_color", Color(1, 0.95, 0.9, 0.9))
 	hint.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
-	hint.text = ("Left: move (push far to run)   Right: drag to look   JUMP   FLY" if touch_mode else
-		"Click to look around   WASD move   Shift run   Space jump   F fly (Space/Ctrl up/down)   Esc release mouse")
+	hint.text = ("Left: move (push far to run)   Right: drag to look   JUMP   FLY   CAST: species gallery" if touch_mode else
+		"Click to look around   WASD move   Shift run   Space jump   F fly (Space/Ctrl up/down)   Esc release mouse   G species gallery")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(hint)
 	hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
@@ -51,6 +51,21 @@ func _btn_fly() -> Vector2:
 	return Vector2(size.x - 70, 70)
 
 
+func _btn_cast() -> Vector2:
+	return Vector2(size.x - 70, 170)
+
+
+## World <-> species gallery (G on desktop, CAST/WORLD button on touch).
+func _swap_scene() -> void:
+	var gallery := get_tree().current_scene.scene_file_path.ends_with("gallery.tscn")
+	get_tree().change_scene_to_file.call_deferred("res://scenes/main.tscn" if gallery else "res://scenes/gallery.tscn")
+
+
+func _unhandled_input(e: InputEvent) -> void:
+	if e is InputEventKey and e.pressed and not e.echo and e.physical_keycode == KEY_G:
+		_swap_scene()
+
+
 func _input(e: InputEvent) -> void:
 	if not touch_mode:
 		return
@@ -62,6 +77,8 @@ func _input(e: InputEvent) -> void:
 				explorer.touch_jump = true
 			elif e.position.distance_to(_btn_fly()) < 46:
 				explorer.toggle_fly()
+			elif e.position.distance_to(_btn_cast()) < 46:
+				_swap_scene()
 			elif e.position.x < size.x * 0.45 and stick_id == -1:
 				stick_id = e.index
 				stick_origin = e.position
@@ -121,6 +138,11 @@ func _draw() -> void:
 	draw_circle(fc, 42, Color(1.0, 0.45, 0.8, 0.4 if explorer.fly else 0.16))
 	draw_arc(fc, 42, 0, TAU, 40, strong, 2.0, true)
 	_label(fc, "FLY")
+	var cc := _btn_cast()
+	draw_circle(cc, 42, Color(0.95, 0.75, 0.3, 0.16))
+	draw_arc(cc, 42, 0, TAU, 40, strong, 2.0, true)
+	var gal := get_tree().current_scene != null and get_tree().current_scene.scene_file_path.ends_with("gallery.tscn")
+	_label(cc, "WORLD" if gal else "CAST")
 
 
 func _label(c: Vector2, s: String) -> void:

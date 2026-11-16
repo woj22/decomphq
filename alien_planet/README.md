@@ -67,5 +67,25 @@ alien_planet/shots.sh OUTDIR [WxH] [--touch]    renders the screenshot gallery h
 - The sky is static, so its radiance and ambient are computed once.
 - Not yet profiled on a real device. Levers if needed: `directional_shadow_max_distance`, the `Detail_` visibility range, the Glow setting, and `scaling_3d_scale`.
 
+## Inhabitants: six species
+`blender/build_characters.py` builds the cast: 31 individuals across six original species, all on **one shared humanoid skeleton**. Run it with `python3 alien_planet/blender/build_characters.py`; it takes about 20 s. It writes `godot/assets/chars/*.glb`, `manifest.json` and `blender/characters.blend`.
+
+| Species | Silhouette and anatomy | Materials and culture |
+|---|---|---|
+| **Humans** | familiar proportions; varied skin tones, hair (crop, long, bun, curls, braid, shaved), beards, builds and ages | woven tunics, coats, robes and vests, scarves, satchels; farmers, traders and wanderers |
+| **Avari** | very tall and slender with a long neck; elongated, back-swept cranium; large dark almond eyes; temple ridges | pale blue, grey or lavender skin; flowing robes with high collars and glyph-lit hems; silver circlets; keepers of the ring-shrines |
+| **Keth** | broad and heavy-limbed with big hands; strong wide jaw; heavy brow; bony crown ridges; slit-pupil amber eyes | subtle scale facets in earthy olive, ochre and umber; leather harnesses, aprons, bronze pauldrons; builders and smiths |
+| **Luma** | slim and elongated; smooth head with two back-swept lobes; luminous eyes | pastel, softly translucent skin with glowing lines, dots or spirals that read strongly in the dark; light wraps in deep colours |
+| **Vorn** | narrow "wasp" waist; segmented chest, crown, forearm and shin carapace; four or six eyes; antennae; mouth palps; hooked fingers | shell colours over soft skin; cloth wraps, tool belts, satchels; tinkerers |
+| **Murrai** | upright, furred, long fin-like swept-back ears, crest mane, tail, cheek ruffs, brow feelers, flat bar-nose | stripes, spots, saddles and bands; vests, wraps, shawls, bead necklaces; nomads of the grass basins |
+
+Within each species individuals vary in age (young, adult, elder: height, head ratio, posture, grey hair, canes), build (slim, average, heavy), sex, face (jaw, eye size and spacing, brow angle, smile), hair, palette, outfit and carried items.
+
+**Shared animation framework:** every character has the same bones (`hips, spine, chest, neck, head, shoulder/upper_arm/forearm/hand.L/R, thigh/shin/foot.L/R`) and the same axis convention. Optional extra bones exist only where needed: `tail.1-3`, `ear.L/R`, `antenna.L/R`. Each file carries the same animations, fitted to its proportions: **Idle, Walk, Run, Sit, Talk, Attack**. Held items (spear, staff, hammer, pick, blade, cane, tablet, lantern) are bone-attached to `hand.R` or `hand.L`, and each character is about 750–1,500 triangles. `godot/scripts/cast.gd` loads and plays them.
+
+**Viewing:** `godot/scenes/gallery.tscn` shows the lineup plus an animation sheet; press **G** or tap **CAST** in-game to switch between it and the world. A dozen residents idle, talk and sit around the colonnade, gateway, lake, grove and basalt field (looping animations only, no AI).
+
+![species](screenshots/species/g_avari_face.jpg)
+
 ## Next steps (when expanding)
 More biomes beyond the rim (the colour scheme here is this region's identity), a day/dusk cycle, mesh LODs or impostors for distant chunks, ambient audio, and streaming chunks for a bigger map.

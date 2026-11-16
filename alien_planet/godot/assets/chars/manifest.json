@@ -1,0 +1,395 @@
+[
+ {
+  "id": "human_0",
+  "species": "human",
+  "name": "Ilsa",
+  "age": "adult",
+  "build": "average",
+  "height": 1.622,
+  "props": [
+   "spear"
+  ],
+  "tris": 1325,
+  "info": "Humans: long-settled people of the planet, farmers, traders and wanderers."
+ },
+ {
+  "id": "human_1",
+  "species": "human",
+  "name": "Dorran",
+  "age": "adult",
+  "build": "average",
+  "height": 1.712,
+  "props": [
+   "pick",
+   "lantern"
+  ],
+  "tris": 1197,
+  "info": "Humans: long-settled people of the planet, farmers, traders and wanderers."
+ },
+ {
+  "id": "human_2",
+  "species": "human",
+  "name": "Mbeki",
+  "age": "adult",
+  "build": "slim",
+  "height": 1.793,
+  "props": [],
+  "tris": 1125,
+  "info": "Humans: long-settled people of the planet, farmers, traders and wanderers."
+ },
+ {
+  "id": "human_3",
+  "species": "human",
+  "name": "Senna",
+  "age": "adult",
+  "build": "average",
+  "height": 1.608,
+  "props": [
+   "tablet"
+  ],
+  "tris": 1373,
+  "info": "Humans: long-settled people of the planet, farmers, traders and wanderers."
+ },
+ {
+  "id": "human_4",
+  "species": "human",
+  "name": "Old Haro",
+  "age": "elder",
+  "build": "average",
+  "height": 1.78,
+  "props": [
+   "cane"
+  ],
+  "tris": 1197,
+  "info": "Humans: long-settled people of the planet, farmers, traders and wanderers."
+ },
+ {
+  "id": "human_5",
+  "species": "human",
+  "name": "Pip",
+  "age": "young",
+  "build": "slim",
+  "height": 1.04,
+  "props": [],
+  "tris": 1145,
+  "info": "Humans: long-settled people of the planet, farmers, traders and wanderers."
+ },
+ {
+  "id": "avari_0",
+  "species": "avari",
+  "name": "Ithelle",
+  "age": "adult",
+  "build": "heavy",
+  "height": 2.014,
+  "props": [
+   "staff"
+  ],
+  "tris": 1179,
+  "info": "Avari: tall, slender keepers of the old ring-shrines and their glyph lore."
+ },
+ {
+  "id": "avari_1",
+  "species": "avari",
+  "name": "Saevor",
+  "age": "adult",
+  "build": "slim",
+  "height": 2.087,
+  "props": [
+   "tablet"
+  ],
+  "tris": 1130,
+  "info": "Avari: tall, slender keepers of the old ring-shrines and their glyph lore."
+ },
+ {
+  "id": "avari_2",
+  "species": "avari",
+  "name": "Myriel",
+  "age": "adult",
+  "build": "slim",
+  "height": 2.009,
+  "props": [
+   "lantern"
+  ],
+  "tris": 1135,
+  "info": "Avari: tall, slender keepers of the old ring-shrines and their glyph lore."
+ },
+ {
+  "id": "avari_3",
+  "species": "avari",
+  "name": "Orrandin",
+  "age": "adult",
+  "build": "slim",
+  "height": 2.204,
+  "props": [
+   "blade"
+  ],
+  "tris": 1179,
+  "info": "Avari: tall, slender keepers of the old ring-shrines and their glyph lore."
+ },
+ {
+  "id": "avari_4",
+  "species": "avari",
+  "name": "Elder Vaesh",
+  "age": "elder",
+  "build": "slim",
+  "height": 1.934,
+  "props": [
+   "staff"
+  ],
+  "tris": 1111,
+  "info": "Avari: tall, slender keepers of the old ring-shrines and their glyph lore."
+ },
+ {
+  "id": "keth_0",
+  "species": "keth",
+  "name": "Gruda",
+  "age": "adult",
+  "build": "average",
+  "height": 1.896,
+  "props": [
+   "hammer"
+  ],
+  "tris": 1021,
+  "info": "Keth: broad, scaled builders and smiths; patient, proud and plain-spoken."
+ },
+ {
+  "id": "keth_1",
+  "species": "keth",
+  "name": "Tarrok",
+  "age": "adult",
+  "build": "average",
+  "height": 1.869,
+  "props": [
+   "pick"
+  ],
+  "tris": 1003,
+  "info": "Keth: broad, scaled builders and smiths; patient, proud and plain-spoken."
+ },
+ {
+  "id": "keth_2",
+  "species": "keth",
+  "name": "Hessa",
+  "age": "adult",
+  "build": "average",
+  "height": 1.951,
+  "props": [],
+  "tris": 1015,
+  "info": "Keth: broad, scaled builders and smiths; patient, proud and plain-spoken."
+ },
+ {
+  "id": "keth_3",
+  "species": "keth",
+  "name": "Borro",
+  "age": "adult",
+  "build": "average",
+  "height": 1.837,
+  "props": [
+   "spear"
+  ],
+  "tris": 947,
+  "info": "Keth: broad, scaled builders and smiths; patient, proud and plain-spoken."
+ },
+ {
+  "id": "keth_4",
+  "species": "keth",
+  "name": "Old Kaldrun",
+  "age": "elder",
+  "build": "average",
+  "height": 1.955,
+  "props": [
+   "cane"
+  ],
+  "tris": 1055,
+  "info": "Keth: broad, scaled builders and smiths; patient, proud and plain-spoken."
+ },
+ {
+  "id": "luma_0",
+  "species": "luma",
+  "name": "Seylin",
+  "age": "adult",
+  "build": "heavy",
+  "height": 1.901,
+  "props": [
+   "lantern"
+  ],
+  "tris": 999,
+  "info": "Luma: slim, softly glowing folk whose skin patterns brighten in the dark."
+ },
+ {
+  "id": "luma_1",
+  "species": "luma",
+  "name": "Aoren",
+  "age": "adult",
+  "build": "heavy",
+  "height": 1.804,
+  "props": [
+   "staff"
+  ],
+  "tris": 907,
+  "info": "Luma: slim, softly glowing folk whose skin patterns brighten in the dark."
+ },
+ {
+  "id": "luma_2",
+  "species": "luma",
+  "name": "Fennia",
+  "age": "adult",
+  "build": "heavy",
+  "height": 1.717,
+  "props": [],
+  "tris": 977,
+  "info": "Luma: slim, softly glowing folk whose skin patterns brighten in the dark."
+ },
+ {
+  "id": "luma_3",
+  "species": "luma",
+  "name": "Liriel",
+  "age": "adult",
+  "build": "slim",
+  "height": 1.812,
+  "props": [
+   "tablet"
+  ],
+  "tris": 977,
+  "info": "Luma: slim, softly glowing folk whose skin patterns brighten in the dark."
+ },
+ {
+  "id": "luma_4",
+  "species": "luma",
+  "name": "Thaom",
+  "age": "elder",
+  "build": "slim",
+  "height": 1.665,
+  "props": [
+   "cane"
+  ],
+  "tris": 887,
+  "info": "Luma: slim, softly glowing folk whose skin patterns brighten in the dark."
+ },
+ {
+  "id": "vorn_0",
+  "species": "vorn",
+  "name": "Zik-Ara",
+  "age": "adult",
+  "build": "average",
+  "height": 1.653,
+  "props": [
+   "tablet"
+  ],
+  "tris": 1447,
+  "info": "Vorn: plated, many-eyed tinkerers who taste the air with their feelers."
+ },
+ {
+  "id": "vorn_1",
+  "species": "vorn",
+  "name": "Tchoss",
+  "age": "adult",
+  "build": "average",
+  "height": 1.782,
+  "props": [
+   "hammer"
+  ],
+  "tris": 1487,
+  "info": "Vorn: plated, many-eyed tinkerers who taste the air with their feelers."
+ },
+ {
+  "id": "vorn_2",
+  "species": "vorn",
+  "name": "Mivvet",
+  "age": "adult",
+  "build": "heavy",
+  "height": 1.73,
+  "props": [
+   "lantern"
+  ],
+  "tris": 1503,
+  "info": "Vorn: plated, many-eyed tinkerers who taste the air with their feelers."
+ },
+ {
+  "id": "vorn_3",
+  "species": "vorn",
+  "name": "Krell-Oan",
+  "age": "adult",
+  "build": "slim",
+  "height": 1.718,
+  "props": [
+   "blade"
+  ],
+  "tris": 1526,
+  "info": "Vorn: plated, many-eyed tinkerers who taste the air with their feelers."
+ },
+ {
+  "id": "vorn_4",
+  "species": "vorn",
+  "name": "Ossik",
+  "age": "elder",
+  "build": "slim",
+  "height": 1.535,
+  "props": [
+   "cane"
+  ],
+  "tris": 1487,
+  "info": "Vorn: plated, many-eyed tinkerers who taste the air with their feelers."
+ },
+ {
+  "id": "murrai_0",
+  "species": "murrai",
+  "name": "Tamsu",
+  "age": "adult",
+  "build": "average",
+  "height": 1.575,
+  "props": [
+   "spear"
+  ],
+  "tris": 1349,
+  "info": "Murrai: furred, long-eared, tailed nomads of the grass basins."
+ },
+ {
+  "id": "murrai_1",
+  "species": "murrai",
+  "name": "Rhuun",
+  "age": "adult",
+  "build": "heavy",
+  "height": 1.626,
+  "props": [],
+  "tris": 1349,
+  "info": "Murrai: furred, long-eared, tailed nomads of the grass basins."
+ },
+ {
+  "id": "murrai_2",
+  "species": "murrai",
+  "name": "Kiri",
+  "age": "young",
+  "build": "slim",
+  "height": 1.13,
+  "props": [],
+  "tris": 1381,
+  "info": "Murrai: furred, long-eared, tailed nomads of the grass basins."
+ },
+ {
+  "id": "murrai_3",
+  "species": "murrai",
+  "name": "Orbek",
+  "age": "adult",
+  "build": "average",
+  "height": 1.597,
+  "props": [
+   "blade",
+   "lantern"
+  ],
+  "tris": 1349,
+  "info": "Murrai: furred, long-eared, tailed nomads of the grass basins."
+ },
+ {
+  "id": "murrai_4",
+  "species": "murrai",
+  "name": "Old Mahrra",
+  "age": "elder",
+  "build": "average",
+  "height": 1.699,
+  "props": [
+   "staff"
+  ],
+  "tris": 1169,
+  "info": "Murrai: furred, long-eared, tailed nomads of the grass basins."
+ }
+]

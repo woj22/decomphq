@@ -44,6 +44,7 @@ func _ready() -> void:
 	_load_world()
 	_make_lake()
 	_make_player()
+	_spawn_inhabitants.call_deferred()
 	var shots := _arg("--shots")
 	if shots != "":
 		_run_shots.call_deferred(shots)
@@ -225,6 +226,46 @@ func _make_player() -> void:
 	add_child(layer)
 
 
+# ---------------------------------------------------------------------------------------- inhabitants
+## A few residents placed around the world so it feels lived in (static animation loops, no AI).
+## [character id, blender x, y, animation, look-at blender x, y]
+const INHABITANTS := [
+	["human_0", -22.0, 5.0, "Talk", -19.5, 3.0], ["avari_1", -19.5, 3.0, "Talk", -22.0, 5.0],
+	["keth_3", 18.6, 21.2, "Idle", 0.0, 10.0], ["avari_4", 38.5, 27.5, "Idle", 44.0, 32.0],
+	["murrai_1", -9.5, -15.5, "Sit", 10.0, -10.0], ["murrai_2", -8.0, -17.0, "Idle", -9.5, -15.5],
+	["keth_0", -12.5, 34.0, "Idle", -6.5, 33.0], ["vorn_1", -9.5, 35.0, "Talk", -12.0, 37.0],
+	["luma_0", -49.0, -11.0, "Idle", -36.0, 0.0], ["vorn_0", -29.0, -29.0, "Talk", -27.0, -31.0],
+	["human_1", -31.0, 12.0, "Idle", -36.0, 16.0], ["luma_3", -27.0, -31.0, "Talk", -29.0, -29.0],
+]
+
+
+func _spawn_inhabitants() -> void:
+	for i in 2:
+		await get_tree().physics_frame
+	var root := Node3D.new()
+	root.name = "Inhabitants"
+	add_child(root)
+	for e in INHABITANTS:
+		var c := Cast.spawn(e[0], e[3])
+		var p := b2g(e[1], e[2], 0.0)
+		p.y = _ground_y(p)
+		root.add_child(c)
+		c.position = p
+		var tgt := b2g(e[4], e[5], 0.0)
+		c.rotation.y = atan2(tgt.x - p.x, tgt.z - p.z)   # models face +Z
+		if e[3] == "Sit":   # a stone to sit on, at knee height
+			var seat := MeshInstance3D.new()
+			var bm := BoxMesh.new()
+			bm.size = Vector3(0.7, 0.5, 0.55)
+			seat.mesh = bm
+			var sm := StandardMaterial3D.new()
+			sm.albedo_color = Color(0.45, 0.4, 0.36)
+			sm.roughness = 1.0
+			seat.material_override = sm
+			c.add_child(seat)
+			seat.position = Vector3(0, 0.22, -0.18)
+
+
 func _process(delta: float) -> void:
 	t += delta
 	for f in floaters:
@@ -255,6 +296,9 @@ func _run_shots(dir: String) -> void:
 		["08_gateway", Vector3(-8, 28, 1.7), Vector3(-16, 42, 7)],
 		["09_ring_shrine", Vector3(34, 25, 1.7), Vector3(44, 32, 14)],
 		["11_water_close", Vector3(-11, -15, 2.4), Vector3(-2, -12, -2.5)],
+		["12_residents_colonnade", Vector3(-27.5, 5.6, 1.6), Vector3(-20.7, 4.0, 1.2)],
+		["13_residents_gateway", Vector3(-6.5, 33.0, 1.6), Vector3(-11, 36.5, 1.3)],
+		["14_residents_lake", Vector3(-7.0, -19.5, 1.5), Vector3(-9.0, -15.5, 0.6)],
 		["10_basalt", Vector3(-27, -31, 7.0), Vector3(-42, -40, 1)],
 	]
 	player.frozen = true
