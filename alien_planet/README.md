@@ -19,7 +19,7 @@ A small, explorable, low-poly alien world. It is made procedurally in **Blender*
   - a half-sunk **gateway**
   - glyph-lit **monoliths** and wall fragments
 - **Water:** stylised low-poly lake water that matches the faceted world. It has a gently rolling faceted surface, sparkling sun glints and a soft sky reflection. It is clearly transparent: the sandy bed, rocks, weed, coral and crystals show through, tinted from turquoise to deep blue with depth. Crisp foam rings lap the shore and the coral that breaks the surface.
-- **Sky:** a natural dusk gradient with a low sun and halo, a small moon and faint stars. It is all analytic in one shader, with no textures.
+- **Sky:** a bright late-morning sky, a sun with a halo, a small moon, and big low-poly cumulus clouds (unshaded, no fog). The sky itself is one analytic shader with no textures.
 - **Atmosphere:** height + distance fog with sun scatter, soft glow on emissives, drifting spore particles and baked ambient occlusion.
 
 ## Explore it
@@ -66,6 +66,30 @@ alien_planet/shots.sh OUTDIR [WxH] [--touch]    renders the screenshot gallery h
 - 5 shader materials plus the water (one transparent ~13k-triangle plane, which reads the depth buffer), 1 shadowed directional light (2 cascades, 80 m), 1 unshadowed fill light and 1 omni light.
 - The sky is static, so its radiance and ambient are computed once.
 - Not yet profiled on a real device. Levers if needed: `directional_shadow_max_distance`, the `Detail_` visibility range, the Glow setting, and `scaling_3d_scale`.
+
+## Farming valley
+A pass through the northern cliffs opens into a green valley about 120 m wide, under grassy hills with sandstone faces. The farm code is in `blender/farm.py`; its layout constants also shape the terrain.
+- **Wheat that blows in the wind:**
+  - five fields of gold, copper and pale "silverwheat", one of them round under the irrigator
+  - each field is a low, lumpy golden *canopy* (a few hundred triangles) with stalks and grain heads poking through, so it reads dense and plush cheaply on mobile
+  - the `wheat` shader rolls gust waves across the fields, adds flutter and brightens the heads where a gust passes
+  - one field is half harvested, with a cut wheat wall and stubble
+- **Row crops:** purple bulbroot and blue kale; lavender along the fences and roads; shrubs; flat-topped shade trees.
+- **Homesteads:**
+  - a farm hall in cream plaster with a terracotta hip roof, an arcade porch, guild banners (teal with a golden sun) and a domed tower piped to the silos
+  - a vaulted barn, silos, a water tower, a greenhouse dome, storage pods, round thatched farmhouses
+  - a well, carts, hay-cube stacks, crates, fences with gates, dirt roads and farmyards
+- **Alien farm machinery:**
+  - a four-legged walking harvester with a spinning reel
+  - a cargo hauler loaded with hay cubes
+  - quad-rotor drones patrolling the fields
+  - a rotating centre-pivot irrigator
+  - a crawler tractor on ball wheels
+  - windmills with turning rotors, weather towers and moisture-condenser spires
+- **People at work:** residents hoe the bulbroot rows, repair the tractor, chat in the yards and sit on porches.
+- **Distant city:** spires on the northern plateau rise above the rim.
+
+Motion is set up by name: `Spin_<axis>_<speed>_*` rotates and `Mover_<metres>_*` glides back and forth (see `main.gd`).
 
 ## Inhabitants: six species
 `blender/build_characters.py` builds the cast: 31 individuals across six original species, all on **one shared humanoid skeleton**. Run it with `python3 alien_planet/blender/build_characters.py`; it takes about 20 s. It writes `godot/assets/chars/*.glb`, `manifest.json` and `blender/characters.blend`.

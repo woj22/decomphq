@@ -9,7 +9,7 @@ const FLY := 16.0
 const JUMP := 5.2
 const GRAVITY := 11.0          # a little lighter than Earth
 const EYE := 1.62
-const BOUND := 96.0
+const BOUND := 168.0
 
 var cam: Camera3D
 var yaw := 0.0
@@ -132,11 +132,8 @@ func _physics_process(dt: float) -> void:
 		_bob += dt * hs * 1.6
 	cam.position.y = lerpf(cam.position.y, EYE + (sin(_bob) * 0.04 if not fly else 0.0), clampf(dt * 10.0, 0.0, 1.0))
 	# keep inside the bowl
-	var flat := Vector2(position.x, position.z)
-	if flat.length() > BOUND:
-		flat = flat.normalized() * BOUND
-		position.x = flat.x
-		position.z = flat.y
+	position.x = clampf(position.x, -BOUND, BOUND)   # the cliffs are the real boundary; this only stops flying off
+	position.z = clampf(position.z, -BOUND, BOUND)
 	if position.y < -40.0 or position.y > 160.0:
 		position = spawn_point
 		velocity = Vector3.ZERO

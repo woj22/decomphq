@@ -10,17 +10,21 @@ const WATER := -1.2
 const LAKE := Vector3(14.0, -10.0, 25.0)       # blender x, y, radius
 const SPAWN_B := Vector2(-36.0, 16.0)
 const VIEW_AZ := 20.0                           # spawn facing / shrine ring axis, degrees from east (+X) towards north (+Y)
-const SUN_AZ := -62.0
-const SUN_EL := 21.0
+const SUN_AZ := -55.0
+const SUN_EL := 42.0   # bright late-morning sun
 
 const SOLID := preload("res://shaders/solid.gdshader")
 const FLORA := preload("res://shaders/flora.gdshader")
 const GLOW := preload("res://shaders/glow.gdshader")
 const WATER_SHADER := preload("res://shaders/water.gdshader")
 const SKY := preload("res://shaders/sky.gdshader")
+const WHEAT := preload("res://shaders/wheat.gdshader")
+const CLOUD := preload("res://shaders/cloud.gdshader")
 
 var mats := {}
 var floaters: Array = []   # [node, base_position, phase]
+var spinners: Array = []   # [node, axis, speed]
+var movers: Array = []     # [node, base_position, local x axis, half distance, phase]
 var core: Node3D
 var player: CharacterBody3D
 var t := 0.0
@@ -76,6 +80,14 @@ func _make_materials() -> void:
 	gs.shader = GLOW
 	gs.set_shader_parameter("sway_amount", 0.0)
 	mats["GlowStill"] = gs
+	var wm := ShaderMaterial.new()
+	wm.shader = WHEAT
+	var wd := dir_from(-30.0, 0.0)   # prevailing wind, towards the north-east
+	wm.set_shader_parameter("wind_dir", Vector2(wd.x, wd.z))
+	mats["Wheat"] = wm
+	var cm := ShaderMaterial.new()
+	cm.shader = CLOUD
+	mats["Cloud"] = cm
 
 
 # ---------------------------------------------------------------------------------------- sky, light, fog
@@ -95,7 +107,7 @@ func _make_environment() -> void:
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	env.ambient_light_sky_contribution = 0.75
-	env.ambient_light_color = Color(0.5, 0.52, 0.68)
+	env.ambient_light_color = Color(0.55, 0.62, 0.78)
 	env.ambient_light_energy = 1.0
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
@@ -103,10 +115,10 @@ func _make_environment() -> void:
 	env.tonemap_white = 1.6
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
-	env.fog_light_color = Color(0.72, 0.66, 0.72)
+	env.fog_light_color = Color(0.74, 0.82, 0.94)
 	env.fog_light_energy = 1.0
 	env.fog_sun_scatter = 0.55
-	env.fog_density = 0.005
+	env.fog_density = 0.0036
 	env.fog_sky_affect = 0.0
 	env.fog_height = 1.0
 	env.fog_height_density = 0.012
@@ -117,7 +129,7 @@ func _make_environment() -> void:
 	env.glow_hdr_threshold = 0.85
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
 	env.adjustment_enabled = true
-	env.adjustment_saturation = 1.1
+	env.adjustment_saturation = 1.08
 	env.adjustment_contrast = 1.06
 	var we := WorldEnvironment.new()
 	we.environment = env
@@ -127,8 +139,8 @@ func _make_environment() -> void:
 	sun.name = "Sun"
 	add_child(sun)
 	sun.look_at_from_position(Vector3.ZERO, -sun_dir, Vector3.UP)
-	sun.light_color = Color(1.0, 0.84, 0.68)
-	sun.light_energy = 1.5
+	sun.light_color = Color(1.0, 0.94, 0.84)
+	sun.light_energy = 1.55
 	sun.light_angular_distance = 1.2      # soft penumbra with the PCF filter
 	sun.shadow_enabled = true
 	# Two cascades: the first 18 m get most of the shadow map (crisp contact shadows), the rest fades out at 80 m.
@@ -163,14 +175,15 @@ func _load_world() -> void:
 func _setup_mesh(mi: MeshInstance3D) -> void:
 	var n := String(mi.name)
 	var mesh := mi.mesh
-	var still := n.begins_with("Deco_") or n.begins_with("Ruin_") or n.begins_with("Rock_")
+	var still := n.begins_with("Deco_") or n.begins_with("Ruin_") or n.begins_with("Rock_") or n.begins_with("Build_") \
+		or n.begins_with("Spin_") or n.begins_with("Mover_")
 	for i in mesh.get_surface_count():
 		var src := mesh.surface_get_material(i)
 		var key := src.resource_name if src else "Terrain"
 		if key == "Glow" and still:
 			key = "GlowStill"
 		mi.set_surface_override_material(i, mats.get(key, mats["Terrain"]))
-	if n == "Terrain" or n.begins_with("Rock_") or n.begins_with("Ruin_"):
+	if n == "Terrain" or n.begins_with("Rock_") or n.begins_with("Ruin_") or n.begins_with("Build_"):
 		var body := StaticBody3D.new()
 		var cs := CollisionShape3D.new()
 		cs.shape = mesh.create_trimesh_shape()
@@ -181,6 +194,21 @@ func _setup_mesh(mi: MeshInstance3D) -> void:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if n.begins_with("Deco_"):
 		mi.visibility_range_end = 140.0
+	if n.begins_with("Wheat_"):   # wind-blown fields: cheap, so no shadow casting; fade out far away
+		mi.visibility_range_end = 120.0
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if n.begins_with("Crop_"):
+		mi.visibility_range_end = 100.0
+	if n.begins_with("Cloud_") or n.begins_with("Far_"):
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if n.begins_with("Spin_"):   # Spin_<axis>_<speed/100>_<id>
+		var parts := n.split("_")
+		var ax: Vector3 = {"x": Vector3.RIGHT, "y": Vector3.UP, "z": Vector3.BACK}[parts[1]]
+		spinners.append([mi, ax, float(parts[2]) / 100.0])
+	if n.begins_with("Mover_"):  # Mover_<distance>_<id>: glide back and forth along local X, hovering
+		var dist := float(n.split("_")[1])
+		if dist > 0.0:
+			movers.append([mi, mi.position, mi.transform.basis.x.normalized(), dist / 2.0, randf() * TAU])
 	if n.begins_with("Float_"):
 		if n == "Float_core":
 			core = mi
@@ -236,6 +264,14 @@ const INHABITANTS := [
 	["keth_0", -12.5, 34.0, "Idle", -6.5, 33.0], ["vorn_1", -9.5, 35.0, "Talk", -12.0, 37.0],
 	["luma_0", -49.0, -11.0, "Idle", -36.0, 0.0], ["vorn_0", -29.0, -29.0, "Talk", -27.0, -31.0],
 	["human_1", -31.0, 12.0, "Idle", -36.0, 16.0], ["luma_3", -27.0, -31.0, "Talk", -29.0, -29.0],
+	# farming valley: people living and working
+	["keth_1", -16.0, 87.0, "Work", -16.0, 92.0], ["human_4", -21.0, 85.5, "Idle", -16.0, 87.0],
+	["vorn_1", -16.6, 102.6, "Work", -18.0, 104.5], ["human_2", -21.5, 101.0, "Talk", -23.5, 99.5],
+	["vorn_2", -23.5, 99.5, "Talk", -21.5, 101.0], ["luma_2", -31.0, 103.2, "Sit", -31.0, 98.0],
+	["human_5", -11.0, 103.5, "Idle", -12.0, 106.5], ["murrai_2", -9.8, 104.8, "Talk", -11.0, 103.5],
+	["avari_2", 22.5, 105.5, "Idle", 25.0, 109.5], ["murrai_0", 12.5, 84.0, "Idle", 14.0, 90.0],
+	["keth_2", 13.0, 109.5, "Talk", 15.0, 108.0], ["human_3", 15.0, 108.0, "Talk", 13.0, 109.5],
+	["murrai_4", 13.8, 110.6, "Sit", 13.0, 106.0], ["human_0", -4.5, 82.0, "Idle", -4.0, 95.0],
 ]
 
 
@@ -246,7 +282,10 @@ func _spawn_inhabitants() -> void:
 	root.name = "Inhabitants"
 	add_child(root)
 	for e in INHABITANTS:
-		var c := Cast.spawn(e[0], e[3])
+		var work: bool = e[3] == "Work"   # farm work: the swing animation, looped (hoeing, hammering)
+		var c := Cast.spawn(e[0], "Attack" if work else e[3])
+		if work:
+			Cast.loop(c, "Attack")
 		var p := b2g(e[1], e[2], 0.0)
 		p.y = _ground_y(p)
 		root.add_child(c)
@@ -268,6 +307,13 @@ func _spawn_inhabitants() -> void:
 
 func _process(delta: float) -> void:
 	t += delta
+	for s in spinners:
+		(s[0] as Node3D).rotate_object_local(s[1], s[2] * delta)
+	for m in movers:
+		var node: Node3D = m[0]
+		var half: float = m[3]
+		var speed := 0.9 / maxf(half, 1.0)   # ~0.9 m/s peak
+		node.position = m[1] + m[2] * sin(t * speed + m[4]) * half + Vector3(0, sin(t * 1.3 + m[4]) * 0.12, 0)
 	for f in floaters:
 		var node: Node3D = f[0]
 		var base: Vector3 = f[1]
@@ -299,11 +345,25 @@ func _run_shots(dir: String) -> void:
 		["12_residents_colonnade", Vector3(-27.5, 5.6, 1.6), Vector3(-20.7, 4.0, 1.2)],
 		["13_residents_gateway", Vector3(-6.5, 33.0, 1.6), Vector3(-11, 36.5, 1.3)],
 		["14_residents_lake", Vector3(-7.0, -19.5, 1.5), Vector3(-9.0, -15.5, 0.6)],
+		["15_farm_pass", Vector3(-4, 66, 2.0), Vector3(-6, 104, 3)],
+		["16_farm_overview", Vector3(-58, 72, 24), Vector3(-4, 108, 0)],
+		["23_farm_hero", Vector3(4, 89, 2.4), Vector3(-22, 110, 4.0)],
+		["24_farm_hero2", Vector3(-30, 96, 2.0), Vector3(0, 118, 3.0)],
+		["17_wheat_field", Vector3(-32, 86, 1.7), Vector3(-46, 94, 1.0)],
+		["18_homestead_a", Vector3(-8, 98, 2.0), Vector3(-26, 108, 3)],
+		["19_harvester", Vector3(4, 112, 2.6), Vector3(-8, 119, 1.5)],
+		["20_pivot_field", Vector3(24, 92, 3.0), Vector3(38, 98, 2.0)],
+		["21_homestead_b", Vector3(8, 100, 2.0), Vector3(20, 113, 3)],
+		["22_workers", Vector3(-11, 83, 1.8), Vector3(-17, 88, 1.0)],
 		["10_basalt", Vector3(-27, -31, 7.0), Vector3(-42, -40, 1)],
 	]
 	player.frozen = true
 	for i in 3:
 		await get_tree().physics_frame
+	var only := _arg("--only")
+	if only != "":
+		var pre: Array = Array(only.split(","))
+		views = views.filter(func(v): return pre.any(func(p): return String(v[0]).begins_with(p)))
 	for v in views:
 		if v[1] != null:
 			var e: Vector3 = v[1]

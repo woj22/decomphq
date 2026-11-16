@@ -25,6 +25,9 @@ import bpy, math, os, random, sys
 from mathutils import Vector, Matrix, noise
 from mathutils.bvhtree import BVHTree
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import farm  # noqa: E402
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 OUT_GLB = os.path.join(ROOT, 'godot', 'assets', 'world.glb')
@@ -34,8 +37,8 @@ SEED = 1337
 R = random.Random(SEED)
 
 # ----------------------------------------------------------------------------------------------- layout
-SIZE = 230.0          # terrain square, metres
-GRID = 104            # quads per side (~2.2 m)
+SIZE = 352.0          # terrain square, metres (bowl + farming valley to the north)
+GRID = 144            # quads per side (~2.45 m)
 WATER = -1.2          # glowing lake surface (the plane itself is made in Godot)
 LAKE = (14.0, -10.0, 25.0)
 TEMPLE = (44.0, 32.0, 15.0, 8.0)                       # mesa with the ring shrine: x, y, radius, height
@@ -44,9 +47,10 @@ MESAS = [TEMPLE + (2.0,), (-58.0, -8.0, 11.0, 6.5, 1.6), (54.0, -46.0, 13.0, 11.
 SPAWN = (-36.0, 16.0)
 STAIR_DIR = Vector((-0.86, -0.51))                     # from temple centre towards spawn
 PLANET_AZ = math.radians(20)                           # view axis: spawn facing and the shrine ring's facing
-SUN_AZ, SUN_EL = math.radians(-62), math.radians(21)   # low warm sun in the south-east
+SUN_AZ, SUN_EL = math.radians(-55), math.radians(42)   # bright late-morning sun in the south-east
 
-CHUNK = 57.5
+CHUNK = SIZE / 6
+PARTS = {}           # moving parts: name -> dict(loc, rz, parent) (geometry emitted in local space)
 EXCL = []             # (x, y, r) circles where scatter must not go
 
 
@@ -87,6 +91,12 @@ def stair_geom():
 STAIR_FOOT, STAIR_TOP = stair_geom()
 
 
+def region_d(x, y):
+    """Signed distance outside the explorable region (negative inside)."""
+    a, b, rr = farm.PASS
+    return min(math.hypot(x, y) - 62.0, farm.ellipse_d(x, y), farm.capsule_d(x, y, a, b, rr))
+
+
 def base_height(x, y):
     """Height before the stair ramp is carved."""
     r = math.hypot(x, y)
@@ -106,8 +116,12 @@ def base_height(x, y):
         if m > 0:
             flat = 1.0 - smooth(mr - 3.0, mr, dd)
             h = h * (1 - flat * (1.0 if i == 0 else 0.7)) + terrace(m * mh, st)
-    # rim of terraced cliffs that encloses the explorable bowl
-    e = smooth(62.0, 98.0, r + fbm(x * 0.03, y * 0.03, 3, 33.0) * 16.0)
+    # the farming valley: a broad, gently rolling floor
+    vm = 1.0 - smooth(-8.0, 2.0, farm.ellipse_d(x, y))
+    if vm > 0:
+        h = h * (1.0 - 0.7 * vm) + 0.9 * vm
+    # rim of terraced cliffs around the explorable region (bowl + northern pass + farming valley)
+    e = smooth(0.0, 36.0, region_d(x, y) + fbm(x * 0.03, y * 0.03, 3, 33.0) * 16.0)
     if e > 0:
         h += terrace(e * 36.0 + fbm(x * 0.05, y * 0.05, 2, 44.0) * 4.0 * e, 4.2)
     return h
@@ -170,12 +184,12 @@ class Acc:
 
 
 BUCKETS = {}
-MATS = ['Terrain', 'Rock', 'Ruin', 'Flora', 'Glow']
+MATS = ['Terrain', 'Rock', 'Ruin', 'Flora', 'Glow', 'Wheat', 'Cloud']
 
 
 def chunk_of(x, y):
-    i = int(clamp((x + SIZE / 2) // CHUNK, 0, 3))
-    j = int(clamp((y + SIZE / 2) // CHUNK, 0, 3))
+    i = int(clamp((x + SIZE / 2) // CHUNK, 0, 5))
+    j = int(clamp((y + SIZE / 2) // CHUNK, 0, 5))
     return f'{i}{j}'
 
 
@@ -360,11 +374,17 @@ def build_terrain():
     def col(fi, cen, n):
         x, y, z = cen
         slope = n.z
+        gv = 1.0 - smooth(6.0, 40.0, min(farm.ellipse_d(x, y), farm.capsule_d(x, y, *farm.PASS) + 8.0))
         if slope < 0.72:   # cliff faces: layered strata in height bands
             band = int(math.floor((z + fbm(x * 0.02, y * 0.02, 2, 3.0) * 3.0) / 2.6)) % 5
             c = [C['cliff1'], C['cliff3'], C['cliff2'], C['cliff1'], C['cliff4']][band]
             if z > 20:
                 c = mix(c, C['cliff4'], 0.3)
+            if gv > 0:   # around the farming valley: warm sandstone faces with grassy ledges
+                sand = [hexc('#b89a74'), hexc('#a4866a'), hexc('#c8ac84')][band % 3]
+                c = mix(c, sand, gv * 0.85)
+                if slope > 0.5:
+                    c = mix(c, farm.meadow(sys.modules[__name__], x, y), gv * 0.6)
             return shade(c, 0.8 + 0.3 * slope)
         if z < WATER - 0.2:
             c = mix(C['bed'], C['wet'], smooth(-3.6, WATER, z))
@@ -383,6 +403,10 @@ def build_terrain():
             c = mix(C['shore'], c, smooth(WATER + 0.2, WATER + 1.4, z))
         if z > 14:
             c = mix(c, C['cliff3'], 0.4)
+        if farm.ellipse_d(x, y) < 4 or farm.capsule_d(x, y, *farm.PASS) < 0:
+            c = farm.ground_colour(sys.modules[__name__], x, y, z, c)
+        elif gv > 0:   # green hills around the valley
+            c = mix(c, farm.meadow(sys.modules[__name__], x, y), gv)
         return shade(c, 0.9 + 0.12 * slope)
     emit('Terrain', 'Terrain', verts, faces, Matrix.Identity(4), col, jitter=0.02)
 
@@ -982,7 +1006,7 @@ FLOATS = []
 
 
 # ----------------------------------------------------------------------------------------------- scatter
-GROVES = [(-58, -16, 13, 9), (-46, 46, 11, 7), (2, 30, 10, 6), (28, 12, 9, 5), (60, -12, 11, 7), (-14, -30, 8, 4)]
+GROVES = [(-58, -16, 13, 9), (-46, 46, 11, 7), (-52, 82, 7, 4), (48, 128, 6, 3), (-38, 126, 6, 3), (2, 30, 10, 6), (28, 12, 9, 5), (60, -12, 11, 7), (-14, -30, 8, 4)]
 
 
 def groves():
@@ -1056,8 +1080,9 @@ def scatter():
         for j in range(n):
             x = -SIZE / 2 + (i + R.random()) * sp
             y = -SIZE / 2 + (j + R.random()) * sp
-            r = math.hypot(x, y)
-            if r > 92:
+            if region_d(x, y) > 28:
+                continue
+            if farm.ellipse_d(x, y) < 2 and (farm.in_field(x, y, 1.5) is not None or farm.road_d(x, y) < 2.5):
                 continue
             g = ground(x, y)
             sl = slope_at(x, y)
@@ -1066,6 +1091,12 @@ def scatter():
                     boulder(x, y, R.uniform(0.8, 2.2)); bump('boulder')
                 continue
             if excluded(x, y):
+                continue
+            if farm.ellipse_d(x, y) < 6 or farm.capsule_d(x, y, *farm.PASS) < 0:   # tended farmland: grass, rare rocks
+                if R.random() < 0.3:
+                    grass_tuft(x, y, [C['grass1'], C['grass4'], C['grass2']]); bump('tuft')
+                elif R.random() < 0.01:
+                    boulder(x, y, R.uniform(0.5, 1.2)); bump('boulder')
                 continue
             near_spawn = math.hypot(x - SPAWN[0], y - SPAWN[1]) < 9
             if math.hypot(x - SPAWN[0], y - SPAWN[1]) < 4.5 and R.random() < 0.7:
@@ -1136,7 +1167,7 @@ def bake_ao():
     t0 = __import__('time').time()
     verts, polys = [], []
     for name, a in BUCKETS.items():
-        if name.startswith('Detail_') or name.startswith('Float_'):
+        if name.startswith(('Detail_', 'Float_', 'Wheat_', 'Spin_', 'Mover_', 'Cloud_', 'Far_')):
             continue
         base = len(verts)
         verts.extend(a.v)
@@ -1146,8 +1177,10 @@ def bake_ao():
     rnd = random.Random(7)
     n_faces = 0
     for name, a in BUCKETS.items():
+        if name.startswith(('Wheat_', 'Cloud_', 'Far_')):
+            continue
         local_tree = None
-        if name.startswith('Float_'):
+        if name.startswith(('Float_', 'Spin_', 'Mover_')):
             local_tree = BVHTree.FromPolygons(a.v, a.f, all_triangles=False, epsilon=0.0)
         tr = local_tree or tree
         for fi, f in enumerate(a.f):
@@ -1239,6 +1272,7 @@ def main():
     bpy.ops.wm.read_factory_settings(use_empty=True)
     build_terrain()
     # features first (they claim space), scatter last
+    EXCL.append((SPAWN[0], SPAWN[1], 6.0))   # keep the spawn view open
     ring_shrine()
     stairs()
     colonnade((-30.0, 6.0), (-8.0, -2.0), 6)
@@ -1257,10 +1291,12 @@ def main():
         floating_island(k, x, y, z, r)
     for (x, y, s) in [(-26, -40, 1.4), (20, -34, 1.2), (-6, 4, 1.0), (52, 22, 1.1), (-48, -14, 1.3), (6, 36, 1.0)]:
         crystal_cluster(x, y, s)
+    counts_farm = farm.build(sys.modules[__name__])
     n_trees = groves()
     counts = scatter()
     counts['lakebed'] = lakebed()
     counts['grove_trees'] = n_trees
+    counts.update(counts_farm)
 
     bake_ao()
     mats = make_materials()
@@ -1273,6 +1309,13 @@ def main():
             ob.location = pos
         if ob.name == 'Float_core':
             ob.location = CORE_POS
+    byname = {ob.name: ob for ob in objs}
+    for name, pt in PARTS.items():   # moving farm parts: origin at the pivot, children relative to parents
+        ob = byname[name]
+        ob.location = pt['loc']
+        ob.rotation_euler = (0, 0, pt['rz'])
+        if pt['parent']:
+            ob.parent = byname[pt['parent']]
 
     tris = sum(len(BUCKETS[n].f) for n in BUCKETS)
     print('objects', len(objs), 'faces', tris, 'counts', counts)

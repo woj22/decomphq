@@ -60,3 +60,8 @@ static func play(node: Node3D, anim: String, at := 0.0) -> void:
 	var ap: AnimationPlayer = node.get_meta("player")
 	ap.play(anim)
 	ap.seek(at * ap.current_animation_length, true)
+
+
+static func loop(node: Node3D, anim: String) -> void:
+	var ap: AnimationPlayer = node.get_meta("player")
+	ap.get_animation(anim).loop_mode = Animation.LOOP_LINEAR

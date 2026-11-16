@@ -4,11 +4,11 @@ shader_type sky;
 
 uniform vec3 sun_dir = vec3(0.44, 0.36, 0.82);
 uniform vec3 moon_dir = vec3(-0.5, 0.55, -0.67);
-uniform vec3 zenith_col : source_color = vec3(0.13, 0.22, 0.45);
-uniform vec3 mid_col : source_color = vec3(0.42, 0.48, 0.70);
-uniform vec3 horizon_col : source_color = vec3(1.0, 0.74, 0.55);
+uniform vec3 zenith_col : source_color = vec3(0.16, 0.36, 0.78);
+uniform vec3 mid_col : source_color = vec3(0.42, 0.64, 0.93);
+uniform vec3 horizon_col : source_color = vec3(0.86, 0.91, 0.96);
 uniform vec3 ground_col : source_color = vec3(0.38, 0.33, 0.36);
-uniform float star_strength = 0.35;
+uniform float star_strength = 0.0;
 
 float hash(vec3 p) {
 	p = fract(p * 0.3183099 + 0.1);
@@ -22,8 +22,8 @@ vec3 sky_grad(vec3 d) {
 	col = mix(col, zenith_col, smoothstep(0.28, 0.95, y));
 	float sd = max(dot(d, sun_dir), 0.0);
 	// warm forward-scatter around the sun, strongest near the horizon
-	col += vec3(1.0, 0.55, 0.32) * pow(sd, 6.0) * 0.5 * (1.0 - smoothstep(0.0, 0.7, y));
-	col += vec3(1.0, 0.8, 0.6) * pow(sd, 40.0) * 0.25;
+	col += vec3(1.0, 0.9, 0.7) * pow(sd, 8.0) * 0.25;
+	col += vec3(1.0, 0.95, 0.85) * pow(sd, 60.0) * 0.35;
 	return col;
 }
 
