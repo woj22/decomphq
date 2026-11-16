@@ -18,7 +18,7 @@ A small, explorable, low-poly alien world. It is made procedurally in **Blender*
   - a ruined **colonnade** with fallen pillars
   - a half-sunk **gateway**
   - glyph-lit **monoliths** and wall fragments
-- **Water:** transparent lake water with Gerstner waves, rippling highlights, sky reflections and sun glints. Its colour deepens with depth, you can see the lake bed in the shallows, and foam laps the shore.
+- **Water:** stylised low-poly lake water that matches the faceted world. It has a gently rolling faceted surface, sparkling sun glints and a soft sky reflection. It is clearly transparent: the sandy bed, rocks, weed, coral and crystals show through, tinted from turquoise to deep blue with depth. Crisp foam rings lap the shore and the coral that breaks the surface.
 - **Sky:** a natural dusk gradient with a low sun and halo, a small moon and faint stars. It is all analytic in one shader, with no textures.
 - **Atmosphere:** height + distance fog with sun scatter, soft glow on emissives, drifting spore particles and baked ambient occlusion.
 

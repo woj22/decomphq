@@ -1,88 +1,78 @@
-// Lake water: transparent, Gerstner waves in the vertex shader, small ripples in the fragment shader,
-// depth-based colour/clarity and shoreline foam (from the depth buffer), sky reflections + sun glints.
-// No textures. Works in the Compatibility renderer (mobile).
+// Stylised low-poly lake water, matching the flat-shaded world:
+// faceted gently rolling surface, clear turquoise shallows fading to deep blue (depth buffer),
+// sparkling sun glints on the facets, a soft sky reflection, and crisp foam rings lapping the shore.
+// Lighting is done here (unshaded) so the look is fully controlled and cheap. No textures.
 shader_type spatial;
-render_mode blend_mix, cull_back, depth_draw_always, specular_schlick_ggx;
+render_mode blend_mix, cull_back, depth_draw_always, unshaded, shadows_disabled;
 
 uniform sampler2D depth_tex : hint_depth_texture, filter_nearest;
 
-uniform vec3 shallow_col : source_color = vec3(0.16, 0.58, 0.62);
-uniform vec3 deep_col : source_color = vec3(0.02, 0.15, 0.28);
-uniform vec3 foam_col : source_color = vec3(0.92, 0.97, 1.0);
-uniform float clarity = 0.32;          // how quickly the water gets opaque with depth (per metre)
-uniform float wave_height = 0.11;
-uniform float wave_speed = 1.0;
+uniform vec3 sun_dir = vec3(0.44, 0.36, 0.82);
+uniform vec3 sun_col : source_color = vec3(1.0, 0.9, 0.75);
+uniform vec3 shallow_col : source_color = vec3(0.30, 0.78, 0.74);
+uniform vec3 mid_col : source_color = vec3(0.10, 0.50, 0.62);
+uniform vec3 deep_col : source_color = vec3(0.05, 0.22, 0.42);
+uniform vec3 sky_reflect : source_color = vec3(0.42, 0.58, 0.82);
+uniform vec3 foam_col : source_color = vec3(0.95, 0.98, 1.0);
+uniform float clarity = 0.2;           // how quickly the water tints with depth (per metre)
+uniform float max_opacity = 0.62;      // never fully opaque: the lake bed always shows through
+uniform float wave_height = 0.09;
+uniform float wave_speed = 0.8;
 uniform bool debug_depth = false;
 
 varying vec3 wpos;
 
-// one Gerstner wave: dir (normalised), wavelength, steepness
-vec3 gerstner(vec2 p, vec2 dir, float wl, float steep, float t, inout vec3 tangent, inout vec3 binormal) {
+float wave(vec2 p, vec2 dir, float wl, float amp, float t) {
 	float k = 6.2831 / wl;
-	float c = sqrt(9.8 / k);
-	float f = k * (dot(dir, p) - c * t);
-	float a = steep / k;
-	tangent += vec3(-dir.x * dir.x * steep * sin(f), dir.x * steep * cos(f), -dir.x * dir.y * steep * sin(f));
-	binormal += vec3(-dir.x * dir.y * steep * sin(f), dir.y * steep * cos(f), -dir.y * dir.y * steep * sin(f));
-	return vec3(dir.x * a * cos(f), a * sin(f), dir.y * a * cos(f));
+	return amp * sin(dot(dir, p) * k - t * sqrt(9.8 * k));
 }
 
 void vertex() {
 	vec3 w = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	float t = TIME * wave_speed;
-	vec3 tng = vec3(1.0, 0.0, 0.0);
-	vec3 bin = vec3(0.0, 0.0, 1.0);
-	vec3 off = vec3(0.0);
-	float s = wave_height / 0.16;
-	off += gerstner(w.xz, normalize(vec2(1.0, 0.35)), 9.0, 0.10 * s, t, tng, bin);
-	off += gerstner(w.xz, normalize(vec2(-0.4, 1.0)), 5.5, 0.08 * s, t, tng, bin);
-	off += gerstner(w.xz, normalize(vec2(0.7, -0.8)), 3.2, 0.06 * s, t, tng, bin);
-	off += gerstner(w.xz, normalize(vec2(-1.0, -0.2)), 13.0, 0.05 * s, t, tng, bin);
-	VERTEX += off;
-	NORMAL = normalize(cross(bin, tng));
-	wpos = w + off;
-}
-
-// cheap animated ripple normal (sum of sines in several directions)
-vec2 ripples(vec2 p, float t) {
-	vec2 g = vec2(0.0);
-	vec2 d1 = vec2(0.8, 0.6), d2 = vec2(-0.5, 0.86), d3 = vec2(0.2, -0.98), d4 = vec2(-0.95, -0.3);
-	g += d1 * cos(dot(p, d1) * 2.1 + t * 2.3) * 0.5;
-	g += d2 * cos(dot(p, d2) * 2.9 - t * 2.9) * 0.35;
-	g += d3 * cos(dot(p, d3) * 4.3 + t * 3.7) * 0.22;
-	g += d4 * cos(dot(p, d4) * 6.1 - t * 4.1) * 0.12;
-	return g;
+	float h = 0.0;
+	h += wave(w.xz, normalize(vec2(1.0, 0.3)), 7.0, 1.0, t);
+	h += wave(w.xz, normalize(vec2(-0.3, 1.0)), 4.6, 0.7, t);
+	h += wave(w.xz, normalize(vec2(0.8, -0.7)), 3.1, 0.45, t);
+	VERTEX.y += h * wave_height;
+	wpos = w + vec3(0.0, h * wave_height, 0.0);
 }
 
 void fragment() {
-	float t = TIME * wave_speed;
-	// ripple detail on top of the wave normal (in view space)
-	vec2 r = ripples(wpos.xz, t) * 0.08;
-	vec3 n_world = normalize((INV_VIEW_MATRIX * vec4(NORMAL, 0.0)).xyz + vec3(r.x, 0.0, r.y));
-	NORMAL = normalize((VIEW_MATRIX * vec4(n_world, 0.0)).xyz);
+	// faceted normal from screen-space derivatives (flat shading, like the rest of the world)
+	vec3 n = normalize(cross(dFdy(wpos), dFdx(wpos)));
+	if (n.y < 0.0) n = -n;
+	vec3 v = normalize(CAMERA_POSITION_WORLD - wpos);
 
-	// water depth below the surface along the view ray, from the depth buffer
+	// water depth along the view ray, from the depth buffer (Compatibility: NDC z in -1..1)
 	float raw = texture(depth_tex, SCREEN_UV).r;
-	vec4 ndc = vec4(SCREEN_UV * 2.0 - 1.0, raw * 2.0 - 1.0, 1.0);   // Compatibility: GL depth range -1..1
-	vec4 view = INV_PROJECTION_MATRIX * ndc;
-	float scene_z = -view.z / view.w;
-	float surf_z = -VERTEX.z;
-	float depth = max(scene_z - surf_z, 0.0);
+	vec4 view = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, raw * 2.0 - 1.0, 1.0);
+	float depth = max(-view.z / view.w + VERTEX.z, 0.0);
+	if (raw >= 0.99999) depth = 2.0;   // no depth info (or sky behind): assume a moderate depth
 
 	float k = 1.0 - exp(-depth * clarity);
-	vec3 col = mix(shallow_col, deep_col, k);
-	float fres = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 4.0);
+	vec3 col = mix(shallow_col, mid_col, smoothstep(0.0, 0.55, k));
+	col = mix(col, deep_col, smoothstep(0.5, 1.0, k));
 
-	// foam along the shore, broken up by the ripples
-	float foam_line = 1.0 - smoothstep(0.0, 0.3, depth);
-	float foam_noise = 0.5 + 0.5 * sin(wpos.x * 3.1 + sin(wpos.z * 2.3 + t) * 2.0 + t * 1.3);
-	float foam = clamp(foam_line * (0.4 + 0.55 * foam_noise), 0.0, 1.0);
-	foam *= smoothstep(0.02, 0.12, depth);   // fade at the exact contact line
+	// soft sky reflection (fresnel) and sun light on the facets
+	float fres = 0.04 + 0.6 * pow(1.0 - clamp(dot(n, v), 0.0, 1.0), 5.0);
+	col = mix(col, sky_reflect, fres);
+	col *= 0.85 + 0.25 * clamp(dot(n, sun_dir), 0.0, 1.0);
+	vec3 r = reflect(-v, n);
+	float glint = pow(max(dot(r, sun_dir), 0.0), 120.0);
+	float sparkle = step(0.985, max(dot(r, sun_dir), 0.0));   // crisp facet flashes
 
-	ALBEDO = mix(col, foam_col, foam);
-	ROUGHNESS = mix(0.07, 0.6, foam);
-	METALLIC = 0.0;
-	SPECULAR = 0.32;
-	ALPHA = clamp(mix(0.12, 0.9, k) + fres * 0.3 + foam * 0.8, 0.0, 1.0);
-	if (debug_depth) { ALBEDO = vec3(fract(depth), raw > 0.9999 ? 1.0 : 0.0, depth / 10.0); ALPHA = 1.0; }
+	// foam: a solid contact line plus rings that lap in towards the shore
+	float t = TIME * wave_speed;
+	float edge = 1.0 - smoothstep(0.03, 0.08, depth);
+	float ring = fract(depth * 2.2 + t * 0.35);
+	float rings = step(0.86, ring) * (1.0 - smoothstep(0.15, 0.75, depth));
+	float breakup = step(0.35, fract(sin(dot(floor(wpos.xz * 1.5), vec2(12.9898, 78.233))) * 43758.5453));
+	float foam = max(edge, rings * breakup) * smoothstep(0.0, 0.03, depth);
+
+	vec3 outc = col + sun_col * (glint * 0.8 + sparkle * 0.6);
+	outc = mix(outc, foam_col, foam * 0.9);
+	ALBEDO = outc;
+	ALPHA = clamp(mix(0.12, max_opacity, k) + fres * 0.3 + foam + glint, 0.0, 1.0);
+	if (debug_depth) { ALBEDO = vec3(fract(depth), 0.0, depth / 10.0); ALPHA = 1.0; }
 }

@@ -199,6 +199,7 @@ func _make_lake() -> void:
 	pm.subdivide_depth = 80
 	var m := ShaderMaterial.new()
 	m.shader = WATER_SHADER
+	m.set_shader_parameter("sun_dir", dir_from(SUN_AZ, SUN_EL))
 	if _arg("--debug-water") != "":
 		m.set_shader_parameter("debug_depth", true)
 	var lake := MeshInstance3D.new()

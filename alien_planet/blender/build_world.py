@@ -97,6 +97,8 @@ def base_height(x, y):
     lx, ly, lr = LAKE
     d = (math.hypot(x - lx, y - ly) + fbm(x * 0.05, y * 0.05, 2, 9.0) * 5.0) / lr
     h = lerp(-3.4 + fbm(x * 0.08, y * 0.08, 2, 15.0) * 0.8, h, smooth(0.35, 1.2, d))
+    if d > 1.2:   # only the lake basin may dip below the water line (no stray puddles)
+        h = max(h, WATER + 0.45 * smooth(1.2, 1.6, d))
     # terraced mesas with flat tops
     for i, (mx, my, mr, mh, st) in enumerate(MESAS):
         dd = math.hypot(x - mx, y - my) + fbm(x * 0.09, y * 0.09, 2, 20.0 + i) * (1.0 if i == 0 else 3.0)
@@ -1007,6 +1009,41 @@ def groves():
     return n
 
 
+def lakebed():
+    """Rocks, weed and crystals on the lake floor so the clear water has something to show."""
+    lx, ly, lr = LAKE
+    n = 0
+    for _ in range(900):
+        a, d = R.uniform(0, 6.3), lr * 1.3 * math.sqrt(R.random())
+        x, y = lx + math.cos(a) * d, ly + math.sin(a) * d
+        g = ground(x, y)
+        if g > WATER - 0.35 or excluded(x, y):
+            continue
+        roll = R.random()
+        if roll < 0.09:
+            boulder(x, y, R.uniform(0.4, 1.6), base=C['rock'] if R.random() < 0.5 else C['slate'])
+        elif roll < 0.42:   # swaying weed
+            obj = f'Flora_{chunk_of(x, y)}'
+            ph = R.random()
+            for k in range(R.randint(3, 6)):
+                h = min(R.uniform(0.6, 2.0), WATER - g - 0.2)
+                if h < 0.3:
+                    continue
+                lean = Vector((R.uniform(-.3, .3), R.uniform(-.3, .3), 0))
+                path = [(Vector((0, 0, 0)), 0.08), (lean * 0.5 + Vector((0, 0, h * 0.5)), 0.07), (lean + Vector((0, 0, h)), 0)]
+                v, f = prim_tube(path, 3, False)
+                emit(obj, 'Flora', v, f, mat_at(x + R.uniform(-.3, .3), y + R.uniform(-.3, .3), g - 0.05),
+                     C['moss'] if k % 2 else C['teal'], 0.08, h, ph)
+        elif roll < 0.5:
+            tube_coral(x, y, R.uniform(0.6, 1.0))
+        elif roll < 0.53:
+            crystal_cluster(x, y, R.uniform(0.4, 0.8), colour=C['gcyan'])
+        else:
+            continue
+        n += 1
+    return n
+
+
 def scatter():
     lx, ly, lr = LAKE
     counts = {}
@@ -1222,6 +1259,7 @@ def main():
         crystal_cluster(x, y, s)
     n_trees = groves()
     counts = scatter()
+    counts['lakebed'] = lakebed()
     counts['grove_trees'] = n_trees
 
     bake_ao()
