@@ -30,8 +30,8 @@ ROADS = [((-4.0, 60.0), (-4.0, 104.0)), ((-4.0, 104.0), (-26.0, 106.0)), ((-4.0,
 HARVESTED = 0.42   # southern fraction of field 3 already cut (the harvester works its edge)
 
 WHEAT = {'gold': ('#86763a', '#b8964a'), 'copper': ('#806638', '#a87a40'), 'pale': ('#8a8450', '#c0b27a')}
-CANOPY = {'gold': ('#6a5a2e', '#766434', '#5c4c28'), 'copper': ('#6a5230', '#745a34', '#5a4428'),
-          'pale': ('#727048', '#7e7a50', '#62603c')}
+CANOPY = {'gold': ('#9a7c36', '#a8883c', '#8c6e30'), 'copper': ('#94683a', '#a07440', '#845c32'),
+          'pale': ('#a09a62', '#aca66a', '#908a56')}
 
 
 def ellipse_d(x, y):
@@ -939,7 +939,7 @@ def wheat_canopy(W, fi):
     individual stalks poke through it. Skirts drop to the ground at every edge (field borders, cut line)."""
     fx, fy, w, l, ang, crop, variety = FIELDS[fi]
     cols = [W.hexc(c) for c in CANOPY[variety]]
-    cell = 0.9
+    cell = 1.6
     rx = w if crop == 'wheat_round' else w / 2
     ry = w if crop == 'wheat_round' else l / 2
     nx, ny = int(2 * rx / cell) + 1, int(2 * ry / cell) + 1
@@ -964,7 +964,7 @@ def wheat_canopy(W, fi):
             x, y = fx + lx * c_ - ly * s_, fy + lx * s_ + ly * c_
             g = W.ground(x, y)
             bump = 0.12 * math.sin(lx * 1.3 + ly * 0.7) + 0.08 * math.sin(lx * 0.5 - ly * 1.9)
-            verts[(i, j)] = (Vector((x, y, g + 0.32 + bump * 0.5 + R.uniform(-0.06, 0.06))), g)
+            verts[(i, j)] = (Vector((x, y, g + 0.95 + bump * 0.4 + R.uniform(-0.04, 0.04))), g)
         return (i, j)
     for i in range(nx - 1):
         for j in range(ny - 1):
@@ -1057,7 +1057,8 @@ def build(W):
     counts = {'wheat_tris': 0, 'row_plants': 0, 'canopy_tris': 0}
     for i, f in enumerate(FIELDS):
         if f[5].startswith('wheat'):
-            counts['wheat_tris'] += wheat_field(W, i)
+            counts['wheat_tris'] += wheat_canopy(W, i)   # each field is one swaying block (cheap)
+            W.EXCL.append((f[0], f[1], max(f[2], f[3]) * 0.5 + 1.0 if f[5] != 'wheat_round' else f[2] + 1.0))
         else:
             counts['row_plants'] += row_crops(W, i)
     # field fences (with gates facing the roads), lavender along them

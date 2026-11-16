@@ -77,7 +77,7 @@ alien_planet/shots.sh OUTDIR [WxH] [--touch]    renders the screenshot gallery h
 A pass through the northern cliffs opens into a green valley about 120 m wide, under grassy hills with sandstone faces. The farm code is in `blender/farm.py`; its layout constants also shape the terrain.
 - **Wheat that blows in the wind:**
   - five fields of gold, copper and pale "silverwheat", one of them round under the irrigator
-  - every clump is a sheaf of 3–4 thin stalks splaying from one root, with crossed-spindle ears and the odd curling leaf; dark soil shows between the rows
+  - each field is a single low-poly wheat block, about a metre tall, with a gently uneven top and solid sides (a few hundred triangles per field)
   - the `wheat` shader rolls gust waves across the fields, adds flutter and brightens the heads where a gust passes
   - one field is half harvested, with a cut wheat wall and stubble
 - **Row crops:** purple bulbroot and blue kale; lavender along the fences and roads; shrubs; flat-topped shade trees.
