@@ -5,8 +5,8 @@ render_mode cull_disabled, specular_disabled;
 
 uniform vec2 wind_dir = vec2(0.8, 0.6);
 uniform float gust_scale = 0.11;     // spatial frequency of gust bands (per metre)
-uniform float gust_speed = 1.4;
-uniform float bend = 0.32;
+uniform float gust_speed = 2.3;   // storm wind
+uniform float bend = 0.42;
 varying float v_gust;
 
 void vertex() {
@@ -26,7 +26,7 @@ void vertex() {
 }
 
 void fragment() {
-	ALBEDO = COLOR.rgb * (0.88 + 0.32 * v_gust);
+	ALBEDO = COLOR.rgb * (0.85 + 0.3 * v_gust);
 	ROUGHNESS = 1.0;
 	BACKLIGHT = COLOR.rgb * 0.45;
 }

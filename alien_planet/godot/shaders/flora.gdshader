@@ -2,8 +2,8 @@
 shader_type spatial;
 render_mode cull_disabled, specular_disabled;
 
-uniform float sway_amount = 0.22;
-uniform float sway_speed = 1.1;
+uniform float sway_amount = 0.3;
+uniform float sway_speed = 1.8;
 
 void vertex() {
 	vec3 wp = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;

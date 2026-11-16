@@ -29,9 +29,9 @@ ROADS = [((-4.0, 60.0), (-4.0, 104.0)), ((-4.0, 104.0), (-26.0, 106.0)), ((-4.0,
          ((18.0, 112.0), (38.0, 110.0)), ((-26.0, 106.0), (-44.0, 103.0))]
 HARVESTED = 0.42   # southern fraction of field 3 already cut (the harvester works its edge)
 
-WHEAT = {'gold': ('#c8a040', '#ecbc48'), 'copper': ('#c09040', '#e0a040'), 'pale': ('#c8b060', '#f0d478')}
-CANOPY = {'gold': ('#c09034', '#d0a040', '#a87a2a'), 'copper': ('#b8823a', '#c8943e', '#9a6a2c'),
-          'pale': ('#c8aa58', '#d8bc68', '#ae9244')}
+WHEAT = {'gold': ('#86763a', '#b8964a'), 'copper': ('#806638', '#a87a40'), 'pale': ('#8a8450', '#c0b27a')}
+CANOPY = {'gold': ('#6a5a2e', '#766434', '#5c4c28'), 'copper': ('#6a5230', '#745a34', '#5a4428'),
+          'pale': ('#727048', '#7e7a50', '#62603c')}
 
 
 def ellipse_d(x, y):
@@ -77,7 +77,7 @@ def ground_colour(W, x, y, z, base):
     fi = in_field(x, y, 0.6)
     if fi is not None:
         crop = FIELDS[fi][5]
-        soil = W.hexc('#6a4c36') if crop in ('bulbroot', 'kale') else W.hexc('#a08a48')
+        soil = W.hexc('#5a4030') if crop in ('bulbroot', 'kale') else W.hexc('#5e4c30')
         return W.shade(soil, 0.92 + 0.12 * W.fbm(x * 0.4, y * 0.4, 1, 3.0))
     if any(math.hypot(x - yx, y - yy) < yr for yx, yy, yr in YARDS):
         return W.hexc('#b49470')
@@ -113,50 +113,63 @@ def solid(W, obj, verts, faces, M, color, jitter=0.04):
 
 # ------------------------------------------------------------------------------------------------ crops
 def wheat_tuft(W, obj, x, y, z, variety, stubble=False):
+    """A sheaf of thin stalks splaying slightly from one root, each topped by a small spindle-shaped ear."""
     R = W.R
     stalk, head = (W.hexc(c) for c in WHEAT[variety])
     v, f, uv_w = [], [], []
     cols = []
     ph = R.random()
-    for k in range(3):
-        bx, by = x + R.uniform(-0.22, 0.22), y + R.uniform(-0.22, 0.22)
+    lean_all = Vector((R.uniform(-0.08, 0.08), R.uniform(-0.08, 0.08), 0))
+    if not stubble and R.random() < 0.45:   # a long leaf curling out low on the sheaf
+        a = R.uniform(0, 6.3)
+        out = Vector((math.cos(a), math.sin(a), 0))
+        perp = Vector((-out.y, out.x, 0))
+        b0 = Vector((x, y, z + 0.15))
+        mid = b0 + out * 0.15 + Vector((0, 0, 0.3))
+        tip = b0 + out * 0.38 + Vector((0, 0, 0.25))
+        b = len(v)
+        v += [b0 - perp * 0.02, b0 + perp * 0.02, mid + perp * 0.025, mid - perp * 0.025, tip]
+        f += [(b, b + 1, b + 2, b + 3), (b + 3, b + 2, b + 4)]
+        cols += [W.shade(stalk, 0.9), W.shade(stalk, 0.95)]
+        uv_w += [0.1, 0.1, 0.4, 0.4, 0.5]
+    for k in range(R.randint(3, 4)):
+        a = R.uniform(0, 6.3)
+        out = Vector((math.cos(a), math.sin(a), 0))
+        bx, by = x + out.x * R.uniform(0.0, 0.1), y + out.y * R.uniform(0.0, 0.1)
+        perp = Vector((-out.y, out.x, 0))
+        base = Vector((bx, by, z))
         if stubble:
-            h = R.uniform(0.12, 0.2)
-            a = R.uniform(0, 6.3)
-            px, py = -math.sin(a) * 0.02, math.cos(a) * 0.02
+            h = R.uniform(0.1, 0.18)
             b = len(v)
-            v += [Vector((bx - px, by - py, z)), Vector((bx + px, by + py, z)), Vector((bx, by, z + h))]
+            v += [base - perp * 0.012, base + perp * 0.012, base + Vector((0, 0, h))]
             f.append((b, b + 1, b + 2))
-            cols.append(W.shade(stalk, 0.85))
+            cols.append(W.shade(stalk, 0.8))
             uv_w += [0, 0, 0]
             continue
-        h = R.uniform(1.05, 1.45)
-        lean = Vector((R.uniform(-0.12, 0.12), R.uniform(-0.12, 0.12), 0))
-        a = R.uniform(0, 6.3)
-        perp = Vector((-math.sin(a), math.cos(a), 0))
-        base = Vector((bx, by, z))
-        top = base + lean + Vector((0, 0, h * 0.8))
+        h = R.uniform(0.85, 1.15)
+        top = base + lean_all + out * R.uniform(0.06, 0.16) + Vector((0, 0, h))
         b = len(v)
-        v += [base - perp * 0.022, base + perp * 0.022, top]
+        v += [base - perp * 0.012, base + perp * 0.012, top]
         f.append((b, b + 1, b + 2))
         cols.append(stalk)
-        uv_w += [0.0, 0.0, 0.8 ** 1.5]
-        # grain head: a slim drooping diamond
-        d = (lean * 0.6 + Vector((0, 0, 1))).normalized()
-        tip = top + d * 0.24 + lean.normalized() * 0.03 if lean.length > 0 else top + d * 0.24
-        mid = top + d * 0.11
-        b = len(v)
-        v += [top, mid - perp * 0.04, tip, mid + perp * 0.04]
-        f += [(b, b + 1, b + 2), (b, b + 2, b + 3)]
-        cols += [head, W.shade(head, 0.88)]
-        uv_w += [0.8 ** 1.5, 0.9 ** 1.5, 1.0, 0.9 ** 1.5]
+        uv_w += [0.0, 0.0, 0.85]
+        d = ((top - base).normalized() + out * 0.3).normalized()
+        el = R.uniform(0.11, 0.16)
+        side2 = d.cross(perp).normalized()
+        axes = ((perp, 1.0), (side2, 0.85)) if k % 2 == 0 else ((perp if R.random() < 0.5 else side2, 1.0),)
+        for ax, shade_k in axes:   # crossed spindles on half the stalks: the ears have volume
+            b = len(v)
+            v += [top - ax * 0.016, top + d * el * 0.45 + ax * 0.022, top + d * el, top + d * el * 0.45 - ax * 0.022]
+            f += [(b, b + 1, b + 2), (b, b + 2, b + 3)]
+            cols += [W.shade(head, shade_k), W.shade(head, shade_k * 0.9)]
+            uv_w += [0.85, 0.93, 1.0, 0.93]
     a = W.acc(obj)
     base_i = len(a.v)
     a.v.extend(v)
     a.uv.extend((w, ph) for w in uv_w)
     for i, face in enumerate(f):
         a.f.append(tuple(base_i + k for k in face))
-        a.fc.append(W.jit(cols[i], 0.06))
+        a.fc.append(W.jit(cols[i], 0.08))
         a.fm.append('Wheat')
     return len(f)
 
@@ -166,7 +179,7 @@ def wheat_field(W, fi):
     fx, fy, w, l, ang, crop, variety = f
     R = W.R
     n = 0
-    sp = 0.72
+    sp = 0.56
     rx = w if crop == 'wheat_round' else w / 2
     ry = w if crop == 'wheat_round' else l / 2
     i = -rx
@@ -679,8 +692,8 @@ def farm_hall(W, x, y, face, L=16.0, D=8.0):
         W.emit(f'Deco_{W.chunk_of(x, y)}', 'Ruin', v, f, M @ Matrix.Translation((px, -D / 2 - 0.04, 1.5)),
                W.hexc('#7a5236'), 0.03)
         v, f = W.prim_box(0.95, 0.25, 0.85)
-        W.emit(f'Deco_{W.chunk_of(x, y)}', 'Ruin', v, f, M @ Matrix.Translation((px, -D / 2 - 0.08, 1.62)),
-               W.hexc('#34505e'), 0.03)
+        W.emit(f'Deco_{W.chunk_of(x, y)}', 'Glow', v, f, M @ Matrix.Translation((px, -D / 2 - 0.08, 1.62)),
+               W.hexc('#ffc870'), 0.03)
     banner(W, obj, M, Vector((-0.6, -D / 2 - 0.05, 1.0)), 0.0)
     banner(W, obj, M, Vector((7.2, -D / 2 - 0.05, 1.0)), 0.0)
     # domed tower at one end, pipe arcing to the silo
@@ -951,7 +964,7 @@ def wheat_canopy(W, fi):
             x, y = fx + lx * c_ - ly * s_, fy + lx * s_ + ly * c_
             g = W.ground(x, y)
             bump = 0.12 * math.sin(lx * 1.3 + ly * 0.7) + 0.08 * math.sin(lx * 0.5 - ly * 1.9)
-            verts[(i, j)] = (Vector((x, y, g + 0.5 + bump + R.uniform(-0.1, 0.1))), g)
+            verts[(i, j)] = (Vector((x, y, g + 0.32 + bump * 0.5 + R.uniform(-0.06, 0.06))), g)
         return (i, j)
     for i in range(nx - 1):
         for j in range(ny - 1):
@@ -996,19 +1009,19 @@ def wheat_canopy(W, fi):
 def clouds(W):
     """Big stylised low-poly cumulus clouds ringing the sky (unshaded, no fog)."""
     R = W.R
-    for k in range(14):
-        a = k * 2 * math.pi / 14 + R.uniform(-0.15, 0.15)
-        d = R.uniform(185, 240)
-        cx, cy, cz = math.cos(a) * d, math.sin(a) * d + 40, R.uniform(70, 110)
+    for k in range(22):
+        a = k * 2 * math.pi / 22 + R.uniform(-0.1, 0.1)
+        d = R.uniform(150, 230)
+        cx, cy, cz = math.cos(a) * d, math.sin(a) * d + 40, R.uniform(55, 80)
         obj = f'Cloud_{k}'
-        for j in range(R.randint(5, 9)):
+        for j in range(R.randint(6, 10)):
             v, f = W.prim_ico(1)
-            r_ = R.uniform(9, 18)
-            off = Vector((R.uniform(-25, 25), R.uniform(-8, 8), R.uniform(-2, 8)))
+            r_ = R.uniform(14, 26)
+            off = Vector((R.uniform(-32, 32), R.uniform(-10, 10), R.uniform(-3, 6)))
             sq = Vector((1.0, 0.8, 0.62))
             W.emit(obj, 'Cloud', [Vector((p.x * r_ * sq.x, p.y * r_ * sq.y, p.z * r_ * sq.z)) + off for p in v], f,
                    Matrix.Rotation(a + math.pi / 2, 4, 'Z'),
-                   lambda fi_, cen, nn: W.mix(W.hexc('#b8c8e4'), W.hexc('#ffffff'), W.smooth(-0.6, 0.7, nn.z)), 0.02)
+                   lambda fi_, cen, nn: W.mix(W.hexc('#2c3038'), W.hexc('#5a606a'), W.smooth(-0.6, 0.8, nn.z)), 0.04)
         part(W, obj, (cx, cy, cz))
 
 
@@ -1045,7 +1058,6 @@ def build(W):
     for i, f in enumerate(FIELDS):
         if f[5].startswith('wheat'):
             counts['wheat_tris'] += wheat_field(W, i)
-            counts['canopy_tris'] += wheat_canopy(W, i)
         else:
             counts['row_plants'] += row_crops(W, i)
     # field fences (with gates facing the roads), lavender along them
@@ -1122,7 +1134,6 @@ def build(W):
             qx, qy = px - dy / L * side, py + dx / L * side
             if in_field(qx, qy, 1.0) is None and not W.excluded(qx, qy):
                 lavender(W, qx, qy)
-    clouds(W)
     far_city(W)
     for x, y, r in YARDS:
         W.EXCL.append((x, y, r * 0.7))

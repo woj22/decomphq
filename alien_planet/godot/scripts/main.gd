@@ -11,7 +11,7 @@ const LAKE := Vector3(14.0, -10.0, 25.0)       # blender x, y, radius
 const SPAWN_B := Vector2(-36.0, 16.0)
 const VIEW_AZ := 20.0                           # spawn facing / shrine ring axis, degrees from east (+X) towards north (+Y)
 const SUN_AZ := -55.0
-const SUN_EL := 42.0   # bright late-morning sun
+const SUN_EL := 35.0   # sun hidden behind the storm
 
 const SOLID := preload("res://shaders/solid.gdshader")
 const FLORA := preload("res://shaders/flora.gdshader")
@@ -28,6 +28,10 @@ var movers: Array = []     # [node, base_position, local x axis, half distance, 
 var core: Node3D
 var player: CharacterBody3D
 var t := 0.0
+var environment: Environment
+var sun: DirectionalLight3D
+var next_flash := 6.0
+var flash := 0.0
 
 
 static func b2g(x: float, y: float, z: float) -> Vector3:
@@ -48,6 +52,7 @@ func _ready() -> void:
 	_load_world()
 	_make_lake()
 	_make_player()
+	_make_rain()
 	_spawn_inhabitants.call_deferred()
 	var shots := _arg("--shots")
 	if shots != "":
@@ -106,41 +111,42 @@ func _make_environment() -> void:
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_sky_contribution = 0.75
-	env.ambient_light_color = Color(0.55, 0.62, 0.78)
-	env.ambient_light_energy = 1.0
+	env.ambient_light_sky_contribution = 0.6
+	env.ambient_light_color = Color(0.36, 0.4, 0.48)
+	env.ambient_light_energy = 1.25
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.08
+	env.tonemap_exposure = 1.0
 	env.tonemap_white = 1.6
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
-	env.fog_light_color = Color(0.74, 0.82, 0.94)
+	env.fog_light_color = Color(0.3, 0.33, 0.38)
 	env.fog_light_energy = 1.0
-	env.fog_sun_scatter = 0.55
-	env.fog_density = 0.0036
+	env.fog_sun_scatter = 0.1
+	env.fog_density = 0.011
 	env.fog_sky_affect = 0.0
 	env.fog_height = 1.0
-	env.fog_height_density = 0.012
+	env.fog_height_density = 0.03
 	env.glow_enabled = true
-	env.glow_intensity = 0.5
+	env.glow_intensity = 0.9
 	env.glow_strength = 1.0
 	env.glow_bloom = 0.04
-	env.glow_hdr_threshold = 0.85
+	env.glow_hdr_threshold = 0.7
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
 	env.adjustment_enabled = true
-	env.adjustment_saturation = 1.08
+	env.adjustment_saturation = 0.82
 	env.adjustment_contrast = 1.06
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
+	environment = env
 
-	var sun := DirectionalLight3D.new()
+	sun = DirectionalLight3D.new()
 	sun.name = "Sun"
 	add_child(sun)
 	sun.look_at_from_position(Vector3.ZERO, -sun_dir, Vector3.UP)
-	sun.light_color = Color(1.0, 0.94, 0.84)
-	sun.light_energy = 1.55
+	sun.light_color = Color(0.72, 0.78, 0.88)
+	sun.light_energy = 0.55
 	sun.light_angular_distance = 1.2      # soft penumbra with the PCF filter
 	sun.shadow_enabled = true
 	# Two cascades: the first 18 m get most of the shadow map (crisp contact shadows), the rest fades out at 80 m.
@@ -152,14 +158,14 @@ func _make_environment() -> void:
 	sun.shadow_bias = 0.1
 	sun.shadow_normal_bias = 1.4
 	sun.shadow_blur = 1.6
-	sun.shadow_opacity = 0.92
+	sun.shadow_opacity = 0.55
 
 	var fill := DirectionalLight3D.new()   # cool skylight from the opposite side, no shadows
 	fill.name = "SkyFill"
 	add_child(fill)
 	fill.look_at_from_position(Vector3.ZERO, -dir_from(SUN_AZ + 180.0, 35.0), Vector3.UP)
 	fill.light_color = Color(0.6, 0.68, 0.95)
-	fill.light_energy = 0.22
+	fill.light_energy = 0.15
 	fill.shadow_enabled = false
 
 
@@ -195,7 +201,7 @@ func _setup_mesh(mi: MeshInstance3D) -> void:
 	if n.begins_with("Deco_"):
 		mi.visibility_range_end = 140.0
 	if n.begins_with("Wheat_"):   # wind-blown fields: cheap, so no shadow casting; fade out far away
-		mi.visibility_range_end = 120.0
+		mi.visibility_range_end = 85.0
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if n.begins_with("Crop_"):
 		mi.visibility_range_end = 100.0
@@ -305,8 +311,59 @@ func _spawn_inhabitants() -> void:
 			seat.position = Vector3(0, 0.22, -0.18)
 
 
+## Rain: vertical streaks spawned in a box above the explorer (world-space, so they fall past you as
+## you walk). CPU particles: cheap and supported everywhere on mobile.
+func _make_rain() -> void:
+	var p := CPUParticles3D.new()
+	p.name = "Rain"
+	p.amount = 700
+	p.lifetime = 1.1
+	p.preprocess = 1.1
+	p.local_coords = false
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(18, 1, 18)
+	p.position = Vector3(0, 14, 0)
+	p.direction = Vector3(0.12, -1, 0.08)
+	p.spread = 3.0
+	p.initial_velocity_min = 17.0
+	p.initial_velocity_max = 21.0
+	p.gravity = Vector3(0, -6, 0)
+	var q := QuadMesh.new()
+	q.size = Vector2(0.025, 0.55)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_FIXED_Y
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.albedo_color = Color(0.72, 0.78, 0.86, 0.32)
+	m.disable_receive_shadows = true
+	q.material = m
+	p.mesh = q
+	player.add_child(p)
+
+
+## Lightning: every 8-20 s a double flicker brightens the sky, ambient and sun for a moment.
+func _lightning(delta: float) -> void:
+	next_flash -= delta
+	if next_flash <= 0.0:
+		flash = 0.45
+		next_flash = randf_range(8.0, 20.0)
+	if flash > 0.0:
+		flash -= delta
+		var k := 0.0
+		if flash > 0.33 or (flash > 0.12 and flash < 0.24):
+			k = 1.0
+		environment.background_energy_multiplier = 1.0 + 2.2 * k
+		environment.ambient_light_energy = 1.25 + 1.6 * k
+		sun.light_energy = 0.55 + 1.4 * k
+	elif environment.background_energy_multiplier != 1.0:
+		environment.background_energy_multiplier = 1.0
+		environment.ambient_light_energy = 1.25
+		sun.light_energy = 0.55
+
+
 func _process(delta: float) -> void:
 	t += delta
+	_lightning(delta)
 	for s in spinners:
 		(s[0] as Node3D).rotate_object_local(s[1], s[2] * delta)
 	for m in movers:

@@ -19,7 +19,13 @@ A small, explorable, low-poly alien world. It is made procedurally in **Blender*
   - a half-sunk **gateway**
   - glyph-lit **monoliths** and wall fragments
 - **Water:** stylised low-poly lake water that matches the faceted world. It has a gently rolling faceted surface, sparkling sun glints and a soft sky reflection. It is clearly transparent: the sandy bed, rocks, weed, coral and crystals show through, tinted from turquoise to deep blue with depth. Crisp foam rings lap the shore and the coral that breaks the surface.
-- **Sky:** a bright late-morning sky, a sun with a halo, a small moon, and big low-poly cumulus clouds (unshaded, no fog). The sky itself is one analytic shader with no textures.
+- **Weather:** a dark, rain-soaked storm.
+  - a heavy overcast sky with procedural cloud streaks
+  - grey-blue haze, plus 700 rain streaks around the explorer (CPU particles)
+  - wet, sheened ground and stone, and rain rings on the lake
+  - stronger gusting wind on wheat and plants
+  - lightning that flickers the sky every 8–20 s
+  - warm lit windows in the gloom
 - **Atmosphere:** height + distance fog with sun scatter, soft glow on emissives, drifting spore particles and baked ambient occlusion.
 
 ## Explore it
@@ -71,7 +77,7 @@ alien_planet/shots.sh OUTDIR [WxH] [--touch]    renders the screenshot gallery h
 A pass through the northern cliffs opens into a green valley about 120 m wide, under grassy hills with sandstone faces. The farm code is in `blender/farm.py`; its layout constants also shape the terrain.
 - **Wheat that blows in the wind:**
   - five fields of gold, copper and pale "silverwheat", one of them round under the irrigator
-  - each field is a low, lumpy golden *canopy* (a few hundred triangles) with stalks and grain heads poking through, so it reads dense and plush cheaply on mobile
+  - every clump is a sheaf of 3–4 thin stalks splaying from one root, with crossed-spindle ears and the odd curling leaf; dark soil shows between the rows
   - the `wheat` shader rolls gust waves across the fields, adds flutter and brightens the heads where a gust passes
   - one field is half harvested, with a cut wheat wall and stubble
 - **Row crops:** purple bulbroot and blue kale; lavender along the fences and roads; shrubs; flat-topped shade trees.

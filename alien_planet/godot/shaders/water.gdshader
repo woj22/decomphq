@@ -19,6 +19,7 @@ uniform float max_opacity = 0.62;      // never fully opaque: the lake bed alway
 uniform float wave_height = 0.09;
 uniform float wave_speed = 0.8;
 uniform bool debug_depth = false;
+uniform float rain = 1.0;
 
 varying vec3 wpos;
 
@@ -70,7 +71,18 @@ void fragment() {
 	float breakup = step(0.35, fract(sin(dot(floor(wpos.xz * 1.5), vec2(12.9898, 78.233))) * 43758.5453));
 	float foam = max(edge, rings * breakup) * smoothstep(0.0, 0.03, depth);
 
-	vec3 outc = col + sun_col * (glint * 0.8 + sparkle * 0.6);
+	// rain: expanding rings in a jittered grid of cells
+	float rings_r = 0.0;
+	for (int k = 0; k < 2; k++) {
+		vec2 cp = wpos.xz * (1.6 + float(k) * 0.9) + vec2(float(k) * 3.7);
+		vec2 cell = floor(cp);
+		vec2 off = vec2(fract(sin(dot(cell, vec2(12.9, 78.2))) * 437.5), fract(sin(dot(cell, vec2(39.3, 11.1))) * 941.7));
+		float ph = fract(TIME * 1.3 + off.x * 7.0);
+		float d = length(fract(cp) - (0.2 + off * 0.6));
+		rings_r += smoothstep(0.05, 0.0, abs(d - ph * 0.4)) * (1.0 - ph);
+	}
+	col = mix(col, vec3(0.75, 0.8, 0.85), clamp(rings_r, 0.0, 1.0) * 0.45 * rain);
+	vec3 outc = col + sun_col * (glint * 0.8 + sparkle * 0.6) * (1.0 - 0.8 * rain);
 	outc = mix(outc, foam_col, foam * 0.9);
 	ALBEDO = outc;
 	ALPHA = clamp(mix(0.12, max_opacity, k) + fres * 0.3 + foam + glint, 0.0, 1.0);
