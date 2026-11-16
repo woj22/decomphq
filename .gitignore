@@ -1,3 +1,4 @@
 dist/
 game/.godot/
 build/
+__pycache__/
