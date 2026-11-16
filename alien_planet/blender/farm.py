@@ -77,7 +77,7 @@ def ground_colour(W, x, y, z, base):
     fi = in_field(x, y, 0.6)
     if fi is not None:
         crop = FIELDS[fi][5]
-        soil = W.hexc('#5a4030') if crop in ('bulbroot', 'kale') else W.hexc('#5e4c30')
+        soil = W.hexc('#5a4030') if crop in ('bulbroot', 'kale') else W.hexc('#8a7044')
         return W.shade(soil, 0.92 + 0.12 * W.fbm(x * 0.4, y * 0.4, 1, 3.0))
     if any(math.hypot(x - yx, y - yy) < yr for yx, yy, yr in YARDS):
         return W.hexc('#b49470')
@@ -1053,15 +1053,83 @@ def far_city(W):
 
 
 # ------------------------------------------------------------------------------------------------ build
+# ------------------------------------------------------------------------------------------------ KayKit placements
+# KayKit models (CC0, Kay Lousberg) replace the procedural farm buildings, vehicles, fences, trees and props.
+# They are placed in Godot from godot/assets/kaykit_layout.json, written here with exact ground heights.
+# Fields of the list: m = model (pack/name), p = Godot position, r = facing (deg, same convention as my 'face'),
+# s = scale, t = tag: 'col' solid building (collision), 'mm' batched into a MultiMesh, '' plain instance.
+KK = []
+KK_SCALE = {'medieval': 7.0, 'city': 4.0, 'space': 4.0, 'proto': 1.0}
+
+
+def kk(W, model, x, y, face=0.0, s=None, tag='', excl=0.0, dz=0.0):
+    pack = model.split('/')[0]
+    s = s if s is not None else KK_SCALE.get(pack, 1.0)
+    z = W.ground(x, y) if excl <= 0 else W.min_ground(x, y, excl * 0.6)
+    KK.append(dict(m=model, p=[round(x, 3), round(z + dz, 3), round(-y, 3)], r=round(math.degrees(face), 2),
+                   s=round(s, 3), t=tag))
+    if excl > 0:
+        W.EXCL.append((x, y, excl))
+
+
+def kk_fence(W, a, b, gate=False):
+    ax, ay = a
+    bx, by = b
+    dx, dy = bx - ax, by - ay
+    L = math.hypot(dx, dy)
+    seg = 1.15 * 2.4
+    n = max(1, int(round(L / seg)))
+    face = math.atan2(dx, -dy)
+    for k in range(n):
+        t = (k + 0.5) / n
+        x, y = ax + dx * t, ay + dy * t
+        model = 'medieval/fence_wood_straight_gate' if gate and k == n // 2 else 'medieval/fence_wood_straight'
+        kk(W, model, x, y, face, 2.4 * (L / n) / seg if model.endswith('straight') else 2.4, 'mm' if 'gate' not in model else '')
+
+
+def kk_grain(W, fi):
+    """Tile a field with KayKit grain hexes (the wheat)."""
+    fx, fy, w, l, ang, crop, _ = FIELDS[fi]
+    s = 2.4
+    wx, hz = 1.87 * s, 2.09 * s
+    c_, s_ = math.cos(ang), math.sin(ang)
+    rx = w if crop == 'wheat_round' else w / 2
+    ry = w if crop == 'wheat_round' else l / 2
+    n = 0
+    row = 0
+    j = -ry
+    while j <= ry + 0.01:
+        i = -rx + (wx / 2 if row % 2 else 0.0)
+        while i <= rx + 0.01:
+            lx, ly = i, j
+            ok = True
+            if crop == 'wheat_round':
+                rr = math.hypot(lx, ly)
+                ok = rr < w - wx * 0.3 and rr > 2.0 and abs(rr - w * 0.5) > 0.9
+            else:
+                ok = abs(lx) <= w / 2 - wx * 0.2 and abs(ly) <= l / 2 - hz * 0.15
+                if fi == 3 and ly < -l / 2 + l * HARVESTED:
+                    ok = False
+            if ok:
+                x, y = fx + lx * c_ - ly * s_, fy + lx * s_ + ly * c_
+                kk(W, 'medieval/building_grain', x, y, ang, s, 'mm', dz=-0.12)
+                n += 1
+            i += wx
+        j += hz * 0.75
+        row += 1
+    W.EXCL.append((fx, fy, max(w, l) * 0.5 + 1.0 if crop != 'wheat_round' else w + 1.0))
+    return n
+
+
 def build(W):
-    counts = {'wheat_tris': 0, 'row_plants': 0, 'canopy_tris': 0}
+    KK.clear()
+    counts = {'grain_tiles': 0, 'row_plants': 0}
     for i, f in enumerate(FIELDS):
         if f[5].startswith('wheat'):
-            counts['wheat_tris'] += wheat_canopy(W, i)   # each field is one swaying block (cheap)
-            W.EXCL.append((f[0], f[1], max(f[2], f[3]) * 0.5 + 1.0 if f[5] != 'wheat_round' else f[2] + 1.0))
+            counts['grain_tiles'] += kk_grain(W, i)
         else:
             counts['row_plants'] += row_crops(W, i)
-    # field fences (with gates facing the roads), lavender along them
+    # field fences (KayKit wooden fences, gate on the road side), lavender along them
     for i, f in enumerate(FIELDS):
         if f[5] == 'wheat_round':
             continue
@@ -1071,43 +1139,59 @@ def build(W):
         for lx, ly in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
             px, py = lx * (w / 2 + 0.8), ly * (l / 2 + 0.8)
             corners.append((fx + px * c - py * s, fy + px * s + py * c))
-        for k in [0, 1, 2, 3]:
+        for k in range(4):
             a_, b_ = corners[k], corners[(k + 1) % 4]
-            mid = ((a_[0] + b_[0]) / 2, (a_[1] + b_[1]) / 2)
-            fence(W, a_, b_, gap=mid if k == 0 else None)
+            kk_fence(W, a_, b_, gate=(k == 0))
             for t in (0.2, 0.45, 0.8):
                 if W.R.random() < 0.6:
                     px, py = a_[0] + (b_[0] - a_[0]) * t, a_[1] + (b_[1] - a_[1]) * t
-                    ox, oy = (px - fx) * 0.06, (py - fy) * 0.06
-                    lavender(W, px + ox, py + oy)
-    # homestead A (west): the main farm hall with tower and silos, barn, windmill, yard clutter
-    farm_hall(W, -27.0, 110.0, math.radians(4))
-    barn(W, -14.0, 115.0, math.radians(-15))
-    silo(W, -36.0, 116.0)
-    silo(W, -39.5, 112.0, 7.0, 1.4)
-    windmill(W, 'millA', -38.0, 101.0)
-    well(W, -21.0, 102.0)
-    crawler_tractor(W, -15.0, 104.0, math.radians(160))
-    hay_cubes(W, -10.5, 107.5, 6, 0.3)
-    crates(W, -22.0, 99.5, 3)
-    cart(W, -30.0, 100.5, math.radians(30))
-    weather_tower(W, -44.0, 106.0)
-    # homestead B (east): round farmhouse, greenhouse, water tower, pods, windmill
-    farmhouse(W, 16.0, 117.0, math.radians(-12), 3.6)
-    greenhouse(W, 25.0, 109.5)
-    water_tower(W, 25.5, 118.5)
-    storage_pods(W, 9.5, 108.0)
-    windmill(W, 'millB', 6.0, 120.0, 10.0, '075')
-    hay_cubes(W, 12.0, 122.5, 5, -0.2)
-    crates(W, 21.0, 105.0, 2)
+                    lavender(W, px + (px - fx) * 0.06, py + (py - fy) * 0.06)
+    d = math.radians
+    # homestead A (west): tavern as the farm hall, lumber mill as the barn, smithy, windmill, well, water tower
+    kk(W, 'medieval/building_tavern_red', -27.0, 110.0, d(4), 7.0, 'col', 7.0)
+    kk(W, 'medieval/building_lumbermill_red', -14.0, 116.0, d(-15), 6.5, 'col', 6.0)
+    kk(W, 'medieval/building_blacksmith_red', -37.5, 117.5, d(30), 6.0, 'col', 5.0)
+    kk(W, 'medieval/building_windmill_red', -41.0, 101.0, d(150), 8.0, 'col', 4.5)
+    kk(W, 'medieval/building_well_red', -21.0, 102.0, d(0), 5.0, 'col', 2.2)
+    kk(W, 'city/watertower', -30.0, 121.0, d(10), 11.0, 'col', 3.2)
+    kk(W, 'medieval/building_market_red', -12.0, 97.5, d(40), 5.5, 'col', 5.0)
+    for fx_, fy_ in ((-31.0, 104.5), (-23.0, 104.5)):
+        kk(W, 'medieval/flag_red', fx_, fy_, d(4), 6.0)
+    for (px, py, m, sc) in [(-24.5, 104.0, 'medieval/barrel', 3.6), (-25.5, 103.6, 'medieval/barrel', 3.6),
+                            (-24.9, 102.9, 'medieval/crate_A_big', 3.6), (-33.0, 104.0, 'medieval/crate_long_A', 3.6),
+                            (-32.0, 102.6, 'medieval/sack', 4.0), (-31.2, 102.9, 'medieval/sack', 4.0),
+                            (-18.5, 106.0, 'medieval/wheelbarrow', 3.6), (-16.5, 110.0, 'medieval/resource_lumber', 3.6),
+                            (-20.0, 101.0, 'medieval/bucket_water', 3.6), (-35.0, 106.0, 'proto/Pallet_Small_Decorated_A', 1.0),
+                            (-10.0, 106.5, 'medieval/pallet', 4.0), (-10.0, 106.5, 'medieval/crate_B_small', 4.0)]:
+        kk(W, m, px, py, W.R.uniform(0, 6.28), sc, '', 0.9)
+    kk(W, 'city/bench', -31.0, 103.6, d(4), 4.0, '', 0.9)
+    kk(W, 'space/spacetruck_large', -15.0, 104.0, d(160), 5.0, 'col', 3.0)
+    kk(W, 'space/drill_structure', -49.0, 112.0, d(20), 3.5, 'col', 4.0)
+    kk(W, 'space/lights', -44.0, 106.0, d(0), 4.0, 'col', 1.6)
+    # homestead B (east): two homes, a habitat module as the greenhouse, cargo depot, turbine, solar
+    kk(W, 'medieval/building_home_A_red', 16.0, 117.0, d(-12), 7.0, 'col', 4.5)
+    kk(W, 'medieval/building_home_B_red', 8.0, 111.5, d(20), 6.0, 'col', 4.0)
+    kk(W, 'space/basemodule_A', 25.5, 109.5, d(0), 3.2, 'col', 4.2)
+    kk(W, 'space/cargodepot_A', 26.0, 119.5, d(10), 3.0, 'col', 3.6)
+    kk(W, 'space/windturbine_tall', 5.5, 121.0, d(-30) + math.pi, 5.0, 'col', 2.5)
+    kk(W, 'space/containers_A', 20.5, 104.0, d(15), 4.0, 'col', 1.6)
+    kk(W, 'space/containers_B', 12.5, 122.5, d(-5), 4.0, 'col', 1.6)
+    for k, (px, py) in enumerate([(31.5, 112.0), (31.5, 115.5)]):
+        kk(W, 'space/solarpanel', px, py, d(90), 3.5, 'col', 2.0)
+    kk(W, 'city/bench', 13.8, 110.8, d(-30), 4.0, '', 0.9)
+    for (px, py, m) in [(19.5, 112.5, 'medieval/barrel'), (20.3, 113.1, 'medieval/barrel'), (21.0, 111.5, 'city/box_A'),
+                        (11.0, 116.0, 'medieval/crate_A_big'), (11.6, 115.2, 'city/box_B')]:
+        kk(W, m, px, py, W.R.uniform(0, 6.28), 3.6 if m.startswith('medieval') else 4.0, '', 0.9)
     condenser_spire(W, 30.0, 126.0, 10.0)
-    farmhouse(W, 50.0, 110.0, math.radians(140), 3.0)
-    weather_tower(W, 48.0, 90.0, 6.0)
-    # machinery at work
+    kk(W, 'medieval/building_home_A_red', 50.0, 110.0, d(140), 6.0, 'col', 4.0)
+    kk(W, 'space/lights', 48.0, 90.0, d(0), 4.0, 'col', 1.6)
+    kk(W, 'medieval/tent', -30.5, 95.0, d(60), 4.5, 'col', 2.4)
+    # vehicles and machinery at work
+    kk(W, 'space/spacetruck', -4.0, 99.0, d(-90) + math.pi, 5.0, 'col', 2.4)
+    kk(W, 'space/spacetruck_trailer', -4.0, 94.2, d(-90) + math.pi, 5.0, 'col', 2.6)
+    kk(W, 'space/cargo_A_stacked', 0.5, 108.0, d(10), 4.0, 'col', 1.8)
     f3 = FIELDS[3]
     walker_harvester(W, f3[0] + 7.0, f3[1] - f3[3] / 2 + f3[3] * HARVESTED - 4.0, math.pi / 2)
-    hauler(W, -4.0, 97.0, math.radians(90))
-    hay_cubes(W, 0.5, 108.0, 6, 0.1)
     pivot_irrigator(W, 5)
     f4 = FIELDS[4]
     quad_drone(W, 'droneA', f4[0], f4[1] - 2.0, f4[4], 12, 3.5)
@@ -1115,17 +1199,23 @@ def build(W):
     f2 = FIELDS[2]
     quad_drone(W, 'droneC', f2[0], f2[1], f2[4], 12, 3.0)
     quad_drone(W, 'droneD', 30.0, 112.0, 0.8, 20, 9.0)
-    # shade trees and shrubs on the valley margins, lavender by the roads
-    for (tx, ty, ts) in [(-56, 100, 1.1), (-52, 122, 1.0), (-30, 128, 1.2), (4, 132, 1.0), (52, 100, 1.1),
-                         (44, 130, 0.9), (-20, 76, 1.0), (22, 80, 1.1), (-34, 82, 0.9), (60, 108, 1.0)]:
-        acacia(W, tx, ty, ts)
-    for k in range(40):
+    # KayKit trees on the valley margins, lavender by the roads
+    for (tx, ty, m, sc) in [(-56, 100, 'trees_B_large', 5.0), (-52, 122, 'trees_A_medium', 5.0), (-30, 129, 'trees_A_medium', 5.0),
+                            (4, 132, 'trees_B_large', 5.0), (52, 100, 'trees_A_medium', 5.0), (44, 130, 'trees_B_large', 4.5),
+                            (-20, 76, 'tree_single_A', 6.0), (22, 80, 'tree_single_B', 6.0), (-34, 82, 'trees_A_small', 5.0),
+                            (60, 108, 'tree_single_A', 6.0), (-44, 128, 'tree_single_B', 6.0), (36, 84, 'trees_A_small', 5.0)]:
+        kk(W, 'medieval/' + m, tx, ty, W.R.uniform(0, 6.28), sc, 'mm', 2.5)
+    for k in range(30):
         a = W.R.uniform(0, 6.283)
         rr = W.R.uniform(0.75, 1.0)
         bx = VALLEY[0] + math.cos(a) * VALLEY[2] * rr
         by = VALLEY[1] + math.sin(a) * VALLEY[3] * rr
         if in_field(bx, by, 2.0) is None and road_d(bx, by) > 3.0 and not W.excluded(bx, by):
-            (bush if k % 3 else lavender)(W, bx, by) if k % 3 != 1 else bush(W, bx, by, 0.8)
+            if k % 3 == 0:
+                lavender(W, bx, by)
+            else:
+                kk(W, 'medieval/' + ('tree_single_A' if k % 3 == 1 else 'tree_single_B'), bx, by, W.R.uniform(0, 6.28),
+                   W.R.uniform(4.0, 6.0), 'mm', 1.5)
     for (a, b) in ROADS:
         for t in (0.15, 0.4, 0.65, 0.9):
             px, py = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
@@ -1138,4 +1228,6 @@ def build(W):
     far_city(W)
     for x, y, r in YARDS:
         W.EXCL.append((x, y, r * 0.7))
+    # old ruins: a few KayKit skeleton remains lie among the colonnade and the ring shrine
+    counts['kaykit'] = len(KK)
     return counts

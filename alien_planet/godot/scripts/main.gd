@@ -50,6 +50,7 @@ func _ready() -> void:
 	_make_materials()
 	_make_environment()
 	_load_world()
+	KayKit.place_all(self, spinners)
 	_make_lake()
 	_make_player()
 	_make_rain()
@@ -264,20 +265,23 @@ func _make_player() -> void:
 ## A few residents placed around the world so it feels lived in (static animation loops, no AI).
 ## [character id, blender x, y, animation, look-at blender x, y]
 const INHABITANTS := [
-	["human_0", -22.0, 5.0, "Talk", -19.5, 3.0], ["avari_1", -19.5, 3.0, "Talk", -22.0, 5.0],
+	["kk:Rogue", -22.0, 5.0, "Talk", -19.5, 3.0], ["avari_1", -19.5, 3.0, "Talk", -22.0, 5.0],
 	["keth_3", 18.6, 21.2, "Idle", 0.0, 10.0], ["avari_4", 38.5, 27.5, "Idle", 44.0, 32.0],
 	["murrai_1", -9.5, -15.5, "Sit", 10.0, -10.0], ["murrai_2", -8.0, -17.0, "Idle", -9.5, -15.5],
 	["keth_0", -12.5, 34.0, "Idle", -6.5, 33.0], ["vorn_1", -9.5, 35.0, "Talk", -12.0, 37.0],
 	["luma_0", -49.0, -11.0, "Idle", -36.0, 0.0], ["vorn_0", -29.0, -29.0, "Talk", -27.0, -31.0],
-	["human_1", -31.0, 12.0, "Idle", -36.0, 16.0], ["luma_3", -27.0, -31.0, "Talk", -29.0, -29.0],
+	["kk:Barbarian", -31.0, 12.0, "Idle", -36.0, 16.0], ["luma_3", -27.0, -31.0, "Talk", -29.0, -29.0],
 	# farming valley: people living and working
-	["keth_1", -16.0, 87.0, "Work", -16.0, 92.0], ["human_4", -21.0, 85.5, "Idle", -16.0, 87.0],
-	["vorn_1", -16.6, 102.6, "Work", -18.0, 104.5], ["human_2", -21.5, 101.0, "Talk", -23.5, 99.5],
-	["vorn_2", -23.5, 99.5, "Talk", -21.5, 101.0], ["luma_2", -31.0, 103.2, "Sit", -31.0, 98.0],
-	["human_5", -11.0, 103.5, "Idle", -12.0, 106.5], ["murrai_2", -9.8, 104.8, "Talk", -11.0, 103.5],
+	["keth_1", -16.0, 87.0, "Work", -16.0, 92.0], ["kk:Rogue_Hooded", -21.0, 85.5, "Idle", -16.0, 87.0],
+	["vorn_1", -16.6, 102.6, "Work", -18.0, 104.5], ["kk:Knight", -21.5, 99.5, "Talk", -23.5, 98.5],
+	["vorn_2", -23.5, 98.5, "Talk", -21.5, 99.5], ["luma_2", -31.0, 103.6, "SitBench", -31.0, 98.0],
+	["kk:Rogue@1.15", -8.0, 103.5, "Cheer", -9.8, 104.8], ["murrai_2", -9.8, 104.8, "Talk", -8.0, 103.5],
 	["avari_2", 22.5, 105.5, "Idle", 25.0, 109.5], ["murrai_0", 12.5, 84.0, "Idle", 14.0, 90.0],
-	["keth_2", 13.0, 109.5, "Talk", 15.0, 108.0], ["human_3", 15.0, 108.0, "Talk", 13.0, 109.5],
-	["murrai_4", 13.8, 110.6, "Sit", 13.0, 106.0], ["human_0", -4.5, 82.0, "Idle", -4.0, 95.0],
+	["keth_2", 13.0, 109.5, "Talk", 15.0, 108.0], ["kk:Mage", 15.0, 108.0, "Talk", 13.0, 109.5],
+	["murrai_4", 13.8, 110.8, "SitBench", 13.0, 106.0], ["kk:Barbarian", -6.5, 84.0, "Work", -6.5, 90.0],
+	# remains of an older war among the ruins
+	["kk:Skeleton_Warrior", 40.5, 27.0, "Dead", 44.0, 32.0], ["kk:Skeleton_Minion", -17.0, 3.0, "Lie", -10.0, 0.0],
+	["kk:Skeleton_Minion", -13.5, 40.0, "SitFloor", -16.0, 42.0],
 ]
 
 
@@ -288,17 +292,27 @@ func _spawn_inhabitants() -> void:
 	root.name = "Inhabitants"
 	add_child(root)
 	for e in INHABITANTS:
-		var work: bool = e[3] == "Work"   # farm work: the swing animation, looped (hoeing, hammering)
-		var c := Cast.spawn(e[0], "Attack" if work else e[3])
-		if work:
-			Cast.loop(c, "Attack")
+		var c: Node3D
+		var anim: String = e[3]
+		var bench: bool = anim == "SitBench"   # sits on a KayKit bench placed by the layout (no stone block)
+		if bench:
+			anim = "Sit"
+		if String(e[0]).begins_with("kk:"):   # KayKit adventurers stand in for Humans; skeletons as old remains
+			var spec := String(e[0]).substr(3).split("@")
+			var h := 1.8 if spec.size() < 2 else float(spec[1])
+			c = KayKit.character(spec[0], anim, [], h if not spec[0].begins_with("Skeleton") else 1.7)
+		else:
+			var work: bool = anim == "Work"   # farm work: the swing animation, looped (hoeing, hammering)
+			c = Cast.spawn(e[0], "Attack" if work else anim)
+			if work:
+				Cast.loop(c, "Attack")
 		var p := b2g(e[1], e[2], 0.0)
 		p.y = _ground_y(p)
 		root.add_child(c)
 		c.position = p
 		var tgt := b2g(e[4], e[5], 0.0)
 		c.rotation.y = atan2(tgt.x - p.x, tgt.z - p.z)   # models face +Z
-		if e[3] == "Sit":   # a stone to sit on, at knee height
+		if e[3] == "Sit" and not String(e[0]).begins_with("kk:"):   # a stone to sit on, at knee height
 			var seat := MeshInstance3D.new()
 			var bm := BoxMesh.new()
 			bm.size = Vector3(0.7, 0.5, 0.55)

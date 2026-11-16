@@ -97,6 +97,13 @@ A pass through the northern cliffs opens into a green valley about 120 m wide, u
 
 Motion is set up by name: `Spin_<axis>_<speed>_*` rotates and `Mover_<metres>_*` glides back and forth (see `main.gd`).
 
+## KayKit assets (CC0)
+Buildings, vehicles, fences, trees, props, the grain-tile wheat, the Human characters and the skeleton remains are from **KayKit** by Kay Lousberg (www.kaylousberg.com), released as CC0. The packs used are Medieval Hexagon, Space Base Bits, City Builder Bits, Prototype Bits, Adventurers and Skeletons.
+- **Copying:** `tools/sync_kaykit.py <dir>` copies only the models used into `godot/assets/kaykit/`.
+- **Layout:** `blender/farm.py` lays them out and writes `godot/assets/kaykit_layout.json`.
+- **Loading:** `godot/scripts/kaykit.gd` places them at runtime. Repeated props are batched into MultiMeshes, buildings get collision, and windmill sails, turbine fans and the lumber-mill saw spin.
+- **Humans:** the Human species is now played by the KayKit Adventurers (Knight, Barbarian, Mage, Rogue), which carry 76 animations each. Their weapons are hidden unless needed.
+
 ## Inhabitants: six species
 `blender/build_characters.py` builds the cast: 31 individuals across six original species, all on **one shared humanoid skeleton**. Run it with `python3 alien_planet/blender/build_characters.py`; it takes about 20 s. It writes `godot/assets/chars/*.glb`, `manifest.json` and `blender/characters.blend`.
 

@@ -6,6 +6,9 @@ extends "res://scripts/main.gd"
 const ORDER := ["human", "avari", "keth", "luma", "vorn", "murrai"]
 const TITLES := {"human": "Humans", "avari": "Avari", "keth": "Keth", "luma": "Luma", "vorn": "Vorn", "murrai": "Murrai"}
 const POSES := ["Idle", "Talk", "Idle", "Talk", "Idle", "Idle"]
+## Humans are KayKit Adventurers (CC0, Kay Lousberg): [model, name, height]
+const HUMANS := [["Knight", "Ser Odric", 1.86], ["Barbarian", "Brannoc", 1.9], ["Mage", "Ilsa", 1.72],
+	["Rogue", "Senna", 1.7], ["Rogue_Hooded", "Mbeki", 1.76]]
 var groups := {}
 var all_chars: Array = []
 
@@ -53,7 +56,7 @@ func _lineup() -> void:
 		var a := deg_to_rad(lerpf(-50.0, 50.0, gi / 5.0))
 		var center := Vector3(sin(a) * 11.0, 0, -cos(a) * 11.0 + 11.0)
 		var facing := atan2(-center.x, 12.0 - center.z)
-		var members := Cast.by_species(sp)
+		var members := Cast.by_species(sp) if sp != "human" else HUMANS.map(func(h): return {"id": "kk:" + h[0], "name": h[1], "height": h[2]})
 		var node := Node3D.new()
 		node.name = sp
 		add_child(node)
@@ -61,7 +64,11 @@ func _lineup() -> void:
 		node.rotation.y = facing
 		for i in members.size():
 			var e: Dictionary = members[i]
-			var c := Cast.spawn(e["id"], POSES[i % POSES.size()], 0.15 * i)
+			var c: Node3D
+			if String(e["id"]).begins_with("kk:"):
+				c = KayKit.character(String(e["id"]).substr(3), POSES[i % POSES.size()], [], float(e["height"]), 0.15 * i)
+			else:
+				c = Cast.spawn(e["id"], POSES[i % POSES.size()], 0.15 * i)
 			node.add_child(c)
 			c.position = Vector3((i - (members.size() - 1) / 2.0) * 0.95, 0, (0.25 if i % 2 else 0.0))
 			c.rotation.y = (i - members.size() / 2.0) * -0.08
@@ -96,14 +103,18 @@ var sheet_rows := {}
 func _anim_sheet() -> void:
 	for gi in ORDER.size():
 		var sp: String = ORDER[gi]
-		var e: Dictionary = Cast.by_species(sp)[0]
+		var e: Dictionary = Cast.by_species(sp)[0] if sp != "human" else {"id": "kk:Knight", "height": 1.86}
 		var row := Node3D.new()
 		row.name = "sheet_" + sp
 		add_child(row)
 		row.position = Vector3(0, 0, -40.0 - gi * 14.0)
 		sheet_rows[sp] = row
 		for k in SHEET_ANIMS.size():
-			var c := Cast.spawn(e["id"], SHEET_ANIMS[k], SHEET_AT[k])
+			var c: Node3D
+			if String(e["id"]).begins_with("kk:"):
+				c = KayKit.character("Knight", SHEET_ANIMS[k] if SHEET_ANIMS[k] != "Attack" else "Attack", ["1H_Sword"] if SHEET_ANIMS[k] == "Attack" else [], 1.86, SHEET_AT[k])
+			else:
+				c = Cast.spawn(e["id"], SHEET_ANIMS[k], SHEET_AT[k])
 			row.add_child(c)
 			c.position = Vector3((k - 2.5) * 1.6, 0, 0)
 			(c.get_meta("player") as AnimationPlayer).speed_scale = 0.0

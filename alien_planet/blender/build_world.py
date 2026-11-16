@@ -21,7 +21,7 @@ Style rules (keep them when adding things):
     Float_*            floating islands, bob slowly
 - Blender is Z-up, 1 unit = 1 metre. The glTF export converts to Godot's Y-up: (x, y, z) -> (x, z, -y).
 """
-import bpy, math, os, random, sys
+import bpy, json, math, os, random, sys
 from mathutils import Vector, Matrix, noise
 from mathutils.bvhtree import BVHTree
 
@@ -1299,6 +1299,8 @@ def main():
     counts.update(counts_farm)
 
     bake_ao()
+    with open(os.path.join(ROOT, 'godot', 'assets', 'kaykit_layout.json'), 'w') as fh:   # KayKit placements for Godot
+        json.dump(farm.KK, fh, separators=(',', ':'))
     mats = make_materials()
     objs = []
     for name in sorted(BUCKETS):
