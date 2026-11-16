@@ -1,8 +1,12 @@
 """Fast whole-world heightmap from Bedrock Data3D records (no subchunk decoding)."""
+import os as _os
+BASE = _os.environ.get('ELOSIA_DIR', '/home/user/elosia')
+GEN = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'generator')
+
 import struct, time, numpy as np
 from leveldb import LevelDB
 t = time.time()
-db = LevelDB('/home/user/elosia/work/Elosia/db')
+db = LevelDB(_os.path.join(BASE, 'work/Elosia/db'))
 R = 3072
 N = 2 * R // 16 + 2
 hm = np.full((N * 16, N * 16), -999, dtype=np.int16)
@@ -16,6 +20,6 @@ for k, v in db.iterate():
             hm[iz:iz + 16, ix:ix + 16] = h - 64
             n += 1
 print('chunks with Data3D', n, round(time.time() - t, 1), 's')
-np.save('/home/user/elosia/heightmap.npy', hm)
+np.save(_os.path.join(BASE, 'heightmap.npy'), hm)
 valid = hm > -999
 print('height range', hm[valid].min(), hm[valid].max(), 'median', np.median(hm[valid]))

@@ -3,20 +3,24 @@
 Each region is cut from the edited world into 64 x 64 .mcstructure tiles at absolute coordinates, with
 prepare / build / finish functions, so it can be applied to anyone's own copy of the original Elosia world.
 """
+import os as _os
+BASE = _os.environ.get('ELOSIA_DIR', '/home/user/elosia')
+GEN = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'generator')
+
 import json, math, os, shutil, sys, zipfile
 import numpy as np
-sys.path.insert(0, '/home/user/decomphq/minecraft_alien/generator')
+sys.path.insert(0, GEN)
 import amulet
 from amulet_nbt import ByteTag, IntTag, StringTag, ShortTag
 from nbt import Byte, IntList, dumps
 
-EDITED = '/home/user/elosia/work/Elosia'
-OUT = '/home/user/elosia/pack'
+EDITED = _os.path.join(BASE, 'work/Elosia')
+OUT = _os.path.join(BASE, 'pack')
 NS = 'elosia'
 VERSION = (1, 21, 60)
 BLOCK_VERSION = (VERSION[0] << 24) | (VERSION[1] << 16) | (VERSION[2] << 8)
 TILE = 64
-hm = np.load('/home/user/elosia/heightmap.npy').astype(np.int32) + 63
+hm = np.load(_os.path.join(BASE, 'heightmap.npy')).astype(np.int32) + 63
 O = 3072 + 16
 
 # regions: (name, x0, z0, x1, z1) inclusive-exclusive, from the placement (site +/- (half + 16)) and road boxes
@@ -153,14 +157,14 @@ def main():
                            'min_engine_version': [1, 21, 0]},
                 'modules': [{'type': 'data', 'uuid': '8a3e1f9d-6c2b-4f7a-a5d0-3b9c1e7f2a46', 'version': [1, 0, 0]}]}
     json.dump(manifest, open(os.path.join(OUT, 'manifest.json'), 'w'), indent=2)
-    shutil.copy('/home/user/decomphq/minecraft_alien/maps/lumen_hollow_preview.png', os.path.join(OUT, 'pack_icon.png'))
-    mc = '/home/user/elosia/Elosia_AlienCity_AddOn.mcpack'
+    shutil.copy(_os.path.join(GEN, '..', 'maps', 'lumen_hollow_preview.png'), os.path.join(OUT, 'pack_icon.png'))
+    mc = _os.path.join(BASE, 'Elosia_AlienCity_AddOn.mcpack')
     with zipfile.ZipFile(mc, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         for root, _, files in os.walk(OUT):
             for f in files:
                 p = os.path.join(root, f)
                 z.write(p, os.path.relpath(p, OUT))
-    json.dump(allf, open('/home/user/elosia/pack_regions.json', 'w'))
+    json.dump(allf, open(_os.path.join(BASE, 'pack_regions.json'), 'w'))
     print('wrote', mc, round(os.path.getsize(mc) / 1e6, 2), 'MB')
 
 

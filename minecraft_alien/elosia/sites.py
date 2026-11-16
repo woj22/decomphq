@@ -1,6 +1,9 @@
+import os as _os
+BASE = _os.environ.get('ELOSIA_DIR', '/home/user/elosia')
+GEN = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'generator')
 import numpy as np
 from scipy import ndimage
-hm = np.load('/home/user/elosia/heightmap.npy').astype(np.float32) + 63
+hm = np.load(_os.path.join(BASE, 'heightmap.npy')).astype(np.float32) + 63
 R = 3072; O = R + 16
 # central 3000 x 3000 at 2-block resolution, trees smoothed out with a median filter
 x0 = O - 1500; sub = hm[x0:x0 + 3000:2, x0:x0 + 3000:2]
@@ -22,7 +25,7 @@ res = {}
 for size in (96, 112, 128):
     s, mean, std = site_score(size)
     res[size] = (s, mean, std)
-np.save('/home/user/elosia/score128.npy', res[128][0])
+np.save(_os.path.join(BASE, 'score128.npy'), res[128][0])
 # best 'city' region: minimise the sum of the best 5 footprints within a 520-block window
 s96 = res[96][0]
 best = []

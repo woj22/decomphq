@@ -1,0 +1,32 @@
+name: Elosia Alien City world
+
+# Publishes the finished Elosia_AlienCity.mcworld (stored in Git LFS) as a release asset.
+on:
+  push:
+    branches: [claude/alien-planet-lowpoly-ue88vf]
+    paths:
+      - 'minecraft_alien/elosia/world/**'
+      - '.github/workflows/elosia-alien-city.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -la minecraft_alien/elosia/world
+          gh release delete elosia-alien-city --yes --cleanup-tag || true
+          gh release create elosia-alien-city \
+            minecraft_alien/elosia/world/Elosia_AlienCity.mcworld minecraft_alien/elosia/world/city_map.png \
+            --target "${{ github.sha }}" --title "Elosia - Alien City (world)" \
+            --notes-file minecraft_alien/elosia/RELEASE.md

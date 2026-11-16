@@ -1,6 +1,9 @@
+import os as _os
+BASE = _os.environ.get('ELOSIA_DIR', '/home/user/elosia')
+GEN = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'generator')
 import numpy as np
 from scipy import ndimage
-hm = np.load('/home/user/elosia/heightmap.npy').astype(np.float32) + 63
+hm = np.load(_os.path.join(BASE, 'heightmap.npy')).astype(np.float32) + 63
 O = 3072 + 16
 def stats(x, z, size, margin=12):
     a = hm[O + z - size // 2 - margin:O + z + size // 2 + margin, O + x - size // 2 - margin:O + x + size // 2 + margin]

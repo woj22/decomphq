@@ -4,16 +4,20 @@ Each place is levelled to the median ground height of its footprint (cut and fil
 blended back into the natural terrain over a 14-block skirt. Roads that follow the terrain link the
 places to each other and to spawn.
 """
+import os as _os
+BASE = _os.environ.get('ELOSIA_DIR', '/home/user/elosia')
+GEN = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'generator')
+
 import math, sys, time
 import numpy as np
-sys.path.insert(0, '/home/user/decomphq/minecraft_alien/generator')
+sys.path.insert(0, GEN)
 import amulet
 from amulet.api.block import Block
 from amulet_nbt import StringTag, IntTag, ByteTag
 import vox
 from layouts import LAYOUTS
 
-WORLD = sys.argv[1] if len(sys.argv) > 1 else '/home/user/elosia/work/Elosia'
+WORLD = sys.argv[1] if len(sys.argv) > 1 else _os.path.join(BASE, 'work/Elosia')
 DIM = 'minecraft:overworld'
 MARGIN = 14
 SITES = [   # key, centre x, centre z  (chosen from the terrain survey: flat, dry, close to spawn)
@@ -34,7 +38,7 @@ VEG = {'leaves', 'log', 'wood', 'plant', 'double_plant', 'vine', 'azalea', 'flow
 
 t0 = time.time()
 W = amulet.load_level(WORLD)
-hm = np.load('/home/user/elosia/heightmap.npy').astype(np.int32) + 63
+hm = np.load(_os.path.join(BASE, 'heightmap.npy')).astype(np.int32) + 63
 O = 3072 + 16
 ver = W.translation_manager.get_version('bedrock', (1, 19, 0))
 _uni = {}

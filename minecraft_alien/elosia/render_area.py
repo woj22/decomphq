@@ -1,9 +1,13 @@
 """Top-down map of an area coloured by the real top block of each column (after placement)."""
+import os as _os
+BASE = _os.environ.get('ELOSIA_DIR', '/home/user/elosia')
+GEN = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'generator')
+
 import sys, numpy as np, amulet
 from PIL import Image, ImageDraw
 x0, z0, x1, z1 = -420, -460, 420, 60
-W = amulet.load_level(sys.argv[1] if len(sys.argv) > 1 else '/home/user/elosia/work/Elosia')
-hm = np.load('/home/user/elosia/heightmap.npy').astype(np.int32) + 63
+W = amulet.load_level(sys.argv[1] if len(sys.argv) > 1 else _os.path.join(BASE, 'work/Elosia'))
+hm = np.load(_os.path.join(BASE, 'heightmap.npy')).astype(np.int32) + 63
 O = 3072 + 16
 COL = {'grass_block': (96, 150, 60), 'dirt': (120, 86, 56), 'coarse_dirt': (110, 80, 52), 'podzol': (90, 64, 34),
        'stone': (125, 125, 125), 'andesite': (130, 130, 130), 'gravel': (130, 124, 120), 'sand': (220, 208, 160),
@@ -57,5 +61,5 @@ for name, x, z in [('Lumen Hollow', 4, -108), ('Spireholm', -142, -230), ('Hive 
     p = px(x, z)
     dr.rectangle([p[0] - 60, p[1] - 108, p[0] + 60, p[1] - 92], fill=(0, 0, 0))
     dr.text((p[0] - 56, p[1] - 106), f'{name} ({x},{z})', fill=(255, 255, 255))
-im.save(sys.argv[2] if len(sys.argv) > 2 else '/home/user/elosia/city_map.png')
+im.save(sys.argv[2] if len(sys.argv) > 2 else _os.path.join(BASE, 'city_map.png'))
 print('ok', im.size)
