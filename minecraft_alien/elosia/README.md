@@ -23,3 +23,13 @@ These scripts fit the generated villages and farmlands into an existing Bedrock 
 | Terrace Rings | (-230, -106) | Y 90 |
 
 Spawn is at (0, 0). A road runs north from it into Lumen Hollow.
+
+## Add-on pack (for your own copy of the original Elosia world)
+The full edited world is about 620 MB, so `export_pack.py` also produces `Elosia_AlienCity_AddOn.mcpack`, under 1 MB. It cuts each changed region (the five places with their blended terrain, and the five road sections) out of the edited world as 64 × 64 `.mcstructure` tiles at their real coordinates. Block-entity positions such as dungeon chests and spawners are left as structure void, so the player's originals stay intact.
+
+To use it in game:
+1. Activate the pack in your Elosia world and turn on cheats.
+2. Go to a place (see the table above).
+3. Run `/function elosia/<place>/prepare`, wait about 10 seconds, run `/function elosia/<place>/build`, then `/function elosia/<place>/finish`.
+
+The places are `lumen_hollow`, `spireholm`, `hive_ring`, `sunwheat_plains`, `terrace_rings` and `road_1` to `road_5`. Do one at a time: Bedrock allows at most 10 ticking areas.
