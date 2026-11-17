@@ -13,6 +13,7 @@ Usage:
 """
 import argparse
 import csv
+import datetime
 import glob
 import gzip
 import json
@@ -51,25 +52,34 @@ WIKI_POS = {"GK": "Goalkeeper", "DF": "Defender", "MF": "Midfield", "FW": "Attac
 
 
 def load_tm(path):
+    """name key -> list of TM player rows (several players can share a name)."""
     by_name = {}
     for p in csv.DictReader(gzip.open(path, "rt", encoding="utf-8")):
-        k = person_key(p["name"])
-        # keep the most recent record per name
-        if k not in by_name or p["last_season"] > by_name[k]["last_season"]:
-            by_name[k] = p
+        by_name.setdefault(person_key(p["name"]), []).append(p)
     return by_name
 
 
-def tm_lookup(tm, name, club_hint=""):
+def age_on(dob, ref=datetime.date(2026, 11, 17)):
+    try:
+        d = datetime.date.fromisoformat(dob[:10])
+    except (TypeError, ValueError):
+        return None
+    return ref.year - d.year - ((ref.month, ref.day) < (d.month, d.day))
+
+
+def tm_lookup(tm, name, age=None):
     k = person_key(name)
-    if k in tm:
-        return tm[k]
+    cands = list(tm.get(k, []))
     toks = k.split()
-    if len(toks) >= 2:  # try "first last" against longer TM names
-        cands = [v for kk, v in tm.items() if kk.split()[-1] == toks[-1] and kk.split()[0] == toks[0]]
-        if len(cands) == 1:
-            return cands[0]
-    return None
+    if not cands and len(toks) >= 2:  # "first last" against longer TM names
+        cands = [v for kk, vs in tm.items() if kk.split()[0] == toks[0] and kk.split()[-1] == toks[-1] for v in vs]
+    if age is not None:  # drop namesakes whose age does not fit
+        cands = [c for c in cands if (a := age_on(c["date_of_birth"])) is not None and abs(a - age) <= 1]
+    if not cands:
+        return None
+    if len(cands) > 1 and age is None:
+        return None  # ambiguous name and nothing to tell them apart
+    return max(cands, key=lambda c: (c["last_season"], c["market_value_in_eur"] or "0"))
 
 
 def main():
@@ -125,7 +135,7 @@ def main():
                                     "shirt": r["no"] or None, "nat_code": r["nat"]})
             matched = 0
             for p in players:
-                t = tm_lookup(tm, p["name"])
+                t = tm_lookup(tm, p["name"], p.get("age"))
                 if t:
                     matched += 1
                     p["tm_id"] = int(t["player_id"])

@@ -1,0 +1,141 @@
+club,player,position,age,nationality,contract_expiry,market_value_eur
+Tottenham Hotspur,Antonín Kinský,Goalkeeper,23,Czech Republic,30/06/2031,18.00M
+Tottenham Hotspur,Martin Dúbravka,Goalkeeper,37,Slovakia,30/06/2027,500.0K
+Tottenham Hotspur,Brandon Austin,Goalkeeper,27,England / United States,30/06/2029,500.0K
+Tottenham Hotspur,Jan Paul van Hecke,Centre-Back,26,Netherlands,,60.00M
+Tottenham Hotspur,Micky van de Ven,Centre-Back,25,Netherlands,30/06/2031,50.00M
+Tottenham Hotspur,Marcos Senesi,Centre-Back,29,Argentina / Italy,30/06/2030,20.00M
+Tottenham Hotspur,Tosin Adarabioyo,Centre-Back,29,England / Nigeria,30/06/2029,13.00M
+Tottenham Hotspur,Ben Davies,Centre-Back,33,Wales,30/06/2027,3.00M
+Tottenham Hotspur,Destiny Udogie,Left-Back,23,Italy / Nigeria,30/06/2030,25.00M
+Tottenham Hotspur,Andrew Robertson,Left-Back,32,Scotland,30/06/2030,7.00M
+Tottenham Hotspur,Pedro Porro,Right-Back,27,Spain,30/06/2031,45.00M
+Tottenham Hotspur,Archie Gray,Right-Back,20,England / Scotland,30/06/2030,35.00M
+Tottenham Hotspur,Sandro Tonali,Defensive Midfield,26,Italy,30/06/2032,90.00M
+Tottenham Hotspur,Rodrigo Bentancur,Defensive Midfield,29,Uruguay,30/06/2029,17.00M
+Tottenham Hotspur,Mateus Fernandes,Central Midfield,22,Portugal,30/06/2031,70.00M
+Tottenham Hotspur,Lucas Bergvall,Central Midfield,20,Sweden,30/06/2031,40.00M
+Tottenham Hotspur,Conor Gallagher,Central Midfield,26,England,30/06/2031,32.00M
+Tottenham Hotspur,Xavi Simons,Attacking Midfield,23,Netherlands / Suriname,30/06/2030,40.00M
+Tottenham Hotspur,James Maddison,Attacking Midfield,29,England / Ireland,30/06/2028,17.00M
+Tottenham Hotspur,Dejan Kulusevski,Attacking Midfield,26,Sweden / North Macedonia,30/06/2028,13.00M
+Tottenham Hotspur,Sávio,Left Winger,22,Brazil,30/06/2031,50.00M
+Tottenham Hotspur,Mathys Tel,Left Winger,21,France / Guadeloupe,30/06/2031,22.00M
+Tottenham Hotspur,Wilson Odobert,Left Winger,21,France / Martinique,30/06/2029,18.00M
+Tottenham Hotspur,Mykhaylo Mudryk,Left Winger,25,Ukraine,30/06/2027,15.00M
+Tottenham Hotspur,Mohammed Kudus,Right Winger,26,Ghana,30/06/2031,45.00M
+Tottenham Hotspur,Omar Marmoush,Centre-Forward,27,Egypt / Canada,30/06/2027,50.00M
+Tottenham Hotspur,Dominic Solanke,Centre-Forward,29,England / Nigeria,30/06/2030,25.00M
+Tottenham Hotspur,Richarlison,Centre-Forward,29,Brazil,30/06/2027,15.00M
+Newcastle United,Lukas Hornicek,Goalkeeper,24,Czech Republic,30/06/2031,27.00M
+Newcastle United,Ewen Jaouen,Goalkeeper,20,France / Germany,30/06/2030,18.00M
+Newcastle United,Nick Pope,Goalkeeper,34,England,30/06/2027,3.00M
+Newcastle United,Mark Gillespie,Goalkeeper,34,England,30/06/2027,100.0K
+Newcastle United,Malick Thiaw,Centre-Back,25,Germany / Finland,30/06/2029,50.00M
+Newcastle United,Sven Botman,Centre-Back,26,Netherlands,30/06/2030,35.00M
+Newcastle United,Dan Burn,Centre-Back,34,England,30/06/2027,4.00M
+Newcastle United,Fabian Schär,Centre-Back,34,Switzerland,30/06/2027,3.00M
+Newcastle United,Lewis Hall,Left-Back,22,England,30/06/2031,55.00M
+Newcastle United,Tino Livramento,Right-Back,24,England / Scotland,30/06/2028,45.00M
+Newcastle United,Amar Dedic,Right-Back,24,Bosnia-Herzegovina,30/06/2031,30.00M
+Newcastle United,Nico González,Defensive Midfield,24,Spain,30/06/2031,50.00M
+Newcastle United,Aladji Bamba,Defensive Midfield,20,France / Guinea,30/06/2031,25.00M
+Newcastle United,Jacob Ramsey,Central Midfield,25,England,30/06/2030,35.00M
+Newcastle United,Lewis Miley,Central Midfield,20,England,30/06/2032,30.00M
+Newcastle United,Sean Steur,Central Midfield,18,Netherlands,30/06/2031,22.00M
+Newcastle United,Joelinton,Central Midfield,30,Brazil,30/06/2028,20.00M
+Newcastle United,Joe Willock,Central Midfield,27,England / Montserrat,30/06/2027,18.00M
+Newcastle United,Bazoumana Touré,Left Winger,20,Cote d'Ivoire,30/06/2031,50.00M
+Newcastle United,Harvey Barnes,Left Winger,28,England / Scotland,,35.00M
+Newcastle United,Anthony Elanga,Right Winger,24,Sweden / Cameroon,30/06/2030,35.00M
+Newcastle United,Jacob Murphy,Right Winger,31,England / Ireland,30/06/2027,10.00M
+Newcastle United,Matias Fernandez-Pardo,Centre-Forward,21,Belgium / Spain,30/06/2031,55.00M
+Newcastle United,William Osula,Centre-Forward,23,Denmark / England,30/06/2029,32.00M
+Newcastle United,Yoane Wissa,Centre-Forward,30,DR Congo / France,30/06/2029,25.00M
+Brighton & Hove Albion,Bart Verbruggen,Goalkeeper,24,Netherlands,30/06/2028,40.00M
+Brighton & Hove Albion,Jason Steele,Goalkeeper,36,England / Scotland,30/06/2027,500.0K
+Brighton & Hove Albion,Tom McGill,Goalkeeper,26,Canada / England,30/06/2027,500.0K
+Brighton & Hove Albion,Luka Vuskovic,Centre-Back,19,Croatia,30/06/2031,65.00M
+Brighton & Hove Albion,Pascal Struijk,Centre-Back,27,Netherlands / Belgium,30/06/2031,22.00M
+Brighton & Hove Albion,Olivier Boscagli,Centre-Back,28,France / Monaco,30/06/2030,20.00M
+Brighton & Hove Albion,Michael Svoboda,Centre-Back,28,Austria,30/06/2030,5.00M
+Brighton & Hove Albion,Lewis Dunk,Centre-Back,34,England,30/06/2027,3.50M
+Brighton & Hove Albion,Ferdi Kadıoğlu,Left-Back,27,Türkiye / Netherlands,30/06/2028,40.00M
+Brighton & Hove Albion,Maxim De Cuyper,Left-Back,25,Belgium,30/06/2030,30.00M
+Brighton & Hove Albion,Jaouen Hadjam,Left-Back,23,Algeria / France,30/06/2031,10.00M
+Brighton & Hove Albion,Mats Wieffer,Right-Back,27,Netherlands,30/06/2029,25.00M
+Brighton & Hove Albion,Costinha,Right-Back,26,Portugal,30/06/2031,10.00M
+Brighton & Hove Albion,Jack Hinshelwood,Defensive Midfield,21,England,30/06/2029,35.00M
+Brighton & Hove Albion,Chema Andrés,Defensive Midfield,21,Spain,30/06/2031,24.00M
+Brighton & Hove Albion,Yasin Ayari,Central Midfield,23,Sweden / Tunisia,30/06/2027,45.00M
+Brighton & Hove Albion,Diego Gómez,Central Midfield,23,Paraguay,30/06/2031,30.00M
+Brighton & Hove Albion,Malick Yalcouyé,Central Midfield,20,Cote d'Ivoire / Mali,30/06/2029,22.00M
+Brighton & Hove Albion,Matt O'Riley,Central Midfield,25,Denmark / England,30/06/2029,18.00M
+Brighton & Hove Albion,Pascal Groß,Central Midfield,35,Germany,30/06/2027,2.50M
+Brighton & Hove Albion,Kaoru Mitoma,Left Winger,29,Japan,30/06/2027,22.00M
+Brighton & Hove Albion,Ibrahim Osman,Left Winger,21,Ghana,30/06/2029,12.00M
+Brighton & Hove Albion,Yankuba Minteh,Right Winger,22,The Gambia,30/06/2029,55.00M
+Brighton & Hove Albion,Zadok Yohanna,Right Winger,19,Nigeria,30/06/2031,25.00M
+Brighton & Hove Albion,Femi Azeez,Right Winger,25,Nigeria / England,30/06/2030,15.00M
+Brighton & Hove Albion,Charalampos Kostoulas,Centre-Forward,19,Greece,30/06/2030,40.00M
+Brighton & Hove Albion,Georginio Rutter,Centre-Forward,24,France / Martinique,30/06/2028,30.00M
+Brighton & Hove Albion,Promise David,Centre-Forward,25,Canada / Nigeria,30/06/2027,20.00M
+Brighton & Hove Albion,Stefanos Tzimas,Centre-Forward,20,Greece,30/06/2030,18.00M
+Brighton & Hove Albion,Evan Ferguson,Centre-Forward,22,Ireland / England,30/06/2029,15.00M
+Brentford FC,Caoimhín Kelleher,Goalkeeper,27,Ireland,30/06/2030,32.00M
+Brentford FC,Hákon Valdimarsson,Goalkeeper,25,Iceland,30/06/2030,2.50M
+Brentford FC,Ellery Balcombe,Goalkeeper,27,England / St. Vincent & Grenadinen,30/06/2029,400.0K
+Brentford FC,Sepp van den Berg,Centre-Back,24,Netherlands,30/06/2029,32.00M
+Brentford FC,Nathan Collins,Centre-Back,25,Ireland,30/06/2029,30.00M
+Brentford FC,Kristoffer Ajer,Centre-Back,28,Norway,30/06/2030,25.00M
+Brentford FC,Jannik Schuster,Centre-Back,20,Austria,30/06/2031,22.00M
+Brentford FC,Ji-soo Kim,Centre-Back,21,Korea South,30/06/2027,1.80M
+Brentford FC,Benjamin Fredrick,Centre-Back,21,Nigeria,30/06/2030,600.0K
+Brentford FC,El Hadji Malick Diouf,Left-Back,21,Senegal,30/06/2031,35.00M
+Brentford FC,Keane Lewis-Potter,Left-Back,25,England,30/06/2031,30.00M
+Brentford FC,Rico Henry,Left-Back,29,Jamaica / England,30/06/2027,10.00M
+Brentford FC,Michael Kayode,Right-Back,22,Italy / Nigeria,30/06/2032,40.00M
+Brentford FC,Aaron Hickey,Right-Back,24,Scotland,30/06/2028,20.00M
+Brentford FC,Vitaly Janelt,Defensive Midfield,28,Germany / Bosnia-Herzegovina,30/06/2030,20.00M
+Brentford FC,Mamadou Sangaré,Central Midfield,24,Mali,30/06/2031,50.00M
+Brentford FC,Yegor Yarmolyuk,Central Midfield,22,Ukraine,30/06/2031,32.00M
+Brentford FC,Mathias Jensen,Central Midfield,30,Denmark,30/06/2027,8.00M
+Brentford FC,Josh Dasilva,Central Midfield,28,England / Angola,30/06/2027,1.50M
+Brentford FC,Mikkel Damsgaard,Attacking Midfield,26,Denmark,30/06/2030,30.00M
+Brentford FC,Antoni Milambo,Attacking Midfield,21,Netherlands / DR Congo,30/06/2030,15.00M
+Brentford FC,Fábio Carvalho,Attacking Midfield,24,Portugal,30/06/2029,8.00M
+Brentford FC,Kevin Schade,Left Winger,24,Germany / Nigeria,30/06/2028,50.00M
+Brentford FC,Jaidon Anthony,Left Winger,26,England / Jamaica,30/06/2030,20.00M
+Brentford FC,Gustavo Nunes,Left Winger,20,Brazil,30/06/2030,6.00M
+Brentford FC,Dango Ouattara,Right Winger,24,Burkina Faso,30/06/2030,35.00M
+Brentford FC,Igor Thiago,Centre-Forward,25,Brazil / Bulgaria,30/06/2031,65.00M
+Brentford FC,Kaye Furo,Centre-Forward,19,Belgium / Nigeria,30/06/2031,8.00M
+Brentford FC,Callum Wilson,Centre-Forward,34,England / Ireland,30/06/2027,4.00M
+Aston Villa,Zion Suzuki,Goalkeeper,24,Japan / United States,30/06/2031,30.00M
+Aston Villa,Marco Bizot,Goalkeeper,35,Netherlands,30/06/2027,1.50M
+Aston Villa,James Wright,Goalkeeper,21,England,,200.0K
+Aston Villa,Taylor Harwood-Bellis,Centre-Back,24,England,30/06/2031,25.00M
+Aston Villa,Pau Torres,Centre-Back,29,Spain,30/06/2028,20.00M
+Aston Villa,Modou Kéba Cissé,Centre-Back,21,Senegal,30/06/2029,6.00M
+Aston Villa,Victor Lindelöf,Centre-Back,32,Sweden,30/06/2028,5.00M
+Aston Villa,Tyrone Mings,Centre-Back,33,England,30/06/2027,3.00M
+Aston Villa,Ian Maatsen,Left-Back,24,Netherlands / Suriname,30/06/2032,35.00M
+Aston Villa,Matteo Ruggeri,Left-Back,24,Italy,30/06/2031,28.00M
+Aston Villa,Matty Cash,Right-Back,29,Poland / England,30/06/2029,22.00M
+Aston Villa,Aaron Wan-Bissaka,Right-Back,28,DR Congo / England,30/06/2027,15.00M
+Aston Villa,Boubacar Kamara,Defensive Midfield,26,France / Senegal,30/06/2030,50.00M
+Aston Villa,Amadou Onana,Defensive Midfield,25,Belgium / Senegal,30/06/2029,40.00M
+Aston Villa,Lamare Bogarde,Defensive Midfield,22,Netherlands / Suriname,30/06/2028,18.00M
+Aston Villa,João Gomes,Central Midfield,25,Brazil,30/06/2031,40.00M
+Aston Villa,Leon Goretzka,Central Midfield,31,Germany,30/06/2028,10.00M
+Aston Villa,Ross Barkley,Central Midfield,32,England,30/06/2027,4.00M
+Aston Villa,John McGinn,Right Midfield,32,Scotland,30/06/2028,13.00M
+Aston Villa,Johan Manzambi,Attacking Midfield,21,Switzerland,30/06/2031,65.00M
+Aston Villa,Emiliano Buendía,Attacking Midfield,29,Argentina / Spain,30/06/2027,16.00M
+Aston Villa,Alejandro Garnacho,Left Winger,22,Argentina / Spain,30/06/2027,22.00M
+Aston Villa,George Hemmings,Left Winger,19,England,,15.00M
+Aston Villa,Ibrahim Mbaye,Right Winger,18,Senegal / France,30/06/2031,50.00M
+Aston Villa,Alysson,Right Winger,20,Brazil,30/06/2031,15.00M
+Aston Villa,Nicolas Jackson,Centre-Forward,25,Senegal / The Gambia,30/06/2031,45.00M
+Aston Villa,Brian Madjo,Centre-Forward,17,England / Luxembourg,30/06/2032,22.00M
+Aston Villa,Tammy Abraham,Centre-Forward,29,England / Nigeria,30/06/2030,18.00M

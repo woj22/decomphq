@@ -1,0 +1,272 @@
+club,player,position,age,nationality,contract_expiry,market_value_eur
+AFC Bournemouth,Djordje Petrović,Goalkeeper,27,Serbia,30/06/2030,28.00M
+AFC Bournemouth,Michele Di Gregorio,Goalkeeper,29,Italy,30/06/2027,8.00M
+AFC Bournemouth,Fraser Forster,Goalkeeper,38,England,30/06/2027,400.0K
+AFC Bournemouth,James Hill,Centre-Back,24,England,30/06/2029,30.00M
+AFC Bournemouth,António Silva,Centre-Back,23,Portugal,30/06/2031,30.00M
+AFC Bournemouth,Bafodé Diakité,Centre-Back,25,France / Guinea,30/06/2030,22.00M
+AFC Bournemouth,Veljko Milosavljević,Centre-Back,19,Serbia,30/06/2030,20.00M
+AFC Bournemouth,Adrien Truffert,Left-Back,24,France / Belgium,30/06/2030,35.00M
+AFC Bournemouth,Julio Soler,Left-Back,21,Argentina / Paraguay,30/06/2029,6.00M
+AFC Bournemouth,Juanlu Sánchez,Right-Back,23,Spain,30/06/2031,10.00M
+AFC Bournemouth,Julián Araujo,Right-Back,25,Mexico / United States,30/06/2029,6.00M
+AFC Bournemouth,Max Aarons,Right-Back,26,England / Jamaica,30/06/2029,2.50M
+AFC Bournemouth,Adam Smith,Right-Back,35,England,30/06/2027,300.0K
+AFC Bournemouth,Tyler Adams,Defensive Midfield,27,United States,30/06/2028,30.00M
+AFC Bournemouth,Alex Scott,Central Midfield,23,England / Guernsey,30/06/2028,70.00M
+AFC Bournemouth,Alex Tóth,Central Midfield,21,Hungary,30/06/2031,12.00M
+AFC Bournemouth,Lewis Cook,Central Midfield,29,England,30/06/2028,11.00M
+AFC Bournemouth,Ryan Christie,Central Midfield,31,Scotland,30/06/2029,8.00M
+AFC Bournemouth,Marcus Tavernier,Attacking Midfield,27,England,30/06/2029,30.00M
+AFC Bournemouth,Justin Kluivert,Attacking Midfield,27,Netherlands / Suriname,30/06/2028,25.00M
+AFC Bournemouth,Amine Adli,Left Winger,26,Morocco / France,30/06/2030,20.00M
+AFC Bournemouth,Rayan,Right Winger,20,Brazil,30/06/2031,60.00M
+AFC Bournemouth,Ben Gannon-Doak,Right Winger,21,Scotland,30/06/2030,15.00M
+AFC Bournemouth,David Brooks,Right Winger,29,Wales / England,30/06/2029,12.00M
+AFC Bournemouth,Junior Kroupi,Centre-Forward,20,France / Portugal,30/06/2030,70.00M
+AFC Bournemouth,Evanilson,Centre-Forward,27,Brazil,30/06/2029,35.00M
+AFC Bournemouth,Álvaro Rodríguez,Centre-Forward,22,Uruguay / Spain,30/06/2031,20.00M
+AFC Bournemouth,Daniel Jebbison,Centre-Forward,23,Canada / England,30/06/2028,8.00M
+Crystal Palace,Dean Henderson,Goalkeeper,29,England,30/06/2030,28.00M
+Crystal Palace,Walter Benítez,Goalkeeper,33,Argentina / France,30/06/2028,4.00M
+Crystal Palace,Remi Matthews,Goalkeeper,32,England,30/06/2027,200.0K
+Crystal Palace,Honest Ahanor,Centre-Back,18,Italy / Nigeria,30/06/2027,40.00M
+Crystal Palace,Jaydee Canvot,Centre-Back,20,France / Senegal,30/06/2029,35.00M
+Crystal Palace,Chris Richards,Centre-Back,26,United States,30/06/2027,28.00M
+Crystal Palace,Chadi Riad,Centre-Back,23,Morocco / Spain,30/06/2029,15.00M
+Crystal Palace,Axel Disasi,Centre-Back,28,France / DR Congo,30/06/2027,15.00M
+Crystal Palace,Takehiro Tomiyasu,Centre-Back,28,Japan,,5.00M
+Crystal Palace,Tyrick Mitchell,Left-Back,27,England / Jamaica,30/06/2027,25.00M
+Crystal Palace,Ben Chilwell,Left-Back,29,England / New Zealand,,10.00M
+Crystal Palace,Anan Khalaili,Right-Back,22,Israel,30/06/2031,23.00M
+Crystal Palace,Óscar Mingueza,Right-Back,27,Spain,30/06/2030,15.00M
+Crystal Palace,Adam Wharton,Defensive Midfield,22,England,30/06/2029,75.00M
+Crystal Palace,Cheick Doucouré,Defensive Midfield,26,Mali,30/06/2029,7.00M
+Crystal Palace,Jefferson Lerma,Defensive Midfield,32,Colombia,30/06/2027,6.00M
+Crystal Palace,Quinten Timber,Central Midfield,25,Netherlands / Curacao,30/06/2031,25.00M
+Crystal Palace,Daichi Kamada,Central Midfield,30,Japan,30/06/2027,10.00M
+Crystal Palace,Will Hughes,Central Midfield,31,England,30/06/2027,5.00M
+Crystal Palace,Yéremy Pino,Left Winger,24,Spain,30/06/2030,30.00M
+Crystal Palace,Dwight McNeil,Left Winger,26,England / Jamaica,30/06/2030,22.00M
+Crystal Palace,Ismaïla Sarr,Right Winger,28,Senegal,30/06/2029,45.00M
+Crystal Palace,Darío Osorio,Right Winger,22,Chile,30/06/2027,20.00M
+Crystal Palace,Evann Guessand,Right Winger,25,Cote d'Ivoire / France,30/06/2027,20.00M
+Crystal Palace,Zavier Gozo,Right Winger,19,United States / Cote d'Ivoire,30/06/2031,12.00M
+Crystal Palace,Jørgen Strand Larsen,Centre-Forward,26,Norway,30/06/2030,40.00M
+Crystal Palace,Jean-Philippe Mateta,Centre-Forward,29,France / DR Congo,30/06/2027,30.00M
+Crystal Palace,Eddie Nketiah,Centre-Forward,27,England / Ghana,30/06/2029,13.00M
+Nottingham Forest,John Victor,Goalkeeper,30,Brazil / Portugal,30/06/2028,3.50M
+Nottingham Forest,Matz Sels,Goalkeeper,34,Belgium,30/06/2028,3.50M
+Nottingham Forest,Steven Benda,Goalkeeper,28,Germany,30/06/2027,1.00M
+Nottingham Forest,Murillo,Centre-Back,24,Brazil,30/06/2030,50.00M
+Nottingham Forest,Ousmane Diomande,Centre-Back,22,Cote d'Ivoire,30/06/2030,42.00M
+Nottingham Forest,Nikola Milenković,Centre-Back,29,Serbia,30/06/2029,28.00M
+Nottingham Forest,Jair Cunha,Centre-Back,21,Brazil,30/06/2030,25.00M
+Nottingham Forest,Neco Williams,Left-Back,25,Wales,30/06/2030,32.00M
+Nottingham Forest,Luca Netz,Left-Back,23,Germany,30/06/2030,8.00M
+Nottingham Forest,Daniel Muñoz,Right-Back,30,Colombia,30/06/2029,22.00M
+Nottingham Forest,Ola Aina,Right-Back,30,Nigeria / England,30/06/2028,18.00M
+Nottingham Forest,Nicolò Savona,Right-Back,23,Italy,30/06/2030,15.00M
+Nottingham Forest,Ibrahim Sangaré,Defensive Midfield,28,Cote d'Ivoire,30/06/2029,20.00M
+Nottingham Forest,James McAtee,Central Midfield,24,England,30/06/2030,22.00M
+Nottingham Forest,Xaver Schlager,Central Midfield,29,Austria,30/06/2028,15.00M
+Nottingham Forest,Nicolás Domínguez,Central Midfield,28,Argentina / Italy,30/06/2028,13.00M
+Nottingham Forest,Ryan Yates,Central Midfield,28,England,30/06/2028,7.00M
+Nottingham Forest,Morgan Gibbs-White,Attacking Midfield,26,England / Jamaica,30/06/2028,80.00M
+Nottingham Forest,Callum Hudson-Odoi,Left Winger,26,England / Ghana,30/06/2028,25.00M
+Nottingham Forest,Dan Ndoye,Right Winger,26,Switzerland / Senegal,30/06/2030,35.00M
+Nottingham Forest,Liam Delap,Centre-Forward,23,England / Ireland,30/06/2031,40.00M
+Nottingham Forest,Igor Jesus,Centre-Forward,25,Brazil / United Arab Emirates,30/06/2029,25.00M
+Nottingham Forest,Arnaud Kalimuendo,Centre-Forward,24,France / DR Congo,30/06/2030,20.00M
+Nottingham Forest,Chris Wood,Centre-Forward,34,New Zealand,30/06/2027,4.00M
+Sunderland AFC,Robin Roefs,Goalkeeper,23,Netherlands,30/06/2031,30.00M
+Sunderland AFC,Melker Ellborg,Goalkeeper,23,Sweden,30/06/2030,3.00M
+Sunderland AFC,Simon Moore,Goalkeeper,36,England,30/06/2027,75.0K
+Sunderland AFC,Dan Ballard,Centre-Back,27,Northern Ireland / England,30/06/2029,25.00M
+Sunderland AFC,Kevin Danso,Centre-Back,28,Austria,30/06/2027,20.00M
+Sunderland AFC,Omar Alderete,Centre-Back,29,Paraguay,30/06/2029,10.00M
+Sunderland AFC,Luke O'Nien,Centre-Back,31,England,30/06/2027,700.0K
+Sunderland AFC,Aji Alese,Centre-Back,25,England / Nigeria,30/06/2027,700.0K
+Sunderland AFC,Dayann Méthalie,Left-Back,20,France / Martinique,30/06/2031,25.00M
+Sunderland AFC,Reinildo Mandava,Left-Back,32,Mozambique,30/06/2027,4.00M
+Sunderland AFC,Trai Hume,Right-Back,24,Northern Ireland,30/06/2030,22.00M
+Sunderland AFC,Nordi Mukiele,Right-Back,29,France / DR Congo,30/06/2029,18.00M
+Sunderland AFC,Thomas Meunier,Right-Back,35,Belgium,30/06/2028,1.50M
+Sunderland AFC,Granit Xhaka,Defensive Midfield,34,Switzerland,30/06/2028,8.00M
+Sunderland AFC,Jules Ahoka,Defensive Midfield,20,DR Congo,30/06/2031,7.00M
+Sunderland AFC,Noah Sadiki,Central Midfield,21,DR Congo / Belgium,30/06/2030,40.00M
+Sunderland AFC,Habib Diarra,Central Midfield,22,Senegal / France,30/06/2030,35.00M
+Sunderland AFC,Enzo Le Fée,Central Midfield,26,France,30/06/2031,30.00M
+Sunderland AFC,Alan Browne,Central Midfield,31,Ireland,30/06/2027,1.30M
+Sunderland AFC,Chris Rigg,Attacking Midfield,19,England,30/06/2030,25.00M
+Sunderland AFC,Malick Fofana,Left Winger,21,Belgium / Guinea,30/06/2031,30.00M
+Sunderland AFC,Nilson Angulo,Left Winger,23,Ecuador,30/06/2030,20.00M
+Sunderland AFC,Romaine Mundle,Left Winger,23,England / Jamaica,30/06/2030,5.00M
+Sunderland AFC,Timur Tuterov,Left Winger,21,Ukraine,30/06/2028,300.0K
+Sunderland AFC,Chemsdine Talbi,Right Winger,21,Morocco / Belgium,30/06/2030,25.00M
+Sunderland AFC,Jocelin Ta Bi,Right Winger,21,Cote d'Ivoire,30/06/2030,2.50M
+Sunderland AFC,Abdoullah Ba,Right Winger,23,Mauritania / France,30/06/2027,1.50M
+Sunderland AFC,Brian Brobbey,Centre-Forward,24,Netherlands / Ghana,30/06/2031,50.00M
+Sunderland AFC,Wilson Isidor,Centre-Forward,26,Haiti / France,30/06/2030,18.00M
+Leeds United,James Trafford,Goalkeeper,24,England,30/06/2031,35.00M
+Leeds United,Michael Zetterer,Goalkeeper,31,Germany,30/06/2029,4.00M
+Leeds United,Alex Cairns,Goalkeeper,33,England,30/06/2028,50.0K
+Leeds United,Tarik Muharemović,Centre-Back,23,Bosnia-Herzegovina / Slovenia,30/06/2031,40.00M
+Leeds United,Jaka Bijol,Centre-Back,27,Slovenia,30/06/2030,20.00M
+Leeds United,Joe Rodon,Centre-Back,29,Wales,30/06/2030,18.00M
+Leeds United,Nico Elvedi,Centre-Back,30,Switzerland,30/06/2029,12.00M
+Leeds United,Gabriel Gudmundsson,Left-Back,27,Sweden,30/06/2029,25.00M
+Leeds United,Melvin Bard,Left-Back,26,France,30/06/2027,10.00M
+Leeds United,Jayden Bogle,Right-Back,26,England,30/06/2030,18.00M
+Leeds United,James Justin,Right-Back,28,England / St. Lucia,30/06/2029,16.00M
+Leeds United,Ethan Ampadu,Defensive Midfield,26,Wales / England,30/06/2030,35.00M
+Leeds United,Anton Stach,Defensive Midfield,28,Germany,30/06/2029,32.00M
+Leeds United,Ilia Gruev,Defensive Midfield,26,Bulgaria / Germany,30/06/2027,12.00M
+Leeds United,Ao Tanaka,Central Midfield,28,Japan,30/06/2028,15.00M
+Leeds United,Sean Longstaff,Central Midfield,29,England,30/06/2029,12.00M
+Leeds United,Brenden Aaronson,Attacking Midfield,26,United States,30/06/2029,22.00M
+Leeds United,Noah Okafor,Left Winger,26,Switzerland / Nigeria,30/06/2029,32.00M
+Leeds United,Jean-Mattéo Bahoya,Left Winger,21,France / Cameroon,30/06/2027,25.00M
+Leeds United,Harry Wilson,Right Winger,29,Wales / England,30/06/2030,22.00M
+Leeds United,Daniel James,Right Winger,29,Wales / England,30/06/2029,10.00M
+Leeds United,Dominic Calvert-Lewin,Centre-Forward,29,England,30/06/2028,25.00M
+Leeds United,Lukas Nmecha,Centre-Forward,27,Germany / England,30/06/2027,10.00M
+Leeds United,Mateo Joseph,Centre-Forward,23,Spain / England,30/06/2028,3.50M
+Everton FC,Jordan Pickford,Goalkeeper,32,England,30/06/2029,13.00M
+Everton FC,Mark Travers,Goalkeeper,27,Ireland,30/06/2029,3.00M
+Everton FC,Tom King,Goalkeeper,31,Wales / England,30/06/2027,100.0K
+Everton FC,Jarrad Branthwaite,Centre-Back,24,England,30/06/2030,45.00M
+Everton FC,James Tarkowski,Centre-Back,33,England / Poland,30/06/2028,5.00M
+Everton FC,Michael Keane,Centre-Back,33,England / Ireland,30/06/2027,3.00M
+Everton FC,Vitaliy Mykolenko,Left-Back,27,Ukraine,30/06/2029,25.00M
+Everton FC,Jake O'Brien,Right-Back,25,Ireland,30/06/2028,18.00M
+Everton FC,Ainsley Maitland-Niles,Right-Back,29,England / Jamaica,30/06/2029,10.00M
+Everton FC,James Garner,Defensive Midfield,25,England,30/06/2030,50.00M
+Everton FC,Hayden Hackney,Defensive Midfield,24,England / Scotland,30/06/2031,32.00M
+Everton FC,Christian Nørgaard,Defensive Midfield,32,Denmark,30/06/2028,5.00M
+Everton FC,Harrison Armstrong,Central Midfield,19,England,30/06/2028,30.00M
+Everton FC,Merlin Röhl,Central Midfield,24,Germany,30/06/2029,20.00M
+Everton FC,Charly Alcaraz,Central Midfield,23,Argentina,30/06/2027,15.00M
+Everton FC,Kiernan Dewsbury-Hall,Attacking Midfield,28,England / Ireland,30/06/2030,40.00M
+Everton FC,Tyrique George,Left Winger,20,England / Nigeria,30/06/2030,25.00M
+Everton FC,Jack Grealish,Left Winger,31,England / Ireland,30/06/2027,20.00M
+Everton FC,Brennan Johnson,Right Winger,25,Wales / England,30/06/2030,25.00M
+Everton FC,Tyler Dibling,Right Winger,20,England,30/06/2029,17.00M
+Everton FC,Thierno Barry,Centre-Forward,24,France / Guinea,30/06/2029,35.00M
+Everton FC,Braiden Graham,Centre-Forward,19,Northern Ireland,30/06/2027,700.0K
+Fulham FC,Bernd Leno,Goalkeeper,34,Germany,30/06/2027,6.00M
+Fulham FC,Benjamin Lecomte,Goalkeeper,35,France,30/06/2028,800.0K
+Fulham FC,Alex Borto,Goalkeeper,23,United States / Poland,30/06/2027,
+Fulham FC,Calvin Bassey,Centre-Back,26,Nigeria / England,30/06/2027,28.00M
+Fulham FC,David Affengruber,Centre-Back,25,Austria,30/06/2030,20.00M
+Fulham FC,Joachim Andersen,Centre-Back,30,Denmark,30/06/2029,16.00M
+Fulham FC,Jorge Cuenca,Centre-Back,27,Spain,30/06/2028,8.00M
+Fulham FC,Ryan Sessegnon,Left-Back,26,England,30/06/2027,22.00M
+Fulham FC,Antonee Robinson,Left-Back,29,United States / England,30/06/2028,22.00M
+Fulham FC,Timothy Castagne,Right-Back,30,Belgium,30/06/2027,8.00M
+Fulham FC,Kenny Tete,Right-Back,31,Netherlands / Mozambique,30/06/2028,6.00M
+Fulham FC,Sander Berge,Defensive Midfield,28,Norway,30/06/2029,25.00M
+Fulham FC,Shea Charles,Defensive Midfield,23,Northern Ireland / England,30/06/2031,25.00M
+Fulham FC,Alex Iwobi,Defensive Midfield,30,Nigeria / England,30/06/2028,20.00M
+Fulham FC,Hugo Larsson,Central Midfield,22,Sweden,30/06/2027,23.00M
+Fulham FC,Manuel Ángel,Central Midfield,22,Spain,30/06/2029,5.00M
+Fulham FC,Harrison Reed,Central Midfield,31,England,30/06/2027,1.30M
+Fulham FC,Tom Cairney,Central Midfield,35,Scotland / England,30/06/2027,500.0K
+Fulham FC,Josh King,Attacking Midfield,19,England,30/06/2029,40.00M
+Fulham FC,Emile Smith Rowe,Attacking Midfield,26,England,30/06/2029,17.00M
+Fulham FC,César Palacios,Attacking Midfield,22,Spain,30/06/2031,12.00M
+Fulham FC,Kevin,Left Winger,23,Brazil,30/06/2030,25.00M
+Fulham FC,Oscar Bobb,Right Winger,23,Norway / The Gambia,30/06/2031,28.00M
+Fulham FC,Gonzalo García,Centre-Forward,22,Spain,30/06/2031,35.00M
+Fulham FC,Rodrigo Muniz,Centre-Forward,25,Brazil,30/06/2030,20.00M
+Fulham FC,Jonah Kusi-Asare,Centre-Forward,19,Sweden / Ghana,30/06/2031,5.00M
+Ipswich Town,Kjell Scherpen,Goalkeeper,26,Netherlands,30/06/2030,12.00M
+Ipswich Town,Christian Walton,Goalkeeper,31,England,30/06/2029,2.50M
+Ipswich Town,Alex Palmer,Goalkeeper,30,England,30/06/2028,1.00M
+Ipswich Town,David Button,Goalkeeper,37,England,30/06/2027,50.0K
+Ipswich Town,Dara O'Shea,Centre-Back,27,Ireland,30/06/2030,20.00M
+Ipswich Town,Jacob Greaves,Centre-Back,26,England,30/06/2029,17.00M
+Ipswich Town,Issa Diop,Centre-Back,29,Morocco / France,30/06/2030,10.00M
+Ipswich Town,Cédric Kipré,Centre-Back,29,Cote d'Ivoire / France,30/06/2028,3.00M
+Ipswich Town,Leif Davis,Left-Back,26,England,30/06/2029,25.00M
+Ipswich Town,Abdoul Ouattara,Right-Back,21,Cote d'Ivoire / France,30/06/2031,18.00M
+Ipswich Town,Darnell Furlong,Right-Back,31,England / Montserrat,30/06/2028,2.50M
+Ipswich Town,Florentino,Defensive Midfield,27,Portugal / Angola,30/06/2031,16.00M
+Ipswich Town,Azor Matusiwa,Defensive Midfield,28,Netherlands / Angola,30/06/2029,12.00M
+Ipswich Town,Exequiel Palacios,Central Midfield,28,Argentina,30/06/2030,25.00M
+Ipswich Town,Marcelino Núñez,Central Midfield,26,Chile,30/06/2029,14.00M
+Ipswich Town,Saša Lukić,Central Midfield,30,Serbia,30/06/2030,10.00M
+Ipswich Town,Jack Taylor,Central Midfield,28,Ireland / England,30/06/2028,2.20M
+Ipswich Town,Julio Enciso,Attacking Midfield,22,Paraguay,30/06/2031,30.00M
+Ipswich Town,Anis Mehmeti,Attacking Midfield,25,Albania / England,30/06/2029,13.00M
+Ipswich Town,Jaden Philogene,Left Winger,24,England / Dominica,30/06/2029,20.00M
+Ipswich Town,Jack Clarke,Left Winger,25,England,30/06/2029,20.00M
+Ipswich Town,Daizen Maeda,Left Winger,29,Japan,30/06/2029,13.00M
+Ipswich Town,Abdul Fatawu,Right Winger,22,Ghana,30/06/2031,23.00M
+Ipswich Town,Sindre Walle Egeli,Right Winger,20,Norway,30/06/2030,15.00M
+Ipswich Town,Kasey McAteer,Right Winger,24,Ireland / England,30/06/2029,10.00M
+Ipswich Town,Emersonn,Centre-Forward,22,Brazil,30/06/2031,25.00M
+Ipswich Town,Zian Flemming,Centre-Forward,28,Netherlands,30/06/2030,18.00M
+Ipswich Town,Chuba Akpom,Centre-Forward,31,England / Nigeria,30/06/2029,3.50M
+Coventry City,Carl Rushworth,Goalkeeper,25,England,,22.00M
+Coventry City,Dan Bentley,Goalkeeper,33,England,30/06/2028,800.0K
+Coventry City,Ben Wilson,Goalkeeper,34,England,30/06/2027,300.0K
+Coventry City,Bobby Thomas,Centre-Back,25,England,30/06/2029,20.00M
+Coventry City,Aurèle Amenda,Centre-Back,23,Switzerland / Cameroon,30/06/2030,15.00M
+Coventry City,Ethan Pinnock,Centre-Back,33,Jamaica / England,,3.00M
+Coventry City,Stephen Mfuni,Centre-Back,18,England / DR Congo,30/06/2027,3.00M
+Coventry City,Joel Latibeaudiere,Centre-Back,26,Jamaica / England,30/06/2027,3.00M
+Coventry City,Luke Woolfenden,Centre-Back,28,England,30/06/2028,1.50M
+Coventry City,Jay Dasilva,Left-Back,28,Wales / England,30/06/2027,12.00M
+Coventry City,Jake Bidwell,Left-Back,33,England,30/06/2027,600.0K
+Coventry City,Milan van Ewijk,Right-Back,26,Netherlands / Suriname,30/06/2027,22.00M
+Coventry City,Kaine Kesler-Hayden,Right-Back,24,England,30/06/2029,3.00M
+Coventry City,Matt Grimes,Defensive Midfield,31,England,30/06/2028,5.00M
+Coventry City,Caleb Yirenkyi,Central Midfield,20,Ghana,,22.00M
+Coventry City,Victor Torp,Central Midfield,27,Denmark,,14.00M
+Coventry City,Gustavo Hamer,Central Midfield,29,Netherlands / Brazil,,11.00M
+Coventry City,Josh Eccles,Central Midfield,26,England,30/06/2028,9.00M
+Coventry City,Frank Onyeka,Central Midfield,28,Nigeria,30/06/2030,8.00M
+Coventry City,Jack Rudoni,Attacking Midfield,25,England / United States,30/06/2028,20.00M
+Coventry City,Ephron Mason-Clark,Left Winger,27,Jamaica / England,30/06/2028,16.00M
+Coventry City,Yann Gboho,Left Winger,25,Cote d'Ivoire / France,,15.00M
+Coventry City,Loum Tchaouna,Right Winger,23,France / Chad,30/06/2031,18.00M
+Coventry City,Tatsuhiro Sakamoto,Right Winger,30,Japan,30/06/2027,4.50M
+Coventry City,Sidiki Chérif,Centre-Forward,19,France / Guinea,,22.00M
+Coventry City,Haji Wright,Centre-Forward,28,United States / Liberia,30/06/2027,16.00M
+Coventry City,Brandon Thomas-Asante,Centre-Forward,27,Ghana / England,30/06/2028,16.00M
+Coventry City,Ellis Simms,Centre-Forward,25,England / Poland,30/06/2027,12.00M
+Coventry City,Taiwo Awoniyi,Centre-Forward,29,Nigeria,,8.00M
+Hull City,Konstantinos Tzolakis,Goalkeeper,24,Greece,30/06/2031,22.00M
+Hull City,Jack Butland,Goalkeeper,33,England,30/06/2028,1.50M
+Hull City,Dillon Phillips,Goalkeeper,31,England,30/06/2028,200.0K
+Hull City,Nobel Mendy,Centre-Back,22,Senegal / Guinea-Bissau,30/06/2031,20.00M
+Hull City,Lucas Herrington,Centre-Back,19,Australia / Germany,30/06/2031,15.00M
+Hull City,Charlie Hughes,Centre-Back,23,England,30/06/2029,10.00M
+Hull City,John Egan,Centre-Back,34,Ireland,30/06/2028,1.50M
+Hull City,Paddy McNair,Centre-Back,31,Northern Ireland,30/06/2027,1.50M
+Hull City,Semi Ajayi,Centre-Back,33,Nigeria / England,30/06/2027,1.00M
+Hull City,Ryan Giles,Left-Back,26,England,30/06/2027,16.00M
+Hull City,Matt Targett,Left-Back,31,England / Scotland,30/06/2028,3.00M
+Hull City,Brooke Norton-Cuffy,Right-Back,22,England / Dominica,30/06/2031,15.00M
+Hull City,Lewie Coyle,Right-Back,31,England,30/06/2029,2.50M
+Hull City,Regan Slater,Defensive Midfield,27,England,30/06/2029,10.00M
+Hull City,Lucas Gourna-Douath,Defensive Midfield,23,France / Central African Republic,30/06/2031,8.00M
+Hull City,Óscar Zambrano,Defensive Midfield,22,Ecuador,30/06/2030,1.50M
+Hull City,Christos Mouzakitis,Central Midfield,19,Greece,30/06/2031,20.00M
+Hull City,Tim Iroegbunam,Central Midfield,23,England / Nigeria,30/06/2031,15.00M
+Hull City,Jens Hjertø-Dahl,Central Midfield,21,Norway,30/06/2031,10.00M
+Hull City,Hidemasa Morita,Central Midfield,31,Japan,30/06/2028,6.00M
+Hull City,Darko Gyabi,Central Midfield,22,England / Ghana,30/06/2028,2.00M
+Hull City,Eliot Matazo,Central Midfield,24,Belgium / DR Congo,30/06/2028,1.50M
+Hull City,Matt Crooks,Central Midfield,32,England,30/06/2028,1.00M
+Hull City,Kieran Dowell,Attacking Midfield,29,England,30/06/2027,600.0K
+Hull City,Sorba Thomas,Left Winger,27,Wales / Sierra Leone,30/06/2030,14.00M
+Hull City,Elliot Stroud,Left Winger,24,Sweden / England,30/06/2030,8.00M
+Hull City,Mohamed Belloumi,Right Winger,24,Algeria,30/06/2029,18.00M
+Hull City,Mohamed-Ali Cho,Right Winger,22,France / England,30/06/2031,15.00M
+Hull City,Abdülkadir Ömür,Right Winger,27,Türkiye,30/06/2027,1.50M
+Hull City,Robinio Vaz,Centre-Forward,19,France / Guinea-Bissau,30/06/2027,18.00M
+Hull City,Ilyas Ansah,Centre-Forward,22,Germany / Ghana,30/06/2031,15.00M
+Hull City,Joe Gelhardt,Centre-Forward,24,England,30/06/2030,14.00M
+Hull City,Oli McBurnie,Centre-Forward,30,Scotland / England,30/06/2029,7.00M

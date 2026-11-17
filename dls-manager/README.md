@@ -55,6 +55,15 @@ Java side: `SavesRestoring.DoSmth` re-unpacks the bundled OBB if it is missing o
   contract_expiry, market_value_eur); Wikipedia current squads fill any club not supplied.
 - Kits and badges: kit colours/patterns from Wikipedia infoboxes; crests fetched for the local build.
 
-`data/` and `assets/` are git-ignored: this repository is public, so squad data and club
-crests stay on the build machine only. Run `tools/data/build_roster.py` to rebuild
-`data/roster_2026_27.json` from the sources.
+The repository is private. `data/user/` (squad CSVs supplied by the owner) and the
+generated `data/roster_2026_27.json` are committed; `assets/` (crests, kit textures) stays
+local. Rebuild the roster with:
+
+```
+python3 -I tools/data/fetch_wikipedia_squads.py --out <wp_dir>
+python3 -I tools/data/build_roster.py --wiki <wp_dir> --tm-players players.csv.gz \
+    --user-csv data/user --out data
+```
+
+Matching to Transfermarkt uses name + age, so namesakes (e.g. single-name Brazilians)
+are not mixed up; unmatched players get placeholder height/foot/date of birth.

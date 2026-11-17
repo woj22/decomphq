@@ -1,0 +1,137 @@
+club,player,position,age,nationality,contract_expiry,market_value_eur
+Manchester City,Gianluigi Donnarumma,Goalkeeper,27,Italy,30/06/2030,45.00M
+Manchester City,Gerónimo Rulli,Goalkeeper,34,Argentina / Italy,30/06/2028,5.00M
+Manchester City,Marcus Bettinelli,Goalkeeper,34,England / Italy,30/06/2027,300.0K
+Manchester City,Marc Guéhi,Centre-Back,26,England / Cote d'Ivoire,30/06/2031,75.00M
+Manchester City,Rúben Dias,Centre-Back,29,Portugal,30/06/2029,50.00M
+Manchester City,Abdukodir Khusanov,Centre-Back,22,Uzbekistan,30/06/2031,50.00M
+Manchester City,Vitor Reis,Centre-Back,20,Brazil,30/06/2029,30.00M
+Manchester City,Josko Gvardiol,Left-Back,24,Croatia,30/06/2031,75.00M
+Manchester City,Nico O'Reilly,Left-Back,21,England / Jamaica,30/06/2030,70.00M
+Manchester City,Rayan Aït-Nouri,Left-Back,25,Algeria / France,30/06/2030,35.00M
+Manchester City,Matheus Nunes,Right-Back,28,Portugal / Brazil,30/06/2028,45.00M
+Manchester City,Rico Lewis,Right-Back,21,England / Jamaica,30/06/2030,25.00M
+Manchester City,Elliot Anderson,Defensive Midfield,24,England / Scotland,30/06/2031,120.00M
+Manchester City,Ayyoub Bouaddi,Defensive Midfield,19,Morocco / France,30/06/2031,90.00M
+Manchester City,Enzo Fernández,Central Midfield,25,Argentina,30/06/2031,120.00M
+Manchester City,Mateo Kovacic,Central Midfield,32,Croatia,30/06/2027,10.00M
+Manchester City,Rayan Cherki,Attacking Midfield,23,France / Algeria,30/06/2030,110.00M
+Manchester City,Phil Foden,Attacking Midfield,26,England,30/06/2030,65.00M
+Manchester City,Jérémy Doku,Left Winger,24,Belgium / Ghana,30/06/2031,75.00M
+Manchester City,Iliman Ndiaye,Left Winger,26,Senegal / France,30/06/2031,65.00M
+Manchester City,Antoine Semenyo,Right Winger,26,Ghana / England,30/06/2031,80.00M
+Manchester City,Allan,Right Winger,22,Brazil,30/06/2031,30.00M
+Manchester City,Ryan McAidoo,Right Winger,18,England,,8.00M
+Manchester City,Erling Haaland,Centre-Forward,26,Norway,30/06/2034,220.00M
+Chelsea FC,Mike Penders,Goalkeeper,21,Belgium,30/06/2032,25.00M
+Chelsea FC,Emiliano Martínez,Goalkeeper,34,Argentina / Spain,30/06/2029,10.00M
+Chelsea FC,Gabriel Slonina,Goalkeeper,22,United States / Poland,30/06/2028,3.00M
+Chelsea FC,Teddy Sharman-Lowe,Goalkeeper,23,England,30/06/2028,500.0K
+Chelsea FC,Maxence Lacroix,Centre-Back,26,France,30/06/2032,60.00M
+Chelsea FC,Levi Colwill,Centre-Back,23,England,30/06/2029,50.00M
+Chelsea FC,Wesley Fofana,Centre-Back,25,France / Cote d'Ivoire,30/06/2029,32.00M
+Chelsea FC,Josh Acheampong,Centre-Back,20,England / Ghana,30/06/2029,30.00M
+Chelsea FC,Aarón Anselmino,Centre-Back,21,Argentina,30/06/2031,10.00M
+Chelsea FC,Jorrel Hato,Left-Back,20,Netherlands / Curacao,30/06/2032,45.00M
+Chelsea FC,Pep Chavarría,Left-Back,28,Spain,30/06/2031,18.00M
+Chelsea FC,Reece James,Right-Back,26,England / Grenada,30/06/2032,60.00M
+Chelsea FC,Marco Palestra,Right-Back,21,Italy,30/06/2033,45.00M
+Chelsea FC,Malo Gusto,Right-Back,23,France / Martinique,30/06/2030,35.00M
+Chelsea FC,Moisés Caicedo,Defensive Midfield,25,Ecuador,30/06/2033,100.00M
+Chelsea FC,Roméo Lavia,Defensive Midfield,22,Belgium / Ghana,30/06/2030,25.00M
+Chelsea FC,Valentín Barco,Central Midfield,22,Argentina,30/06/2033,40.00M
+Chelsea FC,Mahdi Nicoll-Jazuli,Central Midfield,16,England / Australia,30/06/2028,2.00M
+Chelsea FC,Jordan Henderson,Central Midfield,36,England,30/06/2028,1.20M
+Chelsea FC,Cole Palmer,Attacking Midfield,24,England / St. Kitts & Nevis,30/06/2034,110.00M
+Chelsea FC,Morgan Rogers,Left Winger,24,England / Jamaica,30/06/2033,120.00M
+Chelsea FC,Jamie Gittens,Left Winger,22,England / Barbados,30/06/2032,25.00M
+Chelsea FC,Estêvão,Right Winger,19,Brazil,30/06/2033,80.00M
+Chelsea FC,Pedro Neto,Right Winger,26,Portugal,30/06/2032,60.00M
+Chelsea FC,Geovany Quenda,Right Winger,19,Portugal / Guinea-Bissau,30/06/2034,42.00M
+Chelsea FC,João Pedro,Centre-Forward,25,Brazil,30/06/2034,100.00M
+Chelsea FC,Emmanuel Emegha,Centre-Forward,23,Netherlands / Nigeria,30/06/2033,20.00M
+Chelsea FC,Danny Welbeck,Centre-Forward,35,England / Ghana,30/06/2028,3.00M
+Liverpool FC,Giorgi Mamardashvili,Goalkeeper,26,Georgia,30/06/2031,28.00M
+Liverpool FC,Alisson,Goalkeeper,34,Brazil,30/06/2027,15.00M
+Liverpool FC,Vítězslav Jaroš,Goalkeeper,25,Czech Republic,30/06/2028,5.00M
+Liverpool FC,Freddie Woodman,Goalkeeper,29,England,30/06/2029,3.00M
+Liverpool FC,Harvey Davies,Goalkeeper,23,England,30/06/2027,500.0K
+Liverpool FC,Jérémy Jacquet,Centre-Back,21,France / Guadeloupe,30/06/2031,65.00M
+Liverpool FC,Giovanni Leoni,Centre-Back,19,Italy,30/06/2031,25.00M
+Liverpool FC,Ronald Araújo,Centre-Back,27,Uruguay / Spain,30/06/2027,25.00M
+Liverpool FC,Virgil van Dijk,Centre-Back,35,Netherlands / Suriname,30/06/2027,15.00M
+Liverpool FC,Joe Gomez,Centre-Back,29,England / The Gambia,30/06/2027,11.00M
+Liverpool FC,Milos Kerkez,Left-Back,23,Hungary / Serbia,30/06/2030,35.00M
+Liverpool FC,Konstantinos Tsimikas,Left-Back,30,Greece,30/06/2027,4.50M
+Liverpool FC,Luke Chambers,Left-Back,22,England,30/06/2027,1.00M
+Liverpool FC,Jeremie Frimpong,Right-Back,25,Netherlands / Ghana,30/06/2030,30.00M
+Liverpool FC,Conor Bradley,Right-Back,23,Northern Ireland,30/06/2029,20.00M
+Liverpool FC,Ryan Gravenberch,Defensive Midfield,24,Netherlands / Suriname,30/06/2032,75.00M
+Liverpool FC,Wataru Endo,Defensive Midfield,33,Japan,30/06/2027,3.00M
+Liverpool FC,Alexis Mac Allister,Central Midfield,27,Argentina / Italy,30/06/2028,70.00M
+Liverpool FC,Trey Nyoni,Central Midfield,19,England / Zimbabwe,30/06/2030,18.00M
+Liverpool FC,James McConnell,Central Midfield,22,England,30/06/2030,1.50M
+Liverpool FC,Dominik Szoboszlai,Attacking Midfield,26,Hungary,30/06/2031,100.00M
+Liverpool FC,Florian Wirtz,Attacking Midfield,23,Germany,30/06/2030,85.00M
+Liverpool FC,Bradley Barcola,Left Winger,24,France / Togo,30/06/2031,100.00M
+Liverpool FC,Cody Gakpo,Left Winger,27,Netherlands / Togo,30/06/2030,75.00M
+Liverpool FC,Rio Ngumoha,Left Winger,18,England / Nigeria,30/06/2028,50.00M
+Liverpool FC,Víctor Muñoz,Left Winger,23,Spain,30/06/2032,40.00M
+Liverpool FC,Federico Chiesa,Right Winger,29,Italy,30/06/2028,10.00M
+Liverpool FC,Alexander Isak,Centre-Forward,27,Sweden / Eritrea,30/06/2031,90.00M
+Liverpool FC,Hugo Ekitiké,Centre-Forward,24,France / Cameroon,30/06/2031,80.00M
+Liverpool FC,Lewis Koumas,Centre-Forward,21,Wales / England,30/06/2029,8.00M
+Liverpool FC,Jayden Danns,Centre-Forward,20,England / Guyana,,800.0K
+Manchester United,Senne Lammens,Goalkeeper,24,Belgium,30/06/2030,35.00M
+Manchester United,Karl Darlow,Goalkeeper,36,Wales / England,30/06/2028,200.0K
+Manchester United,Tom Heaton,Goalkeeper,40,England,30/06/2027,100.0K
+Manchester United,Dermot Mee,Goalkeeper,23,Northern Ireland / England,30/06/2028,
+Manchester United,Lisandro Martínez,Centre-Back,28,Argentina,30/06/2027,45.00M
+Manchester United,Leny Yoro,Centre-Back,21,France / Cote d'Ivoire,30/06/2029,45.00M
+Manchester United,Ayden Heaven,Centre-Back,20,England / Ghana,30/06/2029,30.00M
+Manchester United,Matthijs de Ligt,Centre-Back,27,Netherlands,30/06/2029,25.00M
+Manchester United,Harry Maguire,Centre-Back,33,England,30/06/2027,8.00M
+Manchester United,Luke Shaw,Left-Back,31,England,30/06/2027,8.00M
+Manchester United,Harry Amass,Left-Back,19,England,30/06/2027,5.00M
+Manchester United,Diogo Dalot,Right-Back,27,Portugal,30/06/2028,30.00M
+Manchester United,Noussair Mazraoui,Right-Back,29,Morocco / Netherlands,30/06/2028,18.00M
+Manchester United,Carlos Baleba,Defensive Midfield,22,Cameroon,30/06/2031,65.00M
+Manchester United,Andrey Santos,Defensive Midfield,22,Brazil,30/06/2031,45.00M
+Manchester United,Manuel Ugarte,Defensive Midfield,25,Uruguay,30/06/2029,20.00M
+Manchester United,Kobbie Mainoo,Central Midfield,21,England / Ghana,30/06/2031,75.00M
+Manchester United,Youri Tielemans,Central Midfield,29,Belgium / DR Congo,30/06/2031,40.00M
+Manchester United,Tyler Fletcher,Central Midfield,19,Scotland / England,30/06/2027,2.50M
+Manchester United,Bruno Fernandes,Attacking Midfield,32,Portugal,30/06/2027,35.00M
+Manchester United,Mason Mount,Attacking Midfield,27,England,30/06/2028,25.00M
+Manchester United,Marcus Rashford,Left Winger,29,England / St. Kitts & Nevis,30/06/2028,35.00M
+Manchester United,Patrick Dorgu,Left Winger,22,Denmark / Nigeria,30/06/2030,35.00M
+Manchester United,Bryan Mbeumo,Right Winger,27,Cameroon / France,30/06/2030,75.00M
+Manchester United,Amad Diallo,Right Winger,24,Cote d'Ivoire / Italy,30/06/2030,45.00M
+Manchester United,Shea Lacey,Right Winger,19,England / Ireland,30/06/2029,12.00M
+Manchester United,Matheus Cunha,Centre-Forward,27,Brazil,30/06/2030,75.00M
+Manchester United,Benjamin Šeško,Centre-Forward,23,Slovenia,30/06/2030,75.00M
+Manchester United,Joshua Zirkzee,Centre-Forward,25,Netherlands / Nigeria,30/06/2029,20.00M
+Arsenal FC,David Raya,Goalkeeper,31,Spain,30/06/2028,30.00M
+Arsenal FC,Illan Meslier,Goalkeeper,26,France,30/06/2028,6.00M
+Arsenal FC,Kepa Arrizabalaga,Goalkeeper,32,Spain,30/06/2028,5.00M
+Arsenal FC,William Saliba,Centre-Back,25,France / Cameroon,30/06/2030,100.00M
+Arsenal FC,Gabriel,Centre-Back,28,Brazil,30/06/2029,75.00M
+Arsenal FC,Piero Hincapié,Centre-Back,24,Ecuador,30/06/2031,50.00M
+Arsenal FC,Ezri Konsa,Centre-Back,29,England / DR Congo,30/06/2030,50.00M
+Arsenal FC,Cristhian Mosquera,Centre-Back,22,Spain / Colombia,30/06/2030,40.00M
+Arsenal FC,Riccardo Calafiori,Left-Back,24,Italy,30/06/2029,65.00M
+Arsenal FC,Jurriën Timber,Right-Back,25,Netherlands / Curacao,30/06/2028,70.00M
+Arsenal FC,Ben White,Right-Back,29,England,30/06/2028,35.00M
+Arsenal FC,Martín Zubimendi,Defensive Midfield,27,Spain,30/06/2030,65.00M
+Arsenal FC,Myles Lewis-Skelly,Defensive Midfield,20,England / Barbados,30/06/2030,65.00M
+Arsenal FC,Declan Rice,Central Midfield,27,England / Ireland,30/06/2028,120.00M
+Arsenal FC,Bruno Guimarães,Central Midfield,29,Brazil / Spain,30/06/2030,75.00M
+Arsenal FC,Mikel Merino,Central Midfield,30,Spain,30/06/2028,25.00M
+Arsenal FC,Martin Ødegaard,Attacking Midfield,27,Norway,30/06/2028,80.00M
+Arsenal FC,Eberechi Eze,Attacking Midfield,28,England / Nigeria,30/06/2029,60.00M
+Arsenal FC,Christos Tzolis,Left Winger,24,Greece,30/06/2031,40.00M
+Arsenal FC,Bukayo Saka,Right Winger,25,England / Nigeria,30/06/2030,110.00M
+Arsenal FC,Max Dowman,Right Winger,16,England,,50.00M
+Arsenal FC,Noni Madueke,Right Winger,24,England / Nigeria,30/06/2030,45.00M
+Arsenal FC,Kai Havertz,Centre-Forward,27,Germany,30/06/2028,60.00M
+Arsenal FC,Viktor Gyökeres,Centre-Forward,28,Sweden / Hungary,30/06/2030,55.00M
