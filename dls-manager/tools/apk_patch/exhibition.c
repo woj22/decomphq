@@ -66,6 +66,15 @@ void FUN_001d72ec(void);
 void FUN_001d73c4(int, int);
 void FUN_0022a548(void);
 void FUN_0016ac60(int);
+void FUN_001693e8(void);
+void FUN_0016a134(void);
+void FUN_0027d3d0(void *);
+void FUN_001ed0e4(void);
+void FUN_002b2318(int, int, int);
+void FUN_0026357c(void);
+void FUN_0016acb4(int, void *);
+void FUN_001d8908(int);
+void FUN_001d8928(int);
 void FUN_001dc0b8(void *);
 void FUN_001dcdc4(void *, int);
 void FUN_001d95e0(void *, int);
@@ -266,7 +275,22 @@ void exhibition_poll(void)
         FUN_001dc1d8(as);
     FUN_001d73c4(0, 1);   /* home kit, away kit */
     FUN_0022a548();
-    FUN_0016ac60(1);
+    /* Kick off as DLS's own Play does (FUN_000a54c4, called by the team screen): front-end
+       tidy-up, clear the screen history, then screen 0 = the match screen (FUN_0013f87c /
+       update FUN_0013f9d4). Only its in-app shop popup (FUN_0009babc) is left out.
+       (v52/v53 called FUN_0016ac60, which advances the career screen sequence instead.) */
+    u8 *st = PTR_state;
+    FUN_0016a134();
+    FUN_0027d3d0(PTR_profile + 0x20);
+    FUN_001ed0e4();
+    FUN_002b2318(5, 0, 0);
+    FUN_0026357c();
+    FUN_0016acb4(0, 0);
+    if (*(int *)(st + 0x10) != 8 && PTR_profile[0x2aa3c] == 0 && *(int *)(st + 0xfac) == -1) {
+        FUN_001d8908(1);
+        FUN_001d8928(1);
+    }
+    FUN_00169f44(0, 1, 0, 0, 0, 0);
 }
 
 /*
@@ -299,7 +323,6 @@ void ndb_ours(long env, long cls, u32 v)
     }
 }
 
-void FUN_001693e8(void);
 
 /*
  * The game's screen stack is drawn by FUN_001693e8, called once a frame from the render
