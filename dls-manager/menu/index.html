@@ -323,8 +323,17 @@ input[type="search"], select {
     st.news.push({ week: 0, text: "Welcome to " + club(clubId).name + ". The board expects a strong season in the " + leagueOf(clubId).name + "." });
     return st;
   }
-  function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} }
-  function load() { try { var s = JSON.parse(localStorage.getItem(SAVE_KEY) || "null"); return s && s.v === 1 ? s : null; } catch (e) { return null; } }
+  function save() {
+    var j = JSON.stringify(S);
+    try { localStorage.setItem(SAVE_KEY, j); } catch (e) {}
+    try { if (window.DLSManager && window.DLSManager.saveState) window.DLSManager.saveState(j); } catch (e) {}
+  }
+  function load() {
+    var raw = null;
+    try { raw = localStorage.getItem(SAVE_KEY); } catch (e) {}
+    try { if (!raw && window.DLSManager && window.DLSManager.loadState) raw = window.DLSManager.loadState() || null; } catch (e) {}
+    try { var s = JSON.parse(raw || "null"); return s && s.v === 1 ? s : null; } catch (e) { return null; }
+  }
   function myLeague() { return leagueOf(S.clubId); }
   function seasonOver() { return S.week >= S.schedule[myLeague().id].length; }
   function nextFixture() {

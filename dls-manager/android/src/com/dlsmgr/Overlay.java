@@ -38,7 +38,8 @@ import org.json.JSONObject;
  *   hide()   - hide the menus and show the DLS game (Play Match until the engine link exists)
  *   isApp()  - true, so the page knows it runs inside the game
  *   exportSave() - zip the game's save (profile.dat etc.) and open the share sheet
- *   becomeClub(id) - your team becomes that club, live (per-club saves, native save/reload)
+ *   becomeClub(id) - your team becomes that club when the game is next opened (per-club saves)
+ *   saveState(json)/loadState() - menu career backup file
  *   currentClub() - the club the Dream FC currently is ("" if none), lastError()
  * A small "Manager" button brings the menus back while they are hidden.
  */
@@ -177,8 +178,7 @@ public final class Overlay {
                 current.delete();
                 new FileOutputStream(r33).close();
             }
-            // A club switch that did not survive its reload (app died within 8 s): go back to
-            // the previous club's save.
+            // v37's live switch could crash mid-way: its marker names the club to go back to.
             File switching = new File(dir, "dlsmgr_switching.txt");
             if (switching.exists()) {
                 String prev = readText(new FileInputStream(switching)).trim();
@@ -191,13 +191,14 @@ public final class Overlay {
                     } else {
                         writeBytes(current, prev.getBytes("UTF-8"));
                     }
-                    lastError = "The club switch failed, so your previous team was restored.";
+                    log(dir, "rolled back a crashed live switch to " + prev);
                 }
                 switching.delete();
             }
         } catch (Throwable t) {
             lastError = String.valueOf(t);
         }
+        applyPendingSwitch(ctx, dir);
         copyClubLooks(ctx, dir);
     }
 
@@ -298,18 +299,45 @@ public final class Overlay {
     }
 
     /**
-     * Live club switch, no restart. Each club keeps its own save in DOCS/dlsmgr_saves/<club>.dat
-     * (the player's original team is "original"):
-     *   1. ask the game to save (native hook, see patch_apk.py) and wait for profile.dat to change
-     *   2. file profile.dat under the current club
-     *   3. load the target club's save, or create it from the original save (Profile.becomeClub)
-     *   4. copy the club's kits/badge to the player team, ask the game to reload the profile
-     * Runs on a worker thread; the native work happens on the game thread at the next frame.
+     * Club switch. The live version (native save + reload while running) crashed the game, so
+     * the switch is applied at start-up instead, before the game reads the save:
+     * becomeClub() records the request and asks the player to reopen the game; applyClub()
+     * then files the current save under the current club (DOCS/dlsmgr_saves/<club>.dat) and
+     * loads the target club's save, or creates it from the original save. Steps are logged to
+     * DOCS/dlsmgr_log.txt.
      */
     static void becomeClub(String cid) {
         try {
-            Context ctx = activity;
-            File dir = ctx.getExternalFilesDir(null);
+            File dir = activity.getExternalFilesDir(null);
+            writeBytes(new File(dir, "dlsmgr_pending_club.txt"), cid.getBytes("UTF-8"));
+            log(dir, "switch requested: " + cid);
+            activity.runOnUiThread(new ToastTask(clubName(activity, cid)
+                    + " is ready - close the game and open it again to start."));
+        } catch (Throwable t) {
+            lastError = String.valueOf(t);
+        }
+    }
+
+    static void log(File dir, String msg) {
+        try {
+            FileOutputStream o = new FileOutputStream(new File(dir, "dlsmgr_log.txt"), true);
+            o.write((new java.util.Date() + "  " + msg + "\n").getBytes("UTF-8"));
+            o.close();
+        } catch (Throwable t) {
+            // ignore
+        }
+    }
+
+    /** Start-up half of a club switch (see becomeClub). Runs before the game reads the save. */
+    static void applyPendingSwitch(Context ctx, File dir) {
+        File pending = new File(dir, "dlsmgr_pending_club.txt");
+        if (!pending.exists()) {
+            return;
+        }
+        String cid = "";
+        try {
+            cid = readText(new FileInputStream(pending)).trim();
+            pending.delete();  // never retried on every start
             File prof = new File(dir, "profile.dat");
             File saves = new File(dir, "dlsmgr_saves");
             saves.mkdirs();
@@ -318,43 +346,34 @@ public final class Overlay {
             if (cur.length() == 0) {
                 cur = "original";
             }
+            log(dir, "applying switch " + cur + " -> " + cid);
             if (cur.equals(cid)) {
                 return;
             }
-            long before = prof.lastModified();
-            nativeRequest(0x5A5E0001);
-            for (int i = 0; i < 40 && prof.lastModified() == before; i++) {
-                Thread.sleep(100);
-            }
-            Thread.sleep(300);  // let the write finish
             byte[] now = readBytes(new FileInputStream(prof));
-            Profile.decode(now);  // only file a save that reads back
+            Profile.decode(now);
             writeBytes(new File(saves, cur + ".dat"), now);
-
+            log(dir, "filed current save as " + cur);
             File target = new File(saves, cid + ".dat");
             byte[] out;
             if (target.exists()) {
                 out = readBytes(new FileInputStream(target));
+                log(dir, "loading saved " + cid);
             } else {
                 File orig = new File(saves, "original.dat");
                 byte[] base = orig.exists() ? readBytes(new FileInputStream(orig)) : now;
                 JSONObject clubs = new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json")));
                 out = Profile.encode(Profile.becomeClub(Profile.decode(base), clubs.getJSONObject(cid)));
+                log(dir, "created save for " + cid);
             }
             Profile.decode(out);
             writeBytes(prof, out);
             new File(dir, "profile_temp.dat").delete();
             writeBytes(currentF, cid.getBytes("UTF-8"));
-            copyClubLooks(ctx, dir);
-            File switching = new File(dir, "dlsmgr_switching.txt");
-            writeBytes(switching, cur.getBytes("UTF-8"));  // removed once the reload has survived
-            nativeRequest(0x5A5E0002);
-            activity.runOnUiThread(new ToastTask("You are now " + clubName(ctx, cid)));
-            Thread.sleep(8000);
-            switching.delete();
+            log(dir, "switch done: " + cid);
         } catch (Throwable t) {
-            lastError = String.valueOf(t);
-            activity.runOnUiThread(new ToastTask("Could not switch club: " + t));
+            lastError = "Club switch failed: " + t;
+            log(dir, "switch FAILED " + cid + ": " + t);
         }
     }
 
@@ -445,7 +464,7 @@ public final class Overlay {
             if (files != null) {
                 for (File f : files) {
                     String name = f.getName();
-                    if (f.isFile() && name.endsWith(".dat")) {
+                    if (f.isFile() && (name.endsWith(".dat") || name.equals("dlsmgr_log.txt"))) {
                         zos.putNextEntry(new ZipEntry(name));
                         InputStream in = new FileInputStream(f);
                         byte[] buf = new byte[65536];
@@ -577,6 +596,26 @@ public final class Overlay {
             try {
                 File f = new File(activity.getExternalFilesDir(null), "dlsmgr_club.txt");
                 return f.exists() ? readText(new FileInputStream(f)).trim() : "";
+            } catch (Throwable t) {
+                return "";
+            }
+        }
+
+        /** Menu career kept in a file as well as WebView storage (survives the app being closed). */
+        @JavascriptInterface
+        public void saveState(String json) {
+            try {
+                writeBytes(new File(activity.getExternalFilesDir(null), "dlsmgr_menu_state.json"), json.getBytes("UTF-8"));
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
+            }
+        }
+
+        @JavascriptInterface
+        public String loadState() {
+            try {
+                File f = new File(activity.getExternalFilesDir(null), "dlsmgr_menu_state.json");
+                return f.exists() ? readText(new FileInputStream(f)) : "";
             } catch (Throwable t) {
                 return "";
             }
