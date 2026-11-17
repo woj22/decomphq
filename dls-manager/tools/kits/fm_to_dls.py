@@ -67,11 +67,36 @@ def lum(c):
     return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
 
 
+def clean_pattern(img, ref=None, thresh=70, grow=3):
+    """Drop one-off decoration (a sash, logos, their soft edges) from a patch of shirt.
+
+    A pixel is the shirt's pattern if it is close to its row's median (hoops, pinstripes) or
+    to its column's median (vertical stripes); otherwise it is replaced by the row median.
+    Subtle checks stay because they never differ much from either median."""
+    a = np.asarray(img).astype(float)
+    rmed = np.median(a, axis=1, keepdims=True)
+    cmed = np.median(a, axis=0, keepdims=True)
+    dr = np.abs(a - rmed).sum(2)
+    dc = np.abs(a - cmed).sum(2)
+    # a column counts as a vertical stripe only if it keeps that colour down most of a taller
+    # slice of the shirt (ref): a diagonal sash covers any one column for part of it only
+    r = np.asarray(ref).astype(float) if ref is not None else a
+    stripe_col = (np.abs(r - cmed).sum(2) <= thresh).mean(axis=0) > (0.85 if ref is not None else 0.9)
+    bad = (dr > thresh) & ((dc > thresh) | ~stripe_col[None, :])
+    for _ in range(grow):  # include the blended edge pixels around the decoration
+        b = bad.copy()
+        b[1:] |= bad[:-1]; b[:-1] |= bad[1:]; b[:, 1:] |= bad[:, :-1]; b[:, :-1] |= bad[:, 1:]
+        bad = b
+    out = np.where(bad[..., None], np.broadcast_to(rmed, a.shape), a)
+    return Image.fromarray(out.clip(0, 255).astype("uint8"))
+
+
 def convert(template, fm_path, shorts, socks):
     fm = Image.open(fm_path).convert("RGBA").resize((420, 420), Image.LANCZOS)
     out = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
     plain = fm.crop(FM_PLAIN).convert("RGB")
     main = dominant(plain)
+    plain = clean_pattern(plain, fm.crop((FM_PLAIN[0], 200, FM_PLAIN[2], FM_PLAIN[3])).convert("RGB"))
     flat = Image.new("RGBA", fm.size, main + (255,))  # see-through bits (round the collar) -> shirt colour
     flat.alpha_composite(fm)
     fm = flat
