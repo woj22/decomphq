@@ -356,7 +356,10 @@ public final class Overlay {
         // competition stats out of step with the squad and crashed the loader; club saves now
         // come pre-built and checked (assets/dlsmgr/clubsaves). The current club is switched
         // back in straight away from its new save.
-        File mark = new File(dir, "dlsmgr_recovered3.done");
+        // v56: fourth run - club saves from v45-v55 had the development ratings in the
+        // database order (stats scrambled on cards, e.g. Gabriel); the rebuilt club saves
+        // use DLS's own order and ratings calibrated to the menus.
+        File mark = new File(dir, "dlsmgr_recovered4.done");
         if (mark.exists()) {
             return;
         }
@@ -371,7 +374,7 @@ public final class Overlay {
                 keep = readText(new FileInputStream(curF)).trim();
             }
             if (prof.exists()) {
-                copy(new FileInputStream(prof), new File(dir, "profile_backup_recover3.dat"));
+                copy(new FileInputStream(prof), new File(dir, "profile_backup_recover4.dat"));
             }
             copy(ctx.getAssets().open("dlsmgr/profile_restore_orig1.dat"), prof);
             String[] gone = {"profile_temp.dat", "dlsmgr_club.txt", "dlsmgr_pending_club.txt", "dlsmgr_switching.txt",
@@ -384,17 +387,18 @@ public final class Overlay {
             File[] fs = saves.listFiles();
             if (fs != null) {
                 for (File f : fs) {
-                    f.renameTo(new File(dir, "old3_" + f.getName()));
+                    f.renameTo(new File(dir, "old4_" + f.getName()));
                 }
             }
             new File(dir, "dlsmgr_restored_orig1.done").createNewFile();
             new File(dir, "dlsmgr_recovered2.done").createNewFile();
             new File(dir, "dlsmgr_fullsquad1.done").createNewFile();
+            new File(dir, "dlsmgr_recovered3.done").createNewFile();
             if (keep.length() > 0 && !keep.equals("original")) {
                 writeBytes(pendF, keep.getBytes("UTF-8"));
             }
             new FileOutputStream(mark).close();
-            log(dir, "recovery 3: original save restored, club-switch files removed; club to restore: " + keep);
+            log(dir, "recovery 4: original save restored, club-switch files removed; club to restore: " + keep);
         } catch (Throwable t) {
             log(dir, "recovery failed: " + t);
         }
@@ -659,6 +663,43 @@ public final class Overlay {
             activity.runOnUiThread(new MatchTask());
         } else if (code == 2) {
             activity.runOnUiThread(new ShowTask());
+        } else if ((code & 0xff) == 3) {
+            activity.runOnUiThread(new IntroTask((code >> 8) & 0xff, (code >> 16) & 0xff, true));
+        } else if (code == 4) {
+            activity.runOnUiThread(new IntroTask(0, 0, false));
+        }
+    }
+
+    /**
+     * Our team intro over DLS's build-up cutscene (DLS's own card is switched off natively):
+     * the menus page goes transparent and plays its intro animation, then steps aside.
+     */
+    static final class IntroTask implements Runnable {
+        private final int weather;
+        private final int timeOfDay;
+        private final boolean start;
+
+        IntroTask(int weather, int timeOfDay, boolean start) {
+            this.weather = weather;
+            this.timeOfDay = timeOfDay;
+            this.start = start;
+        }
+
+        @Override
+        public void run() {
+            if (web == null) {
+                return;
+            }
+            if (start) {
+                web.setBackgroundColor(Color.TRANSPARENT);
+                web.evaluateJavascript("window.dlsIntro && window.dlsIntro(" + weather + "," + timeOfDay + ")", null);
+                web.setVisibility(View.VISIBLE);
+                web.bringToFront();
+            } else {
+                web.evaluateJavascript("window.dlsIntroEnd && window.dlsIntroEnd()", null);
+                web.setVisibility(View.GONE);
+                web.setBackgroundColor(Color.rgb(11, 14, 13));
+            }
         }
     }
 

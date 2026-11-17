@@ -23,6 +23,7 @@ def main():
     ap.add_argument("--badges", required=True)
     ap.add_argument("--fonts", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--leagues", help="folder of league logos <league id>.png (copied to leagues/)")
     ap.add_argument("--clubs", help="clubs.json (build_club_squads.py): adds each player's DLS id as 'dls'")
     a = ap.parse_args()
 
@@ -72,6 +73,11 @@ def main():
     open(os.path.join(a.out, "data.js"), "w", encoding="utf-8").write(
         "window.DLS_DATA=" + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n")
 
+    if a.leagues and os.path.isdir(a.leagues):
+        os.makedirs(os.path.join(a.out, "leagues"), exist_ok=True)
+        for f in os.listdir(a.leagues):
+            if f.endswith(".png"):
+                shutil.copy(os.path.join(a.leagues, f), os.path.join(a.out, "leagues", f))
     n = 0
     for f in os.listdir(a.badges):
         if f.endswith(".png"):

@@ -20,12 +20,12 @@ HOOK = 0x273170           # FUN_00273170 entry: stp x28, x27, [sp, #-0x60]!
 SYMS = {
     "PTR_profile": 0x54cc30, "PTR_match": 0x54d950, "PTR_state": 0x54ccc8, "PTR_compinfo": 0x54d928,
     "PTR_compdef": 0x54c4f8, "PAGE": 0x7c3000, "time_plt": 0x8a310, "memcpy_plt": 0x8a4c0,
-    "memcpy": 0x8a4c0, "fopen_plt": 0x8ad40, "fprintf_plt": 0x8a610, "fclose_plt": 0x8b390, "FUN_002b9150": 0x2b9150, "FUN_0013f9d8": 0x13f9d8, "memset": 0x8a820, "FUN_00273174": 0x273174, "PROFILE_FRAME": 0x525280,
+    "memcpy": 0x8a4c0, "fopen_plt": 0x8ad40, "fprintf_plt": 0x8a610, "fclose_plt": 0x8b390, "FUN_002b9150": 0x2b9150, "FUN_0013f9d8": 0x13f9d8, "WEATHER": 0x5cd804, "TIMEOFDAY": 0x5cc8dc, "memset": 0x8a820, "FUN_00273174": 0x273174, "PROFILE_FRAME": 0x525280,
 }
 FUNCS = ["002a25f8", "001d8354", "000a4a00", "001d8b34", "0027dc84", "0027eabc", "0027eac4", "00283470",
          "002b5760", "000b35c8", "001d72a0", "001d69f4", "001d6ba8", "00273a9c", "002b70e8", "002b70dc",
          "0027e3fc", "0027e304", "002b6fb0", "00348f2c", "000b5d70", "000acf28", "00227cb8", "001d83ec",
-         "001d8ef8", "001d8384", "001d6ed8", "00169f44", "001d728c", "001d72ec", "001d73c4", "0022a548", "0016ac60", "001dc0b8", "001dcdc4", "001d95e0", "001dbd50", "001db894", "000ae0f0", "001dc1d8", "0034da64", "0034db84", "000a45f0", "001693e8", "0016a134", "0027d3d0", "001ed0e4", "002b2318", "0026357c", "0016acb4", "001d8908", "001d8928", "00123a68", "000f213c"]
+         "001d8ef8", "001d8384", "001d6ed8", "00169f44", "001d728c", "001d72ec", "001d73c4", "0022a548", "0016ac60", "001dc0b8", "001dcdc4", "001d95e0", "001dbd50", "001db894", "000ae0f0", "001dc1d8", "0034da64", "0034db84", "000a45f0", "001693e8", "0016a134", "0027d3d0", "001ed0e4", "002b2318", "0026357c", "0016acb4", "001d8908", "001d8928", "00123a68", "000f213c", "00257820"]
 HOOK_S = """
 .text
 .global exhibition_hook
@@ -69,6 +69,7 @@ match_screen_hook:
     str d8, [sp, #-0x30]!
     b FUN_0013f9d8
 """
+INTRO = 0x2624ac          # FUN_002620f8: bl FUN_00257820 (show the team-intro card?)
 RENDER = 0x1692a8         # FUN_001691d4: bl FUN_001693e8 (draw the screen stack)
 MSCREEN = 0x13f9d4        # FUN_0013f9d4 (match screen update): str d8, [sp, #-0x30]!
 NDB = 0x2b914c            # FTTJNI.NativeDialogButton: str x19, [sp, #-0x20]!
@@ -116,6 +117,9 @@ def main():
     old = struct.unpack_from("<I", lib, NDB)[0]
     assert old == 0xf81e0ff3, hex(old)
     words[NDB] = (old, 0x14000000 | (((sym["ndb_hook"] - NDB) >> 2) & 0x3ffffff))
+    old = struct.unpack_from("<I", lib, INTRO)[0]
+    assert old == 0x97ffd4dd, hex(old)
+    words[INTRO] = (old, 0x94000000 | (((sym["intro_gate"] - INTRO) >> 2) & 0x3ffffff))
     old = struct.unpack_from("<I", lib, RENDER)[0]
     assert old == 0x94000050, hex(old)
     words[RENDER] = (old, 0x94000000 | (((sym["render_screens_gate"] - RENDER) >> 2) & 0x3ffffff))

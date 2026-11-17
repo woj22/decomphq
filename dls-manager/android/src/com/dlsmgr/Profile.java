@@ -81,6 +81,16 @@ final class Profile {
     }
 
     // ------------------------------------------------------------------ Dream FC -> club
+    /**
+     * The development list stores the ratings in a different order from players.dat
+     * (database: speed, acceleration, stamina, strength, tackling, control, shooting,
+     * passing, crossing, heading, 3 x goalkeeping). Development slot k holds database
+     * attribute DEV_ORDER[k]: strength, stamina, speed, acceleration, control, crossing,
+     * passing, shooting, heading, tackling, then the goalkeeping three. Found from an in-game
+     * card (Gabriel): every value matched this order exactly.
+     */
+    static final int[] DEV_ORDER = {3, 2, 0, 1, 5, 8, 7, 6, 9, 4, 10, 11, 12};
+
     static byte[] becomeClub(byte[] d, JSONObject club) throws Exception {
         JSONArray ps = club.getJSONArray("players");
         // starting XI first (link flag 1), then by DLS slot
@@ -140,7 +150,7 @@ final class Profile {
             JSONArray at = g.getJSONArray("attr");
             put32(dev, i * 31, ids[i]);
             for (int k = 0; k < 13; k++) {
-                put16(dev, i * 31 + 4 + 2 * k, Math.min(10000, at.getInt(k) * 10));
+                put16(dev, i * 31 + 4 + 2 * k, Math.min(10000, at.getInt(DEV_ORDER[k]) * 10));
             }
             info[i * 4] = (byte) g.optInt("shirt");
             info[i * 4 + 1] = (byte) g.optInt("pos");

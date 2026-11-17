@@ -67,6 +67,9 @@ void FUN_001d73c4(int, int);
 void FUN_0022a548(void);
 void FUN_0016ac60(int);
 void FUN_001693e8(void);
+int FUN_00257820(void);
+extern int WEATHER;   /* DAT_005cd804: 0 clear, 1 rain, 2 snow */
+extern int TIMEOFDAY; /* DAT_005cc8dc: <2 day, 2 night */
 void FUN_0016a134(void);
 void FUN_0027d3d0(void *);
 void FUN_001ed0e4(void);
@@ -231,7 +234,21 @@ static void *make_sheet(u8 *sheet, int team, u8 *src)
     for (int i = 0; i < n; i++)
         FUN_001d95e0(sheet + 0x140, *(u16 *)(src + 4 + 2 * i));
     FUN_001dbd50(sheet + 0x184, src[1]);
+    sheet[0x185] = 0x32;   /* mentality, as FUN_001dbd3c sets it */
     FUN_001db894(sheet + 0x186, FUN_000ae0f0(team));
+    /* per-player entries (32 x 10 bytes at +0), filled the way FUN_001dcdd4 does for a
+       squad: u16 id, u8 0, u16 0, u16 condition 0x927c (full fitness), u16 0. Left at 0
+       (v49-v55) the engine treated every player as unfit/injured. */
+    for (int i = 0; i < 32; i++) {
+        u8 *e = sheet + i * 10;
+        u16 id = i < n ? *(u16 *)(src + 4 + 2 * i) : 0xffde;
+        u16 cond = i < n ? 0x927c : 0;
+        e[0] = (u8)id; e[1] = (u8)(id >> 8);
+        e[2] = 0; e[3] = 0; e[4] = 0; e[5] = 0;
+        e[6] = (u8)cond; e[7] = (u8)(cond >> 8);
+        e[8] = 0; e[9] = 0;
+    }
+    sheet[400] = 1;
     return sheet;
 }
 
@@ -338,4 +355,22 @@ void render_screens_gate(void)
 {
     if (FUN_000f213c(FUN_00123a68()) == 0)
         FUN_001693e8();
+}
+
+/*
+ * The match's HUD manager (FUN_002620f8) shows the team-intro card (overlay 0xc,
+ * FUN_002577c8 / draw FUN_00257a60: both teams, weather, temperature) while the build-up
+ * cutscene runs (FUN_00257820: cutscene type 3). Its check is routed here (call at 0x2624ac):
+ * DLS's card never appears; instead the menus are told when the intro starts and ends and
+ * play their own transparent animated intro over the cutscene.
+ * Event 3 | weather << 8 | time of day << 16 = intro starts, 4 = intro over.
+ */
+int intro_gate(void)
+{
+    int on = FUN_00257820() & 1;
+    if (on != PAGE[0xf0e]) {
+        PAGE[0xf0e] = (u8)on;
+        java_event(on ? (3 | (WEATHER & 0xff) << 8 | (TIMEOFDAY & 0xff) << 16) : 4);
+    }
+    return 0;
 }
