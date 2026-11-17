@@ -32,7 +32,7 @@ UA = "DLSManagerSquadTool/0.1 (personal non-commercial project; low request rate
 API = "https://en.wikipedia.org/w/api.php"
 
 
-def http(url, tries=6):
+def http(url, tries=10):
     delay = 10
     for _ in range(tries):
         try:
@@ -109,7 +109,7 @@ def main():
         raw = http(url)
         open(os.path.join(a.out, "src", cid + ".png"), "wb").write(raw)
         print(f"  {i + 1}/{len(urls)} {cid}", flush=True)
-        time.sleep(1.5)
+        time.sleep(5)
 
     done = 0
     for cid in data["clubs"]:
