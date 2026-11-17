@@ -570,6 +570,60 @@ public final class Overlay {
         }
     }
 
+    /** Sequence number of the last exhibition result (lib+0x7c3f10), 0 before the first. */
+    static int resultSeq() {
+        try {
+            long base = libBase();
+            if (base == 0) {
+                return 0;
+            }
+            java.io.RandomAccessFile mem = new java.io.RandomAccessFile("/proc/self/mem", "r");
+            try {
+                return readInt(mem, base + 0x7c3f10);
+            } finally {
+                mem.close();
+            }
+        } catch (Throwable t) {
+            return 0;
+        }
+    }
+
+    /** Shows the menus again once the match's full-time handler has written a new result. */
+    static final class ResultWatch implements Runnable {
+        private final int before;
+
+        ResultWatch(int before) {
+            this.before = before;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 4 * 3600; i++) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    return;
+                }
+                if (resultSeq() != before) {
+                    try {
+                        Thread.sleep(1500);  // let DLS settle on the hub first
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                    activity.runOnUiThread(new ShowTask());
+                    return;
+                }
+            }
+        }
+    }
+
+    static final class ShowTask implements Runnable {
+        @Override
+        public void run() {
+            Overlay.show();
+        }
+    }
+
     /** Named (not anonymous) so d8 handles it; see build notes. */
     static final class HideTask implements Runnable {
         @Override
@@ -598,11 +652,14 @@ public final class Overlay {
             try {
                 JSONObject clubs = new JSONObject(readText(activity.getAssets().open("dlsmgr/clubs.json")));
                 int tid = clubs.getJSONObject(opponent).getInt("tid");
-                // v46: the match is an exhibition (tools/apk_patch/exhibition.c): the hub's next
-                // fixture becomes this one and DLS's Play starts it outside the DLS season.
+                // v47: an exhibition (tools/apk_patch/exhibition.c) that kicks off straight away:
+                // opponent first, then 0x5A5E0004 = start it on the next game frame. The menus
+                // come back by themselves at full time (ResultWatch).
+                int before = resultSeq();
                 nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
+                nativeRequest(0x5A5E0004);
                 activity.runOnUiThread(new HideTask());
-                activity.runOnUiThread(new ToastTask("Kick-off is set: tap Play Match in DLS."));
+                new Thread(new ResultWatch(before), "dlsmgr-result").start();
                 return "";
             } catch (Throwable t) {
                 return String.valueOf(t);

@@ -61,6 +61,11 @@ void FUN_001d8384(int, int, int, int, int, int, int);
 void FUN_001d6ed8(void);
 void FUN_00169f44(int, int, int, int, int, int);
 void *memcpy_plt(void *, const void *, u64);
+void FUN_001d728c(int);
+void FUN_001d72ec(void);
+void FUN_001d73c4(int, int);
+void FUN_0022a548(void);
+void FUN_0016ac60(int);
 
 #define USER 0x102
 
@@ -138,8 +143,35 @@ int exhibition_start(int home, int away)
     }
     FUN_001d83ec(date, stadium, weather, crowd);
     FUN_001d8ef8(0, -1);
-    FUN_001d8384(3, 0, stadium[0] != 1, 0, 0, 0, 0);
+    /* match type 0 (friendly): type 3 (league) made the post-match code look both teams up in
+       the DLS league table, which crashed for opponents outside it (v46) */
+    FUN_001d8384(0, 0, stadium[0] != 1, 0, 0, 0, 0);
     FUN_002a25f8(prof + 0x6100);
     FUN_001d6ed8();
     return 1;
+}
+
+/*
+ * Called every frame (wrapper at the frame-update call, see exhibition_build.py). The menus'
+ * Play match sends the opponent (0x5A5E4000/0x8000|team) and then 0x5A5E0004, which the
+ * NativeDialogButton hook stores at PAGE+0xf00: kick off straight away, as the pre-match
+ * screen does (reset, set up, kits, then FUN_0016ac60 starts the match).
+ */
+void exhibition_poll(void)
+{
+    if (PAGE[0xf00] != 4)
+        return;
+    PAGE[0xf00] = 0;
+    u16 ov = *(u16 *)(PAGE + 0xf04);
+    if (!ov)
+        return;
+    int team = ov & 0x3ff;
+    int home = (ov & 0x4000) ? USER : team;
+    int away = (ov & 0x4000) ? team : USER;
+    FUN_001d728c(0);
+    FUN_001d72ec();
+    exhibition_start(home, away);
+    FUN_001d73c4(0, 1);   /* home kit, away kit */
+    FUN_0022a548();
+    FUN_0016ac60(1);
 }
