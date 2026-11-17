@@ -694,6 +694,10 @@ input[type="search"], select {
       return render();
     }
     if (act === "play") {
+      if (window.DLSManager && window.DLSManager.hide) {  // inside the game: show DLS (engine link comes next)
+        window.DLSManager.hide();
+        return;
+      }
       return modal('<h2>Play in DLS</h2><p class="muted" style="margin:0">In the game this button loads the real DLS19 match with both squads and returns here at full time. That link is the next big piece of work, so for now use Quick Sim.</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
     if (act === "closemodal") return closeModal();
@@ -734,7 +738,10 @@ input[type="search"], select {
   }
 
   // ------------------------------------------------------------ boot
-  fetch("data.json").then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }).then(function (data) {
+  // inside the game the data ships as data.js (window.DLS_DATA): file:// pages cannot fetch JSON
+  var loadData = window.DLS_DATA ? Promise.resolve(window.DLS_DATA)
+    : fetch("data.json").then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+  loadData.then(function (data) {
     D = data;
     D.players.forEach(function (p) { byId[p.id] = p; (clubPlayers[p.club] = clubPlayers[p.club] || []).push(p); });
     S = load();

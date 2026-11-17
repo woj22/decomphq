@@ -60,9 +60,9 @@ for info in z.infolist():
     zo.writestr(ni,data)
 # entries not in the original APK (e.g. new team badges assets/data/fe/teams/t<slot>.png) are added
 for name, path in sorted(replace.items()):
-    if not name.startswith('assets/'):
-        sys.exit('refusing to add non-asset entry: ' + name)
-    ni=zipfile.ZipInfo(name,(2025,1,25,10,47,0)); ni.compress_type=zipfile.ZIP_STORED if name.endswith('.png') else zipfile.ZIP_DEFLATED
+    if not (name.startswith('assets/') or name == 'classes3.dex'):
+        sys.exit('refusing to add entry: ' + name)
+    ni=zipfile.ZipInfo(name,(2025,1,25,10,47,0)); ni.compress_type=zipfile.ZIP_STORED if name.endswith(('.png','.ttf')) else zipfile.ZIP_DEFLATED
     zo.writestr(ni,open(path,'rb').read())
 zo.close()
 print('ok')

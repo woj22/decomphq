@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""Package the manager menus for the APK (assets/dlsmgr/).
+
+The page is the same menu/index.html as the web preview, with three changes for running
+from file:///android_asset inside the game:
+  * data.json becomes data.js (window.DLS_DATA = ...), because file:// pages cannot fetch;
+  * the Google Fonts link is replaced by bundled Manrope @font-face rules (works offline);
+  * badges are copied next to it (badges/<club>.png, 128 px).
+
+Usage: python3 -I build_menu_assets.py --menu menu --badges assets/badges/128 --fonts <dir with Manrope-*.ttf> --out <dir>
+Then add every file under <out> to the APK as assets/dlsmgr/<path>.
+"""
+import argparse
+import json
+import os
+import re
+import shutil
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--menu", required=True)
+    ap.add_argument("--badges", required=True)
+    ap.add_argument("--fonts", required=True)
+    ap.add_argument("--out", required=True)
+    a = ap.parse_args()
+
+    if os.path.exists(a.out):
+        shutil.rmtree(a.out)
+    os.makedirs(os.path.join(a.out, "badges"))
+    os.makedirs(os.path.join(a.out, "fonts"))
+
+    html = open(os.path.join(a.menu, "index.html"), encoding="utf-8").read()
+    faces = []
+    for f in sorted(os.listdir(a.fonts)):
+        m = re.match(r"Manrope-(\d+)\.ttf$", f)
+        if m:
+            shutil.copy(os.path.join(a.fonts, f), os.path.join(a.out, "fonts", f))
+            faces.append("@font-face{font-family:Manrope;font-weight:%s;font-style:normal;"
+                         "src:url(fonts/%s) format('truetype');}" % (m.group(1), f))
+    html = re.sub(r'<link rel="preconnect"[^>]*>\s*', "", html)
+    html = re.sub(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com[^>]*>',
+                  "<style>" + "".join(faces) + "</style>", html)
+    if "<!doctype" not in html.lower():  # the preview relies on the host's skeleton; give the app a full page
+        html = ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" '
+                'content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>\n'
+                + html + "\n</body></html>\n")
+    html = html.replace("<script>", '<script src="data.js"></script>\n<script>', 1)
+    open(os.path.join(a.out, "index.html"), "w", encoding="utf-8").write(html)
+
+    data = json.load(open(os.path.join(a.menu, "data.json"), encoding="utf-8"))
+    open(os.path.join(a.out, "data.js"), "w", encoding="utf-8").write(
+        "window.DLS_DATA=" + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n")
+
+    n = 0
+    for f in os.listdir(a.badges):
+        if f.endswith(".png"):
+            shutil.copy(os.path.join(a.badges, f), os.path.join(a.out, "badges", f))
+            n += 1
+    size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(a.out) for f in fs)
+    print(f"menu assets: index.html, data.js, {n} badges, {len(faces)} font weights, {size // 1024} KB -> {a.out}")
+
+
+if __name__ == "__main__":
+    main()
