@@ -667,6 +667,16 @@ public final class Overlay {
      * 1 = the match has loaded and is on screen, 2 = full time (before DLS shows its own screens).
      */
     public static void nativeEvent(int code) {
+        try {
+            log(activity.getExternalFilesDir(null), "game event 0x" + Integer.toHexString(code));
+        } catch (Throwable t) {
+            // ignore
+        }
+        if (code == 7 || code == 8) {
+            activity.runOnUiThread(new OverlayJsTask(code == 7
+                    ? "window.dlsLineups && window.dlsLineups()" : "window.dlsIntroEnd && window.dlsIntroEnd()", code == 7));
+            return;
+        }
         if (code == 1) {
             matchShown = true;
             activity.runOnUiThread(new MatchTask());
@@ -733,6 +743,34 @@ public final class Overlay {
         public void run() {
             if (web != null) {
                 web.evaluateJavascript("window.dlsKickoffFailed && window.dlsKickoffFailed()", null);
+            }
+        }
+    }
+
+    /** A transparent menus page over the match (line-ups), or back out of it. */
+    static final class OverlayJsTask implements Runnable {
+        private final String js;
+        private final boolean show;
+
+        OverlayJsTask(String js, boolean show) {
+            this.js = js;
+            this.show = show;
+        }
+
+        @Override
+        public void run() {
+            if (web == null) {
+                return;
+            }
+            if (show) {
+                web.setBackgroundColor(Color.TRANSPARENT);
+                web.evaluateJavascript(js, null);
+                web.setVisibility(View.VISIBLE);
+                web.bringToFront();
+            } else {
+                web.evaluateJavascript(js, null);
+                web.setVisibility(View.GONE);
+                web.setBackgroundColor(Color.rgb(11, 14, 13));
             }
         }
     }

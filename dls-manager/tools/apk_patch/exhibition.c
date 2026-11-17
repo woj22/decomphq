@@ -68,6 +68,7 @@ void FUN_0022a548(void);
 void FUN_0016ac60(int);
 void FUN_001693e8(void);
 int FUN_00257820(void);
+int FUN_0025775c(void);
 extern int WEATHER;   /* DAT_005cd804: 0 clear, 1 rain, 2 snow */
 extern int TIMEOFDAY; /* DAT_005cc8dc: <2 day, 2 night */
 void FUN_0016a134(void);
@@ -97,8 +98,21 @@ void FUN_000a45f0(long *, void *, void *, ...);  /* CallStaticVoidMethod */
  * FTTMainActivity.DlsmgrEvent(int) (added in smali, forwards to com.dlsmgr.Overlay.nativeEvent)
  * the way the game calls CheckImmersive. 1 = the match is on screen, 2 = full time.
  */
+#define NATIVE_LOG "/storage/emulated/0/Android/data/com.firsttouchgames.dls3/files/dlsmgr_log_native.txt"
+
+/* one line in the export's native log (Export save zips dlsmgr_log*) */
+static void nlog(const char *fmt, int a, int b)
+{
+    void *f = fopen_plt(NATIVE_LOG, "a");
+    if (f) {
+        fprintf_plt(f, fmt, a, b);
+        fclose_plt(f);
+    }
+}
+
 static void java_event(int code)
 {
+    nlog("event %x (state %d)\n", code, PAGE[0xf0c]);
     long *env = FUN_0034da64();
     if (!env)
         return;
@@ -109,6 +123,8 @@ static void java_event(int code)
     void *mid = ((void *(*)(long *, void *, const char *, const char *))fn[0x388 / 8])(env, cls, "DlsmgrEvent", "(I)V");
     if (mid)
         FUN_000a45f0(env, cls, mid, code);
+    else
+        nlog("DlsmgrEvent not found (%d)%d\n", code, 0);
     ((void (*)(long *))fn[0x88 / 8])(env);              /* ExceptionClear */
     ((void (*)(long *, void *))fn[0xb8 / 8])(env, cls);  /* DeleteLocalRef */
 }
@@ -361,12 +377,18 @@ void ndb_ours(long env, long cls, u32 v)
  * drawn, whatever state the game gets into; the frame is just cleared and the menus are the app.
  */
 void *FUN_00123a68(void);
-int FUN_000f213c(void *);
 
 void render_screens_gate(void)
 {
-    if (FUN_000f213c(FUN_00123a68()) == 0)
-        FUN_001693e8();
+    u8 *mgr = FUN_00123a68();
+    int n = *(int *)(mgr + 0x48);
+    for (int i = 0; i < n && i < 24; i++) {
+        u8 *scr = *(u8 **)(mgr + 0x50 + i * 8);
+        if (scr && *(int *)(scr + 0x134) == 0) {   /* the match screen is in the stack */
+            FUN_001693e8();
+            return;
+        }
+    }
 }
 
 /*
@@ -383,6 +405,18 @@ int intro_gate(void)
     if (on != PAGE[0xf0e]) {
         PAGE[0xf0e] = (u8)on;
         java_event(on ? (3 | (WEATHER & 0xff) << 8 | (TIMEOFDAY & 0xff) << 16) : 4);
+    }
+    return 0;
+}
+
+/* HUD overlay 0xb: DLS's "Starting XI" line-up graphic (FUN_002568e8, check FUN_0025775c,
+   call at 0x262480). Never shown; the menus draw both line-ups instead (events 7 / 8). */
+int lineup_gate(void)
+{
+    int on = FUN_0025775c() & 1;
+    if (on != PAGE[0xf06]) {
+        PAGE[0xf06] = (u8)on;
+        java_event(on ? 7 : 8);
     }
     return 0;
 }
