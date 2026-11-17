@@ -215,14 +215,45 @@ class TextBank:
 NATIONAL_TEAM_BASE = 199  # nationality id n <-> national team id 199 + n
 
 
-def nationality_table(names):
-    """names: TextBank for ftsteamnames.xlc -> {country name: nationality id}."""
+def nationality_table(names, derived_path=None):
+    """Country name -> DLS19 nationality id.
+
+    Ids 0-39 follow the national-team slots (team 199 + id), verified against squads.
+    Higher ids drift from that order, so they come from nationality_ids.json, which
+    derive_nationalities.py builds by matching DLS19 players to Transfermarkt citizenship.
+    Country names use Transfermarkt spelling ("Korea, South", "Cote d'Ivoire", ...).
+    """
+    derived_path = derived_path or os.path.join(os.path.dirname(os.path.abspath(__file__)), "nationality_ids.json")
     out = {}
-    for n in range(0, 576 - NATIONAL_TEAM_BASE):
+    if os.path.exists(derived_path):
+        import json
+        out.update(json.load(open(derived_path)))
+    verified = {}
+    for n in range(40):
         key = f"TXT_TEAMNAMELONG_{NATIONAL_TEAM_BASE + n}"
         if key in names.index:
-            out[names.get(key)] = n
+            verified[names.get(key)] = n
+    # DLS name -> Transfermarkt spelling for the verified block
+    alias = {"USA": "United States", "Korea Republic": "Korea, South", "Republic of Ireland": "Ireland",
+             "Côte d'Ivoire": "Cote d'Ivoire", "Turkey": "Türkiye"}
+    for name, n in verified.items():
+        out = {k: v for k, v in out.items() if v != n}  # the verified owner of this id wins
+        out[alias.get(name, name)] = n
     return out
+
+
+NAT_ALIASES = {"Korea South": "Korea, South", "Turkey": "Türkiye", "Ivory Coast": "Cote d'Ivoire",
+               "Côte d'Ivoire": "Cote d'Ivoire", "USA": "United States", "Bosnia and Herzegovina": "Bosnia-Herzegovina",
+               "Republic of Ireland": "Ireland", "Gambia": "The Gambia", "Congo DR": "DR Congo"}
+
+
+def nationality_id(table, text):
+    """'England / Jamaica' -> first nationality DLS19 knows, else None."""
+    for part in (text or "").replace("/", " / ").split(" / "):
+        part = NAT_ALIASES.get(part.strip(), part.strip())
+        if part in table:
+            return table[part]
+    return None
 
 
 # ---------------------------------------------------------------- CLI

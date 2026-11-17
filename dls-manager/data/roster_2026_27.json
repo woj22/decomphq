@@ -397,7 +397,8 @@
        "tm_id": 1282860,
        "dob": "2005-08-04",
        "height_cm": 191,
-       "foot": null
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Victor Lindelöf",
@@ -1755,7 +1756,9 @@
        "nationality": "Nigeria / England",
        "contract_expiry": "30/06/2030",
        "market_value_eur": 15000000,
-       "shirt": "39"
+       "shirt": "39",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Charalampos Kostoulas",
@@ -2055,7 +2058,9 @@
        "nationality": "England / Australia",
        "contract_expiry": "30/06/2028",
        "market_value_eur": 2000000,
-       "shirt": "32"
+       "shirt": "32",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jordan Henderson",
@@ -2211,7 +2216,9 @@
        "nationality": "England",
        "contract_expiry": "30/06/2028",
        "market_value_eur": 800000,
-       "shirt": "25"
+       "shirt": "25",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ben Wilson",
@@ -2220,7 +2227,9 @@
        "nationality": "England",
        "contract_expiry": "30/06/2027",
        "market_value_eur": 300000,
-       "shirt": "13"
+       "shirt": "13",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Bobby Thomas",
@@ -2319,7 +2328,9 @@
        "nationality": "England",
        "contract_expiry": "30/06/2027",
        "market_value_eur": 600000,
-       "shirt": "21"
+       "shirt": "21",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Milan van Ewijk",
@@ -2403,7 +2414,9 @@
        "nationality": "England",
        "contract_expiry": "30/06/2028",
        "market_value_eur": 9000000,
-       "shirt": "28"
+       "shirt": "28",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Frank Onyeka",
@@ -2425,7 +2438,9 @@
        "nationality": "England / United States",
        "contract_expiry": "30/06/2028",
        "market_value_eur": 20000000,
-       "shirt": "5"
+       "shirt": "5",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Ephron Mason-Clark",
@@ -2434,7 +2449,9 @@
        "nationality": "Jamaica / England",
        "contract_expiry": "30/06/2028",
        "market_value_eur": 16000000,
-       "shirt": "10"
+       "shirt": "10",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Yann Gboho",
@@ -3045,7 +3062,9 @@
        "nationality": "England / Scotland",
        "contract_expiry": "30/06/2031",
        "market_value_eur": 32000000,
-       "shirt": "30"
+       "shirt": "30",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Christian Nørgaard",
@@ -3093,7 +3112,9 @@
        "nationality": "Argentina",
        "contract_expiry": "30/06/2027",
        "market_value_eur": 15000000,
-       "shirt": "24"
+       "shirt": "24",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kiernan Dewsbury-Hall",
@@ -3222,7 +3243,9 @@
        "age": 23,
        "nationality": "United States / Poland",
        "contract_expiry": "30/06/2027",
-       "shirt": "36"
+       "shirt": "36",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Calvin Bassey",
@@ -3600,7 +3623,9 @@
        "nationality": "England",
        "contract_expiry": "30/06/2029",
        "market_value_eur": 10000000,
-       "shirt": "4"
+       "shirt": "4",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "John Egan",
@@ -3687,7 +3712,9 @@
        "nationality": "England",
        "contract_expiry": "30/06/2029",
        "market_value_eur": 2500000,
-       "shirt": "2"
+       "shirt": "2",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Regan Slater",
@@ -3722,7 +3749,9 @@
        "nationality": "Ecuador",
        "contract_expiry": "30/06/2030",
        "market_value_eur": 1500000,
-       "shirt": "20"
+       "shirt": "20",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Christos Mouzakitis",
@@ -4078,7 +4107,8 @@
        "tm_id": 991487,
        "dob": "2005-10-22",
        "height_cm": 180,
-       "foot": null
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Darnell Furlong",
@@ -5757,7 +5787,9 @@
        "nationality": "France / Germany",
        "contract_expiry": "30/06/2030",
        "market_value_eur": 18000000,
-       "shirt": "24"
+       "shirt": "24",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Nick Pope",
@@ -6570,7 +6602,8 @@
        "tm_id": 1401779,
        "dob": "2006-05-08",
        "height_cm": null,
-       "foot": null
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Noah Sadiki",
@@ -6618,7 +6651,9 @@
        "nationality": "Ireland",
        "contract_expiry": "30/06/2027",
        "market_value_eur": 1300000,
-       "shirt": "8"
+       "shirt": "8",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Chris Rigg",
@@ -7019,7 +7054,9 @@
        "nationality": "Brazil",
        "contract_expiry": "30/06/2031",
        "market_value_eur": 50000000,
-       "shirt": "17"
+       "shirt": "17",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Mathys Tel",
@@ -7377,7 +7414,9 @@
        "name": "Miguel Rodríguez",
        "position": "Midfield",
        "shirt": "22",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Carlos Protesoni",
@@ -7407,7 +7446,9 @@
        "name": "Xanet Olaiz",
        "position": "Defender",
        "shirt": "27",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Izei Hernández",
@@ -7417,8 +7458,9 @@
        "tm_id": 1427912,
        "dob": "2007-02-02",
        "height_cm": null,
-       "foot": null,
-       "nationality": "Spain"
+       "foot": "left",
+       "nationality": "Spain",
+       "foot_estimated": true
       },
       {
        "name": "Grégoire Świderski",
@@ -9271,7 +9313,9 @@
        "joined": "2026-05-01",
        "signed_from": "Deportivo Fabril",
        "contract_expiry": "30/06/2029",
-       "market_value_eur": 1000000
+       "market_value_eur": 1000000,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Jonathan Asp Jensen",
@@ -9372,7 +9416,9 @@
        "joined": "2026-01-01",
        "signed_from": "Deportivo Fabril",
        "contract_expiry": "30/06/2030",
-       "market_value_eur": 5000000
+       "market_value_eur": 5000000,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Pierre-Emerick Aubameyang",
@@ -9665,7 +9711,9 @@
        "name": "Rubén Sánchez",
        "position": "Defender",
        "shirt": "22",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Víctor Chust",
@@ -9695,7 +9743,9 @@
        "name": "Matía Barzić",
        "position": "Defender",
        "shirt": "26",
-       "nat_code": "CRO"
+       "nat_code": "CRO",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ali Houary",
@@ -9735,7 +9785,9 @@
        "name": "Álvaro Padilla",
        "position": "Attack",
        "shirt": "30",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -10270,7 +10322,9 @@
        "name": "Dani Carvajal",
        "position": "Defender",
        "shirt": "14",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Sebastián Boselli",
@@ -10288,7 +10342,9 @@
        "name": "Francho Serrano",
        "position": "Midfield",
        "shirt": "16",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kiko Femenía",
@@ -10402,7 +10458,9 @@
        "name": "Ebrahima Drammeh",
        "position": "Attack",
        "shirt": "27",
-       "nat_code": "GAM"
+       "nat_code": "GAM",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Alberto Risco",
@@ -10412,15 +10470,18 @@
        "tm_id": 1255616,
        "dob": "2005-08-30",
        "height_cm": null,
-       "foot": null,
+       "foot": "left",
        "nationality": "Spain",
-       "market_value_eur": 200000
+       "market_value_eur": 200000,
+       "foot_estimated": true
       },
       {
        "name": "Curro Burgos",
        "position": "Defender",
        "shirt": "29",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Óscar López",
@@ -10438,7 +10499,9 @@
        "name": "Moha Hamdoune",
        "position": "Defender",
        "shirt": "31",
-       "nat_code": "MAR"
+       "nat_code": "MAR",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Joselu Pérez",
@@ -10456,13 +10519,17 @@
        "name": "Moha Achraf",
        "position": "Attack",
        "shirt": "33",
-       "nat_code": "MAR"
+       "nat_code": "MAR",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jesús Martínez",
        "position": "Midfield",
        "shirt": "34",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Diego Ferrer",
@@ -10472,27 +10539,34 @@
        "tm_id": 1298885,
        "dob": "2007-04-17",
        "height_cm": null,
-       "foot": null,
+       "foot": "right",
        "nationality": "Spain",
-       "market_value_eur": 50000
+       "market_value_eur": 50000,
+       "foot_estimated": true
       },
       {
        "name": "Ibrahima Danfakha",
        "position": "Attack",
        "shirt": "36",
-       "nat_code": "SEN"
+       "nat_code": "SEN",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Sebas Salazar",
        "position": "Attack",
        "shirt": "37",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Vladyslav Kysil",
        "position": "Defender",
        "shirt": "38",
-       "nat_code": "UKR"
+       "nat_code": "UKR",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -10623,7 +10697,9 @@
        "name": "Yanis Musuayi",
        "position": "Attack",
        "shirt": "11",
-       "nat_code": "BEL"
+       "nat_code": "BEL",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mathew Ryan",
@@ -10664,13 +10740,17 @@
        "name": "Víctor García",
        "position": "Defender",
        "shirt": "17",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Enzo Bardeli",
        "position": "Midfield",
        "shirt": "18",
-       "nat_code": "FRA"
+       "nat_code": "FRA",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Oriol Rey",
@@ -10712,7 +10792,9 @@
        "name": "Manu Sánchez",
        "position": "Defender",
        "shirt": "23",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Thiago Fernández",
@@ -10766,19 +10848,25 @@
        "name": "Marc Santos",
        "position": "Defender",
        "shirt": "33",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luismi Pérez",
        "position": "Attack",
        "shirt": "26",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Manel Usedo",
        "position": "Midfield",
        "shirt": "34",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Huseini Nakoha",
@@ -10795,19 +10883,25 @@
        "name": "Igor Galdin",
        "position": "Goalkeeper",
        "shirt": "36",
-       "nat_code": "UKR"
+       "nat_code": "UKR",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Alberto Calatrava",
        "position": "Midfield",
        "shirt": "38",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Alejandro Moya",
        "position": "Defender",
        "shirt": "39",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -10818,7 +10912,9 @@
        "name": "Alfonso Herrero",
        "position": "Goalkeeper",
        "shirt": "1",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jens Cajuste",
@@ -10836,7 +10932,9 @@
        "name": "Carlos Puga",
        "position": "Defender",
        "shirt": "3",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Einar Galilea",
@@ -10866,13 +10964,17 @@
        "name": "Ramón",
        "position": "Midfield",
        "shirt": "6",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Haitam",
        "position": "Midfield",
        "shirt": "7",
-       "nat_code": "MAR"
+       "nat_code": "MAR",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Carlos Dotor",
@@ -10890,13 +10992,17 @@
        "name": "Chupete",
        "position": "Attack",
        "shirt": "9",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "David Larrubia",
        "position": "Midfield",
        "shirt": "10",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Joaquín Muñoz",
@@ -10914,31 +11020,41 @@
        "name": "José Salinas",
        "position": "Defender",
        "shirt": "12",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Carlos López",
        "position": "Goalkeeper",
        "shirt": "13",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Rafa",
        "position": "Midfield",
        "shirt": "14",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ángel Recio",
        "position": "Defender",
        "shirt": "15",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Diego Murillo",
        "position": "Defender",
        "shirt": "16",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Eneko Jauregi",
@@ -10948,21 +11064,26 @@
        "tm_id": 376589,
        "dob": "1996-07-13",
        "height_cm": 184,
-       "foot": null,
+       "foot": "right",
        "nationality": "Spain",
-       "market_value_eur": 500000
+       "market_value_eur": 500000,
+       "foot_estimated": true
       },
       {
        "name": "Pablo Martínez",
        "position": "Midfield",
        "shirt": "18",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Juan Cruz",
        "position": "Midfield",
        "shirt": "19",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Fernando Calero",
@@ -10996,14 +11117,17 @@
        "tm_id": 282725,
        "dob": "1993-04-20",
        "height_cm": 188,
-       "foot": null,
-       "nationality": "Spain"
+       "foot": "left",
+       "nationality": "Spain",
+       "foot_estimated": true
       },
       {
        "name": "Izan Merino",
        "position": "Midfield",
        "shirt": "23",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Julen Lobete",
@@ -11045,7 +11169,9 @@
        "name": "Aarón Ochoa",
        "position": "Midfield",
        "shirt": "35",
-       "nat_code": "IRL"
+       "nat_code": "IRL",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Adam Aznou",
@@ -11063,19 +11189,25 @@
        "name": "Otu",
        "position": "Midfield",
        "shirt": "28",
-       "nat_code": "NGA"
+       "nat_code": "NGA",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Andrés Céspedes",
        "position": "Goalkeeper",
        "shirt": "30",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Juani",
        "position": "Midfield",
        "shirt": "32",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -11134,13 +11266,17 @@
        "name": "Iker Muñoz",
        "position": "Midfield",
        "shirt": "8",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Raúl García",
        "position": "Attack",
        "shirt": "9",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Aimar Oroz",
@@ -11170,13 +11306,17 @@
        "name": "Aitor Fernández",
        "position": "Goalkeeper",
        "shirt": "13",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Rubén García",
        "position": "Midfield",
        "shirt": "14",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Diego Rico",
@@ -11254,7 +11394,9 @@
        "name": "Jonathan Dubasin",
        "position": "Midfield",
        "shirt": "21",
-       "nat_code": "BEL"
+       "nat_code": "BEL",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Enzo Boyomo",
@@ -11300,8 +11442,9 @@
        "tm_id": 1065440,
        "dob": "2005-03-03",
        "height_cm": 176,
-       "foot": null,
-       "nationality": "Spain"
+       "foot": "right",
+       "nationality": "Spain",
+       "foot_estimated": true
       },
       {
        "name": "Iñigo Arguibide",
@@ -11343,7 +11486,9 @@
        "name": "Asier Bonel",
        "position": "Attack",
        "shirt": "30",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Rafa Fernández",
@@ -11361,7 +11506,9 @@
        "name": "Mikel Bermejo",
        "position": "Goalkeeper",
        "shirt": "32",
-       "nat_code": "ESP"
+       "nat_code": "ESP",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Unai Santos",
@@ -13643,7 +13790,8 @@
        "contract_expiry": "30/06/2028",
        "market_value_eur": 3000000,
        "tm_id": 357628,
-       "foot": null
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Miguel Sierra",
@@ -14554,7 +14702,9 @@
        "age": 26,
        "dob": "2000-05-25",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Florijan Raduha",
@@ -14563,7 +14713,9 @@
        "age": 29,
        "dob": "1997-04-01",
        "nationality": "Slovenia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lukas Tomazic",
@@ -14572,7 +14724,9 @@
        "age": 21,
        "dob": "2005-03-15",
        "nationality": "Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Rok Schaubach",
@@ -14581,7 +14735,9 @@
        "age": 22,
        "dob": "2004-10-04",
        "nationality": "Slovenia",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Dino Simunic",
@@ -14590,7 +14746,9 @@
        "age": 23,
        "dob": "2003-09-11",
        "nationality": "Croatia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Vito Tezak",
@@ -14623,7 +14781,9 @@
        "age": 23,
        "dob": "2003-04-06",
        "nationality": "Slovenia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lan Drevensek",
@@ -14632,7 +14792,9 @@
        "age": 19,
        "dob": "2007-04-15",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ante Bekavac",
@@ -14664,7 +14826,9 @@
        "position": "Right-Back",
        "age": 18,
        "dob": "2007-11-29",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tomislav Jagic",
@@ -14673,7 +14837,9 @@
        "age": 29,
        "dob": "1997-05-29",
        "nationality": "Croatia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Enej Kramberger",
@@ -14682,7 +14848,9 @@
        "age": 19,
        "dob": "2007-03-31",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Matic Vrbanec",
@@ -14691,7 +14859,9 @@
        "age": 30,
        "dob": "1996-10-28",
        "nationality": "Slovenia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Maj Blazic",
@@ -14700,7 +14870,9 @@
        "age": 19,
        "dob": "2007-01-25",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Marko Mladenovic",
@@ -14721,7 +14893,9 @@
        "age": 24,
        "dob": "2002-05-11",
        "nationality": "Croatia",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Simon Rogina",
@@ -14730,7 +14904,9 @@
        "age": 25,
        "dob": "2001-03-26",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Filip Pongracic",
@@ -14738,7 +14914,9 @@
        "age": 19,
        "dob": "2007-05-23",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Ivijan Svrznjak",
@@ -14759,7 +14937,9 @@
        "age": 23,
        "dob": "2003-10-24",
        "nationality": "Slovenia",
-       "height_cm": 193
+       "height_cm": 193,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Bamba Susso",
@@ -14768,7 +14948,9 @@
        "age": 24,
        "dob": "2002-10-09",
        "nationality": "The Gambia",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Robert Ramsak",
@@ -14788,7 +14970,9 @@
        "age": 30,
        "dob": "1996-01-21",
        "nationality": "Nigeria/Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Murat Bajraj",
@@ -14797,7 +14981,9 @@
        "age": 26,
        "dob": "2000-07-08",
        "nationality": "Slovenia/Kosovo",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jaka Domjan",
@@ -14805,7 +14991,9 @@
        "age": 22,
        "dob": "2004-05-05",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -14819,7 +15007,9 @@
        "age": 19,
        "dob": "2007-02-20",
        "nationality": "Slovenia",
-       "height_cm": 195
+       "height_cm": 195,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matjaz Rozman",
@@ -14828,7 +15018,9 @@
        "age": 39,
        "dob": "1987-01-03",
        "nationality": "Slovenia",
-       "height_cm": 192
+       "height_cm": 192,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Christalino Atemona",
@@ -14860,7 +15052,9 @@
        "age": 21,
        "dob": "2005-02-24",
        "nationality": "Cameroon",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Molade Olanrewaju",
@@ -14869,7 +15063,9 @@
        "age": 22,
        "dob": "2004-04-15",
        "nationality": "Nigeria",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gasper Jovan",
@@ -14877,7 +15073,9 @@
        "position": "Left-Back",
        "age": 25,
        "dob": "2001-02-25",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Maj Fogec",
@@ -14885,7 +15083,9 @@
        "position": "Left-Back",
        "age": 24,
        "dob": "2002-07-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Marwann Nzuzi",
@@ -14917,7 +15117,9 @@
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Marko Simonic",
@@ -14926,7 +15128,9 @@
        "age": 21,
        "dob": "2005-06-21",
        "nationality": "Slovenia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Nadon Kouassi",
@@ -14935,7 +15139,9 @@
        "age": 20,
        "dob": "2006-03-21",
        "nationality": "Cote d'Ivoire",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Enrik Ostrc",
@@ -14944,7 +15150,9 @@
        "age": 24,
        "dob": "2002-06-21",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lan Stravs",
@@ -14953,7 +15161,9 @@
        "age": 26,
        "dob": "2000-03-04",
        "nationality": "Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Sandi Nuhanovic",
@@ -14962,7 +15172,9 @@
        "age": 27,
        "dob": "1998-12-05",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "James Arinze",
@@ -14971,7 +15183,9 @@
        "age": 20,
        "dob": "2006-01-04",
        "nationality": "Nigeria",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jon Ficko",
@@ -14979,7 +15193,9 @@
        "position": "Left Midfield",
        "age": 22,
        "dob": "2004-01-27",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Timotej Drobez",
@@ -14988,7 +15204,9 @@
        "age": 19,
        "dob": "2007-02-01",
        "nationality": "Slovenia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jakoslav Stankovic",
@@ -14997,7 +15215,9 @@
        "age": 25,
        "dob": "2001-04-10",
        "nationality": "Slovenia",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Divine Omoregie",
@@ -15005,7 +15225,9 @@
        "position": "Left Winger",
        "age": 21,
        "dob": "2005-01-19",
-       "nationality": "Italy/Nigeria"
+       "nationality": "Italy/Nigeria",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Okpo Mazié",
@@ -15014,7 +15236,9 @@
        "age": 22,
        "dob": "2003-12-26",
        "nationality": "Cote d'Ivoire/France",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matej Malensek",
@@ -15035,7 +15259,9 @@
        "age": 20,
        "dob": "2006-06-04",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Milan Tucic",
@@ -15055,7 +15281,9 @@
        "position": "Centre-Forward",
        "age": 20,
        "dob": "2006-07-25",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -15069,7 +15297,9 @@
        "age": 20,
        "dob": "2006-06-09",
        "nationality": "Slovenia",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tim Strasberger",
@@ -15077,7 +15307,9 @@
        "position": "Goalkeeper",
        "age": 21,
        "dob": "2005-04-02",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Nejc Pusnik",
@@ -15086,7 +15318,9 @@
        "age": 28,
        "dob": "1998-08-06",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Rok Maher",
@@ -15095,7 +15329,9 @@
        "age": 25,
        "dob": "2001-07-20",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Samo Matjaž",
@@ -15104,7 +15340,9 @@
        "age": 22,
        "dob": "2004-05-02",
        "nationality": "Slovenia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matevz Matko",
@@ -15113,7 +15351,9 @@
        "age": 25,
        "dob": "2001-10-09",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Dominik Ivkic",
@@ -15122,7 +15362,9 @@
        "age": 29,
        "dob": "1997-07-31",
        "nationality": "Slovenia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Dominik Braun",
@@ -15130,7 +15372,9 @@
        "age": 22,
        "dob": "2003-12-03",
        "nationality": "Croatia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Nejc Klasnja",
@@ -15138,7 +15382,9 @@
        "position": "Centre-Back",
        "age": 22,
        "dob": "2004-05-03",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Amar Milisic",
@@ -15147,7 +15393,9 @@
        "age": 19,
        "dob": "2007-01-30",
        "nationality": "Belgium/Bosnia-Herzegovina",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Kevin Benkic",
@@ -15155,7 +15403,9 @@
        "position": "Left-Back",
        "age": 21,
        "dob": "2005-09-07",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Matija Kavcic",
@@ -15164,7 +15414,9 @@
        "age": 29,
        "dob": "1997-07-11",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Zan Mesko",
@@ -15172,7 +15424,9 @@
        "position": "Right-Back",
        "age": 18,
        "dob": "2008-01-25",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ivan Krolo",
@@ -15192,7 +15446,9 @@
        "age": 24,
        "dob": "2002-03-19",
        "nationality": "North Macedonia/Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tin Levanic",
@@ -15201,7 +15457,9 @@
        "age": 21,
        "dob": "2005-05-05",
        "nationality": "Bosnia-Herzegovina/Croatia",
-       "height_cm": 176
+       "height_cm": 176,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Almin Kurtovic",
@@ -15210,14 +15468,18 @@
        "age": 26,
        "dob": "2000-03-16",
        "nationality": "Slovenia",
-       "height_cm": 177
+       "height_cm": 177,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Turudija",
        "position": "Central Midfield",
        "age": 22,
        "dob": "2004-07-24",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Maj Roric",
@@ -15250,7 +15512,9 @@
        "age": 23,
        "dob": "2003-09-30",
        "nationality": "Montenegro/Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nik Zrnec",
@@ -15258,7 +15522,9 @@
        "position": "Attacking Midfield",
        "age": 22,
        "dob": "2004-04-16",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nal Lan Koren",
@@ -15266,7 +15532,9 @@
        "position": "Left Winger",
        "age": 20,
        "dob": "2006-06-21",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Vid Hojc",
@@ -15275,7 +15543,9 @@
        "age": 21,
        "dob": "2005-03-30",
        "nationality": "Slovenia",
-       "height_cm": 177
+       "height_cm": 177,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Erik Milosevic",
@@ -15283,7 +15553,9 @@
        "position": "Left Winger",
        "age": 19,
        "dob": "2007-03-21",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Vuk Vlahovic",
@@ -15291,7 +15563,9 @@
        "position": "Left Winger",
        "age": 19,
        "dob": "2007-01-10",
-       "nationality": "Montenegro"
+       "nationality": "Montenegro",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gal Kurez",
@@ -15300,7 +15574,9 @@
        "age": 25,
        "dob": "2001-04-27",
        "nationality": "Slovenia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Haris Vuckic",
@@ -15320,7 +15596,9 @@
        "position": "Centre-Forward",
        "age": 24,
        "dob": "2002-05-05",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Reinhard Young",
@@ -15329,7 +15607,9 @@
        "age": 25,
        "dob": "2001-08-18",
        "nationality": "Nigeria",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       }
      ]
     },
@@ -15367,7 +15647,9 @@
        "age": 33,
        "dob": "1993-03-17",
        "nationality": "Croatia",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Kolar",
@@ -15375,7 +15657,9 @@
        "position": "Goalkeeper",
        "age": 21,
        "dob": "2005-09-09",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Artemijus Tutyškinas",
@@ -15419,7 +15703,9 @@
        "age": 31,
        "dob": "1995-06-28",
        "nationality": "Slovenia",
-       "height_cm": 193
+       "height_cm": 193,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Darko Hrka",
@@ -15428,7 +15714,9 @@
        "age": 26,
        "dob": "1999-11-20",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Zan Luka Sega",
@@ -15436,7 +15724,9 @@
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-11-17",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Leonardo Koutris",
@@ -15491,7 +15781,9 @@
        "age": 24,
        "dob": "2002-03-10",
        "nationality": "Slovenia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ivan Calusic",
@@ -15559,7 +15851,9 @@
        "age": 32,
        "dob": "1994-03-15",
        "nationality": "Slovenia",
-       "height_cm": 174
+       "height_cm": 174,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Mario Kvesic",
@@ -15568,7 +15862,9 @@
        "age": 34,
        "dob": "1992-01-12",
        "nationality": "Bosnia-Herzegovina/Croatia",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Benjamin Verbic",
@@ -15624,7 +15920,9 @@
        "position": "Right Winger",
        "age": 22,
        "dob": "2004-07-26",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Dejan Suhovrsnik",
@@ -15632,7 +15930,9 @@
        "position": "Right Winger",
        "age": 19,
        "dob": "2007-02-16",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Blaz Kramer",
@@ -15670,7 +15970,9 @@
        "age": 24,
        "dob": "2002-04-30",
        "nationality": "Slovenia",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Edoardo Piana",
@@ -15690,7 +15992,9 @@
        "position": "Goalkeeper",
        "age": 20,
        "dob": "2006-03-14",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Filip Backulja",
@@ -15723,7 +16027,9 @@
        "age": 24,
        "dob": "2002-04-26",
        "nationality": "Italy/Ghana",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Amadej Marinic",
@@ -15731,7 +16037,9 @@
        "position": "Left-Back",
        "age": 26,
        "dob": "2000-10-10",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Florian Hartherz",
@@ -15752,7 +16060,9 @@
        "age": 25,
        "dob": "2000-12-29",
        "nationality": "Serbia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Álvaro Roncal",
@@ -15761,7 +16071,9 @@
        "age": 25,
        "dob": "2000-12-25",
        "nationality": "Spain",
-       "height_cm": 171
+       "height_cm": 171,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Brice Negouai",
@@ -15793,7 +16105,9 @@
        "age": 24,
        "dob": "2002-06-25",
        "nationality": "Croatia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Stefano Surdanovic",
@@ -15802,7 +16116,9 @@
        "age": 27,
        "dob": "1998-11-23",
        "nationality": "Austria",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Leo Stulac",
@@ -15823,7 +16139,9 @@
        "age": 26,
        "dob": "2000-03-11",
        "nationality": "Congo/France",
-       "height_cm": 171
+       "height_cm": 171,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Bangaly Diawara",
@@ -15832,7 +16150,9 @@
        "age": 23,
        "dob": "2003-03-25",
        "nationality": "Cote d'Ivoire/France",
-       "height_cm": 176
+       "height_cm": 176,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Check Oumar Diakité",
@@ -15841,14 +16161,18 @@
        "age": 23,
        "dob": "2002-12-05",
        "nationality": "France/Mali",
-       "height_cm": 173
+       "height_cm": 173,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Mark Kavrecic",
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-02-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kamil Manseri",
@@ -15857,7 +16181,9 @@
        "age": 25,
        "dob": "2001-06-12",
        "nationality": "France/Algeria",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "David Pejičić",
@@ -15913,7 +16239,9 @@
        "age": 22,
        "dob": "2004-01-20",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Ibrahim Lawal Oluwaseun",
@@ -15921,7 +16249,9 @@
        "position": "Left Winger",
        "age": 20,
        "dob": "2006-01-01",
-       "nationality": "Nigeria"
+       "nationality": "Nigeria",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Benjamin Adrovic",
@@ -15929,7 +16259,9 @@
        "position": "Right Winger",
        "age": 18,
        "dob": "2007-12-20",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Leo Rimac",
@@ -15949,7 +16281,9 @@
        "age": 22,
        "dob": "2004-03-30",
        "nationality": "Nigeria/France",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Robert Beric",
@@ -15999,7 +16333,9 @@
        "age": 25,
        "dob": "2001-04-01",
        "nationality": "Madagascar/France",
-       "height_cm": 200
+       "height_cm": 200,
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Tanej Handanovic",
@@ -16008,7 +16344,9 @@
        "age": 18,
        "dob": "2008-08-24",
        "nationality": "Slovenia",
-       "height_cm": 202
+       "height_cm": 202,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Bradley M'Bondo",
@@ -16017,7 +16355,9 @@
        "age": 25,
        "dob": "2001-10-30",
        "nationality": "France/DR Congo",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Miha Blazic",
@@ -16038,7 +16378,9 @@
        "age": 25,
        "dob": "2001-09-11",
        "nationality": "Slovenia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Vid Koderman",
@@ -16047,7 +16389,9 @@
        "age": 23,
        "dob": "2003-04-18",
        "nationality": "Slovenia",
-       "height_cm": 177
+       "height_cm": 177,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Cedomir Bumbic",
@@ -16056,7 +16400,9 @@
        "age": 27,
        "dob": "1999-09-08",
        "nationality": "Austria",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Zan Karnicnik",
@@ -16076,7 +16422,9 @@
        "age": 25,
        "dob": "2001-06-13",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Zan Jevsenak",
@@ -16085,7 +16433,9 @@
        "age": 23,
        "dob": "2003-05-15",
        "nationality": "Slovenia",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nejc Viher",
@@ -16094,7 +16444,9 @@
        "age": 18,
        "dob": "2008-02-13",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Claude Gonçalves",
@@ -16127,7 +16479,9 @@
        "age": 25,
        "dob": "2001-04-14",
        "nationality": "Ghana",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Niko Osterc",
@@ -16135,7 +16489,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-05-22",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Petar Stojanović",
@@ -16156,7 +16512,9 @@
        "age": 25,
        "dob": "2001-05-29",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tio Cipot",
@@ -16177,7 +16535,9 @@
        "age": 26,
        "dob": "2000-01-14",
        "nationality": "Ireland/Algeria",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Behar Feta",
@@ -16186,7 +16546,9 @@
        "age": 23,
        "dob": "2003-04-07",
        "nationality": "North Macedonia",
-       "height_cm": 167
+       "height_cm": 167,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Jan Mlakar",
@@ -16207,7 +16569,9 @@
        "age": 28,
        "dob": "1998-06-06",
        "nationality": "Croatia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Isaac Tshipamba",
@@ -16216,7 +16580,9 @@
        "age": 26,
        "dob": "2000-11-09",
        "nationality": "France/DR Congo",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Zahovic",
@@ -16237,7 +16603,9 @@
        "age": 19,
        "dob": "2007-07-26",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "left",
+       "foot_estimated": true
       }
      ]
     },
@@ -16274,7 +16642,9 @@
        "age": 24,
        "dob": "2002-03-20",
        "nationality": "Slovenia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nejc Antonic",
@@ -16282,7 +16652,9 @@
        "position": "Goalkeeper",
        "age": 19,
        "dob": "2007-03-07",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Borna Proleta",
@@ -16291,7 +16663,9 @@
        "age": 24,
        "dob": "2001-11-26",
        "nationality": "Croatia",
-       "height_cm": 194
+       "height_cm": 194,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Aleksandar Zeljkovic",
@@ -16300,7 +16674,9 @@
        "age": 27,
        "dob": "1999-07-04",
        "nationality": "Slovenia",
-       "height_cm": 194
+       "height_cm": 194,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Matej Matic",
@@ -16321,7 +16697,9 @@
        "age": 29,
        "dob": "1997-07-30",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kristjan Trdin",
@@ -16330,7 +16708,9 @@
        "age": 22,
        "dob": "2004-03-01",
        "nationality": "Slovenia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Lovro Kitin",
@@ -16341,7 +16721,8 @@
        "nationality": "Croatia",
        "tm_id": 1133004,
        "height_cm": null,
-       "foot": null
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Samo Seckar",
@@ -16349,7 +16730,9 @@
        "position": "Centre-Back",
        "age": 18,
        "dob": "2007-12-18",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Zan Petrovic",
@@ -16357,7 +16740,9 @@
        "position": "Left-Back",
        "age": 19,
        "dob": "2007-02-26",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Darius Oroian",
@@ -16366,7 +16751,9 @@
        "age": 23,
        "dob": "2003-08-01",
        "nationality": "Romania",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Faad Sana",
@@ -16374,7 +16761,9 @@
        "position": "Right-Back",
        "age": 23,
        "dob": "2003-04-15",
-       "nationality": "Togo/Burkina Faso"
+       "nationality": "Togo/Burkina Faso",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nejc Ajhmajer",
@@ -16383,14 +16772,18 @@
        "age": 23,
        "dob": "2003-04-22",
        "nationality": "Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Svjetlanovic",
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-03-05",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Alen Kozar",
@@ -16399,7 +16792,9 @@
        "age": 31,
        "dob": "1995-04-07",
        "nationality": "Slovenia",
-       "height_cm": 174
+       "height_cm": 174,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ivan Borna Jelic Balta",
@@ -16420,7 +16815,9 @@
        "age": 25,
        "dob": "2001-11-17",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nino Kouter",
@@ -16429,7 +16826,9 @@
        "age": 32,
        "dob": "1993-12-19",
        "nationality": "Slovenia",
-       "height_cm": 170
+       "height_cm": 170,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Mai Kolbl",
@@ -16437,7 +16836,9 @@
        "age": 19,
        "dob": "2007-03-16",
        "nationality": "Slovenia",
-       "shirt": "27"
+       "shirt": "27",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Florjan Jevsenak",
@@ -16445,7 +16846,9 @@
        "position": "Attacking Midfield",
        "age": 21,
        "dob": "2005-04-06",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Aljaz Zalaznik",
@@ -16453,7 +16856,9 @@
        "position": "Attacking Midfield",
        "age": 20,
        "dob": "2005-12-12",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Bobicanec",
@@ -16462,7 +16867,9 @@
        "age": 33,
        "dob": "1993-05-23",
        "nationality": "Croatia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Petar Pfeifer",
@@ -16471,7 +16878,9 @@
        "age": 19,
        "dob": "2007-01-03",
        "nationality": "Croatia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Niko Kasalo",
@@ -16480,7 +16889,9 @@
        "age": 20,
        "dob": "2005-12-31",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Simun Butic",
@@ -16491,8 +16902,9 @@
        "nationality": "Croatia",
        "tm_id": 1249161,
        "height_cm": null,
-       "foot": null,
-       "market_value_eur": 350000
+       "foot": "right",
+       "market_value_eur": 350000,
+       "foot_estimated": true
       },
       {
        "name": "Val Bislimaj",
@@ -16500,7 +16912,9 @@
        "age": 19,
        "dob": "2007-04-05",
        "nationality": "Slovenia",
-       "shirt": "89"
+       "shirt": "89",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Anej Roman Leljak",
@@ -16508,7 +16922,9 @@
        "position": "Right Winger",
        "age": 20,
        "dob": "2006-05-20",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Boris Dimitrov",
@@ -16517,7 +16933,9 @@
        "age": 22,
        "dob": "2004-03-29",
        "nationality": "Bulgaria",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kenan Kurtovic",
@@ -16526,7 +16944,9 @@
        "age": 19,
        "dob": "2007-01-18",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Marko Ascic",
@@ -16547,14 +16967,18 @@
        "age": 25,
        "dob": "2001-01-31",
        "nationality": "Slovenia",
-       "height_cm": 197
+       "height_cm": 197,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Onur Yilmaz",
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Türkiye/Germany"
+       "nationality": "Türkiye/Germany",
+       "foot": "left",
+       "foot_estimated": true
       }
      ]
     },
@@ -16568,7 +16992,9 @@
        "age": 22,
        "dob": "2004-07-05",
        "nationality": "Slovenia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Ervin Németh",
@@ -16577,7 +17003,9 @@
        "age": 23,
        "dob": "2003-07-05",
        "nationality": "Hungary",
-       "height_cm": 192
+       "height_cm": 192,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Áron Dragóner",
@@ -16585,7 +17013,9 @@
        "position": "Centre-Back",
        "age": 22,
        "dob": "2004-06-11",
-       "nationality": "Hungary"
+       "nationality": "Hungary",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Rok Pirtovsek",
@@ -16593,7 +17023,9 @@
        "position": "Centre-Back",
        "age": 30,
        "dob": "1996-04-03",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tibor Gorenc Stankovic",
@@ -16602,7 +17034,9 @@
        "age": 26,
        "dob": "1999-12-29",
        "nationality": "Slovenia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Poredos",
@@ -16610,7 +17044,9 @@
        "position": "Left-Back",
        "age": 21,
        "dob": "2005-06-10",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "André Ferreira",
@@ -16631,7 +17067,9 @@
        "age": 27,
        "dob": "1998-12-20",
        "nationality": "Slovenia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kimi Lavrencic",
@@ -16639,14 +17077,18 @@
        "position": "Defensive Midfield",
        "age": 20,
        "dob": "2006-08-29",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Maj Rusjan",
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-07-24",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Shyon Omrani",
@@ -16655,7 +17097,9 @@
        "age": 23,
        "dob": "2003-10-21",
        "nationality": "Canada/Portugal",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Aleks Pihler",
@@ -16664,7 +17108,9 @@
        "age": 32,
        "dob": "1994-01-15",
        "nationality": "Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mátyás Vidnyánszky",
@@ -16672,7 +17118,9 @@
        "position": "Attacking Midfield",
        "age": 20,
        "dob": "2006-01-25",
-       "nationality": "Hungary"
+       "nationality": "Hungary",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Noel Keresztes",
@@ -16681,7 +17129,9 @@
        "age": 22,
        "dob": "2004-09-16",
        "nationality": "Hungary",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Michael Ogwuche",
@@ -16690,7 +17140,9 @@
        "age": 22,
        "dob": "2004-06-15",
        "nationality": "Nigeria",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Divaio Bobson",
@@ -16711,7 +17163,9 @@
        "age": 25,
        "dob": "2001-07-13",
        "nationality": "Croatia/Canada",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Anis Jasaragic",
@@ -16720,7 +17174,9 @@
        "age": 27,
        "dob": "1999-08-09",
        "nationality": "Slovenia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Andrej Micic",
@@ -16739,7 +17195,9 @@
        "position": "Right Winger",
        "age": 28,
        "dob": "1998-02-10",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Manu Vallejo",
@@ -16771,7 +17229,9 @@
        "age": 32,
        "dob": "1994-02-07",
        "nationality": "Slovenia",
-       "height_cm": 177
+       "height_cm": 177,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Umar Jamiu",
@@ -16779,7 +17239,9 @@
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-08-14",
-       "nationality": "Nigeria"
+       "nationality": "Nigeria",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Adama Sarr",
@@ -16787,7 +17249,9 @@
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Nigeria"
+       "nationality": "Nigeria",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -16823,7 +17287,9 @@
        "age": 19,
        "dob": "2007-01-01",
        "nationality": "Slovenia",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Veljko Jelenkovic",
@@ -16832,7 +17298,9 @@
        "age": 23,
        "dob": "2003-06-05",
        "nationality": "Bulgaria/Serbia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jan Gorenc",
@@ -16853,7 +17321,9 @@
        "age": 28,
        "dob": "1998-01-24",
        "nationality": "Georgia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Marko Ristic",
@@ -16862,14 +17332,18 @@
        "age": 22,
        "dob": "2004-11-01",
        "nationality": "Slovenia",
-       "height_cm": 192
+       "height_cm": 192,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Artur Vinicius",
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-09-11",
-       "nationality": "Brazil"
+       "nationality": "Brazil",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jan Jurgec",
@@ -16877,7 +17351,9 @@
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-03-13",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jost Urbancic",
@@ -16897,7 +17373,9 @@
        "age": 27,
        "dob": "1999-03-09",
        "nationality": "Ecuador/Spain",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Diga",
@@ -16929,7 +17407,9 @@
        "age": 31,
        "dob": "1995-05-25",
        "nationality": "Argentina/Italy",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luis Perea",
@@ -16961,7 +17441,9 @@
        "age": 21,
        "dob": "2005-04-04",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Bruno Lourenço",
@@ -16981,7 +17463,9 @@
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-03-18",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Xande",
@@ -16990,14 +17474,18 @@
        "dob": "2001-04-24",
        "nationality": "Brazil",
        "height_cm": 170,
-       "shirt": "77"
+       "shirt": "77",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Antonio Marin",
        "shirt": "99",
        "position": "Left Winger",
        "age": 25,
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nemanja Motika",
@@ -17016,7 +17504,9 @@
        "shirt": "18",
        "position": "Left Winger",
        "age": 24,
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Dimitar Mitrovski",
@@ -17082,7 +17572,9 @@
        "shirt": "11",
        "position": "Centre-Forward",
        "age": 22,
-       "nationality": "Argentina/Croatia"
+       "nationality": "Argentina/Croatia",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -17096,7 +17588,9 @@
        "age": 23,
        "dob": "2003-03-10",
        "nationality": "Slovenia",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nejc Dermastija",
@@ -17104,7 +17598,9 @@
        "position": "Goalkeeper",
        "age": 22,
        "dob": "2004-02-20",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Daniil Churakov",
@@ -17112,7 +17608,9 @@
        "position": "Goalkeeper",
        "age": 18,
        "dob": "2008-04-14",
-       "nationality": "Russia"
+       "nationality": "Russia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Aleksa Paic",
@@ -17132,7 +17630,9 @@
        "age": 22,
        "dob": "2004-05-03",
        "nationality": "Slovenia",
-       "height_cm": 192
+       "height_cm": 192,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Bine Anzelj",
@@ -17141,7 +17641,9 @@
        "age": 20,
        "dob": "2006-10-09",
        "nationality": "Slovenia",
-       "height_cm": 192
+       "height_cm": 192,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "David Buvac",
@@ -17149,7 +17651,9 @@
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-04-06",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Borna Graonic",
@@ -17158,7 +17662,9 @@
        "age": 21,
        "dob": "2005-01-31",
        "nationality": "Croatia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Antonio Bosec",
@@ -17179,7 +17685,9 @@
        "age": 21,
        "dob": "2005-01-24",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mihael Zaper",
@@ -17201,8 +17709,9 @@
        "nationality": "Croatia",
        "height_cm": 187,
        "tm_id": 927847,
-       "foot": null,
-       "market_value_eur": 400000
+       "foot": "right",
+       "market_value_eur": 400000,
+       "foot_estimated": true
       },
       {
        "name": "Ognjen Gnjatic",
@@ -17223,7 +17732,9 @@
        "age": 27,
        "dob": "1999-02-17",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Dejan Kantuzer",
@@ -17232,7 +17743,9 @@
        "age": 23,
        "dob": "2003-06-02",
        "nationality": "Slovenia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Jasa Jelen",
@@ -17240,7 +17753,9 @@
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-04-15",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Aljaz Zabukovnik",
@@ -17248,7 +17763,9 @@
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-05-03",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tomas Puc",
@@ -17257,7 +17774,9 @@
        "age": 19,
        "dob": "2007-07-11",
        "nationality": "Slovenia",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Denis Mazreku",
@@ -17265,7 +17784,9 @@
        "position": "Attacking Midfield",
        "age": 18,
        "dob": "2007-11-29",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Josip Balic",
@@ -17273,7 +17794,9 @@
        "position": "Left Winger",
        "age": 22,
        "dob": "2004-03-10",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jasa Martincic",
@@ -17281,7 +17804,9 @@
        "position": "Left Winger",
        "age": 25,
        "dob": "2001-11-06",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Vid Chinoso Juvancic",
@@ -17290,7 +17815,9 @@
        "age": 18,
        "dob": "2008-04-16",
        "nationality": "Slovenia/The Gambia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Divine Igwe Ikenna",
@@ -17298,7 +17825,9 @@
        "position": "Right Winger",
        "age": 22,
        "dob": "2004-05-05",
-       "nationality": "Nigeria"
+       "nationality": "Nigeria",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Vanja Pelko",
@@ -17339,7 +17868,9 @@
        "age": 19,
        "dob": "2007-02-11",
        "nationality": "Slovenia",
-       "height_cm": 194
+       "height_cm": 194,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Aljaž Božič",
@@ -17347,7 +17878,9 @@
        "position": "Goalkeeper",
        "age": 22,
        "dob": "2004-04-06",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Amel Avdic",
@@ -17356,7 +17889,9 @@
        "age": 19,
        "dob": "2007-04-07",
        "nationality": "Bosnia-Herzegovina/Austria",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Sergej Lazarevic",
@@ -17364,7 +17899,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-03-03",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gal Pecjak",
@@ -17372,7 +17909,9 @@
        "position": "Centre-Back",
        "age": 21,
        "dob": "2005-04-18",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ilija Cutovic",
@@ -17380,7 +17919,9 @@
        "position": "Centre-Back",
        "age": 21,
        "dob": "2005-10-02",
-       "nationality": "Serbia"
+       "nationality": "Serbia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Mark Tomsic",
@@ -17388,7 +17929,9 @@
        "position": "Left-Back",
        "age": 20,
        "dob": "2006-01-28",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Ronaldo Sarifo Djalo",
@@ -17396,7 +17939,9 @@
        "position": "Left-Back",
        "age": 22,
        "dob": "2004-10-06",
-       "nationality": "Portugal"
+       "nationality": "Portugal",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Boris Bosnjovic",
@@ -17404,7 +17949,9 @@
        "position": "Right-Back",
        "age": 23,
        "dob": "2003-10-08",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matevz Kobal",
@@ -17412,7 +17959,9 @@
        "position": "Right-Back",
        "age": 21,
        "dob": "2005-03-08",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ziga Kolar",
@@ -17420,7 +17969,9 @@
        "position": "Defensive Midfield",
        "age": 24,
        "dob": "2002-10-25",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Marko Nikitovic",
@@ -17429,7 +17980,9 @@
        "age": 19,
        "dob": "2007-03-23",
        "nationality": "Serbia/Croatia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "David Vitamvas",
@@ -17437,7 +17990,9 @@
        "position": "Defensive Midfield",
        "age": 20,
        "dob": "2006-01-03",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lovre Katic",
@@ -17445,7 +18000,9 @@
        "position": "Central Midfield",
        "age": 23,
        "dob": "2003-09-09",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nasir Muhammed",
@@ -17453,7 +18010,9 @@
        "position": "Central Midfield",
        "age": 21,
        "dob": "2005-01-01",
-       "nationality": "Nigeria"
+       "nationality": "Nigeria",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Arijan Djelovci",
@@ -17461,7 +18020,9 @@
        "position": "Central Midfield",
        "age": 23,
        "dob": "2003-03-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Adamson Sharafa",
@@ -17470,7 +18031,9 @@
        "age": 23,
        "dob": "2003-06-05",
        "nationality": "Nigeria",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Ziga Pecjak",
@@ -17478,7 +18041,9 @@
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-02-21",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Peter Sever",
@@ -17486,7 +18051,9 @@
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Frano Mohorovicic",
@@ -17494,7 +18061,9 @@
        "position": "Left Winger",
        "age": 18,
        "dob": "2008-04-30",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Mark Seliskar",
@@ -17502,7 +18071,9 @@
        "position": "Left Winger",
        "age": 24,
        "dob": "2002-01-16",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jonathan Alukwu",
@@ -17511,7 +18082,9 @@
        "age": 23,
        "dob": "2003-03-15",
        "nationality": "Nigeria",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Inas Kukavica",
@@ -17519,7 +18092,9 @@
        "position": "Right Winger",
        "age": 18,
        "dob": "2007-12-21",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Filip Nikola Ostojic",
@@ -17527,7 +18102,9 @@
        "position": "Right Winger",
        "age": 24,
        "dob": "2002-07-06",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nura Salisu",
@@ -17535,7 +18112,9 @@
        "position": "Centre-Forward",
        "age": 20,
        "dob": "2006-10-29",
-       "nationality": "Nigeria/Slovenia"
+       "nationality": "Nigeria/Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Andrea Djuric",
@@ -17544,7 +18123,9 @@
        "age": 25,
        "dob": "2001-01-12",
        "nationality": "Italy/Serbia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "left",
+       "foot_estimated": true
       }
      ]
     },
@@ -17558,7 +18139,9 @@
        "age": 26,
        "dob": "2000-03-01",
        "nationality": "Slovenia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jasa Hribar",
@@ -17566,7 +18149,9 @@
        "position": "Goalkeeper",
        "age": 20,
        "dob": "2006-09-09",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Andraz Lipec",
@@ -17575,7 +18160,9 @@
        "age": 24,
        "dob": "2001-12-06",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Veron Salja",
@@ -17584,7 +18171,9 @@
        "age": 28,
        "dob": "1998-05-29",
        "nationality": "Kosovo/Slovenia",
-       "height_cm": 193
+       "height_cm": 193,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Gasper Vodeb",
@@ -17593,7 +18182,9 @@
        "age": 23,
        "dob": "2003-06-30",
        "nationality": "Slovenia",
-       "height_cm": 192
+       "height_cm": 192,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Miha Dobnikar",
@@ -17602,7 +18193,9 @@
        "age": 29,
        "dob": "1997-03-19",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matic Malnar",
@@ -17610,7 +18203,9 @@
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-07-24",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tadej Petancic",
@@ -17619,7 +18214,9 @@
        "age": 22,
        "dob": "2004-01-08",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "David Stojanoski",
@@ -17628,7 +18225,9 @@
        "age": 19,
        "dob": "2007-03-20",
        "nationality": "North Macedonia/Slovenia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Lovro-Luka Ukalovic",
@@ -17637,7 +18236,9 @@
        "age": 21,
        "dob": "2005-04-16",
        "nationality": "Croatia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gideon Owusu",
@@ -17645,14 +18246,18 @@
        "position": "Defensive Midfield",
        "age": 21,
        "dob": "2005-09-30",
-       "nationality": "Ghana"
+       "nationality": "Ghana",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ante Matic",
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-01-08",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nik Kapun",
@@ -17661,7 +18266,9 @@
        "age": 32,
        "dob": "1994-01-09",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Val Sterle",
@@ -17669,7 +18276,9 @@
        "position": "Central Midfield",
        "age": 18,
        "dob": "2008-06-17",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Sven Opacic",
@@ -17678,7 +18287,9 @@
        "age": 23,
        "dob": "2003-05-20",
        "nationality": "Croatia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Dominik Iskric",
@@ -17687,7 +18298,9 @@
        "age": 21,
        "dob": "2004-12-30",
        "nationality": "Croatia",
-       "height_cm": 176
+       "height_cm": 176,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Andre Zurkic",
@@ -17695,7 +18308,9 @@
        "age": 18,
        "dob": "2007-11-28",
        "nationality": "Serbia/Australia",
-       "height_cm": 172
+       "height_cm": 172,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Leon Bicanic",
@@ -17704,7 +18319,9 @@
        "age": 22,
        "dob": "2004-05-20",
        "nationality": "Croatia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tai Meze",
@@ -17712,7 +18329,9 @@
        "position": "Left Winger",
        "age": 20,
        "dob": "2006-06-14",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mark Gliha",
@@ -17720,7 +18339,9 @@
        "position": "Right Winger",
        "age": 22,
        "dob": "2004-06-17",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Halifa Kujabi",
@@ -17729,7 +18350,9 @@
        "age": 21,
        "dob": "2005-01-31",
        "nationality": "The Gambia",
-       "height_cm": 177
+       "height_cm": 177,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gasper Cerne",
@@ -17737,7 +18360,9 @@
        "position": "Centre-Forward",
        "age": 22,
        "dob": "2004-02-24",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kristian Dakic",
@@ -17746,7 +18371,9 @@
        "age": 25,
        "dob": "2001-11-01",
        "nationality": "Slovenia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tilen Kovacic",
@@ -17755,7 +18382,9 @@
        "age": 21,
        "dob": "2005-03-11",
        "nationality": "Slovenia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Marko Donchovski",
@@ -17763,7 +18392,9 @@
        "position": "Centre-Forward",
        "age": 22,
        "dob": "2004-04-03",
-       "nationality": "North Macedonia"
+       "nationality": "North Macedonia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tilen Tomac",
@@ -17771,7 +18402,9 @@
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-02-10",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -17785,7 +18418,9 @@
        "age": 24,
        "dob": "2002-03-16",
        "nationality": "Croatia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matej Mavric",
@@ -17794,7 +18429,9 @@
        "age": 32,
        "dob": "1994-01-23",
        "nationality": "Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Arian Moslavac",
@@ -17805,7 +18442,8 @@
        "nationality": "Croatia",
        "tm_id": 1123875,
        "height_cm": null,
-       "foot": null
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Miljan Pantic",
@@ -17814,7 +18452,9 @@
        "age": 19,
        "dob": "2007-06-12",
        "nationality": "Bosnia-Herzegovina",
-       "height_cm": 196
+       "height_cm": 196,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mark Gomizelj",
@@ -17823,7 +18463,9 @@
        "age": 23,
        "dob": "2003-03-15",
        "nationality": "Slovenia",
-       "height_cm": 174
+       "height_cm": 174,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ivan Bikic",
@@ -17831,7 +18473,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-02-12",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nejc Prosen",
@@ -17839,7 +18483,9 @@
        "position": "Left-Back",
        "age": 19,
        "dob": "2007-05-28",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tilen Vendramin",
@@ -17847,7 +18493,9 @@
        "position": "Right-Back",
        "age": 22,
        "dob": "2004-03-17",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Vasilije Perkovic",
@@ -17855,7 +18503,9 @@
        "position": "Right-Back",
        "age": 24,
        "dob": "2002-08-21",
-       "nationality": "Germany/Bosnia-Herzegovina"
+       "nationality": "Germany/Bosnia-Herzegovina",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Haris Dedic",
@@ -17864,7 +18514,9 @@
        "age": 29,
        "dob": "1997-07-06",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Leo Peranovic",
@@ -17872,7 +18524,9 @@
        "position": "Defensive Midfield",
        "age": 20,
        "dob": "2006-08-22",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Abel Marc",
@@ -17881,7 +18535,9 @@
        "age": 25,
        "dob": "2001-04-19",
        "nationality": "Slovenia",
-       "height_cm": 172
+       "height_cm": 172,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jaka Kolenc",
@@ -17890,7 +18546,9 @@
        "age": 32,
        "dob": "1994-02-23",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Mestrovic",
@@ -17898,7 +18556,9 @@
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-07-25",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tais Sabotic",
@@ -17906,7 +18566,9 @@
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-09-04",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jan Franc Kopatin",
@@ -17914,7 +18576,9 @@
        "position": "Left Winger",
        "age": 22,
        "dob": "2004-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mile Parmac",
@@ -17922,7 +18586,9 @@
        "position": "Right Winger",
        "age": 20,
        "dob": "2006-05-20",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Betim Cadraki",
@@ -17930,7 +18596,9 @@
        "position": "Right Winger",
        "age": 16,
        "dob": "2010-03-10",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mark Gulic",
@@ -17939,7 +18607,9 @@
        "age": 29,
        "dob": "1997-08-15",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Taj Rozic Suligoj",
@@ -17947,7 +18617,9 @@
        "position": "Centre-Forward",
        "age": 20,
        "dob": "2006-10-27",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Miha Kobal",
@@ -17955,7 +18627,9 @@
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-11-04",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -17968,7 +18642,9 @@
        "position": "Goalkeeper",
        "age": 20,
        "dob": "2006-02-19",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Alen Jurca",
@@ -17977,7 +18653,9 @@
        "age": 25,
        "dob": "2001-01-15",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matija Burin",
@@ -17986,7 +18664,9 @@
        "age": 25,
        "dob": "2001-03-25",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jan Kalsek",
@@ -17995,7 +18675,9 @@
        "age": 21,
        "dob": "2005-02-02",
        "nationality": "Slovenia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Denis Cerovec",
@@ -18003,7 +18685,9 @@
        "position": "Centre-Back",
        "age": 35,
        "dob": "1991-04-24",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Dino Vadnov",
@@ -18011,7 +18695,9 @@
        "position": "Centre-Back",
        "age": 24,
        "dob": "2002-08-19",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Adel Avdic",
@@ -18019,7 +18705,9 @@
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ognjen Obradov",
@@ -18028,7 +18716,9 @@
        "age": 24,
        "dob": "2001-12-13",
        "nationality": "Serbia/Bosnia-Herzegovina",
-       "height_cm": 176
+       "height_cm": 176,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Enej Sosic",
@@ -18036,7 +18726,9 @@
        "position": "Left-Back",
        "age": 22,
        "dob": "2004-03-25",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Marko Cvijetic",
@@ -18044,7 +18736,9 @@
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-05-08",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Bradaric",
@@ -18053,7 +18747,9 @@
        "age": 23,
        "dob": "2003-09-08",
        "nationality": "Croatia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Anej Kujovic",
@@ -18061,7 +18757,9 @@
        "position": "Defensive Midfield",
        "age": 23,
        "dob": "2003-06-09",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Denis Cukici",
@@ -18070,7 +18768,9 @@
        "age": 23,
        "dob": "2003-02-10",
        "nationality": "Finland/Kosovo",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Enej Jurinčič",
@@ -18078,7 +18778,9 @@
        "position": "Defensive Midfield",
        "age": 19,
        "dob": "2007-02-15",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Franko Cordas",
@@ -18087,7 +18789,9 @@
        "age": 22,
        "dob": "2003-11-26",
        "nationality": "Croatia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jan Strcaj",
@@ -18095,7 +18799,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-08-26",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Nik Fortuna",
@@ -18103,7 +18809,9 @@
        "position": "Attacking Midfield",
        "age": 23,
        "dob": "2002-11-23",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mukadas Abdul Samed",
@@ -18112,7 +18820,9 @@
        "age": 20,
        "dob": "2005-11-30",
        "nationality": "Ghana",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Phelipe",
@@ -18120,7 +18830,9 @@
        "position": "Left Winger",
        "age": 22,
        "dob": "2004-05-20",
-       "nationality": "Brazil/Italy"
+       "nationality": "Brazil/Italy",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tadej Zonta",
@@ -18128,7 +18840,9 @@
        "position": "Right Winger",
        "age": 27,
        "dob": "1999-10-05",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Riad Silajdzic",
@@ -18137,7 +18851,9 @@
        "age": 21,
        "dob": "2005-02-13",
        "nationality": "Slovenia/Bosnia-Herzegovina",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matija Grmek",
@@ -18145,7 +18861,9 @@
        "position": "Right Winger",
        "age": 19,
        "dob": "2007-06-12",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Andreas Sculac",
@@ -18153,7 +18871,9 @@
        "position": "Centre-Forward",
        "age": 20,
        "dob": "2005-12-09",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Adis Emruli",
@@ -18162,7 +18882,9 @@
        "age": 26,
        "dob": "2000-07-16",
        "nationality": "Slovenia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Felipe Gabriel",
@@ -18170,7 +18892,9 @@
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Brazil"
+       "nationality": "Brazil",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -18184,7 +18908,9 @@
        "age": 26,
        "dob": "2000-10-11",
        "nationality": "Croatia",
-       "height_cm": 193
+       "height_cm": 193,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Kjire Novakov",
@@ -18193,7 +18919,9 @@
        "age": 23,
        "dob": "2003-08-28",
        "nationality": "North Macedonia",
-       "height_cm": 195
+       "height_cm": 195,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mark Stankovic",
@@ -18201,7 +18929,9 @@
        "position": "Centre-Back",
        "age": 23,
        "dob": "2003-10-17",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Niko Cindric",
@@ -18209,7 +18939,9 @@
        "position": "Centre-Back",
        "age": 21,
        "dob": "2005-07-12",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gasper Kukavica",
@@ -18217,7 +18949,9 @@
        "position": "Centre-Back",
        "age": 25,
        "dob": "2001-05-19",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Denis Solakovic",
@@ -18225,7 +18959,9 @@
        "position": "Centre-Back",
        "age": 22,
        "dob": "2004-05-23",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Stefan Kladar",
@@ -18234,7 +18970,9 @@
        "age": 32,
        "dob": "1994-02-22",
        "nationality": "Bosnia-Herzegovina/Croatia",
-       "height_cm": 202
+       "height_cm": 202,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Emir Velic",
@@ -18243,7 +18981,9 @@
        "age": 27,
        "dob": "1999-05-26",
        "nationality": "Slovenia/Bosnia-Herzegovina",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "David Stanojevic",
@@ -18251,7 +18991,9 @@
        "position": "Right-Back",
        "age": 22,
        "dob": "2004-05-07",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Din Cejvanovic",
@@ -18260,7 +19002,9 @@
        "age": 22,
        "dob": "2004-05-05",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Milan Bikhan",
@@ -18269,7 +19013,9 @@
        "age": 23,
        "dob": "2003-07-01",
        "nationality": "Netherlands",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Armin Talic",
@@ -18277,7 +19023,9 @@
        "position": "Defensive Midfield",
        "age": 26,
        "dob": "2000-04-14",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Alen Ugljanin",
@@ -18285,7 +19033,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-09-23",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Edvin Krupic",
@@ -18294,7 +19044,9 @@
        "age": 22,
        "dob": "2004-03-03",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Maksim Vid Beljkas",
@@ -18302,7 +19054,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-06-28",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Timon Railic",
@@ -18310,7 +19064,9 @@
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-06-13",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Gabriele Giacchino",
@@ -18319,7 +19075,9 @@
        "age": 23,
        "dob": "2003-09-27",
        "nationality": "Italy",
-       "height_cm": 170
+       "height_cm": 170,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Borna Panic",
@@ -18338,7 +19096,9 @@
        "position": "Attacking Midfield",
        "age": 23,
        "dob": "2003-01-01",
-       "nationality": "Netherlands"
+       "nationality": "Netherlands",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matija Grek",
@@ -18347,7 +19107,9 @@
        "age": 25,
        "dob": "2001-08-23",
        "nationality": "Serbia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Roko Mavra",
@@ -18355,7 +19117,9 @@
        "position": "Right Winger",
        "age": 20,
        "dob": "2006-09-08",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Ivan Nikcevic",
@@ -18364,7 +19128,9 @@
        "age": 22,
        "dob": "2004-10-19",
        "nationality": "Montenegro/Serbia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Deen Adrovic",
@@ -18373,7 +19139,9 @@
        "age": 22,
        "dob": "2004-08-11",
        "nationality": "Slovenia",
-       "height_cm": 193
+       "height_cm": 193,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matej Zec",
@@ -18381,7 +19149,9 @@
        "position": "Centre-Forward",
        "age": 21,
        "dob": "2005-01-27",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -18394,7 +19164,9 @@
        "position": "Goalkeeper",
        "age": 28,
        "dob": "1998-02-22",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Grega Kusar",
@@ -18403,7 +19175,9 @@
        "age": 23,
        "dob": "2003-07-06",
        "nationality": "Slovenia",
-       "height_cm": 204
+       "height_cm": 204,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Privosnik",
@@ -18411,7 +19185,9 @@
        "position": "Centre-Back",
        "age": 23,
        "dob": "2003-03-26",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Benjamin Brglez",
@@ -18419,14 +19195,18 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-08-12",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Blaz Kolar",
        "position": "Centre-Back",
        "age": 24,
        "dob": "2001-12-14",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Enej Herman",
@@ -18434,7 +19214,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-01-31",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Aljaz Vodopivec",
@@ -18442,7 +19224,9 @@
        "position": "Left-Back",
        "age": 20,
        "dob": "2006-08-08",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Denis Vezjak",
@@ -18451,7 +19235,9 @@
        "age": 31,
        "dob": "1995-09-26",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tjas Cresnar",
@@ -18460,7 +19246,9 @@
        "age": 20,
        "dob": "2006-05-24",
        "nationality": "Slovenia",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Lovro Turinek",
@@ -18468,7 +19256,9 @@
        "position": "Right-Back",
        "age": 21,
        "dob": "2005-02-14",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tevz Debelak",
@@ -18477,7 +19267,9 @@
        "age": 24,
        "dob": "2002-09-23",
        "nationality": "Slovenia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nik Rauter",
@@ -18485,7 +19277,9 @@
        "position": "Right-Back",
        "age": 24,
        "dob": "2002-03-08",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jakob Tic",
@@ -18493,7 +19287,9 @@
        "position": "Right-Back",
        "age": 27,
        "dob": "1998-11-30",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Alen Crnolic",
@@ -18501,7 +19297,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-02-28",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gasper Recnik",
@@ -18509,7 +19307,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tian Pecic",
@@ -18517,7 +19317,9 @@
        "position": "Central Midfield",
        "age": 17,
        "dob": "2008-12-08",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Zan Luka Zuzek",
@@ -18525,7 +19327,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-02-21",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Maj Skoflek",
@@ -18533,7 +19337,9 @@
        "position": "Central Midfield",
        "age": 22,
        "dob": "2004-02-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Andraz Kolar",
@@ -18541,7 +19347,9 @@
        "position": "Central Midfield",
        "age": 29,
        "dob": "1997-01-17",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matic Kopac",
@@ -18550,7 +19358,9 @@
        "age": 27,
        "dob": "1998-11-23",
        "nationality": "Slovenia",
-       "height_cm": 167
+       "height_cm": 167,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Niko Zamuda",
@@ -18559,7 +19369,9 @@
        "age": 21,
        "dob": "2005-07-22",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Blaz Rozmaric",
@@ -18568,7 +19380,9 @@
        "age": 29,
        "dob": "1997-07-24",
        "nationality": "Slovenia",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mateo Koprivc",
@@ -18577,7 +19391,9 @@
        "age": 22,
        "dob": "2003-12-17",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Pucnik",
@@ -18586,7 +19402,9 @@
        "age": 21,
        "dob": "2005-03-09",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Uros Mrdakovic",
@@ -18595,7 +19413,9 @@
        "age": 22,
        "dob": "2004-09-11",
        "nationality": "Serbia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nikola Kljevkovic",
@@ -18603,7 +19423,9 @@
        "position": "Centre-Forward",
        "age": 18,
        "dob": "2008-02-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -18617,7 +19439,9 @@
        "age": 36,
        "dob": "1990-06-18",
        "nationality": "Slovenia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tiijan Zorko",
@@ -18625,7 +19449,9 @@
        "position": "Goalkeeper",
        "age": 19,
        "dob": "2007-03-07",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gabriel Bacan",
@@ -18633,7 +19459,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-06-30",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tomaz Zakrajsek",
@@ -18642,7 +19470,9 @@
        "age": 26,
        "dob": "2000-03-24",
        "nationality": "Slovenia",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Aleksa Djurasovic",
@@ -18663,7 +19493,9 @@
        "age": 22,
        "dob": "2003-11-20",
        "nationality": "Croatia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Archange Rothen Bambi",
@@ -18671,7 +19503,9 @@
        "position": "Left-Back",
        "age": 21,
        "dob": "2005-10-29",
-       "nationality": "France"
+       "nationality": "France",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Blaz Stopar",
@@ -18680,7 +19514,9 @@
        "age": 24,
        "dob": "2002-09-27",
        "nationality": "Slovenia",
-       "height_cm": 170
+       "height_cm": 170,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Primoz Vidmar",
@@ -18689,7 +19525,9 @@
        "age": 26,
        "dob": "2000-03-06",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lan Milanovic",
@@ -18698,7 +19536,9 @@
        "age": 21,
        "dob": "2005-02-13",
        "nationality": "Slovenia",
-       "height_cm": 192
+       "height_cm": 192,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Aljaz Ajdisek",
@@ -18706,7 +19546,9 @@
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-05-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Tian Mitic",
@@ -18714,7 +19556,9 @@
        "position": "Defensive Midfield",
        "age": 20,
        "dob": "2006-06-10",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nik Stanic",
@@ -18722,7 +19566,9 @@
        "position": "Central Midfield",
        "age": 22,
        "dob": "2004-09-19",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jakob Zbasnik",
@@ -18730,7 +19576,9 @@
        "position": "Central Midfield",
        "age": 22,
        "dob": "2004-07-14",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Simun Sintic",
@@ -18738,7 +19586,9 @@
        "position": "Central Midfield",
        "age": 21,
        "dob": "2005-07-19",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nik Pirc",
@@ -18747,7 +19597,9 @@
        "age": 20,
        "dob": "2006-08-29",
        "nationality": "Slovenia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Matic Kustrin",
@@ -18756,7 +19608,9 @@
        "age": 24,
        "dob": "2002-03-29",
        "nationality": "Slovenia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jure Judez",
@@ -18765,7 +19619,9 @@
        "age": 20,
        "dob": "2006-04-24",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Fran Stunja",
@@ -18773,7 +19629,9 @@
        "position": "Centre-Forward",
        "age": 20,
        "dob": "2006-05-16",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Petar Srsen",
@@ -18781,7 +19639,9 @@
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-07-31",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ismir Nadarevic",
@@ -18790,7 +19650,9 @@
        "age": 23,
        "dob": "2003-08-29",
        "nationality": "Bosnia-Herzegovina",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       }
      ]
     },
@@ -18804,7 +19666,9 @@
        "age": 20,
        "dob": "2006-05-18",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kristjan Irmancnik",
@@ -18812,7 +19676,9 @@
        "age": 23,
        "dob": "2003-11-01",
        "nationality": "Slovenia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Denis Klinar",
@@ -18821,7 +19687,9 @@
        "age": 34,
        "dob": "1992-02-21",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Andraz Paradiz",
@@ -18830,7 +19698,9 @@
        "age": 27,
        "dob": "1999-02-06",
        "nationality": "Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Leander Mark Zelenko",
@@ -18838,7 +19708,9 @@
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-10-23",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Martin Hovnik",
@@ -18847,7 +19719,9 @@
        "age": 22,
        "dob": "2004-03-12",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Lovro Potocnik",
@@ -18855,7 +19729,9 @@
        "position": "Left-Back",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Matevz Turkus",
@@ -18864,7 +19740,9 @@
        "age": 27,
        "dob": "1999-05-15",
        "nationality": "Slovenia",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Jaka Vidmar",
@@ -18872,14 +19750,18 @@
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-07-12",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gasper Pumpas",
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ziga Skrube",
@@ -18887,7 +19769,9 @@
        "position": "Defensive Midfield",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Leon Pliso",
@@ -18895,7 +19779,9 @@
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-02-07",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jaka Krevh",
@@ -18903,14 +19789,18 @@
        "position": "Central Midfield",
        "age": 21,
        "dob": "2005-02-16",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Amas Omic",
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-11-08",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Anej Rizmal",
@@ -18918,21 +19808,27 @@
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-07-09",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Noel Stajnko Knez",
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Samuel Bravo",
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Chile"
+       "nationality": "Chile",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tjas Svitlica",
@@ -18940,7 +19836,9 @@
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-03-21",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Damjan Vukolic",
@@ -18949,7 +19847,9 @@
        "age": 21,
        "dob": "2005-02-04",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Ardit Vezaj",
@@ -18958,14 +19858,18 @@
        "age": 25,
        "dob": "2001-04-02",
        "nationality": "Slovenia",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Mlakar",
        "position": "Right Winger",
        "age": 21,
        "dob": "2005-05-24",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Andraz Turinek",
@@ -18973,7 +19877,9 @@
        "position": "Right Winger",
        "age": 20,
        "dob": "2006-04-30",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -18986,7 +19892,9 @@
        "position": "Goalkeeper",
        "age": 16,
        "dob": "2010-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gasper Petek",
@@ -18995,7 +19903,9 @@
        "age": 24,
        "dob": "2002-07-03",
        "nationality": "Slovenia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lukas Hempt",
@@ -19004,7 +19914,9 @@
        "age": 21,
        "dob": "2005-09-10",
        "nationality": "Slovenia",
-       "height_cm": 193
+       "height_cm": 193,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Gabriel Pevc Carrera",
@@ -19012,7 +19924,9 @@
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-05-23",
-       "nationality": "Bosnia-Herzegovina"
+       "nationality": "Bosnia-Herzegovina",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jan Nikolic",
@@ -19020,7 +19934,9 @@
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-02-23",
-       "nationality": "Slovenia/Bosnia-Herzegovina"
+       "nationality": "Slovenia/Bosnia-Herzegovina",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Alen Korosec",
@@ -19028,14 +19944,18 @@
        "position": "Left-Back",
        "age": 21,
        "dob": "2005-11-17",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Blaz Komic",
        "position": "Left-Back",
        "age": 19,
        "dob": "2007-03-13",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lan Hribar",
@@ -19043,7 +19963,9 @@
        "position": "Right-Back",
        "age": 21,
        "dob": "2005-07-24",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ajdin Dergic",
@@ -19051,21 +19973,27 @@
        "position": "Right-Back",
        "age": 24,
        "dob": "2002-07-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Ales Stornik",
        "position": "Right-Back",
        "age": 24,
        "dob": "2002-10-23",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Modou Jammeh",
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "The Gambia"
+       "nationality": "The Gambia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ahmed Teaima",
@@ -19074,7 +20002,9 @@
        "age": 23,
        "dob": "2003-05-10",
        "nationality": "Egypt/Greece",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Noah Pušić",
@@ -19083,7 +20013,9 @@
        "age": 22,
        "dob": "2004-09-20",
        "nationality": "Netherlands/Croatia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ladji Mori Kane",
@@ -19092,7 +20024,9 @@
        "age": 21,
        "dob": "2005-11-05",
        "nationality": "Italy/Cote d'Ivoire",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mark Antonij Intihar",
@@ -19100,7 +20034,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-01-12",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Cabral",
@@ -19109,7 +20045,9 @@
        "age": 24,
        "dob": "2002-10-14",
        "nationality": "Portugal",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Črt Rotar",
@@ -19118,7 +20056,9 @@
        "age": 22,
        "dob": "2004-01-14",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kobi Bajc",
@@ -19126,7 +20066,9 @@
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-06-07",
-       "nationality": "Slovenia/Ghana"
+       "nationality": "Slovenia/Ghana",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nik Belovic",
@@ -19135,7 +20077,9 @@
        "age": 18,
        "dob": "2008-07-09",
        "nationality": "Slovenia",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Niko Grlic",
@@ -19144,7 +20088,9 @@
        "age": 20,
        "dob": "2006-08-17",
        "nationality": "Slovenia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Denis Videnovic",
@@ -19152,14 +20098,18 @@
        "position": "Left Winger",
        "age": 18,
        "dob": "2008-05-15",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Alen Muminovic",
        "position": "Left Winger",
        "age": 19,
        "dob": "2007-09-04",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Nick Perc",
@@ -19168,7 +20118,9 @@
        "age": 23,
        "dob": "2003-05-27",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tine Cuk",
@@ -19177,7 +20129,9 @@
        "age": 21,
        "dob": "2005-02-15",
        "nationality": "Slovenia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nik Podlesnik",
@@ -19186,7 +20140,9 @@
        "age": 19,
        "dob": "2007-03-15",
        "nationality": "Slovenia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Darian Yana",
@@ -19195,7 +20151,9 @@
        "age": 23,
        "dob": "2003-10-04",
        "nationality": "Switzerland",
-       "height_cm": 192
+       "height_cm": 192,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ali Shawky",
@@ -19203,7 +20161,9 @@
        "position": "Centre-Forward",
        "age": 23,
        "dob": "2003-07-17",
-       "nationality": "Egypt"
+       "nationality": "Egypt",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Lukas Dikic",
@@ -19212,7 +20172,9 @@
        "age": 18,
        "dob": "2008-05-18",
        "nationality": "Canada/Croatia",
-       "height_cm": 195
+       "height_cm": 195,
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -19226,7 +20188,9 @@
        "age": 22,
        "dob": "2004-07-23",
        "nationality": "Italy/Slovenia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Urban Trobec",
@@ -19235,7 +20199,9 @@
        "age": 21,
        "dob": "2005-02-01",
        "nationality": "Slovenia",
-       "height_cm": 197
+       "height_cm": 197,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Anel Zulić",
@@ -19256,7 +20222,9 @@
        "age": 27,
        "dob": "1999-01-02",
        "nationality": "Croatia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Rok Ljutic",
@@ -19265,7 +20233,9 @@
        "age": 23,
        "dob": "2003-07-20",
        "nationality": "Slovenia",
-       "height_cm": 195
+       "height_cm": 195,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gaber Dobrovoljc",
@@ -19274,7 +20244,9 @@
        "age": 33,
        "dob": "1993-01-27",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Luka Tomsic",
@@ -19283,7 +20255,9 @@
        "age": 19,
        "dob": "2007-03-23",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matevz Medic Slacek",
@@ -19292,7 +20266,9 @@
        "age": 22,
        "dob": "2004-08-27",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Antonio Majcenic",
@@ -19301,7 +20277,9 @@
        "age": 27,
        "dob": "1999-01-22",
        "nationality": "Croatia",
-       "height_cm": 177
+       "height_cm": 177,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Jan Krajnc",
@@ -19310,7 +20288,9 @@
        "age": 20,
        "dob": "2006-06-14",
        "nationality": "Slovenia",
-       "height_cm": 176
+       "height_cm": 176,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Stanislav Petkov",
@@ -19319,7 +20299,9 @@
        "age": 22,
        "dob": "2004-06-10",
        "nationality": "Bulgaria",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Josip Marinic",
@@ -19328,7 +20310,9 @@
        "age": 26,
        "dob": "2000-10-29",
        "nationality": "Croatia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tevz Pokorn",
@@ -19337,7 +20321,9 @@
        "age": 26,
        "dob": "2000-06-16",
        "nationality": "Slovenia",
-       "height_cm": 170
+       "height_cm": 170,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tomislav Ladan",
@@ -19346,7 +20332,9 @@
        "age": 20,
        "dob": "2006-04-26",
        "nationality": "Croatia",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tarik Candic",
@@ -19355,7 +20343,9 @@
        "age": 24,
        "dob": "2002-07-26",
        "nationality": "Bosnia-Herzegovina/Slovenia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Zavbi",
@@ -19364,7 +20354,9 @@
        "age": 20,
        "dob": "2006-01-20",
        "nationality": "Slovenia",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Josip Spoljaric",
@@ -19385,7 +20377,9 @@
        "age": 23,
        "dob": "2003-01-09",
        "nationality": "Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Genesis Odiya Ocen",
@@ -19394,7 +20388,9 @@
        "age": 19,
        "dob": "2007-10-05",
        "nationality": "Uganda",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jaros Cadez",
@@ -19403,7 +20399,9 @@
        "age": 23,
        "dob": "2003-02-22",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Ben Osman",
@@ -19411,7 +20409,9 @@
        "position": "Right Winger",
        "age": 20,
        "dob": "2006-01-20",
-       "nationality": "Ghana"
+       "nationality": "Ghana",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Stanislav Krapukhin",
@@ -19432,7 +20432,9 @@
        "age": 20,
        "dob": "2006-04-27",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -19446,7 +20448,9 @@
        "age": 25,
        "dob": "2001-07-03",
        "nationality": "Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Vid Sumenjak",
@@ -19454,7 +20458,9 @@
        "position": "Goalkeeper",
        "age": 21,
        "dob": "2005-02-26",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Patrik Legen",
@@ -19462,7 +20468,9 @@
        "position": "Goalkeeper",
        "age": 20,
        "dob": "2006-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Hunjet",
@@ -19470,7 +20478,9 @@
        "position": "Centre-Back",
        "age": 21,
        "dob": "2005-07-02",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Alan Kaucic",
@@ -19479,7 +20489,9 @@
        "age": 25,
        "dob": "2001-08-11",
        "nationality": "Slovenia",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tian Rantasa",
@@ -19487,7 +20499,9 @@
        "position": "Centre-Back",
        "age": 21,
        "dob": "2004-12-25",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nejc Vöröš",
@@ -19495,7 +20509,9 @@
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-05-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tilen Scernjavic",
@@ -19504,7 +20520,9 @@
        "age": 23,
        "dob": "2003-09-20",
        "nationality": "Slovenia",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Niko Graj",
@@ -19513,7 +20531,9 @@
        "age": 21,
        "dob": "2005-08-16",
        "nationality": "Slovenia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Marin Rantasa",
@@ -19521,7 +20541,9 @@
        "position": "Right-Back",
        "age": 24,
        "dob": "2002-03-22",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mihailo Zobenica",
@@ -19529,7 +20551,9 @@
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-09-29",
-       "nationality": "Croatia/Canada"
+       "nationality": "Croatia/Canada",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Luka Socic",
@@ -19537,7 +20561,9 @@
        "position": "Defensive Midfield",
        "age": 26,
        "dob": "2000-10-12",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Dominik Drk",
@@ -19545,7 +20571,9 @@
        "position": "Defensive Midfield",
        "age": 26,
        "dob": "2000-08-22",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jure Borsic",
@@ -19553,14 +20581,18 @@
        "position": "Central Midfield",
        "age": 18,
        "dob": "2007-12-06",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Anej Mihajlovic",
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Aljaz Antolin",
@@ -19569,7 +20601,9 @@
        "age": 24,
        "dob": "2002-08-02",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nejc Mocnik",
@@ -19578,7 +20612,9 @@
        "age": 23,
        "dob": "2003-03-16",
        "nationality": "Slovenia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Anej Jelovica",
@@ -19586,7 +20622,9 @@
        "position": "Left Winger",
        "age": 21,
        "dob": "2005-03-16",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Vid Stefanec",
@@ -19594,7 +20632,9 @@
        "position": "Left Winger",
        "age": 21,
        "dob": "2005-07-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Samod Adeola Akinremi",
@@ -19602,7 +20642,9 @@
        "position": "Right Winger",
        "age": 20,
        "dob": "2006-05-10",
-       "nationality": "Nigeria"
+       "nationality": "Nigeria",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Lukas Ceh",
@@ -19611,7 +20653,9 @@
        "age": 19,
        "dob": "2007-06-07",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Klemen Mlakar",
@@ -19619,7 +20663,9 @@
        "position": "Centre-Forward",
        "age": 22,
        "dob": "2004-02-20",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Golden Okocha Gibson",
@@ -19628,7 +20674,9 @@
        "age": 24,
        "dob": "2001-12-12",
        "nationality": "Nigeria",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -19642,7 +20690,9 @@
        "age": 32,
        "dob": "1994-09-13",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Timon Popelar",
@@ -19650,14 +20700,18 @@
        "position": "Goalkeeper",
        "age": 23,
        "dob": "2003-10-06",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "David Brkljac",
        "position": "Centre-Back",
        "age": 19,
        "dob": "2007-04-12",
-       "nationality": "Bosnia-Herzegovina"
+       "nationality": "Bosnia-Herzegovina",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Stefan Radosavljevic",
@@ -19665,7 +20719,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-10-12",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Marin Magdic",
@@ -19673,7 +20729,9 @@
        "position": "Centre-Back",
        "age": 27,
        "dob": "1999-04-13",
-       "nationality": "Croatia/Bosnia-Herzegovina"
+       "nationality": "Croatia/Bosnia-Herzegovina",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nace Cencic",
@@ -19681,7 +20739,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-05-06",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tin Kupresak",
@@ -19690,7 +20750,9 @@
        "age": 23,
        "dob": "2003-07-26",
        "nationality": "Croatia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lan Jerak",
@@ -19699,7 +20761,9 @@
        "age": 22,
        "dob": "2003-12-04",
        "nationality": "Slovenia",
-       "height_cm": 174
+       "height_cm": 174,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tilen Klemencic",
@@ -19708,7 +20772,9 @@
        "age": 31,
        "dob": "1995-08-21",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Anej Doric",
@@ -19716,7 +20782,9 @@
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-02-02",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jakub Supuk",
@@ -19724,7 +20792,9 @@
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Edvin Lukacevic",
@@ -19732,7 +20802,9 @@
        "position": "Central Midfield",
        "age": 21,
        "dob": "2005-07-12",
-       "nationality": "Bosnia-Herzegovina"
+       "nationality": "Bosnia-Herzegovina",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Zan Kovacevic",
@@ -19740,14 +20812,18 @@
        "position": "Defensive Midfield",
        "age": 20,
        "dob": "2006-01-30",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jakup Supuk",
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-01-18",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Liam Strnad",
@@ -19755,7 +20831,9 @@
        "position": "Defensive Midfield",
        "age": 20,
        "dob": "2006-04-04",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tim Istenic",
@@ -19763,7 +20841,9 @@
        "position": "Defensive Midfield",
        "age": 19,
        "dob": "2007-05-29",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Dovzan Karahodzic",
@@ -19772,7 +20852,9 @@
        "age": 20,
        "dob": "2006-04-19",
        "nationality": "Slovenia",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Zan Zabkar",
@@ -19781,7 +20863,9 @@
        "age": 21,
        "dob": "2005-03-30",
        "nationality": "Slovenia",
-       "height_cm": 171
+       "height_cm": 171,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gregor Medle",
@@ -19790,7 +20874,9 @@
        "age": 22,
        "dob": "2004-06-28",
        "nationality": "Slovenia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nermin Hodzic",
@@ -19799,7 +20885,9 @@
        "age": 32,
        "dob": "1994-07-13",
        "nationality": "Bosnia-Herzegovina",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lucas Macak",
@@ -19808,7 +20896,9 @@
        "age": 21,
        "dob": "2005-01-26",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Blaz Jemec",
@@ -19817,7 +20907,9 @@
        "age": 19,
        "dob": "2007-05-06",
        "nationality": "Slovenia",
-       "height_cm": 173
+       "height_cm": 173,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Niki Radovic",
@@ -19826,7 +20918,9 @@
        "age": 22,
        "dob": "2004-04-11",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Bor Bergant",
@@ -19834,7 +20928,9 @@
        "position": "Left Winger",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tihomir Maksimovic",
@@ -19842,7 +20938,9 @@
        "position": "Right Winger",
        "age": 22,
        "dob": "2004-03-24",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Anej Lorbek",
@@ -19851,7 +20949,9 @@
        "age": 20,
        "dob": "2006-08-17",
        "nationality": "Slovenia",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Bujazid Hegic",
@@ -19860,7 +20960,9 @@
        "age": 22,
        "dob": "2004-03-25",
        "nationality": "Netherlands/Bosnia-Herzegovina",
-       "height_cm": 195
+       "height_cm": 195,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Zvonimir Plavcic",
@@ -19869,7 +20971,9 @@
        "age": 22,
        "dob": "2004-09-01",
        "nationality": "Bosnia-Herzegovina",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matej Poplatnik",
@@ -19894,7 +20998,9 @@
        "position": "Goalkeeper",
        "age": 18,
        "dob": "2008-01-12",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Borna Bosnjak",
@@ -19903,7 +21009,9 @@
        "age": 21,
        "dob": "2005-03-03",
        "nationality": "Croatia",
-       "height_cm": 190
+       "height_cm": 190,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Marko Furlan",
@@ -19912,7 +21020,9 @@
        "age": 22,
        "dob": "2004-08-09",
        "nationality": "Slovenia",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Alexander Stozinic",
@@ -19921,7 +21031,9 @@
        "age": 27,
        "dob": "1999-10-27",
        "nationality": "Slovenia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tilen Colja",
@@ -19929,7 +21041,9 @@
        "position": "Centre-Back",
        "age": 18,
        "dob": "2008-04-19",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Djordje Simic",
@@ -19938,7 +21052,9 @@
        "age": 31,
        "dob": "1995-02-13",
        "nationality": "Serbia/Bosnia-Herzegovina",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tine Kavcic",
@@ -19947,7 +21063,9 @@
        "age": 32,
        "dob": "1994-02-16",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Vid Koder",
@@ -19955,7 +21073,9 @@
        "position": "Centre-Back",
        "age": 18,
        "dob": "2008-05-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lev Stekar",
@@ -19963,7 +21083,9 @@
        "position": "Left-Back",
        "age": 20,
        "dob": "2006-02-25",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mirko Mutavcic",
@@ -19972,7 +21094,9 @@
        "age": 25,
        "dob": "2001-01-29",
        "nationality": "Slovenia",
-       "height_cm": 176
+       "height_cm": 176,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Rene Kogoi",
@@ -19980,7 +21104,9 @@
        "position": "Right-Back",
        "age": 25,
        "dob": "2001-08-16",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Alex Borjancic",
@@ -19988,7 +21114,9 @@
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-10-05",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Sven Blecic",
@@ -19997,7 +21125,9 @@
        "age": 20,
        "dob": "2006-03-06",
        "nationality": "Croatia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Svit Blasko",
@@ -20005,7 +21135,9 @@
        "position": "Defensive Midfield",
        "age": 18,
        "dob": "2008-01-28",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ivo Janakievski",
@@ -20014,7 +21146,9 @@
        "age": 33,
        "dob": "1993-06-09",
        "nationality": "North Macedonia/Bulgaria",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Romeo Bric",
@@ -20022,7 +21156,9 @@
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-07-13",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Spacapan",
@@ -20030,7 +21166,9 @@
        "position": "Central Midfield",
        "age": 18,
        "dob": "2008-06-19",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Leon Marinic",
@@ -20039,7 +21177,9 @@
        "age": 28,
        "dob": "1997-11-21",
        "nationality": "Slovenia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Kalani Almeida",
@@ -20060,7 +21200,9 @@
        "age": 21,
        "dob": "2004-12-06",
        "nationality": "Slovenia",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Kristjan Kozar",
@@ -20068,7 +21210,9 @@
        "position": "Centre-Forward",
        "age": 18,
        "dob": "2008-06-13",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Bissenty Ambroise Mendy",
@@ -20076,7 +21220,9 @@
        "position": "Centre-Forward",
        "age": 20,
        "dob": "2006-01-03",
-       "nationality": "Senegal"
+       "nationality": "Senegal",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Gideon Effiong Ukpong",
@@ -20084,7 +21230,9 @@
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Nigeria"
+       "nationality": "Nigeria",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -20097,7 +21245,9 @@
        "position": "Goalkeeper",
        "age": 22,
        "dob": "2004-05-09",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Eldar Taghizada",
@@ -20106,7 +21256,9 @@
        "age": 23,
        "dob": "2003-05-30",
        "nationality": "Azerbaijan",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Luka Kramberger",
@@ -20114,7 +21266,9 @@
        "position": "Goalkeeper",
        "age": 17,
        "dob": "2009-11-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Leo Jusic",
@@ -20122,7 +21276,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-04-27",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tin Martic",
@@ -20131,7 +21287,9 @@
        "age": 30,
        "dob": "1996-03-27",
        "nationality": "Croatia",
-       "height_cm": 186
+       "height_cm": 186,
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Aleks Korosec",
@@ -20139,7 +21297,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Klevis Haxhari",
@@ -20147,7 +21307,9 @@
        "position": "Centre-Back",
        "age": 21,
        "dob": "2005-05-01",
-       "nationality": "Albania/United States"
+       "nationality": "Albania/United States",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Sen Dzumhur",
@@ -20156,7 +21318,9 @@
        "age": 21,
        "dob": "2005-10-26",
        "nationality": "Slovenia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Stijan Gobec",
@@ -20164,7 +21328,9 @@
        "position": "Right-Back",
        "age": 17,
        "dob": "2008-12-18",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mark Kerin",
@@ -20172,7 +21338,9 @@
        "position": "Defensive Midfield",
        "age": 19,
        "dob": "2007-06-06",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Vid Tramsek",
@@ -20180,7 +21348,9 @@
        "position": "Central Midfield",
        "age": 18,
        "dob": "2008-05-14",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tit Vezovisek",
@@ -20188,7 +21358,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-02-09",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Ermal Memaj",
@@ -20197,7 +21369,9 @@
        "age": 20,
        "dob": "2006-05-12",
        "nationality": "Kosovo/Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lan Mesaric",
@@ -20205,7 +21379,9 @@
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-08-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Miha Sitar",
@@ -20214,7 +21390,9 @@
        "age": 21,
        "dob": "2004-12-04",
        "nationality": "Slovenia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Bruno Putica",
@@ -20223,7 +21401,9 @@
        "age": 20,
        "dob": "2006-07-27",
        "nationality": "Croatia",
-       "height_cm": 181
+       "height_cm": 181,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Aleks Repina",
@@ -20232,7 +21412,9 @@
        "age": 19,
        "dob": "2007-01-16",
        "nationality": "Slovenia",
-       "height_cm": 188
+       "height_cm": 188,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Vicko Ozegovic",
@@ -20240,7 +21422,9 @@
        "position": "Attacking Midfield",
        "age": 24,
        "dob": "2002-08-17",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Domagoj Vidovic",
@@ -20248,7 +21432,9 @@
        "position": "Attacking Midfield",
        "age": 21,
        "dob": "2005-07-05",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Patrik Katic",
@@ -20257,7 +21443,9 @@
        "age": 21,
        "dob": "2005-04-05",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Domen Brumec",
@@ -20266,7 +21454,9 @@
        "age": 21,
        "dob": "2005-02-23",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Marcel Cernivsek",
@@ -20275,7 +21465,9 @@
        "age": 19,
        "dob": "2007-05-14",
        "nationality": "Slovenia",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Maro Vrdoljak",
@@ -20284,7 +21476,9 @@
        "age": 22,
        "dob": "2004-05-02",
        "nationality": "Croatia",
-       "height_cm": 189
+       "height_cm": 189,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lazar Ikac",
@@ -20292,7 +21486,9 @@
        "position": "Centre-Forward",
        "age": 23,
        "dob": "2003-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Aleksander Juvan",
@@ -20300,7 +21496,9 @@
        "position": "Centre-Forward",
        "age": 18,
        "dob": "2008-04-05",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Rok Kidric",
@@ -20325,7 +21523,9 @@
        "age": 21,
        "dob": "2005-02-27",
        "nationality": "India",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Deen Dekleva",
@@ -20333,7 +21533,9 @@
        "position": "Goalkeeper",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Leonardo Adrovic",
@@ -20342,7 +21544,9 @@
        "age": 21,
        "dob": "2005-02-23",
        "nationality": "Slovenia",
-       "height_cm": 192
+       "height_cm": 192,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lev Bohinc",
@@ -20350,7 +21554,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-06-08",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Andraz Miklic",
@@ -20358,7 +21564,9 @@
        "position": "Centre-Back",
        "age": 21,
        "dob": "2005-02-16",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Mark Stojinovic",
@@ -20366,14 +21574,18 @@
        "position": "Centre-Back",
        "age": 21,
        "dob": "2005-05-18",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Sragvin Machihally Venkatesh",
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-01-01",
-       "nationality": "India"
+       "nationality": "India",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Svit Oblak",
@@ -20382,7 +21594,9 @@
        "age": 19,
        "dob": "2007-06-29",
        "nationality": "Slovenia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tilen Mlakar",
@@ -20390,7 +21604,9 @@
        "position": "Left-Back",
        "age": 31,
        "dob": "1995-04-26",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Aldin Sakanovic",
@@ -20398,7 +21614,9 @@
        "position": "Left-Back",
        "age": 19,
        "dob": "2007-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tej Benedicic Bizjak",
@@ -20407,7 +21625,9 @@
        "age": 20,
        "dob": "2006-06-14",
        "nationality": "Slovenia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tim Matanovic",
@@ -20415,7 +21635,9 @@
        "position": "Right-Back",
        "age": 20,
        "dob": "2005-12-08",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Evan Avsenek",
@@ -20423,7 +21645,9 @@
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-09-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Hanan Durakovic",
@@ -20432,7 +21656,9 @@
        "age": 21,
        "dob": "2005-04-16",
        "nationality": "Bosnia-Herzegovina",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "David Zinko",
@@ -20440,7 +21666,9 @@
        "position": "Defensive Midfield",
        "age": 19,
        "dob": "2007-10-16",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matej Crnugelj",
@@ -20448,7 +21676,9 @@
        "position": "Central Midfield",
        "age": 19,
        "dob": "2007-05-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Luca Swinton",
@@ -20457,7 +21687,9 @@
        "age": 23,
        "dob": "2003-05-28",
        "nationality": "Italy/Scotland",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matevz Vrabec",
@@ -20465,7 +21697,9 @@
        "position": "Central Midfield",
        "age": 20,
        "dob": "2006-10-17",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Aboubakar Sidiki Drame",
@@ -20473,7 +21707,9 @@
        "position": "Central Midfield",
        "age": 21,
        "dob": "2005-01-01",
-       "nationality": "Nigeria"
+       "nationality": "Nigeria",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Joce Siber",
@@ -20481,7 +21717,9 @@
        "position": "Central Midfield",
        "age": 26,
        "dob": "2000-10-07",
-       "nationality": "France"
+       "nationality": "France",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Tian Kujovic",
@@ -20489,7 +21727,9 @@
        "position": "Left Winger",
        "age": 21,
        "dob": "2005-03-03",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Jon Kancilija",
@@ -20497,7 +21737,9 @@
        "position": "Left Winger",
        "age": 18,
        "dob": "2007-12-20",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Martin Magister",
@@ -20505,7 +21747,9 @@
        "position": "Right Winger",
        "age": 23,
        "dob": "2003-09-03",
-       "nationality": "Slovenia/Argentina"
+       "nationality": "Slovenia/Argentina",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Denis Leban",
@@ -20513,7 +21757,9 @@
        "position": "Right Winger",
        "age": 22,
        "dob": "2004-02-17",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jakob Raspet",
@@ -20521,7 +21767,9 @@
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-08-05",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Danijel Dzajic",
@@ -20530,7 +21778,9 @@
        "age": 22,
        "dob": "2004-07-15",
        "nationality": "Slovenia",
-       "height_cm": 185
+       "height_cm": 185,
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Eso Hankusic",
@@ -20538,7 +21788,9 @@
        "position": "Centre-Forward",
        "age": 18,
        "dob": "2008-10-13",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Denis Hamulic",
@@ -20546,7 +21798,9 @@
        "position": "Centre-Forward",
        "age": 20,
        "dob": "2006-07-10",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     },
@@ -20560,7 +21814,9 @@
        "age": 23,
        "dob": "2003-03-04",
        "nationality": "Slovenia",
-       "height_cm": 195
+       "height_cm": 195,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nemanja Novakovic",
@@ -20569,7 +21825,9 @@
        "age": 23,
        "dob": "2003-07-03",
        "nationality": "Serbia/Croatia",
-       "height_cm": 197
+       "height_cm": 197,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Nemanja Studen",
@@ -20578,7 +21836,9 @@
        "age": 19,
        "dob": "2007-08-25",
        "nationality": "Serbia",
-       "height_cm": 187
+       "height_cm": 187,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Benjamin Valentic",
@@ -20586,7 +21846,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-01-01",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Mociler",
@@ -20594,7 +21856,9 @@
        "position": "Centre-Back",
        "age": 20,
        "dob": "2006-02-16",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tilen Rajter Krebs",
@@ -20602,7 +21866,9 @@
        "position": "Left-Back",
        "age": 20,
        "dob": "2005-12-03",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Davud Jusic",
@@ -20610,7 +21876,9 @@
        "position": "Left-Back",
        "age": 18,
        "dob": "2008-01-03",
-       "nationality": "Bosnia-Herzegovina/Austria"
+       "nationality": "Bosnia-Herzegovina/Austria",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Alen Bukovec",
@@ -20619,7 +21887,9 @@
        "age": 20,
        "dob": "2005-12-13",
        "nationality": "Slovenia",
-       "height_cm": 182
+       "height_cm": 182,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Luka Pek",
@@ -20627,7 +21897,9 @@
        "position": "Right-Back",
        "age": 19,
        "dob": "2007-09-11",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gasper Rotovnik Gabersek",
@@ -20635,7 +21907,9 @@
        "position": "Defensive Midfield",
        "age": 22,
        "dob": "2004-06-10",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Adam Vosnjak",
@@ -20644,7 +21918,9 @@
        "age": 26,
        "dob": "2000-07-26",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Zak Paulo Piplica",
@@ -20653,7 +21929,9 @@
        "age": 25,
        "dob": "2001-08-14",
        "nationality": "Germany/Bosnia-Herzegovina",
-       "height_cm": 179
+       "height_cm": 179,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Jure Bernjak",
@@ -20661,7 +21939,9 @@
        "position": "Defensive Midfield",
        "age": 19,
        "dob": "2007-01-15",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Gal Gorenak",
@@ -20670,7 +21950,9 @@
        "age": 23,
        "dob": "2003-10-24",
        "nationality": "Slovenia",
-       "height_cm": 180
+       "height_cm": 180,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Martin Plavec Markovic",
@@ -20678,7 +21960,9 @@
        "position": "Central Midfield",
        "age": 21,
        "dob": "2005-07-11",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Rocco Vicol",
@@ -20687,7 +21971,9 @@
        "age": 22,
        "dob": "2004-01-02",
        "nationality": "Austria/Romania",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Matija Stojanovic",
@@ -20696,7 +21982,9 @@
        "age": 20,
        "dob": "2005-11-24",
        "nationality": "Serbia",
-       "height_cm": 175
+       "height_cm": 175,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Balsa Vukcevic",
@@ -20705,7 +21993,9 @@
        "age": 19,
        "dob": "2007-10-10",
        "nationality": "Montenegro",
-       "height_cm": 191
+       "height_cm": 191,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Lan Husejnovic",
@@ -20713,7 +22003,9 @@
        "position": "Attacking Midfield",
        "age": 19,
        "dob": "2007-01-10",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Tian Pantelic",
@@ -20721,7 +22013,9 @@
        "position": "Left Winger",
        "age": 25,
        "dob": "2001-05-31",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Marko Simic",
@@ -20730,7 +22024,9 @@
        "age": 22,
        "dob": "2004-07-12",
        "nationality": "Switzerland/Serbia",
-       "height_cm": 183
+       "height_cm": 183,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Sabur Ali",
@@ -20738,7 +22034,9 @@
        "position": "Left Winger",
        "age": 20,
        "dob": "2005-11-23",
-       "nationality": "Slovenia"
+       "nationality": "Slovenia",
+       "foot": "both",
+       "foot_estimated": true
       },
       {
        "name": "Sandro Zukic",
@@ -20747,7 +22045,9 @@
        "age": 26,
        "dob": "2000-08-02",
        "nationality": "Slovenia/Serbia",
-       "height_cm": 178
+       "height_cm": 178,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Valent Savor",
@@ -20756,7 +22056,9 @@
        "age": 20,
        "dob": "2006-08-06",
        "nationality": "Slovenia",
-       "height_cm": 184
+       "height_cm": 184,
+       "foot": "right",
+       "foot_estimated": true
       },
       {
        "name": "Josip Perkovic",
@@ -20764,7 +22066,9 @@
        "position": "Centre-Forward",
        "age": 21,
        "dob": "2005-02-14",
-       "nationality": "Croatia"
+       "nationality": "Croatia",
+       "foot": "left",
+       "foot_estimated": true
       },
       {
        "name": "Dominik Simic",
@@ -20772,7 +22076,9 @@
        "position": "Centre-Forward",
        "age": 19,
        "dob": "2007-07-01",
-       "nationality": "Croatia/Switzerland"
+       "nationality": "Croatia/Switzerland",
+       "foot": "right",
+       "foot_estimated": true
       }
      ]
     }

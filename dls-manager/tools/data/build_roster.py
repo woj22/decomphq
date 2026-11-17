@@ -103,6 +103,23 @@ def normalize_user_row(r):
     }
 
 
+LEFT_FOOT_P = {  # chance of being left-footed by position (left-sided roles are mostly left-footed)
+    "Left-Back": 0.65, "Left Winger": 0.45, "Left Midfield": 0.5, "Right Winger": 0.3,
+    "Right Midfield": 0.2, "Right-Back": 0.08, "Centre-Back": 0.22, "Goalkeeper": 0.2,
+    "Defensive Midfield": 0.2, "Central Midfield": 0.2, "Attacking Midfield": 0.25,
+    "Second Striker": 0.25, "Centre-Forward": 0.22,
+}
+
+
+def estimate_foot(name, position):
+    """Deterministic pseudo-random foot so reruns give the same answer."""
+    import hashlib
+    r = int(hashlib.sha1(name.encode()).hexdigest()[:8], 16) / 0xFFFFFFFF
+    if r < 0.03:
+        return "both"
+    return "left" if r < 0.03 + LEFT_FOOT_P.get(position, 0.22) * 0.97 else "right"
+
+
 WIKI_POS = {"GK": "Goalkeeper", "DF": "Defender", "MF": "Midfield", "FW": "Attack"}
 
 
@@ -231,6 +248,10 @@ def main():
                         p["market_value_eur"] = int(float(t["market_value_in_eur"]))
                     if p["position"] in WIKI_POS.values() and t["sub_position"]:
                         p["position"] = t["sub_position"]
+            for p in players:
+                if not p.get("foot"):
+                    p["foot"] = estimate_foot(p["name"], p.get("position"))
+                    p["foot_estimated"] = True
             out_cl[c] = {"source": src, "players": players}
             report.append((lg, c, src, len(players), matched))
         roster["leagues"][lg] = {"name": LEAGUE_OF.get(lg) or USER_LEAGUE_NAMES.get(lg, lg), "clubs": out_cl}

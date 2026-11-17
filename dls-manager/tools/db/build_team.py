@@ -16,6 +16,7 @@ import datetime
 import hashlib
 import json
 import math
+import unicodedata
 import os
 import sys
 
@@ -128,28 +129,54 @@ def main():
         sys.exit(f"club {a.club!r} not in roster")
     squad = sorted(club, key=lambda p: -(p.get("market_value_eur") or 0))[:32]
 
-    # player records to overwrite: the slot's current players first, then records linked nowhere
+    # 1) players already in DLS19 keep their own record (and so their face/hair)
+    def fold(t):
+        return " ".join(unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode().lower().split())
+
+    by_name = {}
+    for pid, rec in pl.by_id.items():
+        q = pl.get(rec)
+        by_name.setdefault(fold(f"{q['first_name']} {q['surname']}"), []).append((pid, q))
+
+    def existing(p):
+        cands = by_name.get(fold(p["name"]), [])
+        if p.get("dob"):
+            y = int(p["dob"][:4])
+            cands = [c for c in cands if c[1]["birth_year"] in (y, y - 1, y + 1, 1900)]
+        return cands[0][0] if len(cands) == 1 else None
+
     tid = a.team_id
+    targets, reused = [None] * len(squad), 0
+    for i, p in enumerate(squad):
+        pid = existing(p)
+        if pid is not None and pid not in targets:
+            targets[i], reused = pid, reused + 1
+    # 2) everyone else overwrites the slot's old players, then records linked nowhere
     current = [e["player_id"] for e in ln.teams[tid]]
     linked = {e["player_id"] for sq in ln.teams.values() for e in sq}
-    spare = [pid for pid in pl.by_id if pid not in linked]
-    targets = (current + spare)[: len(squad)]
-    if len(targets) < len(squad):
-        sys.exit("not enough player records to overwrite")
+    pool = [pid for pid in current + [x for x in pl.by_id if x not in linked] if pid not in targets]
+    for i in range(len(squad)):
+        if targets[i] is None:
+            if not pool:
+                sys.exit("not enough player records to overwrite")
+            targets[i] = pool.pop(0)
+            rec = pl.by_id[targets[i]]
+            # new face: generic head, neutral defaults until appearance data exists
+            pl.set(rec, unk_70=0, unk_72=1, unk_74=0)
+    print(f"{reused} players reused their existing DLS19 record (own face)")
 
     entries, unknown_nat = [], set()
     for p, pid in zip(squad, targets):
         rec = pl.by_id[pid]
         first, last = split_name(p["name"])
-        nat_name = (p.get("nationality") or "").split(" / ")[0].strip()
-        nat_name = nat_alias.get(nat_name, nat_name)
-        if nat_name not in nat_ids:
-            unknown_nat.add(nat_name)
+        nat_id = D.nationality_id(nat_ids, p.get("nationality"))
+        if nat_id is None:
+            unknown_nat.add(p.get("nationality") or "?")
         grp, slot = POS.get(p.get("position"), ("CM", 9))
         dob = datetime.date.fromisoformat(p["dob"]) if p.get("dob") else None
         attrs = ratings(p)
         pl.set(rec, first_name=first, surname=last,
-               nationality=nat_ids.get(nat_name, pl.get(rec)["nationality"]),
+               nationality=nat_id if nat_id is not None else pl.get(rec)["nationality"],
                height_cm=p.get("height_cm") or 180,
                weight_kg=int(round((p.get("height_cm") or 180) * 0.42)),
                foot=D.FOOT.get(p.get("foot") or "right", 1),
