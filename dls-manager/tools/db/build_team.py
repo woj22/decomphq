@@ -109,6 +109,8 @@ def main():
     ap.add_argument("--short-name")
     ap.add_argument("--stadium")
     ap.add_argument("--captain", help="player name to make captain (default: best senior starter)")
+    ap.add_argument("--city")
+    ap.add_argument("--copy-kit-from", type=int, help="team id whose kit colours/patterns to copy")
     a = ap.parse_args()
 
     pl = D.Players(D.load(os.path.join(a.db, "players.dat")))
@@ -235,6 +237,10 @@ def main():
         nm.set(f"TXT_TEAMNAMESHORT_{tid}", a.short_name)
     if a.stadium:
         tm.set_stadium(tid, a.stadium)
+    if a.city:
+        nm.set(f"TXT_TEAMNAMECITY_{tid}", a.city)
+    if a.copy_kit_from is not None:
+        tm.copy_kit(a.copy_kit_from, tid)
 
     os.makedirs(a.out, exist_ok=True)
     D.save_zlib(os.path.join(a.out, "players.dat"), pl.to_bytes())

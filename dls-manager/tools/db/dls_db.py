@@ -149,6 +149,12 @@ class Teams:
     def set_setpieces(self, tid, captain, free_kick, corner_l, penalty, corner_r):
         struct.pack_into("<5I", self.by_id[tid], SETPIECE_OFF, captain, free_kick, corner_l, penalty, corner_r)
 
+    KIT_RANGE = (0x00C, 0x114)  # pattern ids + RGBA kit colour table + style bytes
+
+    def copy_kit(self, src_tid, dst_tid):
+        a, b = self.KIT_RANGE
+        self.by_id[dst_tid][a:b] = self.by_id[src_tid][a:b]
+
     def stadium(self, tid):
         return get_utf16(self.by_id[tid], 0x140, 24)
 
