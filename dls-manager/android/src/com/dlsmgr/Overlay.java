@@ -819,6 +819,7 @@ public final class Overlay {
                 // 0x5A5E2000|b = next byte), into lib+0x7c3f40 (home) and +0x7c3f84 (away).
                 byte[] home = sheetBytes(sh.optJSONObject("home"));
                 byte[] away = sheetBytes(sh.optJSONObject("away"));
+                nativeRequest(0x5A5E0100 | Math.max(1, Math.min(4, sh.optInt("difficulty", 3))));
                 nativeRequest(0x5A5E3000);
                 for (byte b : home) {
                     nativeRequest(0x5A5E2000 | (b & 0xff));

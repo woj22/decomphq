@@ -153,6 +153,12 @@ int exhibition_start2(int home, int away, void *homeSheet, void *awaySheet)
     long now = 0, ym = 0;
     int day = 0;
 
+    /* AI difficulty: profile +0x6100 (s16), applied to the match by FUN_002a25f8 ->
+       FUN_001d8348; DLS nudges it by results and caps it per division (FUN_002a281c).
+       Ours is set from the menus' setting (PAGE+0xf0f: 1 easy .. 4 very hard, x100),
+       hard (300) if none was sent. The saves so far had 0, the easiest. */
+    int dlv = PAGE[0xf0f];
+    *(short *)(prof + 0x6100) = (short)((dlv >= 1 && dlv <= 4 ? dlv : 3) * 100);
     FUN_002a25f8(prof + 0x6100);
     FUN_001d8354(1);
     FUN_000a4a00(0, userHome ? 0 : 1);
@@ -337,6 +343,8 @@ void ndb_ours(long env, long cls, u32 v)
         *(u16 *)(PAGE + 0xf08) = (u16)(i + 1);
     } else if (x == 3) {
         *(u16 *)(PAGE + 0xf04) = 0;
+    } else if ((x & 0xff00) == 0x0100) {
+        PAGE[0xf0f] = (u8)x;          /* difficulty level 1-4 */
     } else if (x == 0x10 || x == 0x11) {
         PAGE[0xf0d] = (u8)(x & 1);  /* DLS front end hidden (0x10) / shown (0x11) */
     } else {

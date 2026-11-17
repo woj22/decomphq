@@ -607,6 +607,12 @@ input[type="search"], select {
       }).join("") + "</div></section></div>";
   }
 
+  // AI difficulty levels sent at kick-off (DLS profile +0x6100 = level x 100)
+  var DIFFS = { easy: 1, normal: 2, hard: 3, veryhard: 4 };
+  document.addEventListener("change", function (ev) {
+    if (ev.target && ev.target.id === "diffsel" && S) { S.difficulty = ev.target.value; save(); }
+  });
+
   // ------------------------------------------------------------ pre-match
   // DLS formation numbers (libDLS19 table at 0x3c2528, 11 position codes each) for our formations,
   // and the order our slots go in to match DLS's slot order.
@@ -874,7 +880,7 @@ input[type="search"], select {
         S.pending = { week: fx.week, home: fx.home, away: fx.away, userHome: userHome, oppTid: window.DLSManager.clubTid(opp),
                       before: window.DLSManager.lastMatch() };
         save();
-        var sheets = { home: dlsSheet(fx.home), away: dlsSheet(fx.away) };
+        var sheets = { home: dlsSheet(fx.home), away: dlsSheet(fx.away), difficulty: DIFFS[S.difficulty || "hard"] };
         ui.screen = "kickoff"; render();  // stays up while the game loads the match underneath
         setTimeout(function () {
           var err = window.DLSManager.kickOff(opp, userHome, JSON.stringify(sheets));
@@ -909,7 +915,10 @@ input[type="search"], select {
     }
     if (act === "autopick") { var L = lineupOf(S.clubId); L.xi = autoXI(S.clubId, L.formation); ui.sel = null; save(); return render(); }
     if (act === "settings") {
-      return modal('<h2>Settings</h2><p class="muted" style="margin:0">Your career is saved on this device automatically.</p><button class="btn" data-act="askreset">Start a new career…</button><button class="btn ghost" data-act="closemodal">Close</button>');
+      var cur = S.difficulty || "hard";
+      return modal('<h2>Settings</h2><label class="label" for="diffsel">Match difficulty</label><select id="diffsel">' +
+        [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"], ["veryhard", "Very hard"]].map(function (d) { return '<option value="' + d[0] + '"' + (d[0] === cur ? " selected" : "") + ">" + d[1] + "</option>"; }).join("") +
+        '</select><p class="muted" style="margin:0">Assists are off in matches. Your career is saved on this device automatically.</p><button class="btn" data-act="askreset">Start a new career…</button><button class="btn ghost" data-act="closemodal">Close</button>');
     }
     if (act === "askreset") { closeModal(); return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">This deletes the current season, results and stats.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="reset">Delete and start over</button><button class="btn ghost" data-act="closemodal">Keep playing</button></div>'); }
     if (act === "reset") { closeModal(); S = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) {} ui.screen = "home"; return render(); }

@@ -261,6 +261,7 @@ def main():
         uc.reg_write(UC_ARM64_REG_SP, STACK + 0xF0000)
         uc.emu_start(B + 0x283470, STOP2)
         print("division index", uc.reg_read(UC_ARM64_REG_X0) & 0xFFFFFFFF)
+        print("AI difficulty (profile +0x6100)", struct.unpack("<h", uc.mem_read(prof_obj + 0x6100, 2))[0])
     if "--rewrite" in sys.argv:
         out_path = sys.argv[sys.argv.index("--rewrite") + 1]
         rewrite(uc, payload, prof_obj, alloc, out_path, prof)
