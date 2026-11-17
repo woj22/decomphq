@@ -49,6 +49,7 @@ public final class Overlay {
         if (!(context instanceof Activity) || web != null) {
             return;
         }
+        importProfile(context);
         activity = (Activity) context;
         final View decor = activity.getWindow().getDecorView();
         decor.post(new Runnable() {
@@ -129,6 +130,56 @@ public final class Overlay {
      * existing file provider (<package>.licensefileprovider). Nothing is sent anywhere unless
      * the player picks a destination.
      */
+    /**
+     * One-time profile import: if the APK carries assets/dlsmgr/profile_import_<tag>.dat and
+     * DOCS/dlsmgr_import_<tag>.done does not exist yet, back up the current profile.dat to
+     * profile_backup_<tag>.dat, put the bundled profile in its place and write the marker.
+     * Runs from MainActivity.onCreate, before the game reads the profile.
+     */
+    static void importProfile(Context ctx) {
+        try {
+            String[] names = ctx.getAssets().list("dlsmgr");
+            if (names == null) {
+                return;
+            }
+            File dir = ctx.getExternalFilesDir(null);
+            if (dir == null) {
+                return;
+            }
+            for (String n : names) {
+                if (!n.startsWith("profile_import_") || !n.endsWith(".dat")) {
+                    continue;
+                }
+                String tag = n.substring("profile_import_".length(), n.length() - 4);
+                File done = new File(dir, "dlsmgr_import_" + tag + ".done");
+                if (done.exists()) {
+                    continue;
+                }
+                File prof = new File(dir, "profile.dat");
+                File backup = new File(dir, "profile_backup_" + tag + ".dat");
+                if (prof.exists() && !backup.exists()) {
+                    copy(new FileInputStream(prof), backup);
+                }
+                copy(ctx.getAssets().open("dlsmgr/" + n), prof);
+                new File(dir, "profile_temp.dat").delete();
+                new FileOutputStream(done).close();
+            }
+        } catch (Throwable t) {
+            // leave the existing profile untouched on any failure
+        }
+    }
+
+    private static void copy(InputStream in, File to) throws java.io.IOException {
+        FileOutputStream out = new FileOutputStream(to);
+        byte[] buf = new byte[65536];
+        int r;
+        while ((r = in.read(buf)) > 0) {
+            out.write(buf, 0, r);
+        }
+        in.close();
+        out.close();
+    }
+
     static void exportSave() {
         try {
             File dir = activity.getExternalFilesDir(null);
