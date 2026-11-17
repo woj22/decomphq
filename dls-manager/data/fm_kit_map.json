@@ -1,0 +1,90 @@
+{
+  "aluminij": [
+    "aluminij",
+    "NK_Aluminij"
+  ],
+  "bravo": [
+    "bravo",
+    "NK_Bravo"
+  ],
+  "celje": [
+    "celje",
+    "NK_Celje"
+  ],
+  "koper": [
+    "koper",
+    "FC_Koper"
+  ],
+  "maribor": [
+    "maribor",
+    "NK_Maribor"
+  ],
+  "mura": [
+    "mura",
+    "NS_Mura"
+  ],
+  "olimpija": [
+    "olimpija-ljubljana",
+    "NK_Olimpija_Ljubljana"
+  ],
+  "primorje": [
+    "primorje",
+    "ND_Primorje"
+  ],
+  "radomlje": [
+    "radomlje",
+    "NK_Radomlje"
+  ],
+  "tabor": [
+    "tabor-sezana",
+    "NK_Tabor_Sežana"
+  ],
+  "beltinci": [
+    "beltinci",
+    "ND_Beltinci"
+  ],
+  "bilje": [
+    "bilje",
+    "ND_Bilje"
+  ],
+  "bistrica": [
+    "bistrica",
+    "NK_Bistrica"
+  ],
+  "brinje": [
+    "brinje-grosuplje",
+    "NK_Brinje_Grosuplje"
+  ],
+  "dekani": [
+    "dekani",
+    "NK_Dekani"
+  ],
+  "dravinja": [
+    "dravinja",
+    "NK_Dravinja"
+  ],
+  "ilirija": [
+    "ilirija-1911",
+    "NK_Ilirija_1911"
+  ],
+  "krka": [
+    "krka",
+    "NK_Krka"
+  ],
+  "rudar": [
+    "rudar-velenje",
+    "NK_Rudar_Velenje"
+  ],
+  "slovan": [
+    "slovan-ljubljana",
+    "ND_Slovan"
+  ],
+  "triglav": [
+    "triglav-kranj",
+    "NK_Triglav_Kranj"
+  ],
+  "fuzinar": [
+    "fuzinar",
+    "NK_Fužinar"
+  ]
+}
