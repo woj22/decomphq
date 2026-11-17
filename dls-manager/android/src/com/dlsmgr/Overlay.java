@@ -571,7 +571,7 @@ public final class Overlay {
     }
 
     /** One team sheet block: u8 valid, u8 formation, u8 count, u8 0, 32 x u16 ids. */
-    static void writeSheet(java.io.RandomAccessFile mem, long addr, JSONObject side) throws Exception {
+    static byte[] sheetBytes(JSONObject side) throws Exception {
         byte[] b = new byte[4 + 64];
         if (side != null) {
             org.json.JSONArray ids = side.getJSONArray("ids");
@@ -587,33 +587,32 @@ public final class Overlay {
                 }
             }
         }
-        mem.seek(addr);
-        mem.write(b);
+        return b;
     }
 
-    /** Sequence number of the last exhibition result (lib+0x7c3f10), 0 before the first. */
-    static int resultSeq() {
+    /**
+     * The last exhibition result, written by the match's full-time handler (exhibition.c) to
+     * files/dlsmgr_result.txt: "home,away,homeGoals,awayGoals,sequence", or "".
+     */
+    static String resultLine() {
         try {
-            long base = libBase();
-            if (base == 0) {
-                return 0;
-            }
-            java.io.RandomAccessFile mem = new java.io.RandomAccessFile("/proc/self/mem", "r");
-            try {
-                return readInt(mem, base + 0x7c3f10);
-            } finally {
-                mem.close();
-            }
+            File f = new File(activity.getFilesDir(), "dlsmgr_result.txt");
+            return f.exists() ? readText(new FileInputStream(f)).trim() : "";
         } catch (Throwable t) {
-            return 0;
+            return "";
         }
+    }
+
+    /** Changes whenever a new result is written. */
+    static String resultSeq() {
+        return resultLine() + "|" + new File(activity.getFilesDir(), "dlsmgr_result.txt").lastModified();
     }
 
     /** Shows the menus again once the match's full-time handler has written a new result. */
     static final class ResultWatch implements Runnable {
-        private final int before;
+        private final String before;
 
-        ResultWatch(int before) {
+        ResultWatch(String before) {
             this.before = before;
         }
 
@@ -625,7 +624,7 @@ public final class Overlay {
                 } catch (InterruptedException e) {
                     return;
                 }
-                if (resultSeq() != before) {
+                if (!resultSeq().equals(before)) {
                     // straight back: the menus cover DLS before its hub is drawn
                     activity.runOnUiThread(new ShowTask());
                     return;
@@ -683,7 +682,7 @@ public final class Overlay {
                 // v47: an exhibition (tools/apk_patch/exhibition.c) that kicks off straight away:
                 // opponent first, then 0x5A5E0004 = start it on the next game frame. The menus
                 // come back by themselves at full time (ResultWatch).
-                int before = resultSeq();
+                String before = resultSeq();
                 nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
                 nativeRequest(0x5A5E0004);
                 activity.runOnUiThread(new MatchTask());
@@ -707,17 +706,19 @@ public final class Overlay {
                 JSONObject clubs = new JSONObject(readText(activity.getAssets().open("dlsmgr/clubs.json")));
                 int tid = clubs.getJSONObject(opponent).getInt("tid");
                 JSONObject sh = new JSONObject(sheets);
-                long base = libBase();
-                if (base != 0) {
-                    java.io.RandomAccessFile mem = new java.io.RandomAccessFile("/proc/self/mem", "rw");
-                    try {
-                        writeSheet(mem, base + 0x7c3f40, sh.optJSONObject("home"));
-                        writeSheet(mem, base + 0x7c3f84, sh.optJSONObject("away"));
-                    } finally {
-                        mem.close();
-                    }
+                // v52: /proc/self/mem can't be written on every phone, so the sheets go through
+                // the native request channel one byte at a time (0x5A5E3000 = position 0,
+                // 0x5A5E2000|b = next byte), into lib+0x7c3f40 (home) and +0x7c3f84 (away).
+                byte[] home = sheetBytes(sh.optJSONObject("home"));
+                byte[] away = sheetBytes(sh.optJSONObject("away"));
+                nativeRequest(0x5A5E3000);
+                for (byte b : home) {
+                    nativeRequest(0x5A5E2000 | (b & 0xff));
                 }
-                int before = resultSeq();
+                for (byte b : away) {
+                    nativeRequest(0x5A5E2000 | (b & 0xff));
+                }
+                String before = resultSeq();
                 nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
                 nativeRequest(0x5A5E0004);
                 activity.runOnUiThread(new MatchTask());
@@ -730,38 +731,14 @@ public final class Overlay {
         }
 
         /**
-         * The last exhibition match, from the result block its full-time handler writes
-         * (lib+0x7c3f10, see tools/apk_patch/exhibition.c), read through /proc/self/mem:
+         * The last exhibition match, from the file its full-time handler writes
+         * (files/dlsmgr_result.txt, see tools/apk_patch/exhibition.c):
          * "home,away,homeGoals,awayGoals,sequence" with DLS team ids (258 = the player's team),
          * or "" before the first one.
          */
         @JavascriptInterface
         public String lastMatch() {
-            try {
-                long base = libBase();
-                if (base == 0) {
-                    return "";
-                }
-                java.io.RandomAccessFile mem = new java.io.RandomAccessFile("/proc/self/mem", "r");
-                try {
-                    long r = base + 0x7c3f10;
-                    int seq = readInt(mem, r);
-                    if (seq == 0) {
-                        return "";
-                    }
-                    int home = readInt(mem, r + 4);
-                    int away = readInt(mem, r + 8);
-                    mem.seek(r + 0xc);
-                    int hg = mem.read();
-                    int ag = mem.read();
-                    return home + "," + away + "," + hg + "," + ag + "," + seq;
-                } finally {
-                    mem.close();
-                }
-            } catch (Throwable t) {
-                lastError = String.valueOf(t);
-                return "";
-            }
+            return resultLine();
         }
 
         @JavascriptInterface

@@ -73,6 +73,13 @@ void FUN_001dbd50(void *, int);
 void FUN_001db894(void *, void *);
 void *FUN_000ae0f0(int);
 void FUN_001dc1d8(void *);
+void *fopen_plt(const char *, const char *);
+int fprintf_plt(void *, const char *, ...);
+int fclose_plt(void *);
+
+/* full-time result for the menus (app-private files dir; Java polls it) */
+#define RESULT_FILE "/data/data/com.firsttouchgames.dls3/files/dlsmgr_result.txt"
+
 
 #define USER 0x102
 
@@ -87,6 +94,11 @@ static void exhibition_fulltime(void)
     r[0xe] = m[0x9f0c];
     *(u32 *)r = *(u32 *)r + 1;
     *(u16 *)(PAGE + 0xf04) = 0;  /* one match per request */
+    void *f = fopen_plt(RESULT_FILE, "w");
+    if (f) {
+        fprintf_plt(f, "%d,%d,%d,%d,%u\n", *(int *)(r + 4), *(int *)(r + 8), r[0xc], r[0xd], *(u32 *)r);
+        fclose_plt(f);
+    }
     /* back to the hub, as the league handler does, without touching the season or saving */
     FUN_00169f44(5, 0, 0, 0, m[0x9ef4] == 0, 0);
 }
@@ -218,4 +230,32 @@ void exhibition_poll(void)
     FUN_001d73c4(0, 1);   /* home kit, away kit */
     FUN_0022a548();
     FUN_0016ac60(1);
+}
+
+/*
+ * FTTJNI.NativeDialogButton(int) hook (0x2b914c): values 0x5A5Exxxx are ours, anything else
+ * runs the game's own handler (see exhibition_build.py). Replaces match_hooks_asm.py's version
+ * with the same meanings plus a byte channel for the team sheets, since an app can't write
+ * its own /proc/self/mem on every phone:
+ *   0x4000|team, 0x8000|team  opponent (player at home / away)   0x0003  clear opponent
+ *   0x3000|n  sheet write position n   0x2000|b  write byte b, then position + 1
+ *   anything else: request byte at PAGE+0xf00 (1 save, 2 reload, 4 kick off)
+ */
+void ndb_ours(long env, long cls, u32 v)
+{
+    u32 x = v & 0xffff;
+    if (x & 0xc000) {
+        *(u16 *)(PAGE + 0xf04) = (u16)x;
+    } else if ((x & 0xf000) == 0x3000) {
+        *(u16 *)(PAGE + 0xf08) = x & 0xfff;
+    } else if ((x & 0xf000) == 0x2000) {
+        u32 i = *(u16 *)(PAGE + 0xf08);
+        if (i < 0x88)
+            PAGE[0xf40 + i] = (u8)x;
+        *(u16 *)(PAGE + 0xf08) = (u16)(i + 1);
+    } else if (x == 3) {
+        *(u16 *)(PAGE + 0xf04) = 0;
+    } else {
+        PAGE[0xf00] = (u8)x;
+    }
 }
