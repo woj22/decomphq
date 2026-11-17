@@ -713,10 +713,15 @@ input[type="search"], select {
       return render();
     }
     if (act === "play") {
-      if (window.DLSManager && window.DLSManager.hide) {  // inside the game: show DLS (engine link comes next)
-        window.DLSManager.hide();
+      if (window.DLSManager && window.DLSManager.playFixture) {  // inside the game: DLS's next match becomes this fixture
+        var fx = nextFixture();
+        if (!fx) return;
+        var userHome = fx.home === S.clubId;
+        var err = window.DLSManager.playFixture(userHome ? fx.away : fx.home, userHome);
+        if (err) modal('<h2>Could not set up the match</h2><p class="muted" style="margin:0">' + esc(err) + '</p><button class="btn primary" data-act="closemodal">OK</button>');
         return;
       }
+      if (window.DLSManager && window.DLSManager.hide) { window.DLSManager.hide(); return; }
       return modal('<h2>Play in DLS</h2><p class="muted" style="margin:0">In the game this button loads the real DLS19 match with both squads and returns here at full time. That link is the next big piece of work, so for now use Quick Sim.</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
     if (act === "closemodal") return closeModal();

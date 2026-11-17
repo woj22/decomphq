@@ -443,6 +443,35 @@ public final class Overlay {
             new Thread(new BecomeTask(cid), "dlsmgr-club").start();
         }
 
+        /**
+         * Make DLS's next fixture "player team vs opponent" (home or away), then show DLS so
+         * the match is played there. Native side: NativeDialogButton 0x5A5E4000/0x8000 | team.
+         */
+        @JavascriptInterface
+        public String playFixture(String opponent, boolean userHome) {
+            try {
+                JSONObject clubs = new JSONObject(readText(activity.getAssets().open("dlsmgr/clubs.json")));
+                int tid = clubs.getJSONObject(opponent).getInt("tid");
+                nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3FF));
+                String name = clubs.getJSONObject(opponent).getString("name");
+                activity.runOnUiThread(new HideTask());
+                activity.runOnUiThread(new ToastTask("Next match set: " + (userHome ? "vs " : "at ") + name
+                        + ". Tap Play in DLS to kick off."));
+                return "";
+            } catch (Throwable t) {
+                return String.valueOf(t);
+            }
+        }
+
+        @JavascriptInterface
+        public void clearFixture() {
+            try {
+                nativeRequest(0x5A5E0003);
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
+            }
+        }
+
         @JavascriptInterface
         public String currentClub() {
             try {
