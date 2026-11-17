@@ -42,6 +42,14 @@ DOCS is `Android/data/com.firsttouchgames.dls3/files`. `assets/dlsmgr_ext.zip` i
 
 Java side: `SavesRestoring.DoSmth` re-unpacks the bundled OBB if it is missing or the wrong size.
 
+Team A vs team B (v46): `tools/apk_patch/exhibition.c` is compiled for arm64 and linked into
+the code cave at `0x5253d0` by `exhibition_build.py` (→ `exhibition_words.py`, read by
+`patch_apk.py`). `FUN_00273170` (league match start) branches there; when the menus have set an
+opponent (NativeDialogButton `0x5A5E4000|team` / `0x5A5E8000|team`), it starts an exhibition
+between the player's club (team 258) and that team, set up the way the league start does but with
+no season lookups, and with its own full-time handler. That handler writes the score to `lib+0x7c3f10`
+for the menus, clears the override and returns to the hub; nothing is recorded in the DLS season.
+
 ## Roadmap
 
 1. **Database**: decode players/teams/links, write them back, test a rename in-game. *(players.dat read: done)*

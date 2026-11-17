@@ -598,10 +598,11 @@ public final class Overlay {
             try {
                 JSONObject clubs = new JSONObject(readText(activity.getAssets().open("dlsmgr/clubs.json")));
                 int tid = clubs.getJSONObject(opponent).getInt("tid");
-                // v40: the fixture override crashed the game (opponents outside DLS's league), so
-                // it is not sent; Play match just shows DLS.
-                nativeRequest(0x5A5E0003);
+                // v46: the match is an exhibition (tools/apk_patch/exhibition.c): the hub's next
+                // fixture becomes this one and DLS's Play starts it outside the DLS season.
+                nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
                 activity.runOnUiThread(new HideTask());
+                activity.runOnUiThread(new ToastTask("Kick-off is set: tap Play Match in DLS."));
                 return "";
             } catch (Throwable t) {
                 return String.valueOf(t);
@@ -609,9 +610,10 @@ public final class Overlay {
         }
 
         /**
-         * The last match DLS played, read from the game's own memory (/proc/self/mem):
-         * "home,away,homeGoals,awayGoals" with DLS team ids (258 = the player's team), or "".
-         * Match data pointer at lib+0x54d950; team ids at +0x3848 / +0x4870, goals at +0x9f14/15.
+         * The last exhibition match, from the result block its full-time handler writes
+         * (lib+0x7c3f10, see tools/apk_patch/exhibition.c), read through /proc/self/mem:
+         * "home,away,homeGoals,awayGoals,sequence" with DLS team ids (258 = the player's team),
+         * or "" before the first one.
          */
         @JavascriptInterface
         public String lastMatch() {
@@ -622,16 +624,17 @@ public final class Overlay {
                 }
                 java.io.RandomAccessFile mem = new java.io.RandomAccessFile("/proc/self/mem", "r");
                 try {
-                    long m = readLong(mem, base + 0x54d950);
-                    if (m == 0) {
+                    long r = base + 0x7c3f10;
+                    int seq = readInt(mem, r);
+                    if (seq == 0) {
                         return "";
                     }
-                    int home = readInt(mem, m + 0x3848);
-                    int away = readInt(mem, m + 0x4870);
-                    mem.seek(m + 0x9f14);
+                    int home = readInt(mem, r + 4);
+                    int away = readInt(mem, r + 8);
+                    mem.seek(r + 0xc);
                     int hg = mem.read();
                     int ag = mem.read();
-                    return home + "," + away + "," + hg + "," + ag;
+                    return home + "," + away + "," + hg + "," + ag + "," + seq;
                 } finally {
                     mem.close();
                 }
