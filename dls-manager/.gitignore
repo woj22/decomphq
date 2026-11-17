@@ -1,2 +1,4 @@
 # squad data is committed now that the repo is private; generated/large assets stay local
 /assets/
+__pycache__/
+*.pyc
