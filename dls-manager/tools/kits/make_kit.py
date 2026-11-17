@@ -115,14 +115,43 @@ def main():
     def R(x0, y0, x1, y1):  # 512-grid box -> output pixels (inclusive)
         return [round(x0 * k), round(y0 * k), round(x1 * k) - 1, round(y1 * k) - 1]
 
-    # three stripes over the shoulders (collar to armhole), continuing down both sleeves
+    # Three stripes over the shoulders and down the sleeves. Each stripe is drawn only on its
+    # own piece: the side sleeves' curved armhole edge reaches into the torso strip's columns,
+    # so row by row the shoulder stripes stop where a sleeve starts and the sleeve stripes run
+    # right up to the sleeve's edge (found from the template's alpha).
+    opaque = np.asarray(template.resize((512, 512), Image.LANCZOS).getchannel("A")) > 100
+
+    def run_around(y, x):
+        """(start, end) of the opaque run in row y that contains column x, or None."""
+        row = opaque[y]
+        if not row[x]:
+            return None
+        x0 = x
+        while x0 > 0 and row[x0 - 1]:
+            x0 -= 1
+        x1 = x
+        while x1 < 511 and row[x1 + 1]:
+            x1 += 1
+        return x0, x1
+
+    def sleeve_edges(y):
+        left = run_around(y, 110)   # left side sleeve piece
+        right = run_around(y, 400)  # right side sleeve piece
+        lx = left[1] if left and left[1] < 200 else None
+        rx = right[0] if right and right[0] > 300 else None
+        return lx, rx
+
     for y0, y1 in three(SEAM_Y):
-        d.rectangle(R(STRIP_X[0], y0, STRIP_X[1], y1), fill=trim)
-    # the sleeve's top (where it meets the shoulder seam) is the peak of its armhole bulge,
-    # at y ~200 on the template, not the torso seam height
+        for y in range(y0, y1):
+            lx, rx = sleeve_edges(y)
+            x0 = max(STRIP_X[0], (lx + 1) if lx else 0)
+            x1 = min(STRIP_X[1], rx if rx else 512)
+            d.rectangle(R(x0, y, x1, y + 1), fill=trim)
     for y0, y1 in three(SLEEVE_TOP_Y):
-        for x0, x1 in SLEEVE_SIDE:
-            d.rectangle(R(x0, y0, x1, y1), fill=trim)
+        for y in range(y0, y1):
+            lx, rx = sleeve_edges(y)
+            d.rectangle(R(SLEEVE_SIDE[0][0], y, (lx + 1) if lx else SLEEVE_SIDE[0][1], y + 1), fill=trim)
+            d.rectangle(R(rx if rx else SLEEVE_SIDE[1][0], y, SLEEVE_SIDE[1][1], y + 1), fill=trim)
     for y0, y1 in three(65):
         for x0, x1 in SLEEVE_CORNER:
             d.rectangle(R(x0, y0, x1, y1), fill=trim)
