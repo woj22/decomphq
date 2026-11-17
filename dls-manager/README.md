@@ -90,6 +90,17 @@ the file (match history refers to them) but leave the squad. Squads come from
 `profile_backup_before_<club>.dat`, `profile_backup_last.dat`; two failed starts after a switch
 restore the latter. Writing the players as custom-player records instead (v33,
 `tools/save/make_fuzinar_profile.py`) crashed the game, so that path is not used.
+
+**Club saves are pre-built (v45).** Each season competition keeps per-player stats, and an entry
+is read in a longer form when that player is in your squad (`FUN_0026f6fc`), so changing the squad
+in the file alone puts the loader out of step: the v37–v44 crash in `FUN_0026ae38`.
+`tools/save/emu_load.py` runs the game's own loader and save writer from `libDLS19.so` under
+Unicorn. `tools/save/make_club_saves.py` converts the base save for every club with
+`Profile.becomeClub`, re-reads the competitions with the old squad, writes the save back with the
+game's writer for the new squad, and test-loads the result (all 66 read to the end with a good
+checksum). The app copies `assets/dlsmgr/clubsaves/<club>.dat` on a switch; nothing is rewritten on
+the phone. A club you've already played keeps its own save in `dlsmgr_saves/`, written by the game.
+
 The menus' *Export save*
 button zips the save so it can be read here; save files are not committed.
 

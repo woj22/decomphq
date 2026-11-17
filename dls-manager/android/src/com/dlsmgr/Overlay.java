@@ -201,44 +201,7 @@ public final class Overlay {
             lastError = String.valueOf(t);
         }
         applyPendingSwitch(ctx, dir);
-        upgradeSquad(ctx, dir);
         copyClubLooks(ctx, dir);
-    }
-
-    /**
-     * v44: club saves made by v43 held only the line-up's 18 players. Rebuild the current
-     * club's save once from the original save with the full squad (XI, subs, reserves).
-     */
-    static void upgradeSquad(Context ctx, File dir) {
-        File mark = new File(dir, "dlsmgr_fullsquad1.done");
-        File currentF = new File(dir, "dlsmgr_club.txt");
-        if (mark.exists()) {
-            return;
-        }
-        try {
-            if (currentF.exists()) {
-                String cid = readText(new FileInputStream(currentF)).trim();
-                File orig = new File(new File(dir, "dlsmgr_saves"), "original.dat");
-                if (cid.length() > 0 && orig.exists()) {
-                    JSONObject clubs = new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json")));
-                    byte[] out = Profile.encode(Profile.becomeClub(Profile.decode(readBytes(new FileInputStream(orig))),
-                            clubs.getJSONObject(cid)));
-                    Profile.decode(out);
-                    writeBytes(new File(dir, "profile.dat"), out);
-                    new File(dir, "profile_temp.dat").delete();
-                    new File(new File(dir, "dlsmgr_saves"), cid + ".dat").delete();
-                    log(dir, "full squad rebuilt for " + cid);
-                }
-            }
-            new FileOutputStream(mark).close();
-        } catch (Throwable t) {
-            log(dir, "full squad rebuild failed: " + t);
-            try {
-                new FileOutputStream(mark).close();
-            } catch (Throwable t2) {
-                // ignore
-            }
-        }
     }
 
     /** The chosen club's kit and badge files become the player team's (DLS team 258). */
@@ -375,14 +338,26 @@ public final class Overlay {
      * club-switch file, keeping the current profile as profile_backup_recover1.dat.
      */
     static void recover(Context ctx, File dir) {
-        File mark = new File(dir, "dlsmgr_recovered2.done");  // v43: second recovery (v42 saves crashed)
+        // v45: third recovery. Every club save made on the phone (v37-v44) left the season's
+        // competition stats out of step with the squad and crashed the loader; club saves now
+        // come pre-built and checked (assets/dlsmgr/clubsaves). The current club is switched
+        // back in straight away from its new save.
+        File mark = new File(dir, "dlsmgr_recovered3.done");
         if (mark.exists()) {
             return;
         }
         try {
             File prof = new File(dir, "profile.dat");
+            File curF = new File(dir, "dlsmgr_club.txt");
+            String keep = "";
+            File pendF = new File(dir, "dlsmgr_pending_club.txt");
+            if (pendF.exists()) {
+                keep = readText(new FileInputStream(pendF)).trim();
+            } else if (curF.exists()) {
+                keep = readText(new FileInputStream(curF)).trim();
+            }
             if (prof.exists()) {
-                copy(new FileInputStream(prof), new File(dir, "profile_backup_recover2.dat"));
+                copy(new FileInputStream(prof), new File(dir, "profile_backup_recover3.dat"));
             }
             copy(ctx.getAssets().open("dlsmgr/profile_restore_orig1.dat"), prof);
             String[] gone = {"profile_temp.dat", "dlsmgr_club.txt", "dlsmgr_pending_club.txt", "dlsmgr_switching.txt",
@@ -395,12 +370,17 @@ public final class Overlay {
             File[] fs = saves.listFiles();
             if (fs != null) {
                 for (File f : fs) {
-                    f.renameTo(new File(dir, "old_" + f.getName()));
+                    f.renameTo(new File(dir, "old3_" + f.getName()));
                 }
             }
             new File(dir, "dlsmgr_restored_orig1.done").createNewFile();
+            new File(dir, "dlsmgr_recovered2.done").createNewFile();
+            new File(dir, "dlsmgr_fullsquad1.done").createNewFile();
+            if (keep.length() > 0 && !keep.equals("original")) {
+                writeBytes(pendF, keep.getBytes("UTF-8"));
+            }
             new FileOutputStream(mark).close();
-            log(dir, "recovery: original save restored, club-switch files removed");
+            log(dir, "recovery 3: original save restored, club-switch files removed; club to restore: " + keep);
         } catch (Throwable t) {
             log(dir, "recovery failed: " + t);
         }
@@ -449,11 +429,11 @@ public final class Overlay {
                 out = readBytes(new FileInputStream(target));
                 log(dir, "loading saved " + cid);
             } else {
-                File orig = new File(saves, "original.dat");
-                byte[] base = orig.exists() ? readBytes(new FileInputStream(orig)) : now;
-                JSONObject clubs = new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json")));
-                out = Profile.encode(Profile.becomeClub(Profile.decode(base), clubs.getJSONObject(cid)));
-                log(dir, "created save for " + cid);
+                // Pre-built by tools/save/make_club_saves.py: converted, then rewritten by the
+                // game's own save code (run under emulation) so the competition stats match
+                // the new squad, and test-loaded the same way.
+                out = readBytes(ctx.getAssets().open("dlsmgr/clubsaves/" + cid + ".dat"));
+                log(dir, "new save for " + cid + " from the pre-built club save");
             }
             Profile.decode(out);
             writeBytes(prof, out);
