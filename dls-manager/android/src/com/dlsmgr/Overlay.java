@@ -147,6 +147,8 @@ public final class Overlay {
         }
         File current = new File(dir, "dlsmgr_club.txt");
         File prof0 = new File(dir, "profile.dat");
+        saveLogcat(dir);
+        recover(ctx, dir);
         try {
             // One-off: the player's own save (exported before v33) bundled as
             // assets/dlsmgr/profile_restore_<tag>.dat is put back once; the current
@@ -308,11 +310,9 @@ public final class Overlay {
      */
     static void becomeClub(String cid) {
         try {
+            // Switched off in v40 until the converted saves are confirmed to load.
             File dir = activity.getExternalFilesDir(null);
-            writeBytes(new File(dir, "dlsmgr_pending_club.txt"), cid.getBytes("UTF-8"));
-            log(dir, "switch requested: " + cid);
-            activity.runOnUiThread(new ToastTask(clubName(activity, cid)
-                    + " is ready - close the game and open it again to start."));
+            log(dir, "switch requested (disabled): " + cid);
         } catch (Throwable t) {
             lastError = String.valueOf(t);
         }
@@ -323,6 +323,54 @@ public final class Overlay {
             FileOutputStream o = new FileOutputStream(new File(dir, "dlsmgr_log.txt"), true);
             o.write((new java.util.Date() + "  " + msg + "\n").getBytes("UTF-8"));
             o.close();
+        } catch (Throwable t) {
+            // ignore
+        }
+    }
+
+    /**
+     * Recovery (v40): club switching left saves the game crashes on. Once, restore the
+     * player's own exported save (assets/dlsmgr/profile_restore_orig1.dat) and remove every
+     * club-switch file, keeping the current profile as profile_backup_recover1.dat.
+     */
+    static void recover(Context ctx, File dir) {
+        File mark = new File(dir, "dlsmgr_recovered1.done");
+        if (mark.exists()) {
+            return;
+        }
+        try {
+            File prof = new File(dir, "profile.dat");
+            if (prof.exists()) {
+                copy(new FileInputStream(prof), new File(dir, "profile_backup_recover1.dat"));
+            }
+            copy(ctx.getAssets().open("dlsmgr/profile_restore_orig1.dat"), prof);
+            String[] gone = {"profile_temp.dat", "dlsmgr_club.txt", "dlsmgr_pending_club.txt", "dlsmgr_switching.txt",
+                    "258_home.png", "258_away.png", "258_third.png", "t258.png", "t258_thumb.png",
+                    "teamlogo_258.png", "teamlogo_258_thumb.png"};
+            for (String g : gone) {
+                new File(dir, g).delete();
+            }
+            File saves = new File(dir, "dlsmgr_saves");
+            File[] fs = saves.listFiles();
+            if (fs != null) {
+                for (File f : fs) {
+                    f.renameTo(new File(dir, "old_" + f.getName()));
+                }
+            }
+            new File(dir, "dlsmgr_restored_orig1.done").createNewFile();
+            new FileOutputStream(mark).close();
+            log(dir, "recovery: original save restored, club-switch files removed");
+        } catch (Throwable t) {
+            log(dir, "recovery failed: " + t);
+        }
+    }
+
+    /** Keep this app's log lines from the previous run (they include a crash's "Fatal signal" line). */
+    static void saveLogcat(File dir) {
+        try {
+            Process pr = Runtime.getRuntime().exec(new String[]{"logcat", "-d", "-t", "600"});
+            byte[] b = readBytes(pr.getInputStream());
+            writeBytes(new File(dir, "dlsmgr_logcat.txt"), b);
         } catch (Throwable t) {
             // ignore
         }
@@ -464,7 +512,7 @@ public final class Overlay {
             if (files != null) {
                 for (File f : files) {
                     String name = f.getName();
-                    if (f.isFile() && (name.endsWith(".dat") || name.equals("dlsmgr_log.txt"))) {
+                    if (f.isFile() && (name.endsWith(".dat") || name.startsWith("dlsmgr_log"))) {
                         zos.putNextEntry(new ZipEntry(name));
                         InputStream in = new FileInputStream(f);
                         byte[] buf = new byte[65536];
@@ -529,11 +577,10 @@ public final class Overlay {
             try {
                 JSONObject clubs = new JSONObject(readText(activity.getAssets().open("dlsmgr/clubs.json")));
                 int tid = clubs.getJSONObject(opponent).getInt("tid");
-                nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3FF));
-                String name = clubs.getJSONObject(opponent).getString("name");
+                // v40: the fixture override crashed the game (opponents outside DLS's league), so
+                // it is not sent; Play match just shows DLS.
+                nativeRequest(0x5A5E0003);
                 activity.runOnUiThread(new HideTask());
-                activity.runOnUiThread(new ToastTask("Next match set: " + (userHome ? "vs " : "at ") + name
-                        + ". Tap Play in DLS to kick off."));
                 return "";
             } catch (Throwable t) {
                 return String.valueOf(t);
