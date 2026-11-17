@@ -21,6 +21,7 @@ import argparse
 import datetime
 import json
 import os
+import struct
 import shutil
 import sys
 import unicodedata
@@ -126,20 +127,23 @@ def main():
         nats = [pl.get(pl.by_id[e["player_id"]])["nationality"] for e in ln.teams[t]]
         if nats and max(nats.count(n) for n in set(nats)) >= 0.9 * len(nats) and t >= D.NATIONAL_TEAM_BASE:
             national.add(t)
-    pool = []
-    pool += [e["player_id"] for t in ln.order if t in replaced for e in ln.teams[t]]
-    pool += [x for x in pl.by_id if x not in linked_to]
-    pool += [x for x, ts in linked_to.items() if ts and ts <= (national | replaced)]
-    pool += [x for x in pl.by_id]  # last resort
-    seen, ordered = set(), []
-    for x in pool:
-        if x not in seen and x not in reused:
-            seen.add(x)
-            ordered.append(x)
-    it = iter(ordered)
+    # New players get brand-new records appended to players.dat (ids after the highest one), so
+    # no original DLS player is lost. Star faces are keyed by player id (OBB player/star/h_<id>),
+    # which is why overwriting e.g. Messi's record gave Elanga Messi's face.
+    stars = {int(x) for x in open(os.path.join(os.path.dirname(__file__), "star_ids.txt")).read().split()}
+    template = next(pl.by_id[x] for x in sorted(pl.by_id)
+                    if x not in stars and x not in linked_to)  # an unused, generic-face record
+    next_id = max(pl.by_id) + 1
     for p in data["players"]:
         if p["id"] not in target:
-            target[p["id"]] = next(it)
+            rec = bytearray(template)
+            struct.pack_into("<H", rec, 0, next_id)
+            pl.recs.append(rec)
+            pl.by_id[next_id] = rec
+            target[p["id"]] = next_id
+            next_id += 1
+    if next_id > 0xFFFF:
+        raise SystemExit("player ids overflow u16")
     overwritten = {target[p["id"]] for p in data["players"]} - reused
 
     # ---- write player records
