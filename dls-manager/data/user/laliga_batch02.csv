@@ -1,0 +1,155 @@
+club,league,shirt_number,player,position,date_of_birth,age,nationality,height
+Deportivo Alavés,LaLiga,1,Antonio Sivera,Goalkeeper,11/08/1996,30,Spain,185
+Deportivo Alavés,LaLiga,13,Adrián Rodríguez,Goalkeeper,12/12/2000,25,Argentina/Spain,195
+Deportivo Alavés,LaLiga,16,Ville Koski,Centre-Back,27/01/2002,24,Finland,185
+Deportivo Alavés,LaLiga,2,Nicolás Valentini,Centre-Back,06/04/2001,25,Argentina/Italy,187
+Deportivo Alavés,LaLiga,5,Facundo Garcés,Centre-Back,05/09/1999,27,Malaysia/Argentina,191
+Deportivo Alavés,LaLiga,3,Youssef Enríquez,Left-Back,07/10/2005,21,Morocco/Spain,170
+Deportivo Alavés,LaLiga,14,Nahuel Tenaglia,Right-Back,21/02/1996,30,Argentina/Italy,181
+Deportivo Alavés,LaLiga,17,Jonny Otto,Right-Back,03/03/1994,32,Spain,175
+Deportivo Alavés,LaLiga,12,Hugo Novoa,Right-Back,24/01/2003,23,Spain,182
+Deportivo Alavés,LaLiga,8,Antonio Blanco,Defensive Midfield,23/07/2000,26,Spain,176
+Deportivo Alavés,LaLiga,23,Carlos Protesoni,Defensive Midfield,30/03/1998,28,Uruguay/Italy,185
+Deportivo Alavés,LaLiga,19,Pablo Ibáñez,Central Midfield,20/09/1998,28,Spain,179
+Deportivo Alavés,LaLiga,6,Ander Guevara,Central Midfield,07/07/1997,29,Spain,180
+Deportivo Alavés,LaLiga,10,Carles Aleñá,Central Midfield,05/01/1998,28,Spain,180
+Deportivo Alavés,LaLiga,24,Selu Diallo,Central Midfield,01/10/2003,23,Guinea/Spain,187
+Deportivo Alavés,LaLiga,18,Mikel Rodriguez,Central Midfield,03/04/2002,24,Spain,175
+Deportivo Alavés,LaLiga,4,Denis Suárez,Attacking Midfield,06/01/1994,32,Spain,176
+Deportivo Alavés,LaLiga,21,Abde Rebbach,Left Winger,11/08/1998,28,Algeria/Spain,176
+Deportivo Alavés,LaLiga,7,Ángel Pérez,Right Winger,08/06/2002,24,Spain,183
+Deportivo Alavés,LaLiga,22,Miguel Rodríguez,Right Winger,29/04/2003,23,Spain,179
+Deportivo Alavés,LaLiga,11,Toni Martínez,Centre-Forward,30/06/1997,29,Spain,187
+Deportivo Alavés,LaLiga,15,Lucas Boyé,Centre-Forward,28/02/1996,30,Argentina/Italy,183
+Deportivo Alavés,LaLiga,20,Aitor Mañas,Centre-Forward,05/01/2003,23,Spain,185
+Deportivo Alavés,LaLiga,9,Mariano Díaz,Centre-Forward,01/08/1993,33,Dominican Republic/Spain,180
+Elche CF,LaLiga,13,Alejandro Iturbe,Goalkeeper,02/09/2003,23,Spain,186
+Elche CF,LaLiga,1,Matías Dituro,Goalkeeper,08/05/1987,39,Argentina/Chile,191
+Elche CF,LaLiga,15,Kevin Lomónaco,Centre-Back,08/01/2002,24,Argentina/Italy,184
+Elche CF,LaLiga,23,Víctor Chust,Centre-Back,05/03/2000,26,Spain,184
+Elche CF,LaLiga,26,Matia Barzic,Centre-Back,31/05/2004,22,Croatia/Spain,190
+Elche CF,LaLiga,4,Bambo Diaby,Centre-Back,17/12/1997,28,Spain/Senegal,188
+Elche CF,LaLiga,6,Pedro Bigas,Centre-Back,15/05/1990,36,Spain,181
+Elche CF,LaLiga,3,Roy Revivo,Left-Back,22/05/2003,23,Israel,185
+Elche CF,LaLiga,2,Buba Sangaré,Right-Back,06/08/2007,19,Spain/Mali,183
+Elche CF,LaLiga,22,Rubén Sánchez,Right-Back,04/02/2001,25,Spain,185
+Elche CF,LaLiga,8,Marc Aguado,Defensive Midfield,22/02/2000,26,Spain,182
+Elche CF,LaLiga,5,Federico Redondo,Defensive Midfield,18/01/2003,23,Argentina/Spain,188
+Elche CF,LaLiga,16,Martim Neto,Central Midfield,14/01/2003,23,Portugal,185
+Elche CF,LaLiga,47,Javi Morcillo,Central Midfield,15/03/2006,20,Spain,183
+Elche CF,LaLiga,12,Gonzalo Villar,Central Midfield,23/03/1998,28,Spain,181
+Elche CF,LaLiga,10,Facundo Buonanotte,Attacking Midfield,23/12/2004,21,Argentina/Italy,174
+Elche CF,LaLiga,18,Thomas Lemar,Attacking Midfield,12/11/1995,31,France/Guadeloupe,171
+Elche CF,LaLiga,11,Germán Valera,Left Winger,16/03/2002,24,Spain/Lithuania,170
+Elche CF,LaLiga,21,Lucas Cepeda,Left Winger,31/10/2002,24,Chile,177
+Elche CF,LaLiga,20,Tete Morente,Left Winger,04/12/1996,29,Spain,184
+Elche CF,LaLiga,7,Yago Santiago,Left Winger,15/04/2003,23,Spain,180
+Elche CF,LaLiga,19,Grady Diangana,Right Winger,19/04/1998,28,DR Congo/England,180
+Elche CF,LaLiga,17,Josan,Right Winger,03/12/1989,36,Spain,176
+Elche CF,LaLiga,32,Adam Boayar,Second Striker,13/10/2005,21,Morocco/Spain,180
+Elche CF,LaLiga,29,Ali Houary,Second Striker,05/08/2005,21,Morocco/Spain,178
+Elche CF,LaLiga,9,Ezequiel Ponce,Centre-Forward,29/03/1997,29,Argentina/Spain,181
+Elche CF,LaLiga,14,Fer Niño,Centre-Forward,24/10/2000,26,Spain,191
+Elche CF,LaLiga,24,Abiel Osorio,Centre-Forward,13/06/2002,24,Argentina,182
+Getafe CF,LaLiga,13,David Soria,Goalkeeper,04/04/1993,33,Spain,192
+Getafe CF,LaLiga,1,Jiri Letacek,Goalkeeper,09/01/1999,27,Czech Republic,196
+Getafe CF,LaLiga,24,Zaid Romero,Centre-Back,15/12/1999,26,Argentina/Syria,192
+Getafe CF,LaLiga,5,Abdel Abqar,Centre-Back,10/03/1999,27,Morocco,188
+Getafe CF,LaLiga,15,Sebastián Boselli,Centre-Back,04/12/2003,22,Uruguay/Italy,183
+Getafe CF,LaLiga,2,Dakonam Djené,Centre-Back,31/12/1991,34,Togo,178
+Getafe CF,LaLiga,4,Saba Sazonov,Centre-Back,01/02/2002,24,Georgia/Russia,194
+Getafe CF,LaLiga,26,Jean Ives Valou,Centre-Back,22/12/2005,20,Cote d'Ivoire/Benin,188
+Getafe CF,LaLiga,3,Davinchi,Left-Back,16/10/2007,19,Spain,182
+Getafe CF,LaLiga,22,Johan Mojica,Left-Back,21/08/1992,34,Colombia/Spain,184
+Getafe CF,LaLiga,21,Andrés García,Right-Back,07/02/2003,23,Spain,185
+Getafe CF,LaLiga,14,Daniel Carvajal,Right-Back,11/01/1992,34,Spain,173
+Getafe CF,LaLiga,17,Kiko Femenía,Right-Back,02/02/1991,35,Spain,174
+Getafe CF,LaLiga,6,Mario Martín,Defensive Midfield,05/03/2004,22,Spain,177
+Getafe CF,LaLiga,23,Orel Mangala,Defensive Midfield,18/03/1998,28,Belgium/DR Congo,178
+Getafe CF,LaLiga,8,Nemanja Gudelj,Defensive Midfield,16/11/1991,35,Serbia/Netherlands,187
+Getafe CF,LaLiga,11,Ramón Terrats,Central Midfield,18/10/2000,26,Spain,181
+Getafe CF,LaLiga,16,Francho Serrano,Central Midfield,17/10/2001,25,Spain,180
+Getafe CF,LaLiga,28,Alberto Risco,Attacking Midfield,30/08/2005,21,Spain,
+Getafe CF,LaLiga,7,Juanmi,Left Winger,20/05/1993,33,Spain,172
+Getafe CF,LaLiga,10,Martín Satriano,Centre-Forward,20/02/2001,25,Uruguay/Italy,187
+Getafe CF,LaLiga,18,Christantus Uche,Centre-Forward,19/05/2003,23,Nigeria,190
+Getafe CF,LaLiga,20,Iván Azón,Centre-Forward,24/12/2002,23,Spain,182
+Getafe CF,LaLiga,19,Enes Ünal,Centre-Forward,10/05/1997,29,Türkiye,187
+Getafe CF,LaLiga,9,Borja Mayoral,Centre-Forward,05/04/1997,29,Spain,182
+Levante UD,LaLiga,13,Mathew Ryan,Goalkeeper,08/04/1992,34,Australia/Scotland,184
+Levante UD,LaLiga,1,Pablo Campos,Goalkeeper,28/04/2002,24,Spain,188
+Levante UD,LaLiga,16,Axel Tape,Centre-Back,10/08/2007,19,France/Cote d'Ivoire,180
+Levante UD,LaLiga,4,Adrián Dela,Centre-Back,26/02/1999,27,Spain,179
+Levante UD,LaLiga,3,Ifeanyi Ndukwe,Centre-Back,03/03/2008,18,Austria,198
+Levante UD,LaLiga,2,Aïssa Mandi,Centre-Back,22/10/1991,35,Algeria/France,186
+Levante UD,LaLiga,14,Jorge Cabello,Centre-Back,25/04/2004,22,Spain,183
+Levante UD,LaLiga,23,Manu Sánchez,Left-Back,24/08/2000,26,Spain,171
+Levante UD,LaLiga,33,Marc Santos,Left-Back,09/11/2010,16,Spain,178
+Levante UD,LaLiga,22,Jeremy Toljan,Right-Back,08/08/1994,32,Germany/United States,182
+Levante UD,LaLiga,29,Nacho Pérez,Right-Back,29/08/2008,18,Spain,176
+Levante UD,LaLiga,20,Oriol Rey,Defensive Midfield,25/02/1998,28,Spain,177
+Levante UD,LaLiga,18,Enzo Bardeli,Central Midfield,11/04/2001,25,France,173
+Levante UD,LaLiga,5,Hugo Sotelo,Central Midfield,19/12/2003,22,Spain,180
+Levante UD,LaLiga,8,Jon Ander Olasagasti,Central Midfield,16/08/2000,26,Spain,176
+Levante UD,LaLiga,6,Dani Requena,Central Midfield,12/02/2004,22,Spain,186
+Levante UD,LaLiga,24,Thiago Fernández,Left Winger,03/04/2004,22,Argentina,175
+Levante UD,LaLiga,7,Roger Brugué,Left Winger,04/11/1996,30,Spain,174
+Levante UD,LaLiga,27,Paco Cortés,Left Winger,11/08/2007,19,Spain,178
+Levante UD,LaLiga,17,Víctor García,Right Winger,16/09/1997,29,Spain,180
+Levante UD,LaLiga,10,Petar Ratkov,Centre-Forward,18/08/2003,23,Serbia/Croatia,193
+Levante UD,LaLiga,21,Karl Etta Eyong,Centre-Forward,14/10/2003,23,Cameroon,181
+Levante UD,LaLiga,9,Iván Romero,Centre-Forward,10/04/2001,25,Spain,173
+Levante UD,LaLiga,11,Yanis Musuayi,Centre-Forward,26/06/2007,19,Belgium,190
+Málaga CF,LaLiga,1,Alfonso Herrero,Goalkeeper,21/04/1994,32,Spain,183
+Málaga CF,LaLiga,13,Carlos López,Goalkeeper,13/11/2004,22,Spain,183
+Málaga CF,LaLiga,20,Fernando Calero,Centre-Back,14/09/1995,31,Spain,184
+Málaga CF,LaLiga,16,Diego Murillo,Centre-Back,14/03/2001,25,Spain,179
+Málaga CF,LaLiga,25,Juan Berrocal,Centre-Back,05/02/1999,27,Spain,187
+Málaga CF,LaLiga,15,Ángel Recio,Centre-Back,05/01/2003,23,Spain,185
+Málaga CF,LaLiga,4,Einar Galilea,Centre-Back,22/05/1994,32,Spain,185
+Málaga CF,LaLiga,5,Álex Pastor,Centre-Back,01/10/1999,27,Spain,185
+Málaga CF,LaLiga,39,Adam Aznou,Left-Back,02/06/2006,20,Morocco/Spain,178
+Málaga CF,LaLiga,12,José Salinas,Left-Back,30/09/2000,26,Spain,178
+Málaga CF,LaLiga,31,Rafita Garrido,Right-Back,09/11/2004,22,Spain,170
+Málaga CF,LaLiga,3,Carlos Puga,Right-Back,26/11/2000,25,Spain,175
+Málaga CF,LaLiga,2,Jens Cajuste,Defensive Midfield,10/08/1999,27,Sweden/United States,188
+Málaga CF,LaLiga,23,Izan Merino,Central Midfield,15/04/2006,20,Spain,183
+Málaga CF,LaLiga,18,Pablo Martínez,Central Midfield,22/02/1998,28,Spain,182
+Málaga CF,LaLiga,8,Carlos Dotor,Central Midfield,15/03/2001,25,Spain,180
+Málaga CF,LaLiga,6,Ramón Enríquez,Central Midfield,19/04/2001,25,Spain,173
+Málaga CF,LaLiga,22,Dani Lorenzo,Attacking Midfield,05/04/2003,23,Spain,176
+Málaga CF,LaLiga,14,Rafa Rodríguez,Attacking Midfield,10/07/2003,23,Spain,180
+Málaga CF,LaLiga,35,Aarón Ochoa,Attacking Midfield,18/04/2007,19,Ireland/Spain,167
+Málaga CF,LaLiga,11,Joaquín Muñoz,Left Winger,10/03/1999,27,Spain,173
+Málaga CF,LaLiga,19,Juan Cruz,Left Winger,25/04/2000,26,Spain/Argentina,177
+Málaga CF,LaLiga,24,Julen Lobete,Left Winger,18/09/2000,26,Spain,178
+Málaga CF,LaLiga,10,David Larrubia,Right Winger,20/04/2002,24,Spain,172
+Málaga CF,LaLiga,7,Haitam Abaida,Right Winger,01/06/2002,24,Morocco/Spain,172
+Málaga CF,LaLiga,9,Chupe,Centre-Forward,24/08/2004,22,Spain,185
+Málaga CF,LaLiga,21,Adrián Niño,Centre-Forward,19/06/2004,22,Spain,185
+Málaga CF,LaLiga,17,Eneko Jauregi,Centre-Forward,13/07/1996,30,Spain,187
+CA Osasuna,LaLiga,1,Sergio Herrera,Goalkeeper,05/06/1993,33,Spain,192
+CA Osasuna,LaLiga,13,Aitor Fernández,Goalkeeper,03/05/1991,35,Spain,182
+CA Osasuna,LaLiga,22,Enzo Boyomo,Centre-Back,07/10/2001,25,Cameroon/France,187
+CA Osasuna,LaLiga,5,Jorge Herrando,Centre-Back,28/02/2001,25,Spain,192
+CA Osasuna,LaLiga,48,Rockson Yeboah,Centre-Back,02/08/2004,22,Ghana,189
+CA Osasuna,LaLiga,24,Alejandro Catena,Centre-Back,28/10/1994,32,Spain,194
+CA Osasuna,LaLiga,35,Unai Santos,Centre-Back,03/11/2005,21,Spain,180
+CA Osasuna,LaLiga,23,Abel Bretones,Left-Back,21/08/2000,26,Spain,188
+CA Osasuna,LaLiga,15,Diego Rico,Left-Back,23/02/1993,33,Spain,183
+CA Osasuna,LaLiga,19,Valentin Rosier,Right-Back,19/08/1996,30,France/Guadeloupe,175
+CA Osasuna,LaLiga,27,Iñigo Arguibide,Right-Back,19/04/2005,21,Spain,178
+CA Osasuna,LaLiga,6,Lucas Torró,Defensive Midfield,19/07/1994,32,Spain,190
+CA Osasuna,LaLiga,8,Iker Muñoz,Defensive Midfield,05/09/2002,24,Spain,180
+CA Osasuna,LaLiga,7,Jon Moncayola,Central Midfield,13/05/1998,28,Spain,182
+CA Osasuna,LaLiga,29,Asier Osambela,Central Midfield,30/10/2004,22,Spain,186
+CA Osasuna,LaLiga,26,Mauro Echegoyen,Central Midfield,03/03/2005,21,Spain,176
+CA Osasuna,LaLiga,10,Aimar Oroz,Attacking Midfield,27/11/2001,24,Spain,177
+CA Osasuna,LaLiga,16,Moi Gómez,Attacking Midfield,23/06/1994,32,Spain,176
+CA Osasuna,LaLiga,18,Raúl Moro,Left Winger,05/12/2002,23,Spain,169
+CA Osasuna,LaLiga,20,Romain Del Castillo,Right Winger,29/03/1996,30,France/Spain,172
+CA Osasuna,LaLiga,21,Jonathan Dubasin,Right Winger,02/02/2000,26,Spain/Belgium,180
+CA Osasuna,LaLiga,14,Rubén García,Right Winger,14/07/1993,33,Spain,172
+CA Osasuna,LaLiga,11,Kike Barja,Right Winger,01/04/1997,29,Spain,179
+CA Osasuna,LaLiga,9,Raúl García,Centre-Forward,03/11/2000,26,Spain,192
+CA Osasuna,LaLiga,17,Ante Budimir,Centre-Forward,22/07/1991,35,Croatia,190
