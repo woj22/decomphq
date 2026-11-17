@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Rebuild the DLS19 v6.15 APK with our native patches and a replacement classes2.dex.
 
-Usage: python3 -I patch_apk.py <original.apk> <out-unsigned.apk> <classes2.dex>
+Usage: python3 -I patch_apk.py <original.apk> <out-unsigned.apk> <classes2.dex> [assets/path=local_file ...]
+
+Extra "assets/...=file" arguments replace those APK entries (e.g. rebuilt database files
+from tools/db/build_team.py: assets/data/db/players.dat=out/players.dat).
 
 classes2.dex comes from apktool-rebuilding smali_classes2 after injecting
 obb_restore_fix.smali at the top of com/savegame/SavesRestoring.DoSmth.
@@ -11,6 +14,7 @@ key the source APK was signed with, so it installs over it).
 """
 import sys,struct,zipfile,shutil
 src,out=sys.argv[1],sys.argv[2]
+replace=dict(a.split('=',1) for a in sys.argv[4:])
 z=zipfile.ZipFile(src)
 lib=bytearray(z.read('lib/arm64-v8a/libDLS19.so'))
 MOV_W23_1=struct.pack('<I',0x52800037)
@@ -48,7 +52,9 @@ for off,(orig,repl) in patches.items():
 zo=zipfile.ZipFile(out,'w')
 for info in z.infolist():
     if info.filename.startswith('META-INF/') and info.filename.split('/')[-1].upper().endswith(('.SF','.RSA','.DSA','.EC','MANIFEST.MF')): continue
-    data=bytes(lib) if info.filename=='lib/arm64-v8a/libDLS19.so' else (open(sys.argv[3],'rb').read() if info.filename=='classes2.dex' else z.read(info.filename))
+    data=bytes(lib) if info.filename=='lib/arm64-v8a/libDLS19.so' else (open(sys.argv[3],'rb').read() if info.filename=='classes2.dex' else (open(replace.pop(info.filename),'rb').read() if info.filename in replace else z.read(info.filename)))
     ni=zipfile.ZipInfo(info.filename,info.date_time); ni.compress_type=info.compress_type; ni.external_attr=info.external_attr
     zo.writestr(ni,data)
-zo.close(); print('ok')
+zo.close()
+if replace: sys.exit('replacement targets not found in APK: '+', '.join(replace))
+print('ok')

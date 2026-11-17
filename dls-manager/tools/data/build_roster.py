@@ -181,8 +181,12 @@ def main():
             players = []
             if c in user_by_club:
                 src = "user"
+                wiki_shirts = {person_key(w["name"]): w["no"] for w in squads[lg][c] if w.get("no")}
                 for r in user_by_club[c]:
-                    players.append({k: v for k, v in r.items() if k != "club" and v not in (None, "")})
+                    p = {k: v for k, v in r.items() if k != "club" and v not in (None, "")}
+                    if "shirt" not in p and person_key(p["name"]) in wiki_shirts:
+                        p["shirt"] = wiki_shirts[person_key(p["name"])]  # fill from Wikipedia squad list
+                    players.append(p)
             else:
                 src = "wikipedia"
                 for r in squads[lg][c]:
