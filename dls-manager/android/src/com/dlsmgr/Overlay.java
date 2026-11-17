@@ -2,6 +2,8 @@ package com.dlsmgr;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
@@ -14,6 +16,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * DLS Manager menus shown on top of DLS19.
@@ -25,6 +35,7 @@ import android.widget.TextView;
  * JavaScript sees window.DLSManager with:
  *   hide()   - hide the menus and show the DLS game (Play Match until the engine link exists)
  *   isApp()  - true, so the page knows it runs inside the game
+ *   exportSave() - zip the game's save (profile.dat etc.) and open the share sheet
  * A small "Manager" button brings the menus back while they are hidden.
  */
 public final class Overlay {
@@ -112,6 +123,64 @@ public final class Overlay {
         reopen.bringToFront();
     }
 
+    /**
+     * Zip the save files (the same set as the game's own Safe Mode "send profile") into
+     * DOCS/Attachments/dlsmgr_save.zip and offer it through the share sheet, using the game's
+     * existing file provider (<package>.licensefileprovider). Nothing is sent anywhere unless
+     * the player picks a destination.
+     */
+    static void exportSave() {
+        try {
+            File dir = activity.getExternalFilesDir(null);
+            if (dir == null) {
+                dir = activity.getFilesDir();
+            }
+            File out = new File(dir, "Attachments");
+            out.mkdirs();
+            File zip = new File(out, "dlsmgr_save.zip");
+            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zip));
+            File[] files = dir.listFiles();
+            int n = 0;
+            if (files != null) {
+                for (File f : files) {
+                    String name = f.getName();
+                    if (f.isFile() && name.endsWith(".dat")) {
+                        zos.putNextEntry(new ZipEntry(name));
+                        InputStream in = new FileInputStream(f);
+                        byte[] buf = new byte[65536];
+                        int r;
+                        while ((r = in.read(buf)) > 0) {
+                            zos.write(buf, 0, r);
+                        }
+                        in.close();
+                        zos.closeEntry();
+                        n++;
+                    }
+                }
+            }
+            zos.close();
+            // androidx FileProvider via reflection (no compile-time dependency)
+            Class<?> fp = Class.forName("androidx.core.content.FileProvider");
+            Uri uri = (Uri) fp.getMethod("getUriForFile", Context.class, String.class, File.class)
+                    .invoke(null, activity, activity.getPackageName() + ".licensefileprovider", zip);
+            Intent send = new Intent(Intent.ACTION_SEND);
+            send.setType("application/zip");
+            send.putExtra(Intent.EXTRA_STREAM, uri);
+            send.putExtra(Intent.EXTRA_SUBJECT, "DLS Manager save");
+            send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            activity.startActivity(Intent.createChooser(send, "Export save (" + n + " files)"));
+        } catch (Throwable t) {
+            Toast.makeText(activity, "Export failed: " + t, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    static final class ExportTask implements Runnable {
+        @Override
+        public void run() {
+            Overlay.exportSave();
+        }
+    }
+
     /** Named (not anonymous) so d8 handles it; see build notes. */
     static final class HideTask implements Runnable {
         @Override
@@ -124,6 +193,11 @@ public final class Overlay {
         @JavascriptInterface
         public void hide() {
             activity.runOnUiThread(new HideTask());
+        }
+
+        @JavascriptInterface
+        public void exportSave() {
+            activity.runOnUiThread(new ExportTask());
         }
 
         @JavascriptInterface

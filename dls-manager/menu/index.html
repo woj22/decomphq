@@ -680,7 +680,9 @@ input[type="search"], select {
   function openDrawer() {
     var items = [["home", "Home"], ["squad", "Squad"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
     var d = el('<div id="drawer"><div class="drawer-bg" data-act="closedrawer"></div><nav class="drawer" aria-label="Main menu"><div class="label" style="padding:4px 12px 10px">' + esc(club(S.clubId).name) + "</div>" +
-      items.map(function (x) { return '<button data-go="' + x[0] + '" aria-current="' + (ui.screen === x[0]) + '">' + x[1] + "</button>"; }).join("") + "</nav></div>");
+      items.map(function (x) { return '<button data-go="' + x[0] + '" aria-current="' + (ui.screen === x[0]) + '">' + x[1] + "</button>"; }).join("") +
+      (window.DLSManager && window.DLSManager.exportSave ? '<button data-act="exportsave" style="margin-top:12px;opacity:.8">Export save</button>' : "") +
+      "</nav></div>");
     document.body.appendChild(d);
   }
   function closeDrawer() { var d = document.getElementById("drawer"); if (d) d.remove(); }
@@ -704,6 +706,7 @@ input[type="search"], select {
     if (t.hasAttribute("data-slot") || t.hasAttribute("data-bench")) return tacticsTap(t);
     if (act === "drawer") return openDrawer();
     if (act === "closedrawer") return closeDrawer();
+    if (act === "exportsave") { closeDrawer(); window.DLSManager.exportSave(); return; }
     if (act === "sim") {
       var mine = playWeek();
       if (mine) { ui.report = mine; ui.screen = "report"; } else ui.screen = "home";
