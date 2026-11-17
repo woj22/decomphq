@@ -252,6 +252,15 @@ def main():
         sys.exit(1)
     if not any(nm == "checksum OK" for nm, _ in log) and "--comp-squad-from" not in sys.argv:
         sys.exit(2)
+    if "--division" in sys.argv:
+        # the player's division index in the loaded season (FUN_00283470)
+        STOP2 = MISC + 0x1800
+        uc.mem_write(STOP2, b"\x00\x00\x00\x14")
+        uc.reg_write(UC_ARM64_REG_X0, prof_obj + 0x20)
+        uc.reg_write(UC_ARM64_REG_LR, STOP2)
+        uc.reg_write(UC_ARM64_REG_SP, STACK + 0xF0000)
+        uc.emu_start(B + 0x283470, STOP2)
+        print("division index", uc.reg_read(UC_ARM64_REG_X0) & 0xFFFFFFFF)
     if "--rewrite" in sys.argv:
         out_path = sys.argv[sys.argv.index("--rewrite") + 1]
         rewrite(uc, payload, prof_obj, alloc, out_path, prof)
