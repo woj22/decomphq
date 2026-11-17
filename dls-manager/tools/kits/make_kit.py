@@ -15,7 +15,8 @@ Stripe positions for shorts and socks are copied from the template kit's own thr
 
 Usage:
   python3 -I make_kit.py --template <dls19 kit.png> --stripes-from <dls19 adidas kit.png>
-      --base 1f3768 --trim c6a14a --crest crest.png --sponsor sponsor.png --out kit.png
+      --base 1f3768 --trim c6a14a --crest crest.png --sponsor sponsor.png --maker maker.png --out kit.png
+Logos are pasted at their own size when it matches the width given: render them at that size for a sharp result.
 """
 import argparse
 
@@ -69,6 +70,8 @@ def main():
     ap.add_argument("--crest-pos", default="287,218,54", help="cx,cy,width on the front (as seen from the front; crest on the wearer's left = texture right). Render the crest at exactly this width for a sharp result")
     ap.add_argument("--sponsor")
     ap.add_argument("--sponsor-pos", default="257,282,46")
+    ap.add_argument("--maker", help="kit maker logo, top left of the chest (as seen from the front)")
+    ap.add_argument("--maker-pos", default="227,218,30")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
 
@@ -101,9 +104,10 @@ def main():
     if a.crest:
         cx_, cy_, w_ = (int(v) for v in a.crest_pos.split(","))
         paste_centred(img, Image.open(a.crest).convert("RGBA"), cx_, cy_, w_)
-    if a.sponsor:
-        cx_, cy_, w_ = (int(v) for v in a.sponsor_pos.split(","))
-        paste_centred(img, Image.open(a.sponsor).convert("RGBA"), cx_, cy_, w_)
+    for path, pos in ((a.sponsor, a.sponsor_pos), (a.maker, a.maker_pos)):
+        if path:
+            cx_, cy_, w_ = (int(v) for v in pos.split(","))
+            paste_centred(img, Image.open(path).convert("RGBA"), cx_, cy_, w_)
 
     img.putalpha(template.getchannel("A"))
     img.save(a.out)
