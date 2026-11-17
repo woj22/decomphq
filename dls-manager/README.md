@@ -32,6 +32,7 @@ docs/formats/  file-format notes
 | 0x10ae4c | `mov w9,#0` | development screen stays open after an upgrade |
 | 0x10adc8–0x10adcc | `bl 0x10ae34; b 0x10ae08` | skip the development results pop-up |
 | 0x166ae0 | `b 0x166b10` | badges skip the generated-logo table |
+| 0xb2d2c | `mov w8,#0xff` | the player's team always draws its badge image (team +0x12e = -1); database teams get the same from `tools/db/real_badges.py` (teams.dat byte 0x132 = -1 for every team with a `t<id>.png`), instead of a generated `logo_<n>_mask` badge |
 | 0xa75c8, 0xa7638 | `nop`; `b 0xa7660` | imported kits/badges for every team: `DOCS:<id>_home.png` (also `_away`, `_third`, `_home_gk`, `_away_gk`, `_third_gk`) and `DOCS:t<id>.png` / `t<id>_thumb.png`, not just the Dream Team (258) |
 
 | 0x201a58 → 0x525200 | hook + 28-instruction cave (`tools/apk_patch/logo_cave.s`), LOAD[0] grown to 0x525270 | team badges: use `DOCS:teamlogo_<id>.png` / `_thumb.png` when the file exists, instead of the game's 64-entry generated-badge cache |

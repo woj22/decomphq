@@ -48,6 +48,10 @@ patches={
  # player development: skip results popup -> call its close-callback directly, continue
  0x10adc8:(0x5280b200,0x9400001b), 0x10adcc:(0x2a1f03e1,0x1400000f),
  # team badges: skip the generated-logo table (CustomLogoInfo) so assets/data/fe/teams/t<id>.png is used
+ # Player's team (258) badge: FUN_000b2c54 copies the profile's generated-badge style into team
+ # +0x12e; store -1 instead so the real image (DOCS:t258.png from the chosen club) is drawn, as
+ # tools/db/real_badges.py does for every database team (teams.dat byte 0x132).
+ 0xb2d2c:(0x39442408,0x52801fe8),   # ldrb w8,[x0,#0x109] -> mov w8,#0xff
  0x166ae0:(0xb4000180,0x1400000c),
  # Imported kit/badge table (0xa74dc): the game only looked for DOCS:<id>_home.png etc. (and
  # DOCS:t<id>.png badges) for the Dream Team (258), and only after a URL import. Check the
