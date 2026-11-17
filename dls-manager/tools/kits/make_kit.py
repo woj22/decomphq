@@ -54,6 +54,28 @@ def stripe_columns(ref, box):
     return [x0 + i for i in np.where(gold.mean(axis=0) > 0.6)[0]]
 
 
+def apply_fabric(img, kit):
+    """Multiply the design by the fabric texture of a light DLS kit (weave, seams, shading).
+
+    Coloured or dark marks on that kit (crest, sponsor, logos, text, its own trim) are
+    flattened to the plain fabric level first so none of them show through."""
+    a = np.asarray(kit).astype(float)
+    rgb = a[..., :3]
+    lum = rgb @ [0.299, 0.587, 0.114]
+    sat = rgb.max(2) - rgb.min(2)
+    plain = (a[..., 3] > 100) & (sat < 22) & (lum > 175)
+    mark = ~plain
+    for _ in range(4):  # include the anti-aliased edges of the marks
+        m = mark.copy()
+        m[1:] |= mark[:-1]; m[:-1] |= mark[1:]; m[:, 1:] |= mark[:, :-1]; m[:, :-1] |= mark[:, 1:]
+        mark = m
+    level = np.median(lum[plain])
+    factor = np.where(mark, 1.0, lum / level).clip(0.78, 1.1)
+    out = np.asarray(img).astype(float)
+    out[..., :3] *= factor[..., None]
+    return Image.fromarray(out.clip(0, 255).astype("uint8"), "RGBA")
+
+
 def paste_centred(img, logo, cx, cy, w):
     h = round(logo.height * w / logo.width)
     lg = logo.resize((w, h), Image.LANCZOS)
@@ -75,6 +97,8 @@ def main():
     ap.add_argument("--sock-text", help="image placed on each sock where the Real Madrid kit has 'RMCF' "
                     "(given upright; turned to read down the left sock and up the right one)")
     ap.add_argument("--sock-text-pos", default="86,347,25", help="cx,cy,length on the left sock; right is mirrored")
+    ap.add_argument("--fabric-from", help="a light-coloured DLS19 kit (e.g. Real Madrid home) whose fabric weave, "
+                    "seams and shading are laid under the design; its logos are flattened out first")
     ap.add_argument("--size", type=int, default=512, help="output size; DLS19 only accepts 512")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
@@ -107,7 +131,16 @@ def main():
         for x in stripe_columns(ref, box):
             d.rectangle(R(x, box[1], x + 1, box[3]), fill=trim)
 
+    # cuff lines: copy the reference kit's single trim line on each sleeve cuff
+    for box in ((60, 112, 100, 268), (412, 112, 452, 268)):
+        for x in stripe_columns(ref, box):
+            d.rectangle(R(x, box[1], x + 1, box[3]), fill=trim)
+
     d.rectangle(R(*SWATCH), fill=trim)  # shirt number colour
+
+    if a.fabric_from:
+        img = apply_fabric(img, Image.open(a.fabric_from).convert("RGBA").resize((a.size, a.size), Image.LANCZOS))
+        d = ImageDraw.Draw(img)
 
     for path, pos in ((a.crest, a.crest_pos), (a.sponsor, a.sponsor_pos), (a.maker, a.maker_pos)):
         if path:
