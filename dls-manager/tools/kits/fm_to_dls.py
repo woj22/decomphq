@@ -136,20 +136,39 @@ def convert(template, fm_path, shorts, socks):
     # upside down like the template (hem at the top of the texture)
     pw, ph = round(plain.width * SCALE), round(plain.height * SCALE)
     out.paste(tile(plain.resize((pw, ph), Image.LANCZOS), sw, SEAM_Y).transpose(Image.FLIP_TOP_BOTTOM), (x0, 0))
-    # front: FM body at the same scale in x and y. The sides (the strip wraps round the body)
-    # get each row's typical colour across the shirt (per-row median): keeps pinstripes and
-    # hoops but not a sash, piping or logos.
+    # front: FM body at the same scale in x and y, centred. The strip also wraps round the
+    # sides of the body, so the shirt's own pattern is continued outward from both edges: the
+    # front with logos/sash cleaned out, mirrored at the edge so it joins without a seam (as in
+    # real DLS kits, where stripes/hoops/checks run across the whole panel).
     cw = round(body.width * SCALE)
-    front = np.asarray(body.resize((cw, fh), Image.LANCZOS)).astype(float)
-    rowcol = np.median(front[:, 6:cw - 6], axis=1)  # (fh, 3)
-    row = np.repeat(rowcol[:, None, :], sw, axis=1)
+    front_img = body.resize((cw, fh), Image.LANCZOS)
+    trim = 3  # skip the render's shaded outline at the shirt's edge
+    inner = front_img.crop((trim, 0, cw - trim, fh))
+    clean = np.asarray(clean_pattern(inner)).astype(float)
+    front = np.asarray(front_img).astype(float)
+    W = clean.shape[1]
     left = (sw - cw) // 2
-    ramp = np.ones(cw)
-    edge = max(4, cw // 10)
-    ramp[:edge] = np.linspace(0, 1, edge)
-    ramp[-edge:] = np.linspace(1, 0, edge)
-    seg = row[:, left:left + cw]
-    row[:, left:left + cw] = seg * (1 - ramp[None, :, None]) + front * ramp[None, :, None]
+
+    def mirror_col(k, from_left):  # k = distance outward from the edge (0 = next to it)
+        i = k % (2 * W)
+        i = i if i < W else 2 * W - 1 - i
+        return i if from_left else W - 1 - i
+
+    row = np.zeros((fh, sw, 3))
+    for x in range(sw):
+        if x < left + trim:
+            row[:, x] = clean[:, mirror_col(left + trim - 1 - x, True)]
+        elif x >= left + cw - trim:
+            row[:, x] = clean[:, mirror_col(x - (left + cw - trim), False)]
+        else:
+            row[:, x] = front[:, x - left]
+    # soften the join between the real front and its continuation
+    edge = max(4, cw // 12)
+    for j in range(edge):
+        a = (j + 1) / (edge + 1)
+        xl, xr = left + trim + j, left + cw - trim - 1 - j
+        row[:, xl] = a * front[:, xl - left] + (1 - a) * clean[:, j]
+        row[:, xr] = a * front[:, xr - left] + (1 - a) * clean[:, W - 1 - j]
     out.paste(Image.fromarray(row.clip(0, 255).astype("uint8")), (x0, SEAM_Y))
 
     # sleeves: the shirt's plain pattern at true size; if the FM sleeves are clearly another
