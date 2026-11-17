@@ -41,8 +41,20 @@ Java side: `SavesRestoring.DoSmth` re-unpacks the bundled OBB if it is missing o
 3. **Manager shell**: new Android UI as the launch screen, one league, play / quick-sim, stats.
 4. **Depth**: three leagues, cups, transfers, contracts, development, season rollover.
 
+## Design decisions
+
+- Menu font: **Manrope** (chosen from Inter, Manrope, Plus Jakarta Sans, DM Sans, Figtree, Outfit).
+- Base layout: the dark "Rounded" home-screen concept (top bar, next-match hero, league position card,
+  Squad / Tactics / Transfers / Training tiles, latest news strip).
+
 ## Data sources
 
 - Squads: [transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets) open export
   (latest season available: 2025/26; Slovenia not included, so another source is needed).
-- Kits and badges: generated from club colours; users can drop in their own images.
+- Squads (preferred): user-supplied CSVs in `data/user/` (club, player, position, age, nationality,
+  contract_expiry, market_value_eur); Wikipedia current squads fill any club not supplied.
+- Kits and badges: kit colours/patterns from Wikipedia infoboxes; crests fetched for the local build.
+
+`data/` and `assets/` are git-ignored: this repository is public, so squad data and club
+crests stay on the build machine only. Run `tools/data/build_roster.py` to rebuild
+`data/roster_2026_27.json` from the sources.

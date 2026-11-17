@@ -86,7 +86,7 @@ def league_clubs(text):
     return clubs
 
 
-FS = re.compile(r"\{\{\s*[Ff]s player\s*\|(.*?)\}\}", re.S)
+FS = re.compile(r"\{\{\s*(?:[Ff]s player|[Ff]ootball squad player)\s*\|(.*?)\}\}", re.S)
 
 
 def parse_squad(text):
