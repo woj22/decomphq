@@ -97,6 +97,31 @@ def rate(p, league):
     return round(ov), attrs, p.get("market_value_eur")
 
 
+def calibrate(out):
+    """Map each league's estimated ratings onto the real EA FC rating spread for that league.
+
+    Players keep their order within the league (from the market-value estimate); their
+    overall takes the same percentile in FC's distribution (fc_league_percentiles.json).
+    Attributes move by the same amount. Leagues without FC data are left unchanged.
+    """
+    pct_path = os.path.join(HERE, "fc_league_percentiles.json")
+    if not os.path.exists(pct_path):
+        return
+    fc = json.load(open(pct_path))
+    for lg in out["leagues"]:
+        if lg["id"] not in fc:
+            continue
+        pct = fc[lg["id"]]["pct"]
+        ps = [p for p in out["players"] if out["clubs"][p["club"]]["league"] == lg["id"]]
+        ps.sort(key=lambda p: (p["ovr"], p["value"]))
+        n = len(ps)
+        for i, p in enumerate(ps):
+            target = pct[round(i / max(1, n - 1) * 100)]
+            delta = target - p["ovr"]
+            p["ovr"] = min(93, target)
+            p["attrs"] = [max(5, min(99, a + delta)) if (k < 10 or p["pos"] == "GK") else a for k, a in enumerate(p["attrs"])]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--roster", required=True)
@@ -141,6 +166,7 @@ def main():
                 pid += 1
         out["leagues"].append({"id": lg, "name": meta["name"], "country": meta["country"], "short": meta["short"],
                                "cycles": meta["cycles"], "clubs": ids})
+    calibrate(out)
     os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
     json.dump(out, open(a.out, "w"), ensure_ascii=False, separators=(",", ":"))
     print(f"{len(out['clubs'])} clubs, {len(out['players'])} players -> {a.out} ({os.path.getsize(a.out)//1024} KB)")
