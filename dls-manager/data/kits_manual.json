@@ -1,0 +1,7 @@
+{
+ "_comment": "hand-entered kits for clubs in borrowed DLS slots (Wikipedia infobox colours); same shape as kits_2026_27.json",
+ "nafta-1903": {
+  "home": {"shirt": "#3333FF", "shirt2": "#FFFFFF", "shorts": "#3333FF", "socks": "#3333FF", "pattern": "plain"},
+  "away": {"shirt": "#FFFFFF", "shirt2": "#3333FF", "shorts": "#FFFFFF", "socks": "#FFFFFF", "pattern": "plain"}
+ }
+}

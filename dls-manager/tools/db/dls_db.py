@@ -150,6 +150,28 @@ class Teams:
         struct.pack_into("<5I", self.by_id[tid], SETPIECE_OFF, captain, free_kick, corner_l, penalty, corner_r)
 
     KIT_RANGE = (0x00C, 0x114)  # pattern ids + RGBA kit colour table + style bytes
+    # Kit colours: 0x010 + 4*(10*kit + i), stored B,G,R,A. kit 0 home, 1 away, 2 third, 3-4 goalkeeper.
+    # Within a kit (inferred from 2018 kits): 0 shirt, 1-2 shirt secondary, 3 socks, 4 shorts, 5-9 trims.
+    # Pattern per kit at 0x10C + kit: 3 plain, 0 thin stripes, 6 broad stripes (inferred).
+    KIT_PATTERN = {"plain": 3, "stripes": 0, "broad_stripes": 6}
+
+    def set_kit(self, tid, kit, shirt, shirt2, shorts, socks, pattern="plain"):
+        r = self.by_id[tid]
+        def put(i, hexrgb):
+            v = hexrgb.lstrip("#")
+            r[0x10 + 4 * (10 * kit + i): 0x14 + 4 * (10 * kit + i)] = bytes([int(v[4:6], 16), int(v[2:4], 16), int(v[0:2], 16), 0xFF])
+        put(0, shirt)
+        put(1, shirt2)
+        put(2, shirt2)
+        put(3, socks)
+        put(4, shorts)
+        for i in range(5, 10):
+            put(i, shirt2)
+        r[0x10C + kit] = self.KIT_PATTERN.get(pattern, 3)
+
+    def kit_colour(self, tid, kit, i):
+        b = self.by_id[tid][0x10 + 4 * (10 * kit + i): 0x14 + 4 * (10 * kit + i)]
+        return "#%02X%02X%02X" % (b[2], b[1], b[0])
 
     def copy_kit(self, src_tid, dst_tid):
         a, b = self.KIT_RANGE

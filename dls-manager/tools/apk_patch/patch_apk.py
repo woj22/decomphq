@@ -45,6 +45,8 @@ patches={
  0x10ae4c:(0x52800049,0x52800009),
  # player development: skip results popup -> call its close-callback directly, continue
  0x10adc8:(0x5280b200,0x9400001b), 0x10adcc:(0x2a1f03e1,0x1400000f),
+ # team badges: skip the generated-logo table (CustomLogoInfo) so assets/data/fe/teams/t<id>.png is used
+ 0x166ae0:(0xb4000180,0x1400000c),
 }
 for off,(orig,repl) in patches.items():
     cur=struct.unpack_from('<I',lib,off)[0]

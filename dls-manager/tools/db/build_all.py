@@ -31,6 +31,11 @@ import dls_db as D  # noqa: E402
 import build_team as B  # noqa: E402
 
 GENERIC_HEAD = {"unk_70": 0, "unk_72": 1, "unk_74": 0}
+# clubs whose slot_map entry is their own DLS19 team (keep its kits)
+OWN_SLOT = {"Manchester City F.C.", "Manchester United F.C.", "Tottenham Hotspur F.C.", "Aston Villa F.C.",
+            "Nottingham Forest F.C.", "Atlético Madrid", "Athletic Bilbao", "Deportivo de A Coruña",
+            "RCD Espanyol", "Real Madrid CF", "Real Sociedad", "Sevilla FC", "RC Celta de Vigo",
+            "Rayo Vallecano", "Real Betis", "Deportivo Alavés"}
 
 
 def fold(t):
@@ -61,6 +66,8 @@ def main():
     ap.add_argument("--data", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--badges")
+    ap.add_argument("--kits", help="kits json (club id -> home/away/third); applied to borrowed slots only")
+    ap.add_argument("--existing-badges", help="folder of the APK's own teams/*.png; other teams get a generated badge")
     a = ap.parse_args()
 
     pl = D.Players(D.load(os.path.join(a.db, "players.dat")))
@@ -264,6 +271,21 @@ def main():
         nm.set(f"TXT_TEAMNAMECITY_{tid}", city)
         tm.set_stadium(tid, stadium)
 
+    # ---- kits: clubs that kept their own DLS slot keep their kits; borrowed slots get real colours
+    kits = json.load(open(a.kits)) if a.kits and os.path.exists(a.kits) else {}
+    kits_done = []
+    for cid, tid in slot_of.items():
+        c = data["clubs"][cid]
+        slot_words = [w for w in fold(smap[c["league"]][c["rosterName"]]).split() if len(w) >= 3]
+        own_slot = c["rosterName"] in OWN_SLOT or any(w in fold(c["name"]).split() for w in slot_words)
+        if own_slot or cid not in kits:
+            continue
+        for k, kit in enumerate(("home", "away", "third")):
+            if kit in kits[cid]:
+                v = kits[cid][kit]
+                tm.set_kit(tid, k, v["shirt"], v.get("shirt2", v["shirt"]), v["shorts"], v["socks"], v.get("pattern", "plain"))
+        kits_done.append(c["name"])
+
     # ---- write files
     os.makedirs(a.out, exist_ok=True)
     D.save_zlib(os.path.join(a.out, "players.dat"), pl.to_bytes())
@@ -280,7 +302,42 @@ def main():
                 shutil.copy(b256, os.path.join(a.out, "teams", f"t{tid}.png"))
                 shutil.copy(b64, os.path.join(a.out, "teams", f"t{tid}_thumb.png"))
                 badges += 1
+    generated = 0
+    if a.existing_badges:
+        from PIL import Image, ImageDraw, ImageFont
+        have = set(os.listdir(os.path.join(a.out, "teams"))) if os.path.isdir(os.path.join(a.out, "teams")) else set()
+        have |= set(os.listdir(a.existing_badges))
+        os.makedirs(os.path.join(a.out, "teams"), exist_ok=True)
+        font_path = next((p for p in ("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",) if os.path.exists(p)), None)
+        for tid in ln.order:
+            if f"t{tid}.png" in have:
+                continue
+            def sat(h):
+                r, g, b = (int(h[i:i + 2], 16) for i in (1, 3, 5))
+                return max(r, g, b) - min(r, g, b)
+            cols = [tm.kit_colour(tid, 0, i) for i in range(10)]
+            primary = max(cols, key=sat) if max(sat(c) for c in cols) > 60 else cols[0]
+            if primary in ("#FFFFFF",):
+                primary = next((c for c in cols if c != "#FFFFFF"), "#14213D")
+            lum = sum(int(primary[i:i + 2], 16) for i in (1, 3, 5)) / 3
+            secondary = "#FFFFFF" if lum < 170 else "#14213D"
+            short = nm.get(f"TXT_TEAMNAMESHORT_{tid}")[:3].upper()
+            for size, suffix in ((256, ""), (64, "_thumb")):
+                img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+                d = ImageDraw.Draw(img)
+                s_ = size / 100
+                shield = [(14 * s_, 8 * s_), (86 * s_, 8 * s_), (86 * s_, 50 * s_), (50 * s_, 94 * s_), (14 * s_, 50 * s_)]
+                d.polygon(shield, fill=primary, outline=secondary, width=max(2, int(5 * s_)))
+                d.polygon([(20 * s_, 14 * s_), (80 * s_, 14 * s_), (80 * s_, 49 * s_), (50 * s_, 86 * s_), (20 * s_, 49 * s_)],
+                          outline=secondary, width=max(1, int(1.5 * s_)))
+                if font_path:
+                    fnt = ImageFont.truetype(font_path, int(22 * s_))
+                    ink = secondary
+                    d.text((50 * s_, 42 * s_), short, font=fnt, fill=ink, anchor="mm", stroke_width=max(1, int(s_)), stroke_fill=secondary)
+                img.save(os.path.join(a.out, "teams", f"t{tid}{suffix}.png"), optimize=True)
+            generated += 1
     json.dump({cid: tid for cid, tid in slot_of.items()}, open(os.path.join(a.out, "slots.json"), "w"), indent=1)
+    print(f"kits written for {len(kits_done)} clubs in borrowed slots; generated badges for {generated} other teams")
 
     print(f"{len(slot_of)} clubs written; {len(data['players'])} players "
           f"({len(reused)} kept their own DLS19 record/face, {len(overwritten)} new); badges: {badges}")
