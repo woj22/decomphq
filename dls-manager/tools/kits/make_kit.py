@@ -24,6 +24,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 SEAM_Y = 182
+SLEEVE_TOP_Y = 200   # peak of the side sleeve pieces' armhole edge (x 172 / 340) = top of the sleeve
 STRIP_X = (165, 350)
 PANELS = [(0, 0, 512, 512)]
 SLEEVE_SIDE = [(70, 165), (350, 444)]
@@ -91,7 +92,7 @@ def main():
     ap.add_argument("--crest")
     ap.add_argument("--crest-pos", default="284,225,42", help="cx,cy,width on the front (as seen from the front; crest on the wearer's left = texture right). Render the crest at exactly this width for a sharp result")
     ap.add_argument("--sponsor")
-    ap.add_argument("--sponsor-pos", default="257,267,34")
+    ap.add_argument("--sponsor-pos", default="257,275,34")
     ap.add_argument("--maker", help="kit maker logo, top left of the chest (as seen from the front)")
     ap.add_argument("--maker-pos", default="229,226,20")
     ap.add_argument("--sock-text", help="image placed on each sock where the Real Madrid kit has 'RMCF' "
@@ -117,6 +118,9 @@ def main():
     # three stripes over the shoulders (collar to armhole), continuing down both sleeves
     for y0, y1 in three(SEAM_Y):
         d.rectangle(R(STRIP_X[0], y0, STRIP_X[1], y1), fill=trim)
+    # the sleeve's top (where it meets the shoulder seam) is the peak of its armhole bulge,
+    # at y ~200 on the template, not the torso seam height
+    for y0, y1 in three(SLEEVE_TOP_Y):
         for x0, x1 in SLEEVE_SIDE:
             d.rectangle(R(x0, y0, x1, y1), fill=trim)
     for y0, y1 in three(65):
