@@ -726,7 +726,14 @@ input[type="search"], select {
     }
     if (act === "askreset") { closeModal(); return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">This deletes the current season, results and stats.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="reset">Delete and start over</button><button class="btn ghost" data-act="closemodal">Keep playing</button></div>'); }
     if (act === "reset") { closeModal(); S = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) {} ui.screen = "home"; return render(); }
-    if (act === "start") { S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); lineupOf(S.clubId); save(); ui.screen = "home"; return render(); }
+    if (act === "start") {
+      S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); lineupOf(S.clubId); save(); ui.screen = "home";
+      // inside the game: make the Dream FC this club (the game restarts to apply it)
+      if (window.DLSManager && window.DLSManager.becomeClub && window.DLSManager.currentClub() !== S.clubId) {
+        window.DLSManager.becomeClub(S.clubId);
+      }
+      return render();
+    }
   });
   document.addEventListener("keydown", function (ev) {
     if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches("tr.row, .row-b")) { ev.preventDefault(); ev.target.click(); }

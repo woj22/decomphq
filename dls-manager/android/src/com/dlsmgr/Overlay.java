@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.json.JSONObject;
+
 /**
  * DLS Manager menus shown on top of DLS19.
  *
@@ -36,6 +38,8 @@ import java.util.zip.ZipOutputStream;
  *   hide()   - hide the menus and show the DLS game (Play Match until the engine link exists)
  *   isApp()  - true, so the page knows it runs inside the game
  *   exportSave() - zip the game's save (profile.dat etc.) and open the share sheet
+ *   becomeClub(id) - make the Dream FC that club (applied on restart, before the save loads)
+ *   currentClub() - the club the Dream FC currently is ("" if none), lastError()
  * A small "Manager" button brings the menus back while they are hidden.
  */
 public final class Overlay {
@@ -49,7 +53,7 @@ public final class Overlay {
         if (!(context instanceof Activity) || web != null) {
             return;
         }
-        importProfile(context);
+        applyClub(context);
         activity = (Activity) context;
         final View decor = activity.getWindow().getDecorView();
         decor.post(new Runnable() {
@@ -81,6 +85,7 @@ public final class Overlay {
         decor.addView(w, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         web = w;
+        decor.postDelayed(new BootOk(), 30000);
 
         TextView b = new TextView(activity);
         b.setText("Manager");
@@ -131,42 +136,198 @@ public final class Overlay {
      * the player picks a destination.
      */
     /**
-     * One-time profile import: if the APK carries assets/dlsmgr/profile_import_<tag>.dat and
-     * DOCS/dlsmgr_import_<tag>.done does not exist yet, back up the current profile.dat to
-     * profile_backup_<tag>.dat, put the bundled profile in its place and write the marker.
-     * Runs from MainActivity.onCreate, before the game reads the profile.
+     * Dream FC = the club picked in the manager menus.
+     *
+     * becomeClub(id) (from the menus) writes DOCS/dlsmgr_pending_club.txt and restarts the app.
+     * On the next start, before the game reads the save, applyClub() backs up profile.dat
+     * (profile_backup_before_<club>.dat), rewrites the Dream FC as that club (squad from
+     * assets/dlsmgr/clubs.json, see Profile.becomeClub) and records it in dlsmgr_club.txt.
+     * On every start it then copies the club's kit and badge files to the Dream FC's (258).
      */
-    static void importProfile(Context ctx) {
+    static void applyClub(Context ctx) {
+        File dir = ctx.getExternalFilesDir(null);
+        if (dir == null) {
+            return;
+        }
+        File pending = new File(dir, "dlsmgr_pending_club.txt");
+        File current = new File(dir, "dlsmgr_club.txt");
+        File prof0 = new File(dir, "profile.dat");
+        File last = new File(dir, "profile_backup_last.dat");
         try {
+            // One-off: the player's own save (exported before v33) bundled as
+            // assets/dlsmgr/profile_restore_<tag>.dat is put back once; the current
+            // profile is kept as profile_backup_restore_<tag>.dat.
             String[] names = ctx.getAssets().list("dlsmgr");
-            if (names == null) {
-                return;
-            }
-            File dir = ctx.getExternalFilesDir(null);
-            if (dir == null) {
-                return;
-            }
-            for (String n : names) {
-                if (!n.startsWith("profile_import_") || !n.endsWith(".dat")) {
+            for (String nm : names == null ? new String[0] : names) {
+                if (!nm.startsWith("profile_restore_") || !nm.endsWith(".dat")) {
                     continue;
                 }
-                String tag = n.substring("profile_import_".length(), n.length() - 4);
-                File done = new File(dir, "dlsmgr_import_" + tag + ".done");
-                if (done.exists()) {
+                String tag = nm.substring("profile_restore_".length(), nm.length() - 4);
+                File mark = new File(dir, "dlsmgr_restored_" + tag + ".done");
+                if (mark.exists()) {
                     continue;
                 }
-                File prof = new File(dir, "profile.dat");
-                File backup = new File(dir, "profile_backup_" + tag + ".dat");
-                if (prof.exists() && !backup.exists()) {
-                    copy(new FileInputStream(prof), backup);
+                if (prof0.exists()) {
+                    copy(new FileInputStream(prof0), new File(dir, "profile_backup_restore_" + tag + ".dat"));
                 }
-                copy(ctx.getAssets().open("dlsmgr/" + n), prof);
+                copy(ctx.getAssets().open("dlsmgr/" + nm), prof0);
                 new File(dir, "profile_temp.dat").delete();
-                new FileOutputStream(done).close();
+                current.delete();
+                new FileOutputStream(mark).close();
+            }
+            // v33's one-off Fužinar import crashed the game: put its backup back, once.
+            File b33 = new File(dir, "profile_backup_fuz1.dat");
+            File r33 = new File(dir, "dlsmgr_restored_fuz1.done");
+            if (b33.exists() && new File(dir, "dlsmgr_import_fuz1.done").exists() && !r33.exists()) {
+                copy(new FileInputStream(b33), prof0);
+                new File(dir, "profile_temp.dat").delete();
+                current.delete();
+                new FileOutputStream(r33).close();
+            }
+            // Crash guard: starts are counted and the count is cleared after 30 s of normal
+            // running (see create()). Two failed starts in a row after a club switch -> the
+            // save from just before the switch is restored.
+            File boots = new File(dir, "dlsmgr_boot.txt");
+            int n = 0;
+            if (boots.exists()) {
+                try {
+                    n = Integer.parseInt(readText(new FileInputStream(boots)).trim());
+                } catch (Throwable t) {
+                    n = 0;
+                }
+            }
+            if (n >= 2 && last.exists() && current.exists()) {
+                copy(new FileInputStream(last), prof0);
+                new File(dir, "profile_temp.dat").delete();
+                current.delete();
+                lastError = "The game failed to start after the club switch, so your previous save was restored.";
+                n = 0;
+            }
+            writeBytes(boots, String.valueOf(n + 1).getBytes("UTF-8"));
+        } catch (Throwable t) {
+            lastError = String.valueOf(t);
+        }
+        try {
+            if (pending.exists()) {
+                String cid = readText(new FileInputStream(pending)).trim();
+                JSONObject clubs = new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json")));
+                JSONObject club = clubs.getJSONObject(cid);
+                File prof = new File(dir, "profile.dat");
+                byte[] file = readBytes(new FileInputStream(prof));
+                File backup = new File(dir, "profile_backup_before_" + cid + ".dat");
+                if (!backup.exists()) {
+                    writeBytes(backup, file);
+                }
+                writeBytes(last, file);
+                byte[] out = Profile.encode(Profile.becomeClub(Profile.decode(file), club));
+                Profile.decode(out);  // must read back cleanly before it replaces the save
+                writeBytes(prof, out);
+                new File(dir, "profile_temp.dat").delete();
+                writeBytes(current, cid.getBytes("UTF-8"));
+                pending.delete();
             }
         } catch (Throwable t) {
-            // leave the existing profile untouched on any failure
+            pending.delete();  // never retry a failing conversion on every start
+            lastError = String.valueOf(t);
         }
+        try {
+            if (current.exists()) {
+                String cid = readText(new FileInputStream(current)).trim();
+                JSONObject clubs = new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json")));
+                int tid = clubs.getJSONObject(cid).getInt("tid");
+                String[] kits = {"home", "away", "third", "home_gk", "away_gk", "third_gk"};
+                for (String k : kits) {
+                    File src = new File(dir, tid + "_" + k + ".png");
+                    File dst = new File(dir, "258_" + k + ".png");
+                    if (src.exists()) {
+                        copy(new FileInputStream(src), dst);
+                    } else {
+                        dst.delete();
+                    }
+                }
+                String[][] logos = {{"teamlogo_" + tid + ".png", "teamlogo_258.png"},
+                        {"teamlogo_" + tid + "_thumb.png", "teamlogo_258_thumb.png"},
+                        {"teamlogo_" + tid + ".png", "t258.png"},
+                        {"teamlogo_" + tid + "_thumb.png", "t258_thumb.png"}};
+                for (String[] l : logos) {
+                    File src = new File(dir, l[0]);
+                    if (src.exists()) {
+                        copy(new FileInputStream(src), new File(dir, l[1]));
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            lastError = String.valueOf(t);
+        }
+    }
+
+    static String lastError = "";
+
+    /** Called from the menus: remember the club and restart so applyClub runs before the save loads. */
+    static void becomeClub(String cid) {
+        try {
+            File dir = activity.getExternalFilesDir(null);
+            writeBytes(new File(dir, "dlsmgr_pending_club.txt"), cid.getBytes("UTF-8"));
+            Intent launch = activity.getPackageManager().getLaunchIntentForPackage(activity.getPackageName());
+            if (launch != null) {
+                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                android.app.PendingIntent pi = android.app.PendingIntent.getActivity(activity, 1937, launch,
+                        android.app.PendingIntent.FLAG_CANCEL_CURRENT | 0x04000000 /* FLAG_IMMUTABLE */);
+                android.app.AlarmManager am = (android.app.AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+                am.set(android.app.AlarmManager.RTC, System.currentTimeMillis() + 1000, pi);
+            }
+            Toast.makeText(activity, "Setting up your club - the game restarts", Toast.LENGTH_LONG).show();
+            activity.finishAffinity();
+            android.os.Process.killProcess(android.os.Process.myPid());
+        } catch (Throwable t) {
+            Toast.makeText(activity, "Could not switch club: " + t, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /** 30 s after the menus appear the game is clearly running: clear the crash-guard count. */
+    static final class BootOk implements Runnable {
+        @Override
+        public void run() {
+            try {
+                writeBytes(new File(activity.getExternalFilesDir(null), "dlsmgr_boot.txt"), "0".getBytes("UTF-8"));
+            } catch (Throwable t) {
+                // ignore
+            }
+        }
+    }
+
+    static final class BecomeTask implements Runnable {
+        private final String cid;
+
+        BecomeTask(String cid) {
+            this.cid = cid;
+        }
+
+        @Override
+        public void run() {
+            Overlay.becomeClub(cid);
+        }
+    }
+
+    private static String readText(InputStream in) throws java.io.IOException {
+        return new String(readBytes(in), "UTF-8");
+    }
+
+    private static byte[] readBytes(InputStream in) throws java.io.IOException {
+        java.io.ByteArrayOutputStream bo = new java.io.ByteArrayOutputStream();
+        byte[] buf = new byte[65536];
+        int r;
+        while ((r = in.read(buf)) > 0) {
+            bo.write(buf, 0, r);
+        }
+        in.close();
+        return bo.toByteArray();
+    }
+
+    private static void writeBytes(File f, byte[] b) throws java.io.IOException {
+        FileOutputStream out = new FileOutputStream(f);
+        out.write(b);
+        out.close();
     }
 
     private static void copy(InputStream in, File to) throws java.io.IOException {
@@ -244,6 +405,26 @@ public final class Overlay {
         @JavascriptInterface
         public void hide() {
             activity.runOnUiThread(new HideTask());
+        }
+
+        @JavascriptInterface
+        public void becomeClub(String cid) {
+            activity.runOnUiThread(new BecomeTask(cid));
+        }
+
+        @JavascriptInterface
+        public String currentClub() {
+            try {
+                File f = new File(activity.getExternalFilesDir(null), "dlsmgr_club.txt");
+                return f.exists() ? readText(new FileInputStream(f)).trim() : "";
+            } catch (Throwable t) {
+                return "";
+            }
+        }
+
+        @JavascriptInterface
+        public String lastError() {
+            return lastError;
         }
 
         @JavascriptInterface

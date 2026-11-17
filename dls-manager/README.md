@@ -81,9 +81,14 @@ are not mixed up; unmatched players get placeholder height/foot/date of birth.
 DLS19 only lets you control your Dream FC, whose squad lives in the save (`profile.dat`), not
 in the team database. `tools/save/dls_save.py` reads/writes that file (16-byte header,
 XXTEA with the key from `0x7bd234`, Adler-32 seeded `0xabc30526`); round-trips byte for byte.
-`tools/save/make_fuzinar_profile.py` rewrites the Dream FC as Fužinar: custom players become
-the Fužinar squad (real ratings, development reset), signed players are released (their
-upgrades dropped), line-up/captain/set pieces, team name, short name and stadium updated.
-The APK imports it once (`assets/dlsmgr/profile_import_<tag>.dat`, backup kept as
-`profile_backup_<tag>.dat`, marker `dlsmgr_import_<tag>.done`). The menus' *Export save*
+Any club picked in the menus becomes the Dream FC (`android/src/com/dlsmgr/Profile.java`, on
+the device): the menus call `becomeClub(id)`, the app restarts, and before the game reads the save
+the squad, development, line-up, set-piece takers, team/short/stadium names are rewritten with the
+club's players **by DLS database id** (how the game stores signed players). Custom players stay in
+the file (match history refers to them) but leave the squad. Squads come from
+`assets/dlsmgr/clubs.json` (`tools/apk_patch/build_club_squads.py`). Backups:
+`profile_backup_before_<club>.dat`, `profile_backup_last.dat`; two failed starts after a switch
+restore the latter. Writing the players as custom-player records instead (v33,
+`tools/save/make_fuzinar_profile.py`) crashed the game, so that path is not used.
+The menus' *Export save*
 button zips the save so it can be read here; save files are not committed.
