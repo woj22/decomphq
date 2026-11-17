@@ -66,9 +66,9 @@ def main():
     ap.add_argument("--base", required=True)
     ap.add_argument("--trim", required=True)
     ap.add_argument("--crest")
-    ap.add_argument("--crest-pos", default="229,224,42", help="cx,cy,width (front, as seen from the front)")
+    ap.add_argument("--crest-pos", default="287,218,54", help="cx,cy,width on the front (as seen from the front; crest on the wearer's left = texture right). Render the crest at exactly this width for a sharp result")
     ap.add_argument("--sponsor")
-    ap.add_argument("--sponsor-pos", default="257,272,46")
+    ap.add_argument("--sponsor-pos", default="257,282,46")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
 
