@@ -487,6 +487,7 @@ input[type="search"], select {
     return '<div class="screen-head"><button class="btn ghost" data-go="home">' + '<span style="display:inline-grid;width:18px">' + icon("back") + "</span>Home</button><h2>" + esc(title) + "</h2>" + (extra || "") + "</div>";
   }
   function render() {
+    if (ui.title) return renderTitle();
     if (!S) return renderNewGame();
     var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
@@ -659,7 +660,7 @@ input[type="search"], select {
     var lid = ui.pickLeague || "slovenia_2snl";
     var pick = ui.pick || "fuzinar";
     var lg = D.leagues.find(function (l) { return l.id === lid; });
-    app.innerHTML = '<header class="panel topbar"><div class="club-id"><div><div class="nm">DLS Manager</div><div class="lg">New career · ' + D.season + '</div></div></div></header>' +
+    app.innerHTML = '<header class="panel topbar"><div class="club-id"><div><div class="nm">DLS Manager</div><div class="lg">New career · ' + D.season + '</div></div></div><button class="btn ghost" data-act="totitle">Back</button></header>' +
       '<main class="screen" style="display:grid;gap:12px"><div class="screen-head"><h2>Choose your club</h2><div class="tabs">' +
       D.leagues.map(function (l) { return '<button class="chip-btn" data-pickleague="' + l.id + '" aria-pressed="' + (l.id === lid) + '">' + esc(l.name) + "</button>"; }).join("") + "</div></div>" +
       '<div class="club-grid">' + lg.clubs.map(function (cid) {
@@ -681,6 +682,20 @@ input[type="search"], select {
       start.textContent = "Start career with " + club(pick).name;
       start.nextElementSibling.textContent = club(pick).stadium + " · " + clubPlayers[pick].length + " players";
     }
+  }
+
+  // Opening screen: load / new career / export save
+  function renderTitle() {
+    var saved = S && D.clubs[S.clubId] ? S : null;
+    var inGame = !!(window.DLSManager && window.DLSManager.exportSave);
+    app.innerHTML = '<main class="screen" style="min-height:100vh;display:grid;place-items:center">' +
+      '<section class="panel" style="width:min(460px,100%);padding:28px;display:grid;gap:14px">' +
+      '<div><div style="font-size:30px;font-weight:800;letter-spacing:-.02em">DLS Manager</div><div class="muted">Season ' + esc(D.season) + "</div></div>" +
+      (saved ? '<button class="btn primary" data-act="loadcareer" style="display:flex;gap:12px;align-items:center;justify-content:flex-start;text-align:left">' + badge(saved.clubId, 34) +
+        '<span><b>Load career</b><br><span style="font-weight:500;opacity:.85">' + esc(club(saved.clubId).name) + " · matchweek " + (saved.week + 1) + "</span></span></button>" : "") +
+      '<button class="btn' + (saved ? "" : " primary") + '" data-act="newcareer">New career</button>' +
+      (inGame ? '<button class="btn ghost" data-act="exportsave">Export save</button>' : "") +
+      "</section></main>";
   }
 
   function modal(html) {
@@ -735,7 +750,7 @@ input[type="search"], select {
     if (t.hasAttribute("data-slot") || t.hasAttribute("data-bench")) return tacticsTap(t);
     if (act === "drawer") return openDrawer();
     if (act === "closedrawer") return closeDrawer();
-    if (act === "exportsave") { closeDrawer(); window.DLSManager.exportSave(); return; }
+    if (act === "exportsave") { closeDrawer(); if (window.DLSManager && window.DLSManager.exportSave) window.DLSManager.exportSave(); return; }
     if (act === "sim") {
       var mine = playWeek();
       if (mine) { ui.report = mine; ui.screen = "report"; } else ui.screen = "home";
@@ -757,6 +772,15 @@ input[type="search"], select {
       return modal('<h2>Play in DLS</h2><p class="muted" style="margin:0">In the game this button loads the real DLS19 match with both squads and returns here at full time. That link is the next big piece of work, so for now use Quick Sim.</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
     if (act === "closemodal") return closeModal();
+    if (act === "loadcareer") { ui.title = false; ui.screen = "home"; return render(); }
+    if (act === "newcareer") {
+      if (S && !t.hasAttribute("data-sure")) {
+        return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">Your current career with ' + esc(club(S.clubId).name) + ' is replaced when you start the new one.</p>' +
+          '<div style="display:flex;gap:8px"><button class="btn primary" data-act="newcareer" data-sure="1">Choose a club</button><button class="btn ghost" data-act="closemodal">Cancel</button></div>');
+      }
+      closeModal(); ui.title = false; S = null; return render();
+    }
+    if (act === "totitle") { S = load(); if (S && !D.clubs[S.clubId]) S = null; ui.title = true; return render(); }
     if (act === "saveresult") {
       closeModal();
       var mineR = playWeek({ hg: +t.getAttribute("data-hg"), ag: +t.getAttribute("data-ag") });
@@ -772,7 +796,7 @@ input[type="search"], select {
     if (act === "askreset") { closeModal(); return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">This deletes the current season, results and stats.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="reset">Delete and start over</button><button class="btn ghost" data-act="closemodal">Keep playing</button></div>'); }
     if (act === "reset") { closeModal(); S = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) {} ui.screen = "home"; return render(); }
     if (act === "start") {
-      S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); lineupOf(S.clubId); save(); ui.screen = "home";
+      S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); lineupOf(S.clubId); save(); ui.screen = "home"; ui.title = false;
       // inside the game: make the Dream FC this club (the game restarts to apply it)
       if (window.DLSManager && window.DLSManager.becomeClub && window.DLSManager.currentClub() !== S.clubId) {
         window.DLSManager.becomeClub(S.clubId);
@@ -817,6 +841,7 @@ input[type="search"], select {
     D.players.forEach(function (p) { byId[p.id] = p; (clubPlayers[p.club] = clubPlayers[p.club] || []).push(p); });
     S = load();
     if (S && !D.clubs[S.clubId]) S = null;
+    ui.title = true;  // always open on the start screen
     render();
   }).catch(function (e) {
     app.innerHTML = '<div class="panel" style="padding:18px">Could not load the squad data (' + esc(e.message) + "). Reload to try again.</div>";
