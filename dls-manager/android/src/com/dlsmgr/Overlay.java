@@ -201,7 +201,44 @@ public final class Overlay {
             lastError = String.valueOf(t);
         }
         applyPendingSwitch(ctx, dir);
+        upgradeSquad(ctx, dir);
         copyClubLooks(ctx, dir);
+    }
+
+    /**
+     * v44: club saves made by v43 held only the line-up's 18 players. Rebuild the current
+     * club's save once from the original save with the full squad (XI, subs, reserves).
+     */
+    static void upgradeSquad(Context ctx, File dir) {
+        File mark = new File(dir, "dlsmgr_fullsquad1.done");
+        File currentF = new File(dir, "dlsmgr_club.txt");
+        if (mark.exists()) {
+            return;
+        }
+        try {
+            if (currentF.exists()) {
+                String cid = readText(new FileInputStream(currentF)).trim();
+                File orig = new File(new File(dir, "dlsmgr_saves"), "original.dat");
+                if (cid.length() > 0 && orig.exists()) {
+                    JSONObject clubs = new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json")));
+                    byte[] out = Profile.encode(Profile.becomeClub(Profile.decode(readBytes(new FileInputStream(orig))),
+                            clubs.getJSONObject(cid)));
+                    Profile.decode(out);
+                    writeBytes(new File(dir, "profile.dat"), out);
+                    new File(dir, "profile_temp.dat").delete();
+                    new File(new File(dir, "dlsmgr_saves"), cid + ".dat").delete();
+                    log(dir, "full squad rebuilt for " + cid);
+                }
+            }
+            new FileOutputStream(mark).close();
+        } catch (Throwable t) {
+            log(dir, "full squad rebuild failed: " + t);
+            try {
+                new FileOutputStream(mark).close();
+            } catch (Throwable t2) {
+                // ignore
+            }
+        }
     }
 
     /** The chosen club's kit and badge files become the player team's (DLS team 258). */

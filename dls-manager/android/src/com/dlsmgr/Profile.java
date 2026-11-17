@@ -117,12 +117,13 @@ final class Profile {
         int afterLu = lu + 1 + 2 * luN;
         int takersO = afterLu + 3;
 
-        // Every list keeps its current length (v42 lengthened the squad/line-up lists, which
-        // shifted the data after them and the game crashed reading its competitions). The
-        // squad holds the club's players by DLS database id, as the game stores signed players;
-        // custom-player records stay in the file (history refers to them) but leave the squad.
-        int n = sOld;
-        if (order.size() < n || devCnt != sOld || luN != sOld) {
+        // Squad and development list: all the club's players (up to the 32 slots the squad
+        // table has; both are read by their counts - FUN_000adfb8 / FUN_000b7308).
+        // Line-up: keeps its current length (the save's XI + subs, 18 here). It sits inside
+        // the season data and lengthening it shifted the competitions after it (the v42 crash).
+        // Players in the squad but not in the line-up are the reserves.
+        int n = Math.min(order.size(), 32);
+        if (devCnt != sOld || order.size() < luN) {
             throw new Exception("unexpected save layout: squad " + sOld + ", development " + devCnt
                     + ", line-up " + luN + ", club players " + order.size());
         }
@@ -130,7 +131,6 @@ final class Profile {
         for (int i = 0; i < n; i++) {
             ids[i] = order.get(i).getInt("id");
         }
-
         ByteArrayOutputStream o = new ByteArrayOutputStream(d.length + 8192);
         o.write(d, 0, p);  // header + custom players unchanged
         byte[] info = new byte[128];
@@ -162,19 +162,19 @@ final class Profile {
         o.write(dev, 0, dev.length);
         o.write(d, devEnd, lu - devEnd);
         int lineupStart = o.size();
-        o.write(n);
-        byte[] lineup = new byte[2 * n];
-        for (int i = 0; i < n; i++) {
+        o.write(luN);
+        byte[] lineup = new byte[2 * luN];
+        for (int i = 0; i < luN; i++) {
             put16(lineup, 2 * i, ids[i]);
         }
         o.write(lineup, 0, lineup.length);
-        int lineupEnd = lineupStart + 1 + 2 * n;
+        int lineupEnd = lineupStart + 1 + 2 * luN;
         o.write(d, afterLu, takersO - afterLu);
         byte[] takers = new byte[10];
         int[] bits = {2, 4, 8, 0x10, 0x20};
         for (int k = 0; k < 5; k++) {
             int t = ids[Math.min(n - 1, 10)];
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < Math.min(n, 11); i++) {
                 if ((order.get(i).optInt("flags") & bits[k]) != 0) {
                     t = ids[i];
                     break;
