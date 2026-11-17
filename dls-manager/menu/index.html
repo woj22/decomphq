@@ -343,13 +343,14 @@ input[type="search"], select {
     function avg(a) { return a.length ? a.reduce(function (x, y) { return x + y; }, 0) / a.length : 50; }
     return { gk: avg(lines.GK), df: avg(lines.DF), mf: avg(lines.MF), fw: avg(lines.FW.length ? lines.FW : lines.MF) };
   }
-  function simMatch(home, away, seed) {
+  function simMatch(home, away, seed, forced) {
     var r = rng(seed), H = strength(home), A = strength(away);
     var attH = H.fw * 0.6 + H.mf * 0.4, attA = A.fw * 0.6 + A.mf * 0.4;
     var defH = H.df * 0.7 + H.gk * 0.3, defA = A.df * 0.7 + A.gk * 0.3;
     var lamH = Math.min(4, Math.max(0.15, 1.42 * Math.exp((attH - defA) / 11 + (H.mf - A.mf) / 30)));
     var lamA = Math.min(4, Math.max(0.15, 1.12 * Math.exp((attA - defH) / 11 + (A.mf - H.mf) / 30)));
     var hg = poisson(lamH, r), ag = poisson(lamA, r), events = [];
+    if (forced) { hg = forced.hg; ag = forced.ag; }  // real result from the DLS match
     function scorers(cid, n, side) {
       var L = lineupOf(cid), slots = FORMATIONS[L.formation];
       var ps = L.xi.map(function (pid) { return byId[pid]; });
@@ -390,7 +391,7 @@ input[type="search"], select {
         ratings[pid] = Math.max(4.5, Math.min(10, Math.round(v * 10) / 10));
       });
     });
-    return { h: home, a: away, hg: hg, ag: ag, events: events, stats: stats, ratings: ratings, xi: { h: lineupOf(home).xi.slice(), a: lineupOf(away).xi.slice() } };
+    return { h: home, a: away, hg: hg, ag: ag, real: !!forced, events: events, stats: stats, ratings: ratings, xi: { h: lineupOf(home).xi.slice(), a: lineupOf(away).xi.slice() } };
   }
   function record(res) {
     function add(pid, k, n) { var s = S.pstats[pid] || (S.pstats[pid] = { apps: 0, goals: 0, assists: 0, rsum: 0, yc: 0, rc: 0, cs: 0 }); s[k] += n; }
@@ -403,13 +404,14 @@ input[type="search"], select {
     if (res.ag === 0) add(res.xi.h[0], "cs", 1);
     if (res.hg === 0) add(res.xi.a[0], "cs", 1);
   }
-  function playWeek() {
+  function playWeek(forced) {
     var w = S.week, mine = null;
     D.leagues.forEach(function (lg, li) {
       var rounds = S.schedule[lg.id];
       if (w >= rounds.length) return;
       var out = rounds[w].map(function (m, gi) {
-        var res = simMatch(m[0], m[1], (S.seed ^ (w * 7919 + li * 104729 + gi * 31)) >>> 0);
+        var mineHere = m[0] === S.clubId || m[1] === S.clubId;
+        var res = simMatch(m[0], m[1], (S.seed ^ (w * 7919 + li * 104729 + gi * 31)) >>> 0, mineHere ? forced : null);
         record(res);
         if (m[0] === S.clubId || m[1] === S.clubId) mine = res;
         return res;
@@ -687,6 +689,24 @@ input[type="search"], select {
   }
   function closeDrawer() { var d = document.getElementById("drawer"); if (d) d.remove(); }
 
+  // ------------------------------------------------------------ back from a DLS match
+  // Overlay.show() calls this when the menus come back. If DLS's last match is the fixture we
+  // sent (player team = DLS team 258) and it is new, offer to save its score.
+  window.dlsOnShow = function () {
+    if (!S || !S.pending || !window.DLSManager || !window.DLSManager.lastMatch) return;
+    var now = window.DLSManager.lastMatch();
+    if (!now || now === S.pending.before) return;
+    var f = now.split(",").map(Number), P = S.pending;
+    [0, 1].forEach(function (i) { if (f[i] === -3 || f[i] === -4) f[i] = 258; });  // DLS's aliases for the player team
+    var want = P.userHome ? [258, P.oppTid] : [P.oppTid, 258];
+    if (f[0] !== want[0] || f[1] !== want[1]) return;
+    var hg = f[2], ag = f[3];
+    modal('<h2>Full time</h2><p style="margin:0;font-size:20px;font-weight:800">' + esc(club(P.home).name) + " " + hg + "–" + ag + " " + esc(club(P.away).name) +
+      '</p><p class="muted" style="margin:0">Save this result to your season? The rest of the matchweek is simulated.</p>' +
+      '<div style="display:flex;gap:8px"><button class="btn primary" data-act="saveresult" data-hg="' + hg + '" data-ag="' + ag + '">Save result</button>' +
+      '<button class="btn ghost" data-act="closemodal">Not yet</button></div>');
+  };
+
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
     var t = ev.target.closest("[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
@@ -716,8 +736,11 @@ input[type="search"], select {
       if (window.DLSManager && window.DLSManager.playFixture) {  // inside the game: DLS's next match becomes this fixture
         var fx = nextFixture();
         if (!fx) return;
-        var userHome = fx.home === S.clubId;
-        var err = window.DLSManager.playFixture(userHome ? fx.away : fx.home, userHome);
+        var userHome = fx.home === S.clubId, opp = userHome ? fx.away : fx.home;
+        S.pending = { week: fx.week, home: fx.home, away: fx.away, userHome: userHome, oppTid: window.DLSManager.clubTid(opp),
+                      before: window.DLSManager.lastMatch() };
+        save();
+        var err = window.DLSManager.playFixture(opp, userHome);
         if (err) modal('<h2>Could not set up the match</h2><p class="muted" style="margin:0">' + esc(err) + '</p><button class="btn primary" data-act="closemodal">OK</button>');
         return;
       }
@@ -725,6 +748,14 @@ input[type="search"], select {
       return modal('<h2>Play in DLS</h2><p class="muted" style="margin:0">In the game this button loads the real DLS19 match with both squads and returns here at full time. That link is the next big piece of work, so for now use Quick Sim.</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
     if (act === "closemodal") return closeModal();
+    if (act === "saveresult") {
+      closeModal();
+      var mineR = playWeek({ hg: +t.getAttribute("data-hg"), ag: +t.getAttribute("data-ag") });
+      S.pending = null; save();
+      if (window.DLSManager && window.DLSManager.clearFixture) window.DLSManager.clearFixture();
+      if (mineR) { ui.report = mineR; ui.screen = "report"; } else ui.screen = "home";
+      return render();
+    }
     if (act === "autopick") { var L = lineupOf(S.clubId); L.xi = autoXI(S.clubId, L.formation); ui.sel = null; save(); return render(); }
     if (act === "settings") {
       return modal('<h2>Settings</h2><p class="muted" style="margin:0">Your career is saved on this device automatically.</p><button class="btn" data-act="askreset">Start a new career…</button><button class="btn ghost" data-act="closemodal">Close</button>');

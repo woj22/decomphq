@@ -117,6 +117,7 @@ public final class Overlay {
         web.setVisibility(View.VISIBLE);
         web.bringToFront();
         reopen.setVisibility(View.GONE);
+        web.evaluateJavascript("window.dlsOnShow && window.dlsOnShow()", null);
     }
 
     static void hide() {
@@ -238,6 +239,63 @@ public final class Overlay {
     }
 
     static String lastError = "";
+    private static long libBaseCache = 0;
+
+    /** Load address of libDLS19.so: the mapping start where "DOCS:profile.dat" sits at +0x3ee100. */
+    static long libBase() throws Exception {
+        if (libBaseCache != 0) {
+            return libBaseCache;
+        }
+        java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("/proc/self/maps"));
+        java.io.RandomAccessFile mem = new java.io.RandomAccessFile("/proc/self/mem", "r");
+        byte[] want = "DOCS:profile.dat".getBytes("US-ASCII");
+        try {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!(line.contains("libDLS19") || line.contains(".apk"))) {
+                    continue;
+                }
+                String[] f = line.split("\\s+");
+                if (f.length < 2 || f[1].charAt(0) != 'r') {
+                    continue;
+                }
+                long start = Long.parseLong(f[0].substring(0, f[0].indexOf('-')), 16);
+                try {
+                    byte[] got = new byte[want.length];
+                    mem.seek(start + 0x3ee100);
+                    mem.readFully(got);
+                    if (java.util.Arrays.equals(got, want)) {
+                        libBaseCache = start;
+                        return start;
+                    }
+                } catch (Throwable t) {
+                    // not readable there, keep looking
+                }
+            }
+        } finally {
+            br.close();
+            mem.close();
+        }
+        return 0;
+    }
+
+    static long readLong(java.io.RandomAccessFile mem, long addr) throws java.io.IOException {
+        byte[] b = new byte[8];
+        mem.seek(addr);
+        mem.readFully(b);
+        long v = 0;
+        for (int i = 7; i >= 0; i--) {
+            v = (v << 8) | (b[i] & 0xFF);
+        }
+        return v;
+    }
+
+    static int readInt(java.io.RandomAccessFile mem, long addr) throws java.io.IOException {
+        byte[] b = new byte[4];
+        mem.seek(addr);
+        mem.readFully(b);
+        return (b[0] & 0xFF) | ((b[1] & 0xFF) << 8) | ((b[2] & 0xFF) << 16) | ((b[3] & 0xFF) << 24);
+    }
 
     /**
      * Live club switch, no restart. Each club keeps its own save in DOCS/dlsmgr_saves/<club>.dat
@@ -460,6 +518,48 @@ public final class Overlay {
                 return "";
             } catch (Throwable t) {
                 return String.valueOf(t);
+            }
+        }
+
+        /**
+         * The last match DLS played, read from the game's own memory (/proc/self/mem):
+         * "home,away,homeGoals,awayGoals" with DLS team ids (258 = the player's team), or "".
+         * Match data pointer at lib+0x54d950; team ids at +0x3848 / +0x4870, goals at +0x9f14/15.
+         */
+        @JavascriptInterface
+        public String lastMatch() {
+            try {
+                long base = libBase();
+                if (base == 0) {
+                    return "";
+                }
+                java.io.RandomAccessFile mem = new java.io.RandomAccessFile("/proc/self/mem", "r");
+                try {
+                    long m = readLong(mem, base + 0x54d950);
+                    if (m == 0) {
+                        return "";
+                    }
+                    int home = readInt(mem, m + 0x3848);
+                    int away = readInt(mem, m + 0x4870);
+                    mem.seek(m + 0x9f14);
+                    int hg = mem.read();
+                    int ag = mem.read();
+                    return home + "," + away + "," + hg + "," + ag;
+                } finally {
+                    mem.close();
+                }
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
+                return "";
+            }
+        }
+
+        @JavascriptInterface
+        public int clubTid(String cid) {
+            try {
+                return new JSONObject(readText(activity.getAssets().open("dlsmgr/clubs.json"))).getJSONObject(cid).getInt("tid");
+            } catch (Throwable t) {
+                return -1;
             }
         }
 
