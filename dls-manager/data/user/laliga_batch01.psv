@@ -1,0 +1,366 @@
+club|shirt|player|position|DOB|age|nationality|height|foot|joined|signed_from|contract_until|market_value
+Real Madrid|1|Thibaut Courtois|GK|11/05/1992|34|Belgium|2.00m|left|09/08/2018|Chelsea FC|30/06/2027|€15.00m
+Real Madrid|13|Andriy Lunin|GK|11/02/1999|27|Ukraine|1.91m|right|01/07/2018|Zorya Lugansk|30/06/2030|€12.00m
+Real Madrid|4|Dean Huijsen|CB|14/04/2005|21|Spain/Netherlands|1.95m|both|01/06/2025|AFC Bournemouth|30/06/2030|€60.00m
+Real Madrid|16|Ibrahima Konaté|CB|25/05/1999|27|France/Mali|1.94m|right|01/07/2026|Liverpool FC|30/06/2030|€45.00m
+Real Madrid|2|Raúl Asencio|CB|13/02/2003|23|Spain|1.84m|right|01/07/2024|Real Madrid Castilla|30/06/2031|€18.00m
+Real Madrid|3|Éder Militão|CB|18/01/1998|28|Brazil/Spain|1.86m|right|01/07/2019|FC Porto|30/06/2028|€18.00m
+Real Madrid|22|Antonio Rüdiger|CB|03/03/1993|33|Germany/Sierra Leone|1.90m|right|01/07/2022|Chelsea FC|30/06/2027|€6.00m
+Real Madrid|17|Marc Cucurella|LB|22/07/1998|28|Spain|1.74m|left|01/07/2026|Chelsea FC|30/06/2032|€60.00m
+Real Madrid|18|Álvaro Carreras|LB|23/03/2003|23|Spain|1.86m|left|14/07/2025|SL Benfica|30/06/2031|€50.00m
+Real Madrid|23|Ferland Mendy|LB|08/06/1995|31|France/Senegal|1.80m|left|01/07/2019|Olympique Lyon|30/06/2028|€4.00m
+Real Madrid|12|Trent Alexander-Arnold|RB|07/10/1998|28|England|1.80m|right|01/06/2025|Liverpool FC|30/06/2031|€60.00m
+Real Madrid|24|Denzel Dumfries|RB|18/04/1996|30|Netherlands/Aruba|1.88m|right|05/07/2026|Inter Milan|30/06/2030|€25.00m
+Real Madrid|14|Aurélien Tchouaméni|DM|27/01/2000|26|France/Cameroon|1.87m|right|01/07/2022|AS Monaco|30/06/2028|€70.00m
+Real Madrid|8|Federico Valverde|CM|22/07/1998|28|Uruguay/Spain|1.82m|right|01/07/2018|Real Madrid Castilla|30/06/2029|€90.00m
+Real Madrid|6|Eduardo Camavinga|CM|10/11/2002|24|France/Congo|1.82m|left|31/08/2021|Stade Rennais FC|30/06/2029|€50.00m
+Real Madrid|27|Thiago Pitarch|CM|03/08/2007|19|Spain/Morocco|1.79m|right|01/03/2026|Real Madrid Castilla|30/06/2030|€20.00m
+Real Madrid|29|Jorge Cestero|CM|24/03/2006|20|Spain|1.78m|right|||30/06/2028|€7.50m
+Real Madrid|5|Jude Bellingham|AM|29/06/2003|23|England/Ireland|1.86m|right|01/07/2023|Borussia Dortmund|30/06/2029|€160.00m
+Real Madrid|15|Arda Güler|AM|25/02/2005|21|Türkiye|1.76m|left|06/07/2023|Fenerbahce|30/06/2029|€100.00m
+Real Madrid|20|Bernardo Silva|AM|10/08/1994|32|Portugal|1.73m|left|01/07/2026|Manchester City|30/06/2028|€22.00m
+Real Madrid|7|Vinicius Junior|LW|12/07/2000|26|Brazil/Spain|1.76m|right|12/07/2018|CR Flamengo|30/06/2032|€130.00m
+Real Madrid|25|Yan Diomande|RW|14/11/2006|20|Cote d'Ivoire|1.80m|right|06/08/2026|RB Leipzig|30/06/2033|€120.00m
+Real Madrid|11|Rodrygo|RW|09/01/2001|25|Brazil/Spain|1.74m|right|01/07/2019|Santos FC|30/06/2028|€45.00m
+Real Madrid|21|Brahim Díaz|RW|03/08/1999|27|Morocco/Spain|1.70m|both|06/01/2019|Manchester City|30/06/2027|€35.00m
+Real Madrid|10|Kylian Mbappé|CF|20/12/1998|27|France/Cameroon|1.80m|right|01/07/2024|Paris Saint-Germain|30/06/2029|€200.00m
+Real Madrid|9|Endrick|CF|21/07/2006|20|Brazil|1.72m|left|21/07/2024|SE Palmeiras|30/06/2030|€40.00m
+Real Madrid|19|Carlos Espí|CF|24/07/2005|21|Spain|1.94m|right|30/07/2026|Levante UD|30/06/2031|€40.00m
+Barcelona|1|Joan García|GK|04/05/2001|25|Spain|1.93m|right|01/07/2025|RCD Espanyol|30/06/2031|€45.00m
+Barcelona|25|Dominik Livakovic|GK|09/01/1995|31|Croatia|1.88m|right|27/08/2026|Fenerbahce|30/06/2030|€4.00m
+Barcelona|13|Wojciech Szczęsny|GK|18/04/1990|36|Poland|1.95m|right|02/10/2024|Career break|30/06/2027|€800k
+Barcelona|5|Pau Cubarsí|CB|22/01/2007|19|Spain|1.84m|right|01/01/2024|Barcelona Atlètic|30/06/2029|€100.00m
+Barcelona|24|Eric García|CB|09/01/2001|25|Spain|1.80m|right|01/07/2021|Manchester City|30/06/2031|€45.00m
+Barcelona|18|Gerard Martín|CB|26/02/2002|24|Spain|1.86m|left|01/07/2024|Barcelona Atlètic|30/06/2028|€40.00m
+Barcelona|15|Andreas Christensen|CB|10/04/1996|30|Denmark|1.89m|right|04/07/2022|Chelsea FC|30/06/2028|€8.00m
+Barcelona|3|Alejandro Balde|LB|18/10/2003|23|Spain|1.77m|left|01/07/2022|Barcelona Atlètic|30/06/2028|€40.00m
+Barcelona|23|Jules Koundé|RB|12/11/1998|28|France/Benin|1.81m|right|28/07/2022|Sevilla FC|30/06/2030|€55.00m
+Barcelona|12|Xavi Espart|RB|21/05/2007|19|Spain|1.75m|right|01/07/2026|Barcelona Atlètic|30/06/2030|€25.00m
+Barcelona|2|João Cancelo|RB|27/05/1994|32|Portugal|1.82m|right|20/08/2026|Al-Hilal SFC|30/06/2029|€7.00m
+Barcelona|16|Rodri|DM|22/06/1996|30|Spain|1.90m|right|18/08/2026|Manchester City|30/06/2030|€60.00m
+Barcelona|22|Marc Bernal|DM|26/05/2007|19|Spain|1.93m|left|01/07/2024|Barcelona Atlètic|30/06/2029|€40.00m
+Barcelona|8|Pedri|CM|25/11/2002|23|Spain|1.74m|right|02/09/2019|UD Las Palmas|30/06/2030|€150.00m
+Barcelona|6|Gavi|CM|05/08/2004|22|Spain|1.73m|right|01/07/2021|Barcelona U19|30/06/2030|€25.00m
+Barcelona|21|Frenkie de Jong|CM|12/05/1997|29|Netherlands|1.81m|right|01/07/2019|Ajax Amsterdam|30/06/2029|€25.00m
+Barcelona|4|Brian Fariñas|CM|09/02/2006|20|Spain|1.80m|right|01/07/2026|Barcelona Atlètic|30/06/2028|€5.00m
+Barcelona|7|Fermín López|AM|11/05/2003|23|Spain|1.76m|right|01/07/2023|Barcelona Atlètic|30/06/2031|€110.00m
+Barcelona|20|Dani Olmo|AM|07/05/1998|28|Spain|1.79m|right|09/08/2024|RB Leipzig|30/06/2030|€60.00m
+Barcelona|17|Anthony Gordon|LW|24/02/2001|25|England/Scotland|1.83m|right|01/07/2026|Newcastle United|30/06/2031|€80.00m
+Barcelona|27|Jesse Bisiwu|LW|22/01/2008|18|Belgium/Ghana|1.85m|right|31/07/2026|Club NXT|30/06/2031|€8.00m
+Barcelona|10|Lamine Yamal|RW|13/07/2007|19|Spain|1.83m|left|01/07/2023|Barcelona U19|30/06/2031|€220.00m
+Barcelona|14|Karim Adeyemi|RW|18/01/2002|24|Germany/Nigeria|1.80m|left|23/07/2026|Borussia Dortmund|30/06/2031|€40.00m
+Barcelona|19|Roony Bardghji|RW|15/11/2005|21|Sweden/Syria|1.73m|left|14/07/2025|FC Copenhagen|30/06/2029|€8.00m
+Barcelona|11|Raphinha|CF|14/12/1996|29|Brazil/Italy|1.76m|left|13/07/2022|Leeds United|30/06/2030|€70.00m
+Barcelona|9|Gabriel Jesus|CF|03/04/1997|29|Brazil|1.75m|right|01/09/2026|Arsenal FC|30/06/2029|€17.00m
+Barcelona|29|Hamza Abdelkarim|CF|01/01/2008|18|Egypt|1.82m|both|01/07/2026|Al Ahly FC|30/06/2030|€8.00m
+Atlético|13|Jan Oblak|GK|07/01/1993|33|Slovenia|1.88m|right|16/07/2014|SL Benfica|30/06/2028|€15.00m
+Atlético|1|Juan Musso|GK|06/05/1994|32|Argentina/Italy|1.93m|right|10/06/2025|Atalanta BC|30/06/2028|€3.00m
+Atlético|25|Salvi Esquivel|GK|30/09/2005|21|Spain|1.93m|left|01/09/2026|Atlético Madrileño|30/06/2029|€1.00m
+Atlético|18|Marc Pubill|CB|20/06/2003|23|Spain|1.91m|right|23/07/2025|UD Almería|30/06/2030|€50.00m
+Atlético|21|Cristian Romero|CB|27/04/1998|28|Argentina|1.85m|right|15/08/2026|Tottenham Hotspur|30/06/2031|€40.00m
+Atlético|17|Dávid Hancko|CB|13/12/1997|28|Slovakia|1.88m|left|24/07/2025|Feyenoord|30/06/2030|€35.00m
+Atlético|24|Robin Le Normand|CB|11/11/1996|30|Spain/France|1.87m|right|27/07/2024|Real Sociedad|30/06/2029|€18.00m
+Atlético|27|Jorge Domínguez|CB|21/12/2009|16|Spain/Congo|1.95m|right|||30/06/2028|€8.00m
+Atlético|22|Alejandro Grimaldo|LB|20/09/1995|31|Spain|1.71m|left|01/07/2026|Bayer Leverkusen|30/06/2030|€20.00m
+Atlético|30|Dani Martínez|LB|05/05/2004|22|Spain|1.86m|left|01/09/2026|Atlético Madrileño|30/06/2030|€2.50m
+Atlético|14|Marcos Llorente|RB|30/01/1995|31|Spain|1.83m|right|01/07/2019|Real Madrid|30/06/2027|€20.00m
+Atlético|23|Morten Hjulmand|DM|25/06/1999|27|Denmark|1.85m|right|11/07/2026|Sporting CP|30/06/2031|€45.00m
+Atlético|8|Pablo Barrios|CM|15/06/2003|23|Spain|1.81m|right|23/01/2023|Atlético Madrileño|30/06/2030|€70.00m
+Atlético|4|Rodrigo Mendoza|CM|15/03/2005|21|Spain|1.82m|right|02/02/2026|Elche CF|30/06/2031|€20.00m
+Atlético|5|Johnny Cardoso|CM|20/09/2001|25|USA/Italy|1.86m|right|16/07/2025|Real Betis|30/06/2030|€20.00m
+Atlético|3|Obed Vargas|CM|05/08/2005|21|Mexico/Spain|1.75m|right|02/02/2026|Seattle Sounders|30/06/2030|€10.00m
+Atlético|6|Koke|CM|08/01/1992|34|Spain|1.76m|right|01/01/2011|Atlético Madrileño|30/06/2027|€5.00m
+Atlético|7|Kang-in Lee|AM|19/02/2001|25|Korea, South|1.73m|left|25/07/2026|Paris Saint-Germain|30/06/2031|€35.00m
+Atlético|10|Álex Baena|LW|20/07/2001|25|Spain|1.72m|right|02/07/2025|Villarreal CF|30/06/2030|€45.00m
+Atlético|11|Ademola Lookman|LW|20/10/1997|29|Nigeria/England|1.74m|right|02/02/2026|Atalanta BC|30/06/2030|€40.00m
+Atlético|16|Arnau Ortiz|LW|29/10/2001|25|Spain|1.75m|both|01/07/2026|Atlético Madrileño|30/06/2028|€6.00m
+Atlético|20|Giuliano Simeone|RW|18/12/2002|23|Argentina/Italy|1.74m|right|01/07/2022|Atlético Madrileño|30/06/2030|€40.00m
+Atlético|19|Julián Álvarez|CF|31/01/2000|26|Argentina/Italy|1.70m|right|12/08/2024|Manchester City|30/06/2030|€110.00m
+Atlético|15|Jonathan David|CF|14/01/2000|26|Canada/USA|1.78m|both|01/09/2026|Juventus (loan)|30/06/2027|€30.00m
+Atlético|9|Alexander Sørloth|CF|05/12/1995|30|Norway|1.96m|left|03/08/2024|Villarreal CF|30/06/2028|€15.00m
+Villarreal|1|Luiz Júnior|GK|14/01/2001|25|Brazil/Portugal|1.92m|left|20/08/2024|FC Famalicão|30/06/2030|€12.00m
+Villarreal|25|Péter Gulácsi|GK|06/05/1990|36|Hungary|1.93m|right|03/08/2026|RB Leipzig|30/06/2028|€1.00m
+Villarreal|13|Rubén Gómez|GK|24/01/2002|24|Spain|1.85m|right|01/07/2026|Villarreal CF B|30/06/2027|€400k
+Villarreal|12|Renato Veiga|CB|29/07/2003|23|Portugal/Cape Verde|1.88m|left|22/08/2025|Chelsea FC|30/06/2032|€30.00m
+Villarreal|2|Logan Costa|CB|01/04/2001|25|Cape Verde/France|1.90m|right|22/08/2024|FC Toulouse|30/06/2030|€15.00m
+Villarreal|6|Pau Navarro|CB|25/04/2005|21|Spain|1.85m|right|01/11/2024|Villarreal CF B|30/06/2031|€15.00m
+Villarreal|8|Juan Foyth|CB|12/01/1998|28|Argentina/Spain|1.87m|right|01/07/2021|Tottenham Hotspur|30/06/2029|€8.00m
+Villarreal|20|Carlos Romero|LB|29/10/2001|25|Spain|1.74m|left|01/07/2024|Villarreal CF B|30/06/2031|€25.00m
+Villarreal|23|Sergi Cardona|LB|08/07/1999|27|Spain|1.86m|both|18/07/2024|UD Las Palmas|30/06/2027|€9.00m
+Villarreal|15|Santiago Mouriño|RB|13/02/2002|24|Uruguay/Spain|1.86m|right|01/08/2025|Atlético de Madrid|30/06/2030|€20.00m
+Villarreal|3|Alex Freeman|RB|09/08/2004|22|USA|1.88m|right|29/01/2026|Orlando City SC|30/06/2032|€15.00m
+Villarreal|18|Pape Gueye|CM|24/01/1999|27|Senegal/France|1.89m|left|05/07/2024|Olympique Marseille|30/06/2028|€40.00m
+Villarreal|16|Carlos Macià|CM|01/09/2008|18|Spain|1.94m|right|01/07/2026|Villarreal CF B|30/06/2031|€15.00m
+Villarreal|24|Nathan Saliba|CM|07/02/2004|22|Canada/Haiti|1.74m|right|25/08/2026|RSC Anderlecht|30/06/2031|€15.00m
+Villarreal|14|Santi Comesaña|CM|05/10/1996|30|Spain|1.88m|both|01/07/2023|Rayo Vallecano|30/06/2028|€8.00m
+Villarreal|5|Alassane Diatta|CM|14/05/2005|21|Senegal|1.90m|left|01/07/2026|Villarreal CF B|30/06/2030|€5.00m
+Villarreal|10|Alberto Moleiro|LW|30/09/2003|23|Spain/Cuba|1.71m|right|01/07/2025|UD Las Palmas|30/06/2030|€50.00m
+Villarreal|27|Nízar El Jmili|LW|30/11/2004|21|Spain/Morocco|1.72m|both|||30/06/2030|€150k
+Villarreal|11|Ilias Akhomach|RW|16/04/2004|22|Morocco/Spain|1.75m|left|03/07/2023|Barcelona Atlètic|30/06/2028|€12.00m
+Villarreal|17|Tajon Buchanan|RW|08/02/1999|27|Canada/Jamaica|1.83m|right|29/07/2025|Inter Milan|30/06/2030|€12.00m
+Villarreal|19|Nicolas Pépé|RW|29/05/1995|31|Cote d'Ivoire/France|1.83m|left|04/08/2024|Trabzonspor|30/06/2028|€6.00m
+Villarreal|9|Georges Mikautadze|CF|31/10/2000|26|Georgia/France|1.76m|right|01/09/2025|Olympique Lyon|30/06/2031|€40.00m
+Villarreal|21|Tani Oluwaseyi|CF|15/05/2000|26|Canada/Nigeria|1.87m|left|29/08/2025|Minnesota United|30/06/2030|€7.00m
+Villarreal|22|Ayoze Pérez|CF|29/07/1993|33|Spain|1.78m|right|13/08/2024|Real Betis|30/06/2028|€5.00m
+Villarreal|7|Gerard Moreno|CF|07/04/1992|34|Spain|1.80m|left|01/07/2018|RCD Espanyol|30/06/2027|€2.50m
+Real Sociedad|1|Álex Remiro|GK|24/03/1995|31|Spain|1.92m|right|01/07/2019|Athletic Bilbao|30/06/2027|€9.00m
+Real Sociedad|13|Unai Marrero|GK|09/10/2001|25|Spain|1.89m|right|01/07/2023|Real Sociedad B|30/06/2030|€1.00m
+Real Sociedad|6|Jon Martín|CB|23/04/2006|20|Spain|1.87m|right|01/07/2024|Real Sociedad B|30/06/2032|€25.00m
+Real Sociedad|19|Mamadou Sarr|CB|29/08/2005|21|Senegal/France|1.94m|right|28/08/2026|Chelsea (loan)|30/06/2027|€22.00m
+Real Sociedad|5|Igor Zubeldia|CB|30/03/1997|29|Spain|1.81m|right|01/07/2017|Real Sociedad B|30/06/2029|€6.00m
+Real Sociedad|16|Jon Pacheco|CB|08/01/2001|25|Spain|1.84m|left|01/07/2022|Real Sociedad B|30/06/2030|€5.00m
+Real Sociedad|34|Luken Beitia|CB|30/06/2004|22|Spain|1.91m|right|01/07/2026|Real Sociedad B|30/06/2030|€2.00m
+Real Sociedad|17|Sergio Gómez|LB|04/09/2000|26|Spain|1.73m|left|12/07/2024|Manchester City|30/06/2030|€15.00m
+Real Sociedad|3|Aihen Muñoz|LB|16/08/1997|29|Spain|1.75m|left|01/07/2019|Real Sociedad B|30/06/2027|€2.50m
+Real Sociedad|2|Jon Aramburu|RB|23/07/2002|24|Venezuela/Spain|1.76m|right|01/07/2024|Real Sociedad B|30/06/2030|€15.00m
+Real Sociedad|22|Héctor Fort|RB|02/08/2006|20|Spain|1.85m|right|29/08/2026|FC Barcelona|30/06/2031|€15.00m
+Real Sociedad|20|Álvaro Odriozola|RB|14/12/1995|30|Spain|1.75m|right|01/09/2023|Real Madrid|30/06/2029|€800k
+Real Sociedad|4|Jon Gorrotxategi|DM|02/09/2002|24|Spain|1.77m|right|01/07/2024|Real Sociedad B|30/06/2030|€25.00m
+Real Sociedad|8|Beñat Turrientes|CM|31/01/2002|24|Spain|1.81m|right|07/08/2022|Real Sociedad B|30/06/2030|€10.00m
+Real Sociedad|18|Carlos Soler|CM|02/01/1997|29|Spain|1.80m|right|01/09/2025|Paris Saint-Germain|30/06/2029|€7.00m
+Real Sociedad|21|Yangel Herrera|CM|07/01/1998|28|Venezuela/Spain|1.84m|right|01/09/2025|Girona FC|30/06/2030|€6.00m
+Real Sociedad|24|Luka Sucic|AM|08/09/2002|24|Croatia|1.85m|left|02/08/2024|Red Bull Salzburg|30/06/2029|€15.00m
+Real Sociedad|23|Arsen Zakharyan|AM|26/05/2003|23|Russia|1.83m|right|19/08/2023|Dynamo Moscow|30/06/2029|€7.50m
+Real Sociedad|15|Pablo Marín|AM|03/07/2003|23|Spain|1.78m|right|01/07/2024|Real Sociedad B|30/06/2029|€7.00m
+Real Sociedad|7|Ander Barrenetxea|LW|27/12/2001|24|Spain|1.75m|right|01/07/2019|Real Sociedad B|30/06/2030|€18.00m
+Real Sociedad|11|Gonçalo Guedes|LW|29/11/1996|29|Portugal|1.79m|right|04/08/2025|Wolves|30/06/2028|€6.00m
+Real Sociedad|29|Álex Marchal|LW|17/09/2007|19|Spain|1.80m|right|01/07/2026|Real Sociedad B|30/06/2029|€3.00m
+Real Sociedad|14|Takefusa Kubo|RW|04/06/2001|25|Japan|1.73m|left|19/07/2022|Real Madrid|30/06/2029|€20.00m
+Real Sociedad|12|Job Ochieng|RW|17/01/2003|23|Kenya|1.85m|right|01/07/2026|Real Sociedad B|30/06/2028|€4.00m
+Real Sociedad|10|Mikel Oyarzabal|CF|21/04/1997|29|Spain|1.81m|left|01/01/2016|Real Sociedad B|30/06/2028|€25.00m
+Real Sociedad|9|Orri Óskarsson|CF|29/08/2004|22|Iceland|1.86m|right|30/08/2024|FC Copenhagen|30/06/2030|€20.00m
+Real Betis|1|Álvaro Valles|GK|25/07/1997|29|Spain|1.91m|right|01/07/2025|Without Club|30/06/2030|€10.00m
+Real Betis|13|Diego Conde|GK|28/10/1998|28|Spain|1.88m|right|20/07/2026|Villarreal (loan)|30/06/2027|€3.00m
+Real Betis|4|Natan|CB|06/02/2001|25|Brazil|1.88m|left|01/07/2025|SSC Napoli|30/06/2030|€30.00m
+Real Betis|16|Valentín Gómez|CB|26/06/2003|23|Argentina/Spain|1.81m|left|26/07/2025|CA Vélez Sarsfield|30/06/2030|€12.00m
+Real Betis|3|Diego Llorente|CB|16/08/1993|33|Spain|1.86m|right|09/07/2024|Leeds United|30/06/2028|€2.50m
+Real Betis|5|Marc Bartra|CB|15/01/1991|35|Spain|1.84m|right|24/07/2023|Trabzonspor|30/06/2027|€900k
+Real Betis|11|Fran García|LB|14/08/1999|27|Spain|1.69m|left|08/07/2026|Real Madrid|30/06/2030|€7.50m
+Real Betis|23|Junior Firpo|LB|22/08/1996|30|Dominican Rep./Spain|1.84m|left|17/07/2025|Leeds United|30/06/2028|€3.50m
+Real Betis|12|Ángel Ortiz|RB|25/07/2004|22|Spain|1.67m|right|01/01/2025|Betis Deportivo|30/06/2029|€6.00m
+Real Betis|2|Héctor Bellerín|RB|19/03/1995|31|Spain|1.78m|right|18/07/2023|Sporting CP|30/06/2028|€2.40m
+Real Betis|6|Facundo Bernal|DM|21/08/2003|23|Uruguay/Italy|1.87m|right|06/07/2026|Fluminense|30/06/2031|€10.00m
+Real Betis|21|Marc Roca|DM|26/11/1996|29|Spain|1.84m|left|01/07/2024|Leeds United|30/06/2029|€4.00m
+Real Betis|18|Nelson Deossa|CM|06/02/2000|26|Colombia|1.85m|left|04/08/2025|CF Monterrey|30/06/2030|€9.00m
+Real Betis|8|Pablo Fornals|CM|22/02/1996|30|Spain|1.78m|right|01/02/2024|West Ham United|30/06/2029|€8.00m
+Real Betis|25|Dani Ceballos|CM|07/08/1996|30|Spain|1.79m|right|01/09/2026|Real Madrid|30/06/2029|€6.00m
+Real Betis|15|Álvaro Fidalgo|CM|09/04/1997|29|Mexico/Spain|1.75m|right|01/02/2026|CF América|30/06/2030|€5.00m
+Real Betis|20|Giovani Lo Celso|AM|09/04/1996|30|Argentina/Italy|1.77m|left|30/08/2024|Tottenham Hotspur|30/06/2028|€7.00m
+Real Betis|22|Isco|AM|21/04/1992|34|Spain|1.76m|right|26/07/2023|Without Club|30/06/2028|€3.50m
+Real Betis|14|Iker Losada|AM|01/08/2001|25|Spain|1.75m|right|06/07/2024|Racing Ferrol|30/06/2029|€1.80m
+Real Betis|10|Abde Ezzalzouli|LW|17/12/2001|24|Morocco/Spain|1.77m|right|01/09/2023|FC Barcelona|30/06/2029|€40.00m
+Real Betis|17|Rodrigo Riquelme|LW|02/04/2000|26|Spain|1.74m|right|04/07/2025|Atlético de Madrid|30/06/2030|€4.00m
+Real Betis|7|Antony|RW|24/02/2000|26|Brazil|1.72m|left|01/09/2025|Manchester United|30/06/2030|€40.00m
+Real Betis|24|Aitor Ruibal|RW|22/03/1996|30|Spain|1.76m|right|01/07/2019|Betis Deportivo|30/06/2028|€4.00m
+Real Betis|19|Troy Parrott|CF|04/02/2002|24|Ireland|1.85m|right|20/08/2026|AZ Alkmaar|30/06/2031|€20.00m
+Real Betis|9|Cucho Hernández|CF|20/04/1999|27|Colombia/Spain|1.76m|right|03/02/2025|Columbus Crew|30/06/2030|€18.00m
+Athletic|1|Unai Simón|GK|11/06/1997|29|Spain|1.90m|right|01/07/2018|Bilbao Athletic|30/06/2029|€22.00m
+Athletic|13|Álex Padilla|GK|01/09/2003|23|Mexico/Spain|1.90m|right|01/07/2024|Bilbao Athletic|30/06/2029|€3.00m
+Athletic|3|Dani Vivian|CB|05/07/1999|27|Spain|1.84m|right|01/08/2020|Bilbao Athletic|30/06/2032|€20.00m
+Athletic|14|Aymeric Laporte|CB|27/05/1994|32|Spain/France|1.91m|left|01/09/2025|Al-Nassr FC|30/06/2028|€8.00m
+Athletic|4|Aitor Paredes|CB|29/04/2000|26|Spain|1.85m|right|01/07/2022|Bilbao Athletic|30/06/2029|€7.50m
+Athletic|5|Yeray Álvarez|CB|24/01/1995|31|Spain|1.82m|right|01/07/2016|Bilbao Athletic|30/06/2028|€900k
+Athletic|-|Unai Egiluz|CB|19/03/2002|24|Spain|1.86m|right|01/07/2024|Bilbao Athletic|30/06/2028|€400k
+Athletic|31|Johaneko Louis-Jean|LB|28/06/2004|22|France|1.75m|both|01/07/2026|Bilbao Athletic|30/06/2028|€2.00m
+Athletic|17|Yuri Berchiche|LB|10/02/1990|36|Spain/Algeria|1.81m|left|02/07/2018|Paris Saint-Germain|30/06/2027|€1.00m
+Athletic|12|Jesús Areso|RB|02/07/1999|27|Spain|1.82m|right|22/07/2025|CA Osasuna|30/06/2031|€5.00m
+Athletic|15|Hugo Rincón|RB|27/01/2003|23|Spain|1.83m|right|01/07/2024|Bilbao Athletic|30/06/2028|€3.50m
+Athletic|18|Mikel Jauregizar|CM|13/11/2003|23|Spain|1.77m|right|01/07/2024|Bilbao Athletic|30/06/2031|€25.00m
+Athletic|6|Beñat Prados|CM|08/02/2001|25|Spain|1.80m|right|01/07/2022|Bilbao Athletic|30/06/2031|€12.00m
+Athletic|20|Alejandro Rego|CM|11/06/2003|23|Spain|1.92m|right|01/07/2025|Bilbao Athletic|30/06/2030|€5.00m
+Athletic|24|Beñat Gerenabarrena|CM|29/03/2003|23|Spain|1.73m|right|01/07/2025|Bilbao Athletic|30/06/2029|€5.00m
+Athletic|16|Iñigo Ruiz de Galarreta|CM|06/08/1993|33|Spain|1.75m|right|01/07/2023|RCD Mallorca|30/06/2027|€2.00m
+Athletic|8|Oihan Sancet|AM|25/04/2000|26|Spain|1.88m|right|04/08/2020|Bilbao Athletic|30/06/2032|€25.00m
+Athletic|28|Peio Canales|AM|17/01/2005|21|Spain|1.75m|right|01/07/2025|Bilbao Athletic|30/06/2029|€10.00m
+Athletic|10|Nico Williams|LW|12/07/2002|24|Spain/Ghana|1.81m|right|01/07/2021|Bilbao Athletic|30/06/2035|€40.00m
+Athletic|7|Álex Berenguer|LW|04/07/1995|31|Spain|1.75m|right|02/10/2020|Torino FC|30/06/2027|€4.00m
+Athletic|25|Álvaro Djaló|LW|16/08/1999|27|Guinea-Bissau/Spain|1.75m|right|01/07/2024|SC Braga|30/06/2029|€4.00m
+Athletic|23|Robert Navarro|RW|12/04/2002|24|Spain|1.78m|right|01/07/2025|RCD Mallorca|30/06/2030|€7.00m
+Athletic|22|Nico Serrano|RW|05/03/2003|23|Spain|1.76m|left|01/07/2022|Bilbao Athletic|30/06/2028|€1.50m
+Athletic|9|Iñaki Williams|CF|15/06/1994|32|Ghana/Spain|1.86m|right|01/07/2015|Bilbao Athletic|30/06/2028|€8.00m
+Athletic|11|Gorka Guruzeta|CF|12/09/1996|30|Spain|1.88m|right|03/07/2022|SD Amorebieta|30/06/2028|€5.00m
+Athletic|21|Maroan Sannadi|CF|01/02/2001|25|Morocco/Spain|1.92m|right|01/02/2025|Deportivo Alavés|30/06/2029|€3.00m
+Celta|13|Ionuț Radu|GK|28/05/1997|29|Romania|1.88m|right|01/07/2025|Venezia FC|30/06/2029|€10.00m
+Celta|1|Altay Bayındır|GK|14/04/1998|28|Türkiye|1.98m|right|07/08/2026|Manchester United (loan)|30/06/2027|€3.80m
+Celta|25|Iván Villar|GK|09/07/1997|29|Spain|1.88m|right|01/07/2019|Celta Vigo B|30/06/2027|€900k
+Celta|20|Javi Rodríguez|CB|27/06/2003|23|Spain|1.83m|right|01/07/2024|Celta Fortuna|30/06/2030|€18.00m
+Celta|18|Yoel Lago|CB|25/03/2004|22|Spain|1.85m|right|01/07/2025|Celta Fortuna|30/06/2029|€7.50m
+Celta|2|Carl Starfelt|CB|01/06/1995|31|Sweden|1.85m|right|10/08/2023|Celtic FC|30/06/2027|€4.50m
+Celta|4|Abdoulaye Faye|CB|22/09/2004|22|Senegal|1.91m|left|03/08/2026|Bayer Leverkusen (loan)|30/06/2027|€4.50m
+Celta|21|Sebastián Cáceres|CB|18/08/1999|27|Uruguay|1.80m|right|01/09/2026|CF América|30/06/2030|€4.50m
+Celta|3|Marcos Alonso|CB|28/12/1990|35|Spain|1.88m|left|28/08/2024|FC Barcelona|30/06/2028|€1.20m
+Celta|22|Javi Galán|LB|19/11/1994|31|Spain|1.72m|left|01/07/2026|CA Osasuna|30/06/2028|€1.80m
+Celta|5|Sergio Carreira|RB|13/10/2000|26|Spain|1.70m|right|01/07/2021|Celta Vigo B|30/06/2029|€12.00m
+Celta|17|Javi Rueda|RB|08/05/2002|24|Spain|1.77m|right|01/07/2024|Celta Fortuna|30/06/2029|€6.00m
+Celta|15|Álvaro Núñez|RB|07/07/2000|26|Spain|1.77m|right|02/02/2026|Elche CF|30/06/2030|€4.00m
+Celta|6|Ilaix Moriba|CM|19/01/2003|23|Guinea/Spain|1.85m|right|01/07/2025|RB Leipzig|30/06/2029|€15.00m
+Celta|8|Miguel Román|CM|26/12/2002|23|Spain|1.78m|right|01/07/2025|Celta Fortuna|30/06/2028|€15.00m
+Celta|14|Aleix Febas|CM|02/02/1996|30|Spain|1.72m|right|01/07/2026|Elche CF|30/06/2029|€5.00m
+Celta|30|Hugo Burcio|CM|31/10/2006|20|Spain|1.87m|right|01/07/2026|Celta Fortuna|30/06/2028|€2.00m
+Celta|19|Williot Swedberg|LW|01/02/2004|22|Sweden|1.87m|right|01/07/2022|Hammarby IF|30/06/2029|€20.00m
+Celta|23|Hugo Álvarez|LW|02/07/2003|23|Spain|1.76m|right|18/07/2024|Celta Fortuna|30/06/2028|€8.00m
+Celta|24|Couhaib Driouech|LW|17/04/2002|24|Morocco/Netherlands|1.75m|right|25/08/2026|PSV Eindhoven|30/06/2030|€7.50m
+Celta|9|Ferran Jutglà|RW|01/02/1999|27|Spain|1.75m|right|01/07/2025|Club Brugge|30/06/2029|€10.00m
+Celta|39|Jones El-Abdellaoui|RW|12/01/2006|20|Morocco/Norway|1.84m|right|08/01/2025|Vålerenga|30/06/2029|€8.00m
+Celta|16|Hugo González|RW|07/02/2003|23|Spain|1.77m|right|01/07/2026|Celta Fortuna|30/06/2028|€3.00m
+Celta|11|Pablo Durán|CF|25/05/2001|25|Spain|1.76m|right|18/07/2024|Celta Fortuna|30/06/2028|€4.00m
+Celta|7|Borja Iglesias|CF|17/01/1993|33|Spain|1.87m|right|12/08/2025|Real Betis|30/06/2027|€2.50m
+Celta|10|Iago Aspas|CF|01/08/1987|39|Spain|1.76m|left|07/07/2015|Sevilla FC|30/06/2027|€1.60m
+Sevilla|1|Odysseas Vlachodimos|GK|26/04/1994|32|Greece/Germany|1.91m|right|12/08/2025|Newcastle (loan)|30/06/2027|€3.00m
+Sevilla|13|Fran González|GK|24/06/2005|21|Spain|2.00m|right|02/08/2026|Real Madrid|30/06/2031|€3.00m
+Sevilla|4|Kike Salas|CB|23/04/2002|24|Spain|1.88m|left|01/01/2023|Sevilla Atlético|30/06/2029|€14.00m
+Sevilla|5|Andrés Castrín|CB|26/05/2003|23|Spain|1.88m|right|01/01/2026|Sevilla Atlético|30/06/2027|€8.00m
+Sevilla|12|Arouna Sangante|CB|12/04/2002|24|Senegal/Guinea-Bissau|1.89m|right|01/07/2026|Le Havre AC|30/06/2031|€8.00m
+Sevilla|23|Marcão|CB|05/06/1996|30|Brazil/Spain|1.85m|left|08/07/2022|Galatasaray|30/06/2028|€2.50m
+Sevilla|15|Fábio Cardoso|CB|19/04/1994|32|Portugal|1.87m|right|01/09/2025|FC Porto|30/06/2028|€1.50m
+Sevilla|17|Gabriel Suazo|LB|09/08/1997|29|Chile|1.78m|left|12/07/2025|FC Toulouse|30/06/2028|€7.00m
+Sevilla|3|Julio Díaz|LB|10/01/2005|21|Spain|1.74m|left|28/07/2026|Atlético de Madrid|30/06/2031|€2.00m
+Sevilla|22|José Ángel Carmona|RB|29/01/2002|24|Spain|1.84m|right|01/07/2022|Sevilla Atlético|30/06/2028|€10.00m
+Sevilla|2|Juan Iglesias|RB|03/07/1998|28|Spain|1.87m|right|01/07/2026|Getafe CF|30/06/2030|€6.00m
+Sevilla|6|Lucien Agoumé|DM|09/02/2002|24|France/Cameroon|1.85m|right|06/08/2024|Inter Milan|30/06/2028|€18.00m
+Sevilla|24|Youssouf Fofana|CM|10/01/1999|27|France/Mali|1.85m|right|01/09/2026|AC Milan (loan)|30/06/2027|€15.00m
+Sevilla|8|Giorgi Kochorashvili|CM|29/06/1999|27|Georgia|1.78m|right|21/08/2026|Sporting CP|30/06/2030|€4.50m
+Sevilla|27|Nico Guillén|CM|30/01/2008|18|Spain|1.85m|left|||30/06/2029|€2.00m
+Sevilla|18|Jon Guridi|CM|28/02/1995|31|Spain|1.79m|left|01/07/2026|Deportivo Alavés|30/06/2028|€1.80m
+Sevilla|14|Manu Bueno|CM|27/07/2004|22|Spain|1.78m|left|01/07/2025|Sevilla Atlético|30/06/2027|€1.50m
+Sevilla|11|Rubén Vargas|LW|05/08/1998|28|Switzerland/Dom. Rep.|1.79m|right|10/01/2025|FC Augsburg|30/06/2029|€15.00m
+Sevilla|20|Félix Correia|LW|22/01/2001|25|Portugal/São Tomé|1.78m|right|01/09/2026|LOSC Lille (loan)|30/06/2027|€10.00m
+Sevilla|21|Chidera Ejuke|LW|02/01/1998|28|Nigeria|1.76m|right|01/07/2024|CSKA Moscow|30/06/2027|€4.00m
+Sevilla|7|Alfon González|LW|04/05/1999|27|Spain|1.72m||01/07/2025|Celta de Vigo|30/06/2028|€3.00m
+Sevilla|30|Miguel Sierra|RW|14/07/2004|22|Spain|1.81m|left|01/07/2026|Sevilla Atlético|30/06/2029|€7.00m
+Sevilla|10|Peque Fernández|SS|04/10/2002|24|Spain|1.72m|right|11/07/2024|Racing Santander|30/06/2028|€3.00m
+Sevilla|19|Lucas Stassin|CF|29/11/2004|21|Belgium|1.83m|right|01/09/2026|Saint-Étienne (loan)|30/06/2027|€15.00m
+Sevilla|9|Robbie Ure|CF|26/02/2004|22|Scotland|1.89m|right|11/08/2026|IK Sirius|30/06/2031|€7.00m
+Sevilla|16|Isaac Romero|CF|18/05/2000|26|Spain|1.83m|left|11/01/2024|Sevilla Atlético|30/06/2028|€5.00m
+Valencia|25|Kayne van Oevelen|GK|07/08/2003|23|Netherlands|1.99m|right|24/08/2026|Ipswich (loan)|30/06/2027|€4.00m
+Valencia|1|Stole Dimitrievski|GK|25/12/1993|32|N. Macedonia/Spain|1.88m|right|01/07/2024|Rayo Vallecano|30/06/2028|€2.00m
+Valencia|13|Cristian Rivero|GK|21/03/1998|28|Spain|1.88m|right|01/08/2020|Valencia Mestalla|30/06/2027|€100k
+Valencia|5|César Tárrega|CB|26/02/2002|24|Spain|1.94m|right|18/01/2024|Valencia Mestalla|30/06/2030|€9.00m
+Valencia|12|Justin de Haas|CB|01/02/2000|26|Netherlands|1.94m|left|01/07/2026|FC Famalicão|30/06/2030|€7.00m
+Valencia|3|José Copete|CB|10/10/1999|27|Spain|1.90m|left|28/07/2025|RCD Mallorca|30/06/2029|€5.00m
+Valencia|4|Mouctar Diakhaby|CB|19/12/1996|29|Guinea/France|1.92m|right|01/07/2018|Olympique Lyon|30/06/2027|€1.50m
+Valencia|36|Iker Córdoba|CB|11/11/2005|21|Spain|1.90m|left|01/07/2025|Valencia Mestalla|30/06/2027|€1.00m
+Valencia|14|José Gayà|LB|25/05/1995|31|Spain|1.72m|left|01/07/2014|Valencia Mestalla|30/06/2027|€4.00m
+Valencia|21|Jesús Vázquez|LB|02/01/2003|23|Spain|1.82m|left|01/01/2022|Valencia Mestalla|30/06/2028|€4.00m
+Valencia|22|Arnau Martínez|RB|25/04/2003|23|Spain|1.82m|right|26/08/2026|Girona FC|30/06/2031|€10.00m
+Valencia|24|Pablo Maffeo|RB|12/07/1997|29|Argentina/Spain|1.72m|right|20/08/2026|Olympiacos (loan)|30/06/2027|€2.50m
+Valencia|20|Dimitri Foulquier|RB|23/03/1993|33|Guadeloupe/France|1.83m|right|30/08/2021|Granada CF|30/06/2027|€500k
+Valencia|18|Pepelu|DM|11/08/1998|28|Spain|1.86m|right|08/07/2023|Levante UD|30/06/2028|€8.00m
+Valencia|2|Guido Rodríguez|DM|12/04/1994|32|Argentina/Italy|1.85m|right|26/01/2026|West Ham United|30/06/2028|€3.50m
+Valencia|15|Aliou Dieng|DM|16/10/1997|29|Mali|1.84m|right|07/07/2026|Al Ahly FC|30/06/2028|€3.00m
+Valencia|8|Javi Guerra|CM|13/05/2003|23|Spain|1.87m|right|01/07/2023|Valencia Mestalla|30/06/2029|€25.00m
+Valencia|23|Filip Ugrinic|CM|05/01/1999|27|Switzerland|1.84m|right|08/08/2025|BSC Young Boys|30/06/2029|€6.00m
+Valencia|33|Aarón Mayol|CM|03/04/2008|18|Spain|-|left|01/07/2026|Valencia Mestalla|30/06/2029|€5.00m
+Valencia|10|Harvey Elliott|AM|04/04/2003|23|England|1.70m|left|01/09/2026|Liverpool (loan)|30/06/2027|€18.00m
+Valencia|39|Ryunosuke Sato|LW|16/10/2006|20|Japan|1.71m|right|07/07/2026|FC Tokyo|30/06/2031|€4.00m
+Valencia|7|Arnaut Danjuma|LW|31/01/1997|29|Netherlands/Nigeria|1.78m|right|10/08/2025|Villarreal CF|30/06/2028|€3.00m
+Valencia|-|Sergi Canós|LW|02/02/1997|29|Spain|1.77m|right|20/08/2023|Brentford FC|30/06/2027|€600k
+Valencia|-|Diego López|RW|13/05/2002|24|Spain|1.72m|right|01/07/2023|Valencia Mestalla|30/06/2029|€9.00m
+Valencia|27|David Otorbi|RW|16/10/2007|19|Spain/Nigeria|1.80m|right|01/07/2026|Valencia Mestalla|30/06/2031|€3.50m
+Valencia|11|Luis Rioja|RW|16/10/1993|33|Spain|1.76m|left|22/08/2024|Deportivo Alavés|30/06/2027|€1.80m
+Valencia|19|Dani Raba|SS|29/10/1995|31|Spain|1.85m|left|01/07/2025|CD Leganés|30/06/2027|€1.00m
+Valencia|9|Hugo Duro|CF|10/11/1999|27|Spain|1.77m|left|01/07/2022|Getafe CF|30/06/2028|€11.00m
+Valencia|6|Umar Sadiq|CF|02/02/1997|29|Nigeria|1.91m|right|08/01/2026|Real Sociedad|30/06/2028|€3.50m
+Espanyol|13|Marko Dmitrović|GK|24/01/1992|34|Serbia|1.89m|left|01/07/2025|CD Leganés|30/06/2028|€700k
+Espanyol|1|Ángel Fortuño|GK|05/10/2001|25|Spain|1.83m|right|01/07/2024|Espanyol B|30/06/2030|€300k
+Espanyol|16|Vanja Drkusic|CB|30/10/1999|27|Slovenia|1.86m|right|14/08/2026|Zenit (loan)|30/06/2027|€5.00m
+Espanyol|5|Clemens Riedel|CB|19/07/2003|23|Germany|1.86m|right|25/08/2025|SV Darmstadt 98|30/06/2029|€4.00m
+Espanyol|14|Unai Núñez|CB|30/01/1997|29|Spain|1.86m|right|06/08/2026|Celta (loan)|30/06/2027|€3.50m
+Espanyol|6|Leandro Cabrera|CB|17/06/1991|35|Uruguay/Spain|1.90m|left|20/01/2020|Getafe CF|30/06/2027|€900k
+Espanyol|3|Quilindschy Hartman|LB|14/11/2001|25|Netherlands/Curaçao|1.83m|left|07/07/2026|Burnley (loan)|30/06/2027|€12.00m
+Espanyol|21|Roger Hinojo|LB|21/02/2005|21|Spain|1.80m|left|01/07/2025|Espanyol B|30/06/2030|€3.00m
+Espanyol|23|Omar El Hilali|RB|12/09/2003|23|Morocco/Spain|1.83m|right|01/01/2023|Espanyol B|30/06/2027|€15.00m
+Espanyol|2|Andoni Gorosabel|RB|04/08/1996|30|Spain|1.74m|right|01/09/2026|Athletic (loan)|30/06/2027|€3.00m
+Espanyol|4|Urko González de Zárate|DM|20/03/2001|25|Spain|1.89m|right|28/08/2025|Real Sociedad|30/06/2030|€12.00m
+Espanyol|20|Gabriel Moscardo|DM|28/09/2005|21|Brazil|1.85m|right|08/07/2026|PSG (loan)|30/06/2027|€7.00m
+Espanyol|10|Pol Lozano|CM|06/10/1999|27|Spain|1.76m|right|01/07/2020|Espanyol B|30/06/2027|€6.00m
+Espanyol|8|Edu Expósito|CM|01/08/1996|30|Spain|1.78m|right|08/08/2022|SD Eibar|30/06/2027|€5.00m
+Espanyol|26|Rafel Bauzà|CM|30/01/2005|21|Spain|1.83m|right|01/07/2025|Espanyol B|30/06/2028|€1.20m
+Espanyol|28|Javi Hernández|AM|30/01/2004|22|Spain|1.75m|left|01/07/2024|Espanyol B|30/06/2028|€6.00m
+Espanyol|22|Álex Calatrava|AM|22/06/2000|26|Spain|1.75m|left|02/07/2026|CD Castellón|30/06/2031|€5.00m
+Espanyol|15|Bryan Zaragoza|LW|09/09/2001|25|Spain|1.64m|right|27/08/2026|Bayern (loan)|30/06/2027|€8.00m
+Espanyol|7|Javi Puado|LW|25/05/1998|28|Spain|1.77m|right|01/07/2018|Espanyol B|30/06/2030|€7.50m
+Espanyol|11|Pere Milla|LW|23/09/1992|34|Spain|1.80m|left|15/08/2023|Elche CF|30/06/2027|€1.00m
+Espanyol|24|Tyrhys Dolan|RW|28/12/2001|24|England|1.70m|right|25/07/2025|Blackburn Rovers|30/06/2028|€10.00m
+Espanyol|17|Jofre Carreras|RW|17/06/2001|25|Spain|1.75m|right|01/07/2022|Espanyol B|30/06/2029|€3.00m
+Espanyol|9|Roberto Fernández|CF|03/07/2002|24|Spain|1.86m|right|01/07/2025|SC Braga|30/06/2031|€20.00m
+Espanyol|18|Marcos Fernández|CF|17/05/2003|23|Spain|1.76m|right|01/07/2025|Betis Deportivo|30/06/2028|€2.00m
+Espanyol|19|Kike García|CF|25/11/1989|36|Spain|1.86m|right|01/07/2025|Deportivo Alavés|30/06/2027|€500k
+Deportivo|13|Leo Román|GK|06/07/2000|26|Spain|1.89m|right|03/07/2026|RCD Mallorca|30/06/2031|€9.00m
+Deportivo|25|Álvaro Ferllo|GK|13/04/1998|28|Spain|1.85m|right|01/01/2026|Sevilla FC|30/06/2027|€1.50m
+Deportivo|1|Germán Parreño|GK|16/02/1993|33|Spain|1.91m|right|01/07/2023|UD Ibiza|30/06/2028|€200k
+Deportivo|20|José María Giménez|CB|20/01/1995|31|Uruguay/Spain|1.86m|right|01/09/2026|Atlético (loan)|30/06/2027|€6.00m
+Deportivo|22|Bright Ede|CB|18/02/2007|19|Poland|1.93m|left|07/07/2026|Motor Lublin|30/06/2031|€6.00m
+Deportivo|4|Lucas Noubi|CB|15/01/2005|21|Belgium/Cameroon|1.84m|right|01/07/2025|Standard Liège|30/06/2029|€3.00m
+Deportivo|5|Dani Barcia|CB|19/01/2003|23|Spain|1.86m|left|01/07/2023|Deportivo Fabril|30/06/2028|€1.20m
+Deportivo|3|Arnau Comas|CB|11/04/2000|26|Spain|1.91m|right|04/07/2025|FC Basel|30/06/2028|€500k
+Deportivo|12|Giacomo Quagliata|LB|19/02/2000|26|Italy|1.80m|left|30/07/2025|US Cremonese|30/06/2028|€4.00m
+Deportivo|17|Angeliño|LB|04/01/1997|29|Spain|1.71m|left|05/08/2026|AS Roma (loan)|30/06/2027|€4.00m
+Deportivo|2|Adrià Altimira|RB|28/03/2001|25|Spain|1.70m|right|02/01/2026|Villarreal CF|30/06/2029|€1.80m
+Deportivo|15|Miguel Loureiro|RB|21/11/1996|29|Spain|1.82m|right|01/08/2025|SD Huesca|30/06/2028|€1.20m
+Deportivo|23|Ximo Navarro|RB|23/01/1990|36|Spain|1.76m|right|01/08/2023|Fortuna Sittard|30/06/2027|€100k
+Deportivo|6|Marc Casadó|DM|14/09/2003|23|Spain|1.72m|right|01/09/2026|Barcelona (loan)|30/06/2027|€15.00m
+Deportivo|16|Lorenzo Amatucci|DM|05/02/2004|22|Italy|1.73m|right|09/07/2026|ACF Fiorentina|30/06/2028|€10.00m
+Deportivo|14|Riki Rodríguez|CM|25/09/1997|29|Spain|1.75m|right|02/02/2026|Albacete|30/06/2029|€1.50m
+Deportivo|8|Diego Villares|CM|17/06/1996|30|Spain|1.80m|right|01/02/2021|Deportivo Fabril|30/06/2028|€1.00m
+Deportivo|37|Noé Carrillo|CM|28/12/2006|19|Spain|-||01/05/2026|Deportivo Fabril|30/06/2029|€1.00m
+Deportivo|18|Jonathan Asp Jensen|AM|14/01/2006|20|Denmark|1.82m|right|13/07/2026|Bayern Munich II|30/06/2031|€6.00m
+Deportivo|21|Mario Soriano|AM|22/04/2002|24|Spain|1.63m|right|19/07/2022|Atlético Madrileño|30/06/2028|€6.00m
+Deportivo|10|Yeremay Hernández|LW|10/12/2002|23|Spain|1.70m|right|01/07/2022|Deportivo Fabril|30/06/2030|€25.00m
+Deportivo|11|David Mella|RW|23/05/2005|21|Spain|1.69m|left|01/02/2024|Deportivo Fabril|30/06/2029|€5.00m
+Deportivo|24|Adama Traoré|RW|25/01/1996|30|Spain/Mali|1.78m|right|26/08/2026|West Ham United|30/06/2028|€4.00m
+Deportivo|19|Luismi Cruz|RW|23/05/2001|25|Spain|1.66m|left|11/07/2025|CD Tenerife|30/06/2029|€2.00m
+Deportivo|32|Bil Nsongo|CF|21/09/2004|22|Cameroon|1.82m||01/01/2026|Deportivo Fabril|30/06/2030|€5.00m
+Deportivo|7|Pierre-Emerick Aubameyang|CF|18/06/1989|37|Gabon/France|1.87m|right|17/07/2026|Olympique Marseille|30/06/2028|€2.50m
+Deportivo|9|Zakaria Eddahchouri|CF|11/05/2000|26|Netherlands/Morocco|1.87m|right|30/01/2025|SC Telstar|30/06/2028|€2.50m
+Racing|13|Julen Agirrezabala|GK|26/12/2000|25|Spain|1.87m|left|10/08/2026|Athletic Bilbao|30/06/2031|€6.00m
+Racing|1|Simon Eriksson|GK|24/04/2006|20|Sweden|1.95m|right|19/01/2026|IF Elfsborg|30/06/2030|€2.00m
+Racing|24|Jeanuël Belocian|CB|17/02/2005|21|France/Guadeloupe|1.86m|left|01/09/2026|Leverkusen (loan)|30/06/2027|€12.00m
+Racing|16|Facundo González|CB|06/06/2003|23|Uruguay/Italy|1.93m|left|01/07/2026|Juventus FC|30/06/2029|€3.00m
+Racing|22|Pedro Felipe|CB|23/05/2004|22|Brazil|1.90m|right|04/08/2026|Juventus Next Gen|30/06/2030|€1.50m
+Racing|4|Manu Hernando|CB|19/07/1998|28|Spain|1.82m|right|01/02/2024|SD Amorebieta|30/06/2028|€1.40m
+Racing|5|Pablo Ramón|CB|30/06/2001|25|Spain|1.84m|right|05/08/2026|RCD Espanyol|30/06/2029|€1.40m
+Racing|17|Jorge Salinas|LB|03/04/2007|19|Spain|1.83m|left|01/07/2025|Rayo Cantabria|30/06/2029|€10.00m
+Racing|3|Aarón Martín|LB|22/04/1997|29|Spain|1.78m|left|01/09/2026|Genoa CFC|30/06/2027|€5.00m
+Racing|2|Álvaro Mantilla|RB|09/05/2000|26|Spain|1.84m|right|21/09/2020|Rayo Cantabria|30/06/2028|€1.20m
+Racing|18|Matteo Prati|DM|28/12/2003|22|Italy|1.85m|right|26/08/2026|Cagliari (loan)|30/06/2027|€5.50m
+Racing|14|Maguette Gueye|DM|30/12/2002|23|Senegal|1.88m|left|22/08/2024|FK Partizani|30/06/2029|€2.50m
+Racing|23|Iván Martín|CM|14/02/1999|27|Spain|1.78m|left|20/08/2026|Girona FC|30/06/2030|€3.00m
+Racing|6|Íñigo Sainz-Maza|CM|16/06/1998|28|Spain|1.81m|right|20/08/2020|Rayo Cantabria|30/06/2028|€1.00m
+Racing|8|André Almeida|AM|30/05/2000|26|Portugal|1.76m|right|01/09/2026|Valencia (loan)|30/06/2027|€5.00m
+Racing|20|Sergio Canales|AM|16/02/1991|35|Spain|1.75m|left|01/07/2026|CF Monterrey|30/06/2028|€3.00m
+Racing|10|Iñigo Vicente|LW|06/01/1998|28|Spain|1.78m|right|14/07/2022|Athletic Bilbao|30/06/2030|€7.00m
+Racing|7|Giorgi Guliashvili|LW|05/09/2001|25|Georgia|1.75m|right|09/01/2026|FK Sarajevo|30/06/2029|€3.50m
+Racing|11|Andrés Martín|RW|11/07/1999|27|Spain|1.78m|left|02/08/2024|Rayo Vallecano|30/06/2028|€8.00m
+Racing|15|Pablo García|RW|13/06/2006|20|Spain|1.75m|left|01/09/2026|Real Betis|30/06/2030|€8.00m
+Racing|19|Iker Luque|RW|05/06/2005|21|Spain|1.68m|right|31/08/2026|Atlético Madrileño|30/06/2030|€2.00m
+Racing|21|Yassir Zabiri|CF|23/02/2005|21|Morocco|1.82m|left|29/07/2026|Stade Rennais (loan)|30/06/2027|€20.00m
+Racing|12|Asier Villalibre|CF|30/09/1997|29|Spain|1.82m|left|01/07/2026|Deportivo Alavés|30/06/2029|€1.50m
+Racing|9|Juan Carlos Arana|CF|08/02/2000|26|Spain|1.82m|right|01/07/2024|SD Eibar|30/06/2028|€1.00m
+Rayo|13|Augusto Batalla|GK|30/04/1996|30|Argentina/Italy|1.86m|right|01/07/2025|CA River Plate|30/06/2030|€6.00m
+Rayo|25|Emil Audero|GK|18/01/1997|29|Indonesia/Italy|1.90m|right|01/09/2026|Como (loan)|30/06/2027|€2.80m
+Rayo|1|Dani Cárdenas|GK|28/03/1997|29|Spain|1.86m|right|18/08/2023|Levante UD|30/06/2027|€1.80m
+Rayo|15|Mujaid Sadick|CB|14/03/2000|26|Spain/Nigeria|1.83m|right|01/09/2026|KRC Genk (loan)|30/06/2027|€5.00m
+Rayo|3|Marash Kumbulla|CB|08/02/2000|26|Albania/Italy|1.91m|right|07/08/2026|AS Roma (loan)|30/06/2027|€3.00m
+Rayo|5|Luiz Felipe|CB|22/03/1997|29|Italy/Brazil|1.87m|right|07/07/2025|Olympique Marseille|30/06/2027|€2.00m
+Rayo|33|Jozhua Vertrouwd|CB|21/08/2004|22|Netherlands|1.87m|left|01/07/2026|CD Castellón|30/06/2030|€2.00m
+Rayo|24|Florian Lejeune|CB|20/05/1991|35|France|1.90m|right|28/07/2023|Deportivo Alavés|30/06/2028|€1.80m
+Rayo|22|Pelayo Fernández|CB|29/04/2003|23|Spain|1.93m|right|02/07/2024|Barcelona Atlètic|30/06/2028|€500k
+Rayo|17|Adrià Pedrosa|LB|13/05/1998|28|Spain|1.72m|left|27/08/2026|Sevilla (loan)|30/06/2027|€2.80m
+Rayo|2|Andrei Rațiu|RB|20/06/1998|28|Romania/Spain|1.83m|right|26/08/2023|SD Huesca|30/06/2030|€24.00m
+Rayo|20|Iván Balliu|RB|01/01/1992|34|Albania/Spain|1.72m|right|14/07/2021|UD Almería|30/06/2027|€1.00m
+Rayo|4|Pedro Díaz|CM|05/06/1998|28|Spain|1.80m|right|05/08/2024|Girondins Bordeaux|30/06/2028|€3.00m
+Rayo|8|Unai López|CM|30/10/1995|31|Spain|1.70m|right|01/07/2022|Athletic Bilbao|30/06/2029|€2.50m
+Rayo|23|Óscar Valentín|CM|20/08/1994|32|Spain|1.77m|right|01/07/2019|Rayo Majadahonda|30/06/2027|€2.00m
+Rayo|6|Pathé Ciss|CM|16/03/1994|32|Senegal|1.86m|right|28/07/2021|CF Fuenlabrada|30/06/2027|€1.80m
+Rayo|36|Gnangoro Bouare|CM|13/06/2004|22|Spain|1.84m|left|27/08/2026|Betis Deportivo|30/06/2031|€1.00m
+Rayo|7|Isi Palazón|AM|27/12/1994|31|Spain|1.69m|left|23/01/2020|SD Ponferradina|30/06/2028|€2.80m
+Rayo|11|Randy Nteka|AM|06/12/1997|28|Angola/France|1.89m|left|28/07/2021|CF Fuenlabrada|30/06/2028|€1.00m
+Rayo|37|Rayane Belaid|AM|11/02/2005|21|Spain/Algeria|1.75m|right|03/09/2026|Atlético Madrileño|30/06/2031|€600k
+Rayo|18|Álvaro García|LW|27/10/1992|34|Spain|1.67m|both|23/08/2018|Cádiz CF|30/06/2028|€1.50m
+Rayo|19|Jorge de Frutos|RW|20/02/1997|29|Spain|1.73m|right|17/08/2023|Levante UD|30/06/2028|€12.00m
+Rayo|14|Giorgi Tsitaishvili|RW|18/11/2000|25|Georgia/Ukraine|1.71m|left|13/08/2026|Dynamo Kyiv|30/06/2029|€3.00m
+Rayo|21|Fran Pérez|RW|09/09/2002|24|Spain|1.76m|right|15/08/2025|Valencia CF|30/06/2029|€2.50m
+Rayo|10|Sergio Camello|CF|10/02/2001|25|Spain|1.82m|right|17/08/2023|Atlético de Madrid|30/06/2027|€10.00m
+Rayo|9|Alemão|CF|01/04/1998|28|Brazil/Poland|1.82m|right|01/09/2025|CF Pachuca|30/06/2030|€4.00m
+Rayo|-|Raúl de Tomás|CF|17/10/1994|32|Spain/Dom. Rep.|1.80m|right|13/09/2022|RCD Espanyol|30/06/2027|€400k

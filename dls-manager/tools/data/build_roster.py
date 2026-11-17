@@ -16,6 +16,7 @@ import csv
 import datetime
 import glob
 import gzip
+import io
 import json
 import os
 import re
@@ -46,6 +47,53 @@ def parse_money(v):
         return None
     n = float(m.group(1))
     return int(n * {"m": 1e6, "k": 1e3, "": 1}[m.group(2).lower()])
+
+
+CLUB_ALIASES = {
+    "deportivo": "Deportivo de A Coruña",
+    "athletic": "Athletic Bilbao",
+    "atletico": "Atlético Madrid",
+    "rayo": "Rayo Vallecano",
+    "racing": "Racing de Santander",
+    "alaves": "Deportivo Alavés",
+}
+
+POS_ABBR = {"GK": "Goalkeeper", "CB": "Centre-Back", "LB": "Left-Back", "RB": "Right-Back",
+            "DM": "Defensive Midfield", "CM": "Central Midfield", "AM": "Attacking Midfield",
+            "LM": "Left Midfield", "RM": "Right Midfield", "LW": "Left Winger", "RW": "Right Winger",
+            "SS": "Second Striker", "CF": "Centre-Forward"}
+
+
+def dmy_to_iso(v):
+    m = re.match(r"\s*(\d{1,2})/(\d{1,2})/(\d{4})", v or "")
+    return f"{m.group(3)}-{int(m.group(2)):02d}-{int(m.group(1)):02d}" if m else None
+
+
+def normalize_user_row(r):
+    """Accept both supplied layouts and return one dict per player."""
+    g = lambda *keys: next(((r.get(k) or "").strip() for k in keys if (r.get(k) or "").strip()), "")
+    pos = g("position")
+    h = g("height").replace(",", ".").rstrip("m").strip()
+    try:
+        height = int(round(float(h) * 100)) if h else None
+    except ValueError:
+        height = None
+    age = g("age")
+    return {
+        "club": g("club"),
+        "name": g("player"),
+        "shirt": g("shirt") or None,
+        "position": POS_ABBR.get(pos.upper(), pos),
+        "age": int(age) if age.isdigit() else None,
+        "dob": dmy_to_iso(g("DOB", "dob", "date_of_birth")),
+        "nationality": g("nationality"),
+        "height_cm": height,
+        "foot": g("foot").lower() or None,
+        "joined": dmy_to_iso(g("joined")),
+        "signed_from": g("signed_from") or None,
+        "contract_expiry": g("contract_until", "contract_expiry") or None,
+        "market_value_eur": parse_money(g("market_value", "market_value_eur")),
+    }
 
 
 WIKI_POS = {"GK": "Goalkeeper", "DF": "Defender", "MF": "Midfield", "FW": "Attack"}
@@ -98,7 +146,9 @@ def main():
         files += sorted(glob.glob(os.path.join(f, "*"))) if os.path.isdir(f) else [f]
     user_rows = []
     for f in files:
-        user_rows += list(csv.DictReader(open(f, encoding="utf-8-sig")))
+        text = open(f, encoding="utf-8-sig").read()
+        delim = "|" if text.split("\n", 1)[0].count("|") > text.split("\n", 1)[0].count(",") else ","
+        user_rows += [normalize_user_row(r) for r in csv.DictReader(io.StringIO(text), delimiter=delim)]
 
     clubs = {}  # canonical title -> league
     for lg, cl in squads.items():
@@ -106,9 +156,18 @@ def main():
             clubs[c] = lg
     key_to_club = {club_key(c): c for c in clubs}
 
+    def find_club(name):
+        k = club_key(name)
+        if k in key_to_club:
+            return key_to_club[k]
+        if k in CLUB_ALIASES:
+            return CLUB_ALIASES[k]
+        hits = [c for kk, c in key_to_club.items() if set(k.split()) <= set(kk.split())]
+        return hits[0] if len(hits) == 1 else None
+
     user_by_club, unmatched_clubs = {}, set()
     for r in user_rows:
-        c = key_to_club.get(club_key(r["club"]))
+        c = find_club(r["club"])
         if not c:
             unmatched_clubs.add(r["club"])
             continue
@@ -123,11 +182,7 @@ def main():
             if c in user_by_club:
                 src = "user"
                 for r in user_by_club[c]:
-                    players.append({"name": r["player"].strip(), "position": r["position"].strip(),
-                                    "age": int(r["age"]) if r.get("age", "").strip().isdigit() else None,
-                                    "nationality": r["nationality"].strip(),
-                                    "contract_expiry": r.get("contract_expiry", "").strip() or None,
-                                    "market_value_eur": parse_money(r.get("market_value_eur"))})
+                    players.append({k: v for k, v in r.items() if k != "club" and v not in (None, "")})
             else:
                 src = "wikipedia"
                 for r in squads[lg][c]:
@@ -139,9 +194,9 @@ def main():
                 if t:
                     matched += 1
                     p["tm_id"] = int(t["player_id"])
-                    p["dob"] = (t["date_of_birth"] or "")[:10] or None
-                    p["height_cm"] = int(t["height_in_cm"]) if t["height_in_cm"] else None
-                    p["foot"] = t["foot"] or None
+                    p.setdefault("dob", (t["date_of_birth"] or "")[:10] or None)
+                    p.setdefault("height_cm", int(t["height_in_cm"]) if t["height_in_cm"] else None)
+                    p.setdefault("foot", t["foot"] or None)
                     p.setdefault("nationality", t["country_of_citizenship"])
                     if not p.get("market_value_eur") and t["market_value_in_eur"]:
                         p["market_value_eur"] = int(float(t["market_value_in_eur"]))
