@@ -34,6 +34,10 @@ docs/formats/  file-format notes
 | 0x166ae0 | `b 0x166b10` | badges skip the generated-logo table |
 | 0xa75c8, 0xa7638 | `nop`; `b 0xa7660` | imported kits/badges for every team: `DOCS:<id>_home.png` (also `_away`, `_third`, `_home_gk`, `_away_gk`, `_third_gk`) and `DOCS:t<id>.png` / `t<id>_thumb.png`, not just the Dream Team (258) |
 
+| 0x201a58 → 0x525200 | hook + 28-instruction cave (`tools/apk_patch/logo_cave.s`), LOAD[0] grown to 0x525270 | team badges: use `DOCS:teamlogo_<id>.png` / `_thumb.png` when the file exists, instead of the game's 64-entry generated-badge cache |
+
+New players are appended as new `players.dat` records (ids after 16638); overwriting records gave new players the star face keyed to that id (`player/star/h_<id>`, list in `tools/db/star_ids.txt`).
+
 DOCS is `Android/data/com.firsttouchgames.dls3/files`. `assets/dlsmgr_ext.zip` is unpacked there on every launch (kits 512×512 in DLS19 layout, badges 256/64 px). Menu soundtrack: the seven licensed `assets/data/audio/*.m4a` tracks are replaced with 10 s of silence (sound effects in `se.bnk` and Ode to Joy kept).
 
 Java side: `SavesRestoring.DoSmth` re-unpacks the bundled OBB if it is missing or the wrong size.
