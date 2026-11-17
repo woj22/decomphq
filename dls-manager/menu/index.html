@@ -248,6 +248,7 @@ input[type="search"], select {
 
   function badge(cid, size) {
     var c = club(cid), p = c.colors.primary, s = c.colors.secondary, z = size || 34;
+    if (c.badge) return '<img src="' + esc(c.badge) + '" width="' + z + '" height="' + z + '" alt="" style="object-fit:contain;flex:none" loading="lazy">';
     var light = /^#(F|E|D)[0-9A-F]{5}$/i.test(p);
     return '<svg width="' + z + '" height="' + Math.round(z * 1.12) + '" viewBox="0 0 34 38" aria-hidden="true">' +
       '<path d="M17 1 32 6v12c0 9-6.5 15.5-15 19C8.5 33.5 2 27 2 18V6Z" fill="' + esc(p) + '" stroke="' + esc(s) + '" stroke-width="2.2"/>' +

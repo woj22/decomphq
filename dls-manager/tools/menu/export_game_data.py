@@ -190,6 +190,10 @@ def main():
                 pid += 1
         out["leagues"].append({"id": lg, "name": meta["name"], "country": meta["country"], "short": meta["short"],
                                "cycles": meta["cycles"], "clubs": ids})
+    badge_dir = os.path.join(HERE, "..", "..", "assets", "badges", "128")
+    for cid, c in out["clubs"].items():  # crest images, if fetch_badges.py has run
+        if os.path.exists(os.path.join(badge_dir, cid + ".png")):
+            c["badge"] = f"badges/{cid}.png"
     calibrate(out)
     real = apply_real_ratings(out, os.path.join(os.path.dirname(os.path.abspath(a.roster)), "ratings_2026_27.json"))
     print(f"real FC ratings applied to {real} players")
