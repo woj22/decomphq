@@ -32,7 +32,7 @@ from PIL import Image, ImageFilter
 
 # FM render geometry (identical for every FM kit render)
 FM_BODY = (125, 25, 294, 395)        # x0, y0, x1, y1: shirt body, collar to hem
-FM_PLAIN = (135, 300, 284, 388)      # bottom quarter of the body: just the shirt pattern
+FM_PLAIN = (135, 300, 284, 372)      # lower body above the hem trim: just the shirt pattern
 FM_SLEEVE_L = (72, 100, 120, 182)    # inside the left sleeve
 FM_SLEEVE_R = (299, 100, 347, 182)
 
@@ -40,7 +40,7 @@ FM_SLEEVE_R = (299, 100, 347, 182)
 STRIP_X = (165, 350)
 SEAM_Y = 182
 HEM_Y = 378
-CHEST_W = 0.62                       # fraction of the strip width the FM body front covers
+SCALE = (378 - 182) / (395 - 25)     # FM px -> DLS px, the same in x and y (no stretching)
 SLEEVES = [(0, 0, 162, 128), (70, 112, 165, 268), (352, 0, 512, 128), (350, 112, 444, 268)]
 SOCKS = [(0, 268, 165, 380), (350, 268, 512, 380)]
 SHORTS = [(0, 380, 512, 512)]
@@ -80,14 +80,41 @@ def clean_pattern(img, ref=None, thresh=70, grow=3):
     dc = np.abs(a - cmed).sum(2)
     # a column counts as a vertical stripe only if it keeps that colour down most of a taller
     # slice of the shirt (ref): a diagonal sash covers any one column for part of it only
+    # A stripe stays put all the way down; a diagonal sash moves sideways, so check the upper
+    # and lower halves of the taller slice separately.
     r = np.asarray(ref).astype(float) if ref is not None else a
-    stripe_col = (np.abs(r - cmed).sum(2) <= thresh).mean(axis=0) > (0.85 if ref is not None else 0.9)
+    hit = np.abs(r - cmed).sum(2) <= thresh
+    half = hit.shape[0] // 2
+    stripe_col = (hit[:half].mean(axis=0) > 0.7) & (hit[half:].mean(axis=0) > 0.7)
     bad = (dr > thresh) & ((dc > thresh) | ~stripe_col[None, :])
+    heavy = bad.mean() > 0.08  # measured before growing the mask
     for _ in range(grow):  # include the blended edge pixels around the decoration
         b = bad.copy()
         b[1:] |= bad[:-1]; b[:-1] |= bad[1:]; b[:, 1:] |= bad[:, :-1]; b[:, :-1] |= bad[:, 1:]
         bad = b
-    out = np.where(bad[..., None], np.broadcast_to(rmed, a.shape), a)
+    if heavy:
+        # lots of decoration (e.g. a sash): any patched-up texture would show seams when
+        # repeated, so use the rows' own colours only (keeps hoops and pinstripes)
+        out = np.broadcast_to(rmed, a.shape)
+    else:
+        out = np.where(bad[..., None], np.broadcast_to(rmed, a.shape), a)
+    return Image.fromarray(np.ascontiguousarray(out).clip(0, 255).astype("uint8"))
+
+
+def tile(img, w, h):
+    """Fill w x h by repeating img, mirrored on alternate tiles so edges always match."""
+    a = np.asarray(img)
+    a = np.concatenate([a, a[:, ::-1]], axis=1)
+    a = np.concatenate([a, a[::-1]], axis=0)
+    ry, rx = h // a.shape[0] + 1, w // a.shape[1] + 1
+    return Image.fromarray(np.tile(a, (ry, rx, 1))[:h, :w])
+
+
+def flatten_shading(img, radius=12):
+    """Remove soft fold/lighting shading from a render, keeping the fine pattern."""
+    a = np.asarray(img).astype(float)
+    blur = np.asarray(img.filter(ImageFilter.GaussianBlur(radius))).astype(float)
+    out = a - blur + blur.reshape(-1, 3).mean(0)
     return Image.fromarray(out.clip(0, 255).astype("uint8"))
 
 
@@ -104,13 +131,15 @@ def convert(template, fm_path, shorts, socks):
 
     x0, x1 = STRIP_X
     sw = x1 - x0
-    # back: plain pattern, upside down (hem at the top of the texture)
-    out.paste(plain.resize((sw, SEAM_Y), Image.LANCZOS).transpose(Image.FLIP_TOP_BOTTOM), (x0, 0))
-    # front: FM body over the chest. The sides (the strip wraps round the body) get each row's
-    # typical colour across the shirt (per-row median), which keeps horizontal pinstripes and
-    # hoops but not a sash, piping or logos.
-    cw = int(round(sw * CHEST_W))
     fh = HEM_Y - SEAM_Y
+    # back: the plain shirt pattern repeated at its true size (mirror-tiled, so no seams),
+    # upside down like the template (hem at the top of the texture)
+    pw, ph = round(plain.width * SCALE), round(plain.height * SCALE)
+    out.paste(tile(plain.resize((pw, ph), Image.LANCZOS), sw, SEAM_Y).transpose(Image.FLIP_TOP_BOTTOM), (x0, 0))
+    # front: FM body at the same scale in x and y. The sides (the strip wraps round the body)
+    # get each row's typical colour across the shirt (per-row median): keeps pinstripes and
+    # hoops but not a sash, piping or logos.
+    cw = round(body.width * SCALE)
     front = np.asarray(body.resize((cw, fh), Image.LANCZOS)).astype(float)
     rowcol = np.median(front[:, 6:cw - 6], axis=1)  # (fh, 3)
     row = np.repeat(rowcol[:, None, :], sw, axis=1)
@@ -123,10 +152,16 @@ def convert(template, fm_path, shorts, socks):
     row[:, left:left + cw] = seg * (1 - ramp[None, :, None]) + front * ramp[None, :, None]
     out.paste(Image.fromarray(row.clip(0, 255).astype("uint8")), (x0, SEAM_Y))
 
-    # sleeves (left pieces from the FM left sleeve, right pieces from the right sleeve)
-    for i, box in enumerate(SLEEVES):
-        src = fm.crop(FM_SLEEVE_L if box[0] < 256 else FM_SLEEVE_R).convert("RGB")
-        out.paste(src.resize((box[2] - box[0], box[3] - box[1]), Image.LANCZOS), box[:2])
+    # sleeves: the shirt's plain pattern at true size; if the FM sleeves are clearly another
+    # colour than the body (contrast sleeves), a flat fill in that colour instead
+    sp = plain.resize((pw, ph), Image.LANCZOS)
+    for box in SLEEVES:
+        sl = dominant(fm.crop(FM_SLEEVE_L if box[0] < 256 else FM_SLEEVE_R))
+        w, h = box[2] - box[0], box[3] - box[1]
+        if sum(abs(a - b) for a, b in zip(sl, main)) > 120:
+            out.paste(sl + (255,), box)
+        else:
+            out.paste(tile(sp, w, h), box[:2])
 
     for boxes, col in ((SOCKS, socks or main), (SHORTS, shorts or main)):
         for box in boxes:
