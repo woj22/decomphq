@@ -139,7 +139,7 @@ def age_on(dob, ref=datetime.date(2026, 11, 17)):
     return ref.year - d.year - ((ref.month, ref.day) < (d.month, d.day))
 
 
-def tm_lookup(tm, name, age=None):
+def tm_lookup(tm, name, age=None, position=None):
     k = person_key(name)
     cands = list(tm.get(k, []))
     toks = k.split()
@@ -147,11 +147,17 @@ def tm_lookup(tm, name, age=None):
         cands = [v for kk, vs in tm.items() if kk.split()[0] == toks[0] and kk.split()[-1] == toks[-1] for v in vs]
     if age is not None:  # drop namesakes whose age does not fit
         cands = [c for c in cands if (a := age_on(c["date_of_birth"])) is not None and abs(a - age) <= 1]
+        exact = [c for c in cands if age_on(c["date_of_birth"]) == age]
+        if exact:
+            cands = exact
+    if position:  # a goalkeeper must match a goalkeeper and vice versa
+        gk = position == "Goalkeeper"
+        cands = [c for c in cands if (c["position"] == "Goalkeeper") == gk or not c["position"]]
     if not cands:
         return None
     if len(cands) > 1 and age is None:
         return None  # ambiguous name and nothing to tell them apart
-    return max(cands, key=lambda c: (c["last_season"], c["market_value_in_eur"] or "0"))
+    return max(cands, key=lambda c: (float(c["market_value_in_eur"] or 0), c["last_season"]))
 
 
 def wiki_shirt(key, wiki_shirts):
@@ -257,7 +263,7 @@ def main():
                                     "shirt": r["no"] or None, "nat_code": r["nat"]})
             matched = 0
             for p in players:
-                t = tm_lookup(tm, p["name"], p.get("age"))
+                t = tm_lookup(tm, p["name"], p.get("age"), p.get("position"))
                 if t:
                     matched += 1
                     p["tm_id"] = int(t["player_id"])
@@ -267,7 +273,7 @@ def main():
                     p.setdefault("nationality", t["country_of_citizenship"])
                     if not p.get("market_value_eur") and t["market_value_in_eur"]:
                         p["market_value_eur"] = int(float(t["market_value_in_eur"]))
-                    if p["position"] in WIKI_POS.values() and t["sub_position"]:
+                    if p["position"] in ("Defender", "Midfield", "Attack") and t["sub_position"]:
                         p["position"] = t["sub_position"]
             for p in players:
                 if not p.get("foot"):

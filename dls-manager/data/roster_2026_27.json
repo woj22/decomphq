@@ -4686,15 +4686,15 @@
       },
       {
        "name": "Alisson",
-       "position": "Central Midfield",
+       "position": "Goalkeeper",
        "age": 34,
        "nationality": "Brazil",
        "contract_expiry": "30/06/2027",
        "market_value_eur": 15000000,
        "shirt": "1",
-       "tm_id": 229736,
-       "dob": "1993-06-25",
-       "height_cm": 174,
+       "tm_id": 105470,
+       "dob": "1992-10-02",
+       "height_cm": 193,
        "foot": "right"
       },
       {
@@ -11937,7 +11937,7 @@
        "signed_from": "Girondins Bordeaux",
        "contract_expiry": "30/06/2028",
        "market_value_eur": 3000000,
-       "tm_id": 653363
+       "tm_id": 363057
       },
       {
        "name": "Unai López",
@@ -12481,7 +12481,7 @@
        "signed_from": "Manchester United",
        "contract_expiry": "30/06/2030",
        "market_value_eur": 40000000,
-       "tm_id": 798687
+       "tm_id": 602105
       },
       {
        "name": "Aitor Ruibal",
@@ -16075,8 +16075,9 @@
        "dob": "1999-03-24",
        "nationality": "France/DR Congo",
        "height_cm": 172,
-       "tm_id": 368889,
-       "foot": "right"
+       "tm_id": 485964,
+       "foot": "right",
+       "market_value_eur": 300000
       },
       {
        "name": "Bassirou N'Diaye",
@@ -19340,9 +19341,8 @@
        "dob": "2004-04-21",
        "nationality": "Bosnia-Herzegovina/Serbia",
        "height_cm": 195,
-       "tm_id": 636601,
-       "foot": "left",
-       "market_value_eur": 1500000
+       "tm_id": 849653,
+       "foot": "right"
       },
       {
        "name": "Josip Zuljevic",

@@ -4,7 +4,8 @@
 Usage: python3 -I patch_apk.py <original.apk> <out-unsigned.apk> <classes2.dex> [assets/path=local_file ...]
 
 Extra "assets/...=file" arguments replace those APK entries (e.g. rebuilt database files
-from tools/db/build_team.py: assets/data/db/players.dat=out/players.dat).
+from tools/db/build_all.py: assets/data/db/players.dat=out/players.dat), or add them if
+the APK does not have them yet (team badges assets/data/fe/teams/t<slot>.png).
 
 classes2.dex comes from apktool-rebuilding smali_classes2 after injecting
 obb_restore_fix.smali at the top of com/savegame/SavesRestoring.DoSmth.
@@ -55,6 +56,11 @@ for info in z.infolist():
     data=bytes(lib) if info.filename=='lib/arm64-v8a/libDLS19.so' else (open(sys.argv[3],'rb').read() if info.filename=='classes2.dex' else (open(replace.pop(info.filename),'rb').read() if info.filename in replace else z.read(info.filename)))
     ni=zipfile.ZipInfo(info.filename,info.date_time); ni.compress_type=info.compress_type; ni.external_attr=info.external_attr
     zo.writestr(ni,data)
+# entries not in the original APK (e.g. new team badges assets/data/fe/teams/t<slot>.png) are added
+for name, path in sorted(replace.items()):
+    if not name.startswith('assets/'):
+        sys.exit('refusing to add non-asset entry: ' + name)
+    ni=zipfile.ZipInfo(name,(2025,1,25,10,47,0)); ni.compress_type=zipfile.ZIP_STORED if name.endswith('.png') else zipfile.ZIP_DEFLATED
+    zo.writestr(ni,open(path,'rb').read())
 zo.close()
-if replace: sys.exit('replacement targets not found in APK: '+', '.join(replace))
 print('ok')
