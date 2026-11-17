@@ -179,6 +179,8 @@ input[type="search"], select {
 .slot .disc { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: .8rem; border: 2px solid #fff; }
 .slot .nm { font-size: .7rem; font-weight: 700; background: rgba(0,0,0,.55); padding: 1px 6px; border-radius: 6px; max-width: 84px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .slot.sel .disc { outline: 3px solid var(--accent); outline-offset: 2px; }
+.pitch.mini { max-width: 360px; width: 100%; justify-self: center; }
+.pitch.mini .slot { pointer-events: none; }
 .slot .fit { font-size: .62rem; font-weight: 800; color: var(--draw); }
 .bench { padding: 10px; display: grid; gap: 4px; align-content: start; max-height: 520px; overflow-y: auto; }
 .bench .row-b { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
@@ -489,7 +491,7 @@ input[type="search"], select {
   function render() {
     if (ui.title) return renderTitle();
     if (!S) return renderNewGame();
-    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport }[ui.screen] || viewHome)() + "</main>";
+    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
   }
@@ -579,6 +581,54 @@ input[type="search"], select {
       [["Attack", str.fw], ["Midfield", str.mf], ["Defence", str.df], ["Goalkeeper", str.gk]].map(function (x) {
         return '<div class="attr"><span>' + x[0] + "</span><b>" + x[1].toFixed(0) + '</b><div class="bar"><i style="width:' + x[1] + "%;background:" + ovrColor(x[1]) + '"></i></div></div>';
       }).join("") + "</div></section></div>";
+  }
+
+  // ------------------------------------------------------------ pre-match
+  // DLS formation numbers (libDLS19 table at 0x3c2528, 11 position codes each) for our formations,
+  // and the order our slots go in to match DLS's slot order.
+  var DLS_FORM = {
+    "4-4-2": [0, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+    "4-2-3-1": [3, [0, 1, 2, 3, 4, 7, 5, 8, 6, 9, 10]],
+    "4-3-3": [6, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+    "5-3-2": [8, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+    "3-5-2": [11, [0, 1, 2, 3, 4, 6, 5, 7, 8, 9, 10]]
+  };
+  function benchOf(cid) {
+    var L = lineupOf(cid);
+    return clubPlayers[cid].filter(function (p) { return L.xi.indexOf(p.id) < 0; }).sort(function (a, b) { return b.ovr - a.ovr; });
+  }
+  // the team sheet DLS plays: XI in DLS slot order, then substitutes and reserves (DLS ids)
+  function dlsSheet(cid) {
+    var L = lineupOf(cid), m = DLS_FORM[L.formation];
+    if (!m) return null;
+    var xi = m[1].map(function (i) { return byId[L.xi[i]]; });
+    if (xi.some(function (p) { return !p || !p.dls; })) return null;
+    var ids = xi.map(function (p) { return p.dls; });
+    benchOf(cid).forEach(function (p) { if (p.dls && ids.length < 32) ids.push(p.dls); });
+    return { f: m[0], ids: ids };
+  }
+  function miniPitch(cid) {
+    var L = lineupOf(cid), slots = FORMATIONS[L.formation];
+    return '<div class="pitch mini">' + slots.map(function (s, i) {
+      var p = byId[L.xi[i]];
+      return '<div class="slot" style="left:' + s[1] + "%;top:" + s[2] + '%"><span class="disc" style="background:' + ovrColor(p.ovr) + ';color:#071a0d">' + (p.shirt != null ? p.shirt : p.ovr) + '</span><span class="nm">' + esc(p.name.split(" ").slice(-1)[0]) + "</span></div>";
+    }).join("") + "</div>";
+  }
+  function viewPrematch() {
+    var fx = nextFixture();
+    if (!fx) return viewHome();
+    function side(cid) {
+      var L = lineupOf(cid), bench = benchOf(cid).slice(0, 7);
+      return '<section class="panel" style="padding:12px;display:grid;gap:10px"><h3 style="margin:0"><span class="club-cell">' + badge(cid, 24) + esc(club(cid).name) + '</span> <span class="muted" style="font-weight:600">' + L.formation + "</span></h3>" +
+        miniPitch(cid) + '<div class="label">Substitutes</div><div style="display:grid;gap:4px">' + bench.map(function (p) {
+          return '<div class="row-b" style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center"><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span><span>" + esc(p.name) + '</span><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + "</span></div>";
+        }).join("") + "</div></section>";
+    }
+    return '<div class="screen-head"><button class="btn ghost" data-go="home"><span style="display:inline-grid;width:18px">' + icon("back") + '</span>Home</button><h2>Match day</h2>' +
+      '<button class="btn" data-go="tactics">Tactics</button><button class="btn primary" data-act="kickoff">Kick off</button></div>' +
+      '<section class="panel score-card"><div class="scoreline"><div class="side">' + badge(fx.home, 56) + esc(club(fx.home).name) + '</div><div class="score">vs</div><div class="side">' + badge(fx.away, 56) + esc(club(fx.away).name) + '</div></div>' +
+      '<p class="muted" style="margin:0;text-align:center">' + esc(club(fx.home).stadium || "") + " · " + dateOf(fx.week) + "</p></section>" +
+      '<div class="two-col">' + side(fx.home) + side(fx.away) + "</div>";
   }
 
   function viewFixtures() {
@@ -758,19 +808,23 @@ input[type="search"], select {
       return render();
     }
     if (act === "play") {
-      if (window.DLSManager && window.DLSManager.playFixture) {  // inside the game: DLS's next match becomes this fixture
-        var fx = nextFixture();
-        if (!fx) return;
-        var userHome = fx.home === S.clubId, opp = userHome ? fx.away : fx.home;
+      if (!nextFixture()) return;
+      ui.screen = "prematch"; return render();
+    }
+    if (act === "kickoff") {
+      var fx = nextFixture();
+      if (!fx) return;
+      var userHome = fx.home === S.clubId, opp = userHome ? fx.away : fx.home;
+      if (window.DLSManager && window.DLSManager.kickOff) {
         S.pending = { week: fx.week, home: fx.home, away: fx.away, userHome: userHome, oppTid: window.DLSManager.clubTid(opp),
                       before: window.DLSManager.lastMatch() };
         save();
-        var err = window.DLSManager.playFixture(opp, userHome);
-        if (err) modal('<h2>Could not set up the match</h2><p class="muted" style="margin:0">' + esc(err) + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+        var sheets = { home: dlsSheet(fx.home), away: dlsSheet(fx.away) };
+        var err = window.DLSManager.kickOff(opp, userHome, JSON.stringify(sheets));
+        if (err) modal('<h2>Could not start the match</h2><p class="muted" style="margin:0">' + esc(err) + '</p><button class="btn primary" data-act="closemodal">OK</button>');
         return;
       }
-      if (window.DLSManager && window.DLSManager.hide) { window.DLSManager.hide(); return; }
-      return modal('<h2>Play in DLS</h2><p class="muted" style="margin:0">In the game this button loads the real DLS19 match with both squads and returns here at full time. That link is the next big piece of work, so for now use Quick Sim.</p><button class="btn primary" data-act="closemodal">OK</button>');
+      return modal('<h2>Kick-off</h2><p class="muted" style="margin:0">Inside the game this starts the real DLS19 match with these two line-ups. In the web preview use Quick Sim.</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
     if (act === "closemodal") return closeModal();
     if (act === "loadcareer") {

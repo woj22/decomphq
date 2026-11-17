@@ -570,6 +570,27 @@ public final class Overlay {
         }
     }
 
+    /** One team sheet block: u8 valid, u8 formation, u8 count, u8 0, 32 x u16 ids. */
+    static void writeSheet(java.io.RandomAccessFile mem, long addr, JSONObject side) throws Exception {
+        byte[] b = new byte[4 + 64];
+        if (side != null) {
+            org.json.JSONArray ids = side.getJSONArray("ids");
+            int n = Math.min(32, ids.length());
+            if (n >= 11) {
+                b[0] = 1;
+                b[1] = (byte) side.getInt("f");
+                b[2] = (byte) n;
+                for (int i = 0; i < n; i++) {
+                    int id = ids.getInt(i);
+                    b[4 + 2 * i] = (byte) id;
+                    b[5 + 2 * i] = (byte) (id >> 8);
+                }
+            }
+        }
+        mem.seek(addr);
+        mem.write(b);
+    }
+
     /** Sequence number of the last exhibition result (lib+0x7c3f10), 0 before the first. */
     static int resultSeq() {
         try {
@@ -669,6 +690,41 @@ public final class Overlay {
                 new Thread(new ResultWatch(before), "dlsmgr-result").start();
                 return "";
             } catch (Throwable t) {
+                return String.valueOf(t);
+            }
+        }
+
+        /**
+         * Kick off from the menus' pre-match screen with both team sheets. sheets is JSON
+         * {"home": {"f": DLS formation 0-11, "ids": [DLS player ids: XI in slot order, then
+         * subs and reserves]}, "away": {...}}; they are written to lib+0x7c3f40 / +0x7c3f84
+         * for the native kick-off (tools/apk_patch/exhibition.c, make_sheet). A side without a
+         * usable sheet plays DLS's own line-up.
+         */
+        @JavascriptInterface
+        public String kickOff(String opponent, boolean userHome, String sheets) {
+            try {
+                JSONObject clubs = new JSONObject(readText(activity.getAssets().open("dlsmgr/clubs.json")));
+                int tid = clubs.getJSONObject(opponent).getInt("tid");
+                JSONObject sh = new JSONObject(sheets);
+                long base = libBase();
+                if (base != 0) {
+                    java.io.RandomAccessFile mem = new java.io.RandomAccessFile("/proc/self/mem", "rw");
+                    try {
+                        writeSheet(mem, base + 0x7c3f40, sh.optJSONObject("home"));
+                        writeSheet(mem, base + 0x7c3f84, sh.optJSONObject("away"));
+                    } finally {
+                        mem.close();
+                    }
+                }
+                int before = resultSeq();
+                nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
+                nativeRequest(0x5A5E0004);
+                activity.runOnUiThread(new MatchTask());
+                new Thread(new ResultWatch(before), "dlsmgr-result").start();
+                return "";
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
                 return String.valueOf(t);
             }
         }

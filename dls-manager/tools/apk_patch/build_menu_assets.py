@@ -23,6 +23,7 @@ def main():
     ap.add_argument("--badges", required=True)
     ap.add_argument("--fonts", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--clubs", help="clubs.json (build_club_squads.py): adds each player's DLS id as 'dls'")
     a = ap.parse_args()
 
     if os.path.exists(a.out):
@@ -49,6 +50,25 @@ def main():
     open(os.path.join(a.out, "index.html"), "w", encoding="utf-8").write(html)
 
     data = json.load(open(os.path.join(a.menu, "data.json"), encoding="utf-8"))
+    if a.clubs:
+        # the menus' player ids are their own; the match needs DLS database ids (same club, same name)
+        import unicodedata
+
+        def fold(s):
+            s = unicodedata.normalize("NFKD", s or "")
+            return " ".join("".join(c for c in s if not unicodedata.combining(c)).lower().replace("-", " ").split())
+        clubs = json.load(open(a.clubs, encoding="utf-8"))
+        hit = 0
+        for p in data["players"]:
+            c = clubs.get(p["club"])
+            if not c:
+                continue
+            for x in c["players"]:
+                if fold(x["fn"] + " " + x["sn"]) == fold(p["name"]):
+                    p["dls"] = x["id"]
+                    hit += 1
+                    break
+        print(f"DLS ids for {hit} of {len(data['players'])} players")
     open(os.path.join(a.out, "data.js"), "w", encoding="utf-8").write(
         "window.DLS_DATA=" + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n")
 

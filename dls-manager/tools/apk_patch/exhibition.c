@@ -66,6 +66,13 @@ void FUN_001d72ec(void);
 void FUN_001d73c4(int, int);
 void FUN_0022a548(void);
 void FUN_0016ac60(int);
+void FUN_001dc0b8(void *);
+void FUN_001dcdc4(void *, int);
+void FUN_001d95e0(void *, int);
+void FUN_001dbd50(void *, int);
+void FUN_001db894(void *, void *);
+void *FUN_000ae0f0(int);
+void FUN_001dc1d8(void *);
 
 #define USER 0x102
 
@@ -84,7 +91,7 @@ static void exhibition_fulltime(void)
     FUN_00169f44(5, 0, 0, 0, m[0x9ef4] == 0, 0);
 }
 
-int exhibition_start(int home, int away)
+int exhibition_start2(int home, int away, void *homeSheet, void *awaySheet)
 {
     u8 *prof = PTR_profile;
     u8 *season = prof + 0x20;
@@ -102,7 +109,11 @@ int exhibition_start(int home, int away)
     FUN_000a4a00(1, 2);
     FUN_000a4a00(2, 2);
     FUN_000a4a00(3, 2);
-    FUN_001d8b34(home, away, userHome ? lineup : 0, userHome ? 0 : lineup);
+    if (!homeSheet)
+        homeSheet = userHome ? lineup : 0;
+    if (!awaySheet)
+        awaySheet = userHome ? 0 : lineup;
+    FUN_001d8b34(home, away, homeSheet, awaySheet);
 
     /* opponent strength, as for a league match in the player's division */
     u32 div = FUN_00283470(season);
@@ -151,6 +162,32 @@ int exhibition_start(int home, int away)
     return 1;
 }
 
+int exhibition_start(int home, int away)
+{
+    return exhibition_start2(home, away, 0, 0);
+}
+
+/*
+ * Team sheets from the menus (Java writes them through /proc/self/mem before the start
+ * request): PAGE+0xf40 home, PAGE+0xf84 away, each u8 valid, u8 DLS formation (0-11),
+ * u8 count, u8 0, then count x u16 player ids: starting XI in the formation's slot order,
+ * then substitutes and reserves. Built the way FUN_00273170 builds one for a squad list.
+ */
+static void *make_sheet(u8 *sheet, int team, u8 *src)
+{
+    if (src[0] != 1)
+        return 0;
+    src[0] = 0;
+    FUN_001dc0b8(sheet);
+    FUN_001dcdc4(sheet, team);
+    int n = src[2] > 32 ? 32 : src[2];
+    for (int i = 0; i < n; i++)
+        FUN_001d95e0(sheet + 0x140, *(u16 *)(src + 4 + 2 * i));
+    FUN_001dbd50(sheet + 0x184, src[1]);
+    FUN_001db894(sheet + 0x186, FUN_000ae0f0(team));
+    return sheet;
+}
+
 /*
  * Called every frame (wrapper at the frame-update call, see exhibition_build.py). The menus'
  * Play match sends the opponent (0x5A5E4000/0x8000|team) and then 0x5A5E0004, which the
@@ -168,9 +205,16 @@ void exhibition_poll(void)
     int team = ov & 0x3ff;
     int home = (ov & 0x4000) ? USER : team;
     int away = (ov & 0x4000) ? team : USER;
+    u64 hbuf[0x50], abuf[0x50];  /* 0x280 bytes each; a sheet is 0x1a0 */
     FUN_001d728c(0);
     FUN_001d72ec();
-    exhibition_start(home, away);
+    void *hs = make_sheet((u8 *)hbuf, home, PAGE + 0xf40);
+    void *as = make_sheet((u8 *)abuf, away, PAGE + 0xf84);
+    exhibition_start2(home, away, hs, as);
+    if (hs)
+        FUN_001dc1d8(hs);
+    if (as)
+        FUN_001dc1d8(as);
     FUN_001d73c4(0, 1);   /* home kit, away kit */
     FUN_0022a548();
     FUN_0016ac60(1);
