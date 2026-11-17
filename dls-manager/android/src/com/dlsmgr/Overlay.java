@@ -598,21 +598,28 @@ public final class Overlay {
 
         @Override
         public void run() {
-            for (int i = 0; i < 4 * 3600; i++) {
+            for (int i = 0; i < 10 * 4 * 3600; i++) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     return;
                 }
                 if (resultSeq() != before) {
-                    try {
-                        Thread.sleep(1500);  // let DLS settle on the hub first
-                    } catch (InterruptedException e) {
-                        return;
-                    }
+                    // straight back: the menus cover DLS before its hub is drawn
                     activity.runOnUiThread(new ShowTask());
                     return;
                 }
+            }
+        }
+    }
+
+    /** During a match nothing of ours is on screen (not even the Manager button). */
+    static final class MatchTask implements Runnable {
+        @Override
+        public void run() {
+            if (web != null) {
+                web.setVisibility(View.GONE);
+                reopen.setVisibility(View.GONE);
             }
         }
     }
@@ -658,7 +665,7 @@ public final class Overlay {
                 int before = resultSeq();
                 nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
                 nativeRequest(0x5A5E0004);
-                activity.runOnUiThread(new HideTask());
+                activity.runOnUiThread(new MatchTask());
                 new Thread(new ResultWatch(before), "dlsmgr-result").start();
                 return "";
             } catch (Throwable t) {

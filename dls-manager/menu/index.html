@@ -715,7 +715,7 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ back from a DLS match
   // Overlay.show() calls this when the menus come back. If DLS's last match is the fixture we
-  // sent (player team = DLS team 258) and it is new, offer to save its score.
+  // sent (player team = DLS team 258) and it is new, its score is saved to the season.
   window.dlsOnShow = function () {
     if (!S || !S.pending || !window.DLSManager || !window.DLSManager.lastMatch) return;
     var now = window.DLSManager.lastMatch();
@@ -724,11 +724,12 @@ input[type="search"], select {
     [0, 1].forEach(function (i) { if (f[i] === -3 || f[i] === -4) f[i] = 258; });  // DLS's aliases for the player team
     var want = P.userHome ? [258, P.oppTid] : [P.oppTid, 258];
     if (f[0] !== want[0] || f[1] !== want[1]) return;
-    var hg = f[2], ag = f[3];
-    modal('<h2>Full time</h2><p style="margin:0;font-size:20px;font-weight:800">' + esc(club(P.home).name) + " " + hg + "–" + ag + " " + esc(club(P.away).name) +
-      '</p><p class="muted" style="margin:0">Save this result to your season? The rest of the matchweek is simulated.</p>' +
-      '<div style="display:flex;gap:8px"><button class="btn primary" data-act="saveresult" data-hg="' + hg + '" data-ag="' + ag + '">Save result</button>' +
-      '<button class="btn ghost" data-act="closemodal">Not yet</button></div>');
+    // the score goes straight into the season (rest of the matchweek simulated), then the report
+    var mineR = playWeek({ hg: f[2], ag: f[3] });
+    S.pending = null; save();
+    if (mineR) { ui.report = mineR; ui.screen = "report"; } else ui.screen = "home";
+    ui.title = false; closeModal();
+    render();
   };
 
   // ------------------------------------------------------------ events
