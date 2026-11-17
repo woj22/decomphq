@@ -154,6 +154,25 @@ def tm_lookup(tm, name, age=None):
     return max(cands, key=lambda c: (c["last_season"], c["market_value_in_eur"] or "0"))
 
 
+def wiki_shirt(key, wiki_shirts):
+    """Shirt number for a player from the club's Wikipedia list, tolerating name variants:
+    'Gabriel' vs 'Gabriel Magalhães', 'Alisson' vs 'Alisson Becker',
+    'Djordje Petrović' vs 'Đorđe Petrović', 'Yegor Yarmolyuk' vs 'Yehor Yarmoliuk'."""
+    import difflib
+    if key in wiki_shirts:
+        return wiki_shirts[key]
+    toks = key.split()
+    cands = []
+    for wk, no in wiki_shirts.items():
+        wt = wk.split()
+        if set(toks) <= set(wt) or set(wt) <= set(toks):  # one name contains the other
+            cands.append(no)
+        elif toks and wt and difflib.SequenceMatcher(None, toks[-1], wt[-1]).ratio() >= 0.8 and \
+                difflib.SequenceMatcher(None, key, wk).ratio() >= 0.75:  # spelling variants
+            cands.append(no)
+    return cands[0] if len(set(cands)) == 1 else None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--wiki", required=True)
@@ -226,8 +245,10 @@ def main():
                 wiki_shirts = {person_key(w["name"]): w["no"] for w in squads[lg][c] if w.get("no")}
                 for r in user_by_club[c]:
                     p = {k: v for k, v in r.items() if k not in ("club", "league") and v not in (None, "")}
-                    if "shirt" not in p and person_key(p["name"]) in wiki_shirts:
-                        p["shirt"] = wiki_shirts[person_key(p["name"])]  # fill from Wikipedia squad list
+                    if "shirt" not in p:
+                        no = wiki_shirt(person_key(p["name"]), wiki_shirts)
+                        if no:
+                            p["shirt"] = no  # fill from Wikipedia squad list
                     players.append(p)
             else:
                 src = "wikipedia"
