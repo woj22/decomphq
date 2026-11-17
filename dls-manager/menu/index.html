@@ -772,7 +772,12 @@ input[type="search"], select {
       return modal('<h2>Play in DLS</h2><p class="muted" style="margin:0">In the game this button loads the real DLS19 match with both squads and returns here at full time. That link is the next big piece of work, so for now use Quick Sim.</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
     if (act === "closemodal") return closeModal();
-    if (act === "loadcareer") { ui.title = false; ui.screen = "home"; return render(); }
+    if (act === "loadcareer") {
+      ui.title = false; ui.screen = "home";
+      // keep the game's team in step with the career (e.g. after a recovery reset it)
+      if (window.DLSManager && window.DLSManager.currentClub && window.DLSManager.currentClub() !== S.clubId) window.DLSManager.becomeClub(S.clubId);
+      return render();
+    }
     if (act === "newcareer") {
       if (S && !t.hasAttribute("data-sure")) {
         return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">Your current career with ' + esc(club(S.clubId).name) + ' is replaced when you start the new one.</p>' +

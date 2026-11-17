@@ -310,9 +310,13 @@ public final class Overlay {
      */
     static void becomeClub(String cid) {
         try {
-            // Switched off in v40 until the converted saves are confirmed to load.
+            // Re-enabled in v42: an exported save showed the converted Fužinar save loads, plays and
+            // autosaves; the Play-match crash was the fixture override (still off).
             File dir = activity.getExternalFilesDir(null);
-            log(dir, "switch requested (disabled): " + cid);
+            writeBytes(new File(dir, "dlsmgr_pending_club.txt"), cid.getBytes("UTF-8"));
+            log(dir, "switch requested: " + cid);
+            activity.runOnUiThread(new ToastTask(clubName(activity, cid)
+                    + " is ready - close the game and open it again to start."));
         } catch (Throwable t) {
             lastError = String.valueOf(t);
         }
