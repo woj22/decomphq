@@ -326,13 +326,16 @@ void ndb_ours(long env, long cls, u32 v)
 
 /*
  * The game's screen stack is drawn by FUN_001693e8, called once a frame from the render
- * function FUN_001691d4 (patched call at 0x1692a8). DLS's front end is gone: the stack is
- * only drawn while one of our matches is loading or being played (PAGE+0xf0c), or when the
- * player has asked to see DLS (PAGE+0xf0d). Otherwise the frame is just cleared, so no DLS
- * menu is ever on screen; the menus are the app.
+ * function FUN_001691d4 (patched call at 0x1692a8). DLS's front end is cut out: the stack is
+ * drawn only while the screen on top is the match screen (type 0, FUN_0013f87c; FUN_000f213c
+ * gives the top screen's type). Every other DLS screen - hub, menus, loading, popups - is never
+ * drawn, whatever state the game gets into; the frame is just cleared and the menus are the app.
  */
+void *FUN_00123a68(void);
+int FUN_000f213c(void *);
+
 void render_screens_gate(void)
 {
-    if (PAGE[0xf0c] || PAGE[0xf0d])
+    if (FUN_000f213c(FUN_00123a68()) == 0)
         FUN_001693e8();
 }

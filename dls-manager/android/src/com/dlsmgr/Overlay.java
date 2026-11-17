@@ -662,7 +662,7 @@ public final class Overlay {
         }
     }
 
-    /** If the match-loaded call never arrives, step aside after 30 s so the match can be played. */
+    /** If the match-loaded call never arrives within 30 s, the menus report it instead of waiting. */
     static final class LoadTimeout implements Runnable {
         @Override
         public void run() {
@@ -672,7 +672,17 @@ public final class Overlay {
                 return;
             }
             if (!matchShown) {
-                activity.runOnUiThread(new MatchTask());
+                activity.runOnUiThread(new KickoffFailedTask());
+            }
+        }
+    }
+
+    /** The match didn't come up: stay in the menus and say so (no DLS screens are drawn now). */
+    static final class KickoffFailedTask implements Runnable {
+        @Override
+        public void run() {
+            if (web != null) {
+                web.evaluateJavascript("window.dlsKickoffFailed && window.dlsKickoffFailed()", null);
             }
         }
     }

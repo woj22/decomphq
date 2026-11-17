@@ -790,6 +790,13 @@ input[type="search"], select {
     render();
   };
 
+  window.dlsKickoffFailed = function () {
+    if (ui.screen !== "kickoff") return;
+    S.pending = null; save();
+    ui.screen = "prematch"; render();
+    modal('<h2>The match didn\'t start</h2><p class="muted" style="margin:0">Please use Export save in the menu and send it over, so the log shows where kick-off stopped.</p><button class="btn primary" data-act="closemodal">OK</button>');
+  };
+
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
     var t = ev.target.closest("[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
