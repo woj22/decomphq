@@ -292,7 +292,24 @@ void ndb_ours(long env, long cls, u32 v)
         *(u16 *)(PAGE + 0xf08) = (u16)(i + 1);
     } else if (x == 3) {
         *(u16 *)(PAGE + 0xf04) = 0;
+    } else if (x == 0x10 || x == 0x11) {
+        PAGE[0xf0d] = (u8)(x & 1);  /* DLS front end hidden (0x10) / shown (0x11) */
     } else {
         PAGE[0xf00] = (u8)x;
     }
+}
+
+void FUN_001693e8(void);
+
+/*
+ * The game's screen stack is drawn by FUN_001693e8, called once a frame from the render
+ * function FUN_001691d4 (patched call at 0x1692a8). DLS's front end is gone: the stack is
+ * only drawn while one of our matches is loading or being played (PAGE+0xf0c), or when the
+ * player has asked to see DLS (PAGE+0xf0d). Otherwise the frame is just cleared, so no DLS
+ * menu is ever on screen; the menus are the app.
+ */
+void render_screens_gate(void)
+{
+    if (PAGE[0xf0c] || PAGE[0xf0d])
+        FUN_001693e8();
 }

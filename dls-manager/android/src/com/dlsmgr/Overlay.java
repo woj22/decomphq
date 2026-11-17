@@ -118,6 +118,7 @@ public final class Overlay {
         web.setVisibility(View.VISIBLE);
         web.bringToFront();
         reopen.setVisibility(View.GONE);
+        frontEnd(false);
         web.evaluateJavascript("window.dlsOnShow && window.dlsOnShow()", null);
     }
 
@@ -128,6 +129,19 @@ public final class Overlay {
         web.setVisibility(View.GONE);
         reopen.setVisibility(View.VISIBLE);
         reopen.bringToFront();
+        frontEnd(true);  // the player asked to see DLS itself
+    }
+
+    /**
+     * DLS's own menus are not drawn at all (exhibition.c, render_screens_gate) unless the player
+     * deliberately opens DLS; matches always draw.
+     */
+    static void frontEnd(boolean visible) {
+        try {
+            nativeRequest(visible ? 0x5A5E0011 : 0x5A5E0010);
+        } catch (Throwable t) {
+            lastError = String.valueOf(t);
+        }
     }
 
     /**

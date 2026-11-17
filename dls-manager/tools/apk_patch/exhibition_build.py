@@ -25,7 +25,7 @@ SYMS = {
 FUNCS = ["002a25f8", "001d8354", "000a4a00", "001d8b34", "0027dc84", "0027eabc", "0027eac4", "00283470",
          "002b5760", "000b35c8", "001d72a0", "001d69f4", "001d6ba8", "00273a9c", "002b70e8", "002b70dc",
          "0027e3fc", "0027e304", "002b6fb0", "00348f2c", "000b5d70", "000acf28", "00227cb8", "001d83ec",
-         "001d8ef8", "001d8384", "001d6ed8", "00169f44", "001d728c", "001d72ec", "001d73c4", "0022a548", "0016ac60", "001dc0b8", "001dcdc4", "001d95e0", "001dbd50", "001db894", "000ae0f0", "001dc1d8", "0034da64", "0034db84", "000a45f0"]
+         "001d8ef8", "001d8384", "001d6ed8", "00169f44", "001d728c", "001d72ec", "001d73c4", "0022a548", "0016ac60", "001dc0b8", "001dcdc4", "001d95e0", "001dbd50", "001db894", "000ae0f0", "001dc1d8", "0034da64", "0034db84", "000a45f0", "001693e8"]
 HOOK_S = """
 .text
 .global exhibition_hook
@@ -69,6 +69,7 @@ match_screen_hook:
     str d8, [sp, #-0x30]!
     b FUN_0013f9d8
 """
+RENDER = 0x1692a8         # FUN_001691d4: bl FUN_001693e8 (draw the screen stack)
 MSCREEN = 0x13f9d4        # FUN_0013f9d4 (match screen update): str d8, [sp, #-0x30]!
 NDB = 0x2b914c            # FTTJNI.NativeDialogButton: str x19, [sp, #-0x20]!
 FRAME = 0x2b8808          # step(): bl FUN_00263db8, patched to bl 0x525280 (profile_hooks_asm.py)
@@ -115,6 +116,9 @@ def main():
     old = struct.unpack_from("<I", lib, NDB)[0]
     assert old == 0xf81e0ff3, hex(old)
     words[NDB] = (old, 0x14000000 | (((sym["ndb_hook"] - NDB) >> 2) & 0x3ffffff))
+    old = struct.unpack_from("<I", lib, RENDER)[0]
+    assert old == 0x94000050, hex(old)
+    words[RENDER] = (old, 0x94000000 | (((sym["render_screens_gate"] - RENDER) >> 2) & 0x3ffffff))
     old = struct.unpack_from("<I", lib, MSCREEN)[0]
     assert old == 0xfc1d0fe8, hex(old)
     words[MSCREEN] = (old, 0x14000000 | (((sym["match_screen_hook"] - MSCREEN) >> 2) & 0x3ffffff))
