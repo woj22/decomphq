@@ -81,17 +81,22 @@ def convert(template, fm_path, shorts, socks):
     sw = x1 - x0
     # back: plain pattern, upside down (hem at the top of the texture)
     out.paste(plain.resize((sw, SEAM_Y), Image.LANCZOS).transpose(Image.FLIP_TOP_BOTTOM), (x0, 0))
-    # front: plain pattern across the whole strip (covers the sides), FM body over the chest
-    out.paste(plain.resize((sw, HEM_Y - SEAM_Y), Image.LANCZOS), (x0, SEAM_Y))
+    # front: FM body over the chest. The sides (the strip wraps round the body) get each row's
+    # typical colour across the shirt (per-row median), which keeps horizontal pinstripes and
+    # hoops but not a sash, piping or logos.
     cw = int(round(sw * CHEST_W))
-    front = body.resize((cw, HEM_Y - SEAM_Y), Image.LANCZOS)
-    mask = Image.new("L", front.size, 255)
-    edge = max(4, cw // 12)
-    m = np.asarray(mask).copy()
-    ramp = np.linspace(0, 255, edge)
-    m[:, :edge] = np.minimum(m[:, :edge], ramp)
-    m[:, -edge:] = np.minimum(m[:, -edge:], ramp[::-1])
-    out.paste(front, (x0 + (sw - cw) // 2, SEAM_Y), Image.fromarray(m.astype("uint8")))
+    fh = HEM_Y - SEAM_Y
+    front = np.asarray(body.resize((cw, fh), Image.LANCZOS)).astype(float)
+    rowcol = np.median(front[:, 6:cw - 6], axis=1)  # (fh, 3)
+    row = np.repeat(rowcol[:, None, :], sw, axis=1)
+    left = (sw - cw) // 2
+    ramp = np.ones(cw)
+    edge = max(4, cw // 10)
+    ramp[:edge] = np.linspace(0, 1, edge)
+    ramp[-edge:] = np.linspace(1, 0, edge)
+    seg = row[:, left:left + cw]
+    row[:, left:left + cw] = seg * (1 - ramp[None, :, None]) + front * ramp[None, :, None]
+    out.paste(Image.fromarray(row.clip(0, 255).astype("uint8")), (x0, SEAM_Y))
 
     # sleeves (left pieces from the FM left sleeve, right pieces from the right sleeve)
     for i, box in enumerate(SLEEVES):
