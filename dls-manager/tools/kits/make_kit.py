@@ -72,42 +72,57 @@ def main():
     ap.add_argument("--sponsor-pos", default="257,282,46")
     ap.add_argument("--maker", help="kit maker logo, top left of the chest (as seen from the front)")
     ap.add_argument("--maker-pos", default="227,218,30")
+    ap.add_argument("--sock-text", help="image placed on each sock where the Real Madrid kit has 'RMCF' "
+                    "(given upright; turned to read down the left sock and up the right one)")
+    ap.add_argument("--sock-text-pos", default="86,347,25", help="cx,cy,length on the left sock; right is mirrored")
+    ap.add_argument("--size", type=int, default=512, help="output size; DLS19 only accepts 512")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
+    k = a.size / 512
 
-    template = Image.open(a.template).convert("RGBA").resize((512, 512), Image.LANCZOS)
+    template = Image.open(a.template).convert("RGBA").resize((a.size, a.size), Image.LANCZOS)
     ref = Image.open(a.stripes_from).convert("RGBA").resize((512, 512), Image.LANCZOS)
     base, trim = hexcol(a.base), hexcol(a.trim)
 
-    img = Image.new("RGBA", (512, 512), base + (255,))
+    img = Image.new("RGBA", (a.size, a.size), base + (255,))
     d = ImageDraw.Draw(img)
+
+    def R(x0, y0, x1, y1):  # 512-grid box -> output pixels (inclusive)
+        return [round(x0 * k), round(y0 * k), round(x1 * k) - 1, round(y1 * k) - 1]
 
     # three stripes over the shoulders (collar to armhole), continuing down both sleeves
     for y0, y1 in three(SEAM_Y):
-        d.rectangle([STRIP_X[0], y0, STRIP_X[1], y1 - 1], fill=trim)
+        d.rectangle(R(STRIP_X[0], y0, STRIP_X[1], y1), fill=trim)
         for x0, x1 in SLEEVE_SIDE:
-            d.rectangle([x0, y0, x1, y1 - 1], fill=trim)
+            d.rectangle(R(x0, y0, x1, y1), fill=trim)
     for y0, y1 in three(65):
         for x0, x1 in SLEEVE_CORNER:
-            d.rectangle([x0, y0, x1, y1 - 1], fill=trim)
+            d.rectangle(R(x0, y0, x1, y1), fill=trim)
 
     # collar: its own thin piece of the texture, top right of the back strip
-    d.rectangle(COLLAR, fill=trim)
+    d.rectangle(R(*COLLAR), fill=trim)
 
     # shorts and socks: copy the reference kit's stripe columns
     for box in ((0, 380, 256, 512), (256, 380, 512, 512), (0, 268, 165, 380), (350, 268, 512, 380)):
         for x in stripe_columns(ref, box):
-            d.line([x, box[1], x, box[3]], fill=trim)
+            d.rectangle(R(x, box[1], x + 1, box[3]), fill=trim)
 
-    d.rectangle(SWATCH, fill=trim)  # shirt number colour
+    d.rectangle(R(*SWATCH), fill=trim)  # shirt number colour
 
-    if a.crest:
-        cx_, cy_, w_ = (int(v) for v in a.crest_pos.split(","))
-        paste_centred(img, Image.open(a.crest).convert("RGBA"), cx_, cy_, w_)
-    for path, pos in ((a.sponsor, a.sponsor_pos), (a.maker, a.maker_pos)):
+    for path, pos in ((a.crest, a.crest_pos), (a.sponsor, a.sponsor_pos), (a.maker, a.maker_pos)):
         if path:
-            cx_, cy_, w_ = (int(v) for v in pos.split(","))
-            paste_centred(img, Image.open(path).convert("RGBA"), cx_, cy_, w_)
+            cx_, cy_, w_ = (float(v) for v in pos.split(","))
+            paste_centred(img, Image.open(path).convert("RGBA"), cx_ * k, cy_ * k, round(w_ * k))
+    if a.sock_text:
+        txt = Image.open(a.sock_text).convert("RGBA")
+        cx_, cy_, L = (float(v) for v in a.sock_text_pos.split(","))
+        down = txt.rotate(-90, expand=True)   # reads top to bottom (left sock)
+        up = txt.rotate(90, expand=True)      # reads bottom to top (right sock)
+        for t, x in ((down, cx_), (up, 507 - cx_)):  # right sock text sits at x ~421 on the template
+            h = round(L * k)
+            w = round(t.width * h / t.height)
+            tt = t.resize((w, h), Image.LANCZOS) if (w, h) != t.size else t
+            img.alpha_composite(tt, (round(x * k - w / 2), round(cy_ * k - h / 2)))
 
     img.putalpha(template.getchannel("A"))
     img.save(a.out)
