@@ -47,6 +47,11 @@ patches={
  0x10adc8:(0x5280b200,0x9400001b), 0x10adcc:(0x2a1f03e1,0x1400000f),
  # team badges: skip the generated-logo table (CustomLogoInfo) so assets/data/fe/teams/t<id>.png is used
  0x166ae0:(0xb4000180,0x1400000c),
+ # Imported kit/badge table (0xa74dc): the game only looked for DOCS:<id>_home.png etc. (and
+ # DOCS:t<id>.png badges) for the Dream Team (258), and only after a URL import. Check the
+ # files for every team instead, so kits/badges dropped in the documents folder are used.
+ 0xa75c8:(0x54000b61,0xd503201f),   # b.ne <not dream team> -> nop
+ 0xa7638:(0x710022df,0x1400000a),   # skip the "URL set in profile" check -> file check at 0xa7660
 }
 for off,(orig,repl) in patches.items():
     cur=struct.unpack_from('<I',lib,off)[0]

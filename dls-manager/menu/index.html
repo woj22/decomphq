@@ -28,6 +28,8 @@
 }
 * { box-sizing: border-box; }
 html, body { background: var(--bg); color: var(--fg); margin: 0; }
+* { -webkit-tap-highlight-color: transparent; }
+:focus:not(:focus-visible) { outline: none; }
 body {
   font-family: var(--font); font-size: 14px; line-height: 1.4;
   padding-left: max(12px, env(safe-area-inset-left, 0px));
@@ -656,6 +658,20 @@ input[type="search"], select {
       '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn primary" data-act="start">Start career with ' + esc(club(pick).name) + '</button><span class="muted">' + esc(club(pick).stadium) + " · " + clubPlayers[pick].length + " players</span></div></main>";
   }
 
+  // Picking a club only changes the highlight and the start line; re-rendering the whole
+  // screen reloaded every badge and made the in-game WebView flash black.
+  function updateNewGamePick() {
+    var pick = ui.pick;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-pick]"), function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-pick") === pick));
+    });
+    var start = document.querySelector('[data-act="start"]');
+    if (start) {
+      start.textContent = "Start career with " + club(pick).name;
+      start.nextElementSibling.textContent = club(pick).stadium + " · " + clubPlayers[pick].length + " players";
+    }
+  }
+
   function modal(html) {
     var m = el('<div class="modal-bg" id="modal"><section class="panel modal">' + html + "</section></div>");
     document.body.appendChild(m);
@@ -674,7 +690,7 @@ input[type="search"], select {
     var t = ev.target.closest("[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
     if (!t) return;
     if (t.hasAttribute("data-pickleague")) { ui.pickLeague = t.getAttribute("data-pickleague"); ui.pick = D.leagues.find(function (l) { return l.id === ui.pickLeague; }).clubs[0]; return renderNewGame(); }
-    if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return renderNewGame(); }
+    if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return updateNewGamePick(); }
     var go = t.getAttribute("data-go"), act = t.getAttribute("data-act");
     if (go) { closeDrawer(); ui.screen = go; ui.sel = null; return render(); }
     if (t.hasAttribute("data-back-player")) { ui.screen = ui.prev || "squad"; return render(); }

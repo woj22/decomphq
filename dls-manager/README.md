@@ -31,6 +31,10 @@ docs/formats/  file-format notes
 | 0xbab1c–0xbab54 | timer-based type roll + NOPs | create-player card always in the transfer market, random type |
 | 0x10ae4c | `mov w9,#0` | development screen stays open after an upgrade |
 | 0x10adc8–0x10adcc | `bl 0x10ae34; b 0x10ae08` | skip the development results pop-up |
+| 0x166ae0 | `b 0x166b10` | badges skip the generated-logo table |
+| 0xa75c8, 0xa7638 | `nop`; `b 0xa7660` | imported kits/badges for every team: `DOCS:<id>_home.png` (also `_away`, `_third`, `_home_gk`, `_away_gk`, `_third_gk`) and `DOCS:t<id>.png` / `t<id>_thumb.png`, not just the Dream Team (258) |
+
+DOCS is `Android/data/com.firsttouchgames.dls3/files`. `assets/dlsmgr_ext.zip` is unpacked there on every launch (kits 512×512 in DLS19 layout, badges 256/64 px). Menu soundtrack: the seven licensed `assets/data/audio/*.m4a` tracks are replaced with 10 s of silence (sound effects in `se.bnk` and Ode to Joy kept).
 
 Java side: `SavesRestoring.DoSmth` re-unpacks the bundled OBB if it is missing or the wrong size.
 
