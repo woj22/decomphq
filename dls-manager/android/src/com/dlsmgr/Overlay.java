@@ -38,7 +38,7 @@ import org.json.JSONObject;
  *   hide()   - hide the menus and show the DLS game (Play Match until the engine link exists)
  *   isApp()  - true, so the page knows it runs inside the game
  *   exportSave() - zip the game's save (profile.dat etc.) and open the share sheet
- *   becomeClub(id) - make the Dream FC that club (applied on restart, before the save loads)
+ *   becomeClub(id) - your team becomes that club, live (per-club saves, native save/reload)
  *   currentClub() - the club the Dream FC currently is ("" if none), lastError()
  * A small "Manager" button brings the menus back while they are hidden.
  */
@@ -85,7 +85,6 @@ public final class Overlay {
         decor.addView(w, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         web = w;
-        decor.postDelayed(new BootOk(), 30000);
 
         TextView b = new TextView(activity);
         b.setText("Manager");
@@ -136,23 +135,16 @@ public final class Overlay {
      * the player picks a destination.
      */
     /**
-     * Dream FC = the club picked in the manager menus.
-     *
-     * becomeClub(id) (from the menus) writes DOCS/dlsmgr_pending_club.txt and restarts the app.
-     * On the next start, before the game reads the save, applyClub() backs up profile.dat
-     * (profile_backup_before_<club>.dat), rewrites the Dream FC as that club (squad from
-     * assets/dlsmgr/clubs.json, see Profile.becomeClub) and records it in dlsmgr_club.txt.
-     * On every start it then copies the club's kit and badge files to the Dream FC's (258).
+     * Start-up (before the game reads the save): one-off restores, then the current club's
+     * kit/badge files are copied to the player team. Club switches happen live, see becomeClub.
      */
     static void applyClub(Context ctx) {
         File dir = ctx.getExternalFilesDir(null);
         if (dir == null) {
             return;
         }
-        File pending = new File(dir, "dlsmgr_pending_club.txt");
         File current = new File(dir, "dlsmgr_club.txt");
         File prof0 = new File(dir, "profile.dat");
-        File last = new File(dir, "profile_backup_last.dat");
         try {
             // One-off: the player's own save (exported before v33) bundled as
             // assets/dlsmgr/profile_restore_<tag>.dat is put back once; the current
@@ -184,56 +176,40 @@ public final class Overlay {
                 current.delete();
                 new FileOutputStream(r33).close();
             }
-            // Crash guard: starts are counted and the count is cleared after 30 s of normal
-            // running (see create()). Two failed starts in a row after a club switch -> the
-            // save from just before the switch is restored.
-            File boots = new File(dir, "dlsmgr_boot.txt");
-            int n = 0;
-            if (boots.exists()) {
-                try {
-                    n = Integer.parseInt(readText(new FileInputStream(boots)).trim());
-                } catch (Throwable t) {
-                    n = 0;
+            // A club switch that did not survive its reload (app died within 8 s): go back to
+            // the previous club's save.
+            File switching = new File(dir, "dlsmgr_switching.txt");
+            if (switching.exists()) {
+                String prev = readText(new FileInputStream(switching)).trim();
+                File prevSave = new File(new File(dir, "dlsmgr_saves"), prev + ".dat");
+                if (prevSave.exists()) {
+                    copy(new FileInputStream(prevSave), prof0);
+                    new File(dir, "profile_temp.dat").delete();
+                    if (prev.equals("original")) {
+                        current.delete();
+                    } else {
+                        writeBytes(current, prev.getBytes("UTF-8"));
+                    }
+                    lastError = "The club switch failed, so your previous team was restored.";
                 }
+                switching.delete();
             }
-            if (n >= 2 && last.exists() && current.exists()) {
-                copy(new FileInputStream(last), prof0);
-                new File(dir, "profile_temp.dat").delete();
-                current.delete();
-                lastError = "The game failed to start after the club switch, so your previous save was restored.";
-                n = 0;
-            }
-            writeBytes(boots, String.valueOf(n + 1).getBytes("UTF-8"));
         } catch (Throwable t) {
             lastError = String.valueOf(t);
         }
-        try {
-            if (pending.exists()) {
-                String cid = readText(new FileInputStream(pending)).trim();
-                JSONObject clubs = new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json")));
-                JSONObject club = clubs.getJSONObject(cid);
-                File prof = new File(dir, "profile.dat");
-                byte[] file = readBytes(new FileInputStream(prof));
-                File backup = new File(dir, "profile_backup_before_" + cid + ".dat");
-                if (!backup.exists()) {
-                    writeBytes(backup, file);
-                }
-                writeBytes(last, file);
-                byte[] out = Profile.encode(Profile.becomeClub(Profile.decode(file), club));
-                Profile.decode(out);  // must read back cleanly before it replaces the save
-                writeBytes(prof, out);
-                new File(dir, "profile_temp.dat").delete();
-                writeBytes(current, cid.getBytes("UTF-8"));
-                pending.delete();
-            }
-        } catch (Throwable t) {
-            pending.delete();  // never retry a failing conversion on every start
-            lastError = String.valueOf(t);
-        }
+        copyClubLooks(ctx, dir);
+    }
+
+    /** The chosen club's kit and badge files become the player team's (DLS team 258). */
+    static void copyClubLooks(Context ctx, File dir) {
+        File current = new File(dir, "dlsmgr_club.txt");
         try {
             if (current.exists()) {
                 String cid = readText(new FileInputStream(current)).trim();
                 JSONObject clubs = new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json")));
+                if (!clubs.has(cid)) {
+                    return;
+                }
                 int tid = clubs.getJSONObject(cid).getInt("tid");
                 String[] kits = {"home", "away", "third", "home_gk", "away_gk", "third_gk"};
                 for (String k : kits) {
@@ -263,36 +239,91 @@ public final class Overlay {
 
     static String lastError = "";
 
-    /** Called from the menus: remember the club and restart so applyClub runs before the save loads. */
+    /**
+     * Live club switch, no restart. Each club keeps its own save in DOCS/dlsmgr_saves/<club>.dat
+     * (the player's original team is "original"):
+     *   1. ask the game to save (native hook, see patch_apk.py) and wait for profile.dat to change
+     *   2. file profile.dat under the current club
+     *   3. load the target club's save, or create it from the original save (Profile.becomeClub)
+     *   4. copy the club's kits/badge to the player team, ask the game to reload the profile
+     * Runs on a worker thread; the native work happens on the game thread at the next frame.
+     */
     static void becomeClub(String cid) {
         try {
-            File dir = activity.getExternalFilesDir(null);
-            writeBytes(new File(dir, "dlsmgr_pending_club.txt"), cid.getBytes("UTF-8"));
-            Intent launch = activity.getPackageManager().getLaunchIntentForPackage(activity.getPackageName());
-            if (launch != null) {
-                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                android.app.PendingIntent pi = android.app.PendingIntent.getActivity(activity, 1937, launch,
-                        android.app.PendingIntent.FLAG_CANCEL_CURRENT | 0x04000000 /* FLAG_IMMUTABLE */);
-                android.app.AlarmManager am = (android.app.AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
-                am.set(android.app.AlarmManager.RTC, System.currentTimeMillis() + 1000, pi);
+            Context ctx = activity;
+            File dir = ctx.getExternalFilesDir(null);
+            File prof = new File(dir, "profile.dat");
+            File saves = new File(dir, "dlsmgr_saves");
+            saves.mkdirs();
+            File currentF = new File(dir, "dlsmgr_club.txt");
+            String cur = currentF.exists() ? readText(new FileInputStream(currentF)).trim() : "original";
+            if (cur.length() == 0) {
+                cur = "original";
             }
-            Toast.makeText(activity, "Setting up your club - the game restarts", Toast.LENGTH_LONG).show();
-            activity.finishAffinity();
-            android.os.Process.killProcess(android.os.Process.myPid());
+            if (cur.equals(cid)) {
+                return;
+            }
+            long before = prof.lastModified();
+            nativeRequest(0x5A5E0001);
+            for (int i = 0; i < 40 && prof.lastModified() == before; i++) {
+                Thread.sleep(100);
+            }
+            Thread.sleep(300);  // let the write finish
+            byte[] now = readBytes(new FileInputStream(prof));
+            Profile.decode(now);  // only file a save that reads back
+            writeBytes(new File(saves, cur + ".dat"), now);
+
+            File target = new File(saves, cid + ".dat");
+            byte[] out;
+            if (target.exists()) {
+                out = readBytes(new FileInputStream(target));
+            } else {
+                File orig = new File(saves, "original.dat");
+                byte[] base = orig.exists() ? readBytes(new FileInputStream(orig)) : now;
+                JSONObject clubs = new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json")));
+                out = Profile.encode(Profile.becomeClub(Profile.decode(base), clubs.getJSONObject(cid)));
+            }
+            Profile.decode(out);
+            writeBytes(prof, out);
+            new File(dir, "profile_temp.dat").delete();
+            writeBytes(currentF, cid.getBytes("UTF-8"));
+            copyClubLooks(ctx, dir);
+            File switching = new File(dir, "dlsmgr_switching.txt");
+            writeBytes(switching, cur.getBytes("UTF-8"));  // removed once the reload has survived
+            nativeRequest(0x5A5E0002);
+            activity.runOnUiThread(new ToastTask("You are now " + clubName(ctx, cid)));
+            Thread.sleep(8000);
+            switching.delete();
         } catch (Throwable t) {
-            Toast.makeText(activity, "Could not switch club: " + t, Toast.LENGTH_LONG).show();
+            lastError = String.valueOf(t);
+            activity.runOnUiThread(new ToastTask("Could not switch club: " + t));
         }
     }
 
-    /** 30 s after the menus appear the game is clearly running: clear the crash-guard count. */
-    static final class BootOk implements Runnable {
+    private static String clubName(Context ctx, String cid) {
+        try {
+            return new JSONObject(readText(ctx.getAssets().open("dlsmgr/clubs.json"))).getJSONObject(cid).getString("name");
+        } catch (Throwable t) {
+            return cid;
+        }
+    }
+
+    /** Hooked FTTJNI.NativeDialogButton: 0x5A5E0001 = save the profile, 0x5A5E0002 = reload it. */
+    static void nativeRequest(int code) throws Exception {
+        Class<?> jni = Class.forName("com.firsttouchgames.ftt.FTTJNI");
+        jni.getMethod("NativeDialogButton", int.class).invoke(null, code);
+    }
+
+    static final class ToastTask implements Runnable {
+        private final String msg;
+
+        ToastTask(String msg) {
+            this.msg = msg;
+        }
+
         @Override
         public void run() {
-            try {
-                writeBytes(new File(activity.getExternalFilesDir(null), "dlsmgr_boot.txt"), "0".getBytes("UTF-8"));
-            } catch (Throwable t) {
-                // ignore
-            }
+            Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -409,7 +440,7 @@ public final class Overlay {
 
         @JavascriptInterface
         public void becomeClub(String cid) {
-            activity.runOnUiThread(new BecomeTask(cid));
+            new Thread(new BecomeTask(cid), "dlsmgr-club").start();
         }
 
         @JavascriptInterface
