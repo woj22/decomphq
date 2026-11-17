@@ -92,3 +92,10 @@ restore the latter. Writing the players as custom-player records instead (v33,
 `tools/save/make_fuzinar_profile.py`) crashed the game, so that path is not used.
 The menus' *Export save*
 button zips the save so it can be read here; save files are not committed.
+
+## Start-up (first run / after a data reset)
+
+The original mod's `com.savegame.SavesRestoring.DoSmth` (classes2.dex) unpacks the bundled game
+data `assets/dl.txt` (the 306 MB OBB) into the OBB folder; nothing is downloaded. Its Turkish
+"cheat activated" toasts are replaced with "Setting up DLS Manager…" / "Ready." (string edits in
+the apktool tree). The game's Safe Mode is off (`tools/apk_patch/no_safe_mode.smali`).
