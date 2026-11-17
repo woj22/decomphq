@@ -122,6 +122,30 @@ def calibrate(out):
             p["attrs"] = [max(5, min(99, a + delta)) if (k < 10 or p["pos"] == "GK") else a for k, a in enumerate(p["attrs"])]
 
 
+def apply_real_ratings(out, path):
+    """Use the owner's FC ratings (data/ratings_2026_27.json, from match_ratings.py) where present.
+
+    The overall becomes the real rating (capped at 93 for a starting rating); attributes shift by
+    the same amount so the profile keeps its position shape. Players without a real rating keep
+    the calibrated estimate. Returns how many players got a real rating.
+    """
+    if not os.path.exists(path):
+        return 0
+    real = json.load(open(path))
+    n = 0
+    for p in out["players"]:
+        r = real.get(out["clubs"][p["club"]]["rosterName"], {}).get(p["name"])
+        if r is None:
+            p["ratingSource"] = "estimate"
+            continue
+        delta = min(93, r) - p["ovr"]
+        p["ovr"] = min(93, r)
+        p["attrs"] = [max(5, min(99, a + delta)) if (k < 10 or p["pos"] == "GK") else a for k, a in enumerate(p["attrs"])]
+        p["ratingSource"] = "fc27"
+        n += 1
+    return n
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--roster", required=True)
@@ -167,6 +191,8 @@ def main():
         out["leagues"].append({"id": lg, "name": meta["name"], "country": meta["country"], "short": meta["short"],
                                "cycles": meta["cycles"], "clubs": ids})
     calibrate(out)
+    real = apply_real_ratings(out, os.path.join(os.path.dirname(os.path.abspath(a.roster)), "ratings_2026_27.json"))
+    print(f"real FC ratings applied to {real} players")
     os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
     json.dump(out, open(a.out, "w"), ensure_ascii=False, separators=(",", ":"))
     print(f"{len(out['clubs'])} clubs, {len(out['players'])} players -> {a.out} ({os.path.getsize(a.out)//1024} KB)")
