@@ -58,10 +58,15 @@ CLUB_ALIASES = {
     "alaves": "Deportivo Alavés",
 }
 
+# leagues that only come from user files (not on the Wikipedia season pages we fetch)
+USER_LEAGUES = {"2. SNL": "slovenia_2snl", "3. SNL": "slovenia_2snl"}
+USER_LEAGUE_NAMES = {"slovenia_2snl": "2. SNL"}
+
 POS_ABBR = {"GK": "Goalkeeper", "CB": "Centre-Back", "LB": "Left-Back", "RB": "Right-Back",
             "DM": "Defensive Midfield", "CM": "Central Midfield", "AM": "Attacking Midfield",
             "LM": "Left Midfield", "RM": "Right Midfield", "LW": "Left Winger", "RW": "Right Winger",
-            "SS": "Second Striker", "CF": "Centre-Forward"}
+            "SS": "Second Striker", "CF": "Centre-Forward",
+            "MIDFIELDER": "Central Midfield", "STRIKER": "Centre-Forward", "DEFENDER": "Centre-Back"}
 
 
 def dmy_to_iso(v):
@@ -73,16 +78,18 @@ def normalize_user_row(r):
     """Accept both supplied layouts and return one dict per player."""
     g = lambda *keys: next(((r.get(k) or "").strip() for k in keys if (r.get(k) or "").strip()), "")
     pos = g("position")
-    h = g("height").replace(",", ".").rstrip("m").strip()
+    h = g("height", "height_cm").replace(",", ".").rstrip("m").strip()
     try:
-        height = int(round(float(h) * 100)) if h else None
+        height = float(h) if h else None
+        height = int(round(height * 100)) if height and height < 3 else (int(height) if height else None)
     except ValueError:
         height = None
     age = g("age")
     return {
         "club": g("club"),
         "name": g("player"),
-        "shirt": g("shirt") or None,
+        "shirt": g("shirt", "shirt_number") or None,
+        "league": g("league") or None,
         "position": POS_ABBR.get(pos.upper(), pos),
         "age": int(age) if age.isdigit() else None,
         "dob": dmy_to_iso(g("DOB", "dob", "date_of_birth")),
@@ -144,11 +151,21 @@ def main():
     files = []
     for f in a.user_csv:
         files += sorted(glob.glob(os.path.join(f, "*"))) if os.path.isdir(f) else [f]
-    user_rows = []
+    user_rows, seen, skipped = [], set(), []
     for f in files:
         text = open(f, encoding="utf-8-sig").read()
         delim = "|" if text.split("\n", 1)[0].count("|") > text.split("\n", 1)[0].count(",") else ","
-        user_rows += [normalize_user_row(r) for r in csv.DictReader(io.StringIO(text), delimiter=delim)]
+        for r in csv.DictReader(io.StringIO(text), delimiter=delim):
+            vals = "".join(v or "" for v in r.values() if isinstance(v, str))
+            if "\uff5c" in vals or not (r.get("player") or "").strip():
+                skipped.append((os.path.basename(f), r.get("club"), r.get("player")))
+                continue
+            row = normalize_user_row(r)
+            key = (club_key(row["club"]), person_key(row["name"]))
+            if key in seen:
+                continue
+            seen.add(key)
+            user_rows.append(row)
 
     clubs = {}  # canonical title -> league
     for lg, cl in squads.items():
@@ -163,11 +180,19 @@ def main():
         if k in CLUB_ALIASES:
             return CLUB_ALIASES[k]
         hits = [c for kk, c in key_to_club.items() if set(k.split()) <= set(kk.split())]
+        if len(hits) != 1:
+            hits = [c for kk, c in key_to_club.items() if kk and set(kk.split()) <= set(k.split())]
         return hits[0] if len(hits) == 1 else None
 
     user_by_club, unmatched_clubs = {}, set()
     for r in user_rows:
         c = find_club(r["club"])
+        if not c and r.get("league") in USER_LEAGUES:
+            lg = USER_LEAGUES[r["league"]]
+            squads.setdefault(lg, {}).setdefault(r["club"], [])
+            clubs[r["club"]] = lg
+            key_to_club[club_key(r["club"])] = r["club"]
+            c = r["club"]
         if not c:
             unmatched_clubs.add(r["club"])
             continue
@@ -183,7 +208,7 @@ def main():
                 src = "user"
                 wiki_shirts = {person_key(w["name"]): w["no"] for w in squads[lg][c] if w.get("no")}
                 for r in user_by_club[c]:
-                    p = {k: v for k, v in r.items() if k != "club" and v not in (None, "")}
+                    p = {k: v for k, v in r.items() if k not in ("club", "league") and v not in (None, "")}
                     if "shirt" not in p and person_key(p["name"]) in wiki_shirts:
                         p["shirt"] = wiki_shirts[person_key(p["name"])]  # fill from Wikipedia squad list
                     players.append(p)
@@ -208,12 +233,14 @@ def main():
                         p["position"] = t["sub_position"]
             out_cl[c] = {"source": src, "players": players}
             report.append((lg, c, src, len(players), matched))
-        roster["leagues"][lg] = {"name": LEAGUE_OF[lg], "clubs": out_cl}
+        roster["leagues"][lg] = {"name": LEAGUE_OF.get(lg) or USER_LEAGUE_NAMES.get(lg, lg), "clubs": out_cl}
 
     os.makedirs(a.out, exist_ok=True)
     json.dump(roster, open(os.path.join(a.out, "roster_2026_27.json"), "w"), ensure_ascii=False, indent=1)
     for lg, c, src, n, m in report:
         print(f"{lg:15s} {c:32s} {src:9s} {n:3d} players, {m:3d} matched to TM data")
+    if skipped:
+        print(f"skipped {len(skipped)} damaged/empty rows:", skipped[:5])
     if unmatched_clubs:
         print("user clubs not matched to a 2026/27 league club:", sorted(unmatched_clubs))
 

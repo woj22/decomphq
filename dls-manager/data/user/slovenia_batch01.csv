@@ -1,0 +1,217 @@
+club,league,shirt_number,player,position,date_of_birth,age,nationality,height
+NK Vrhnika,2. SNL,1,Tijan Vasic,Goalkeeper,11/02/2007,19,Slovenia,194
+NK Vrhnika,2. SNL,12,Aljaž Božič,Goalkeeper,06/04/2004,22,Slovenia,
+NK Vrhnika,2. SNL,17,Amel Avdic,Centre-Back,07/04/2007,19,Bosnia-Herzegovina/Austria,190
+NK Vrhnika,2. SNL,18,Sergej Lazarevic,Centre-Back,03/03/2006,20,Slovenia,
+NK Vrhnika,2. SNL,15,Gal Pecjak,Centre-Back,18/04/2005,21,Slovenia,
+NK Vrhnika,2. SNL,25,Ilija Cutovic,Centre-Back,02/10/2005,21,Serbia,
+NK Vrhnika,2. SNL,3,Mark Tomsic,Left-Back,28/01/2006,20,Slovenia,
+NK Vrhnika,2. SNL,4,Ronaldo Sarifo Djalo,Left-Back,06/10/2004,22,Portugal,
+NK Vrhnika,2. SNL,19,Boris Bosnjovic,Right-Back,08/10/2003,23,Slovenia,
+NK Vrhnika,2. SNL,5,Matevz Kobal,Right-Back,08/03/2005,21,Slovenia,
+NK Vrhnika,2. SNL,2,Ziga Kolar,Defensive Midfield,25/10/2002,24,Slovenia,
+NK Vrhnika,2. SNL,16,Marko Nikitovic,Defensive Midfield,23/03/2007,19,Serbia/Croatia,182
+NK Vrhnika,2. SNL,23,David Vitamvas,Defensive Midfield,03/01/2006,20,Slovenia,
+NK Vrhnika,2. SNL,8,Lovre Katic,Central Midfield,09/09/2003,23,Croatia,
+NK Vrhnika,2. SNL,22,Nasir Muhammed,Central Midfield,01/01/2005,21,Nigeria,
+NK Vrhnika,2. SNL,27,Arijan Djelovci,Central Midfield,01/03/2003,23,Slovenia,
+NK Vrhnika,2. SNL,6,Adamson Sharafa,Central Midfield,05/06/2003,23,Nigeria,185
+NK Vrhnika,2. SNL,10,Ziga Pecjak,Attacking Midfield,21/02/2007,19,Slovenia,
+NK Vrhnika,2. SNL,13,Peter Sever,Attacking Midfield,01/01/2007,19,Slovenia,
+NK Vrhnika,2. SNL,7,Frano Mohorovicic,Left Winger,30/04/2008,18,Croatia,
+NK Vrhnika,2. SNL,20,Mark Seliskar,Left Winger,16/01/2002,24,Slovenia,
+NK Vrhnika,2. SNL,14,Jonathan Alukwu,Left Winger,15/03/2003,23,Nigeria,185
+NK Vrhnika,2. SNL,9,Inas Kukavica,Right Winger,21/12/2007,18,Slovenia,
+NK Vrhnika,2. SNL,11,Filip Nikola Ostojic,Right Winger,06/07/2002,24,Slovenia,
+NK Vrhnika,2. SNL,21,Nura Salisu,Centre-Forward,29/10/2006,20,Nigeria/Slovenia,
+NK Vrhnika,2. SNL,16,Andrea Djuric,Centre-Forward,12/01/2001,25,Italy/Serbia,178
+NK Krka,2. SNL,54,Luka Cadez,Goalkeeper,01/03/2000,26,Slovenia,189
+NK Krka,2. SNL,31,Jasa Hribar,Goalkeeper,09/09/2006,20,Slovenia,
+NK Krka,2. SNL,3,Andraz Lipec,Centre-Back,06/12/2001,24,Slovenia,184
+NK Krka,2. SNL,4,Veron Salja,Centre-Back,29/05/1998,28,Kosovo/Slovenia,193
+NK Krka,2. SNL,6,Gasper Vodeb,Centre-Back,30/06/2003,23,Slovenia,192
+NK Krka,2. SNL,55,Miha Dobnikar,Centre-Back,19/03/1997,29,Slovenia,180
+NK Krka,2. SNL,23,Matic Malnar,Centre-Back,24/07/2007,19,Slovenia,
+NK Krka,2. SNL,17,Tadej Petancic,Left-Back,08/01/2004,22,Slovenia,180
+NK Krka,2. SNL,5,David Stojanoski,Left-Back,20/03/2007,19,North Macedonia/Slovenia,186
+NK Krka,2. SNL,20,Lovro-Luka Ukalovic,Right-Back,16/04/2005,21,Croatia,183
+NK Krka,2. SNL,15,Gideon Owusu,Defensive Midfield,30/09/2005,21,Ghana,
+NK Krka,2. SNL,,Ante Matic,Midfielder,08/01/2006,20,Croatia,
+NK Krka,2. SNL,10,Nik Kapun,Central Midfield,09/01/1994,32,Slovenia,184
+NK Krka,2. SNL,24,Val Sterle,Central Midfield,17/06/2008,18,Slovenia,
+NK Krka,2. SNL,25,Sven Opacic,Attacking Midfield,20/05/2003,23,Croatia,183
+NK Krka,2. SNL,14,Dominik Iskric,Attacking Midfield,30/12/2004,21,Croatia,176
+NK Krka,2. SNL,,Luka Andre Zurkic,Attacking Midfield,28/11/2007,18,Serbia/Australia,172
+NK Krka,2. SNL,28,Leon Bicanic,Left Winger,20/05/2004,22,Croatia,178
+NK Krka,2. SNL,16,Tai Meze,Left Winger,14/06/2006,20,Slovenia,
+NK Krka,2. SNL,11,Mark Gliha,Right Winger,17/06/2004,22,Slovenia,
+NK Krka,2. SNL,27,Halifa Kujabi,Right Winger,31/01/2005,21,The Gambia,177
+NK Krka,2. SNL,18,Gasper Cerne,Centre-Forward,24/02/2004,22,Slovenia,
+NK Krka,2. SNL,8,Kristian Dakic,Centre-Forward,01/11/2001,25,Slovenia,186
+NK Krka,2. SNL,9,Tilen Kovacic,Centre-Forward,11/03/2005,21,Slovenia,178
+NK Krka,2. SNL,26,Marko Donchovski,Striker,03/04/2004,22,North Macedonia,
+NK Krka,2. SNL,99,Tilen Tomac,Centre-Forward,10/02/2007,19,Slovenia,
+ND Primorje,2. SNL,13,Dino Rendic,Goalkeeper,16/03/2002,24,Croatia,189
+ND Primorje,2. SNL,1,Matej Mavric,Goalkeeper,23/01/1994,32,Slovenia,183
+ND Primorje,2. SNL,88,Arian Moslavac,Centre-Back,27/10/2006,20,Croatia,
+ND Primorje,2. SNL,53,Miljan Pantic,Centre-Back,12/06/2007,19,Bosnia-Herzegovina,196
+ND Primorje,2. SNL,90,Mark Gomizelj,Centre-Back,15/03/2003,23,Slovenia,174
+ND Primorje,2. SNL,4,Ivan Bikic,Centre-Back,12/02/2006,20,Croatia,
+ND Primorje,2. SNL,14,Nejc Prosen,Left-Back,28/05/2007,19,Slovenia,
+ND Primorje,2. SNL,3,Tilen Vendramin,Right-Back,17/03/2004,22,Slovenia,
+ND Primorje,2. SNL,27,Vasilije Perkovic,Right-Back,21/08/2002,24,Germany/Bosnia-Herzegovina,
+ND Primorje,2. SNL,15,Haris Dedic,Defensive Midfield,06/07/1997,29,Slovenia,184
+ND Primorje,2. SNL,26,Leo Peranovic,Defensive Midfield,22/08/2006,20,Slovenia,
+ND Primorje,2. SNL,20,Abel Marc,Central Midfield,19/04/2001,25,Slovenia,172
+ND Primorje,2. SNL,7,Jaka Kolenc,Attacking Midfield,23/02/1994,32,Slovenia,181
+ND Primorje,2. SNL,24,Luka Mestrovic,Attacking Midfield,25/07/2007,19,Croatia,
+ND Primorje,2. SNL,8,Tais Sabotic,Attacking Midfield,04/09/2007,19,Slovenia,
+ND Primorje,2. SNL,10,Jan Franc Kopatin,Left Winger,01/01/2004,22,Slovenia,
+ND Primorje,2. SNL,11,Mile Parmac,Right Winger,20/05/2006,20,Croatia,
+ND Primorje,2. SNL,32,Betim Cadraki,Right Winger,10/03/2010,16,Slovenia,
+ND Primorje,2. SNL,9,Mark Gulic,Centre-Forward,15/08/1997,29,Slovenia,185
+ND Primorje,2. SNL,93,Taj Rozic Suligoj,Centre-Forward,27/10/2006,20,Slovenia,
+ND Primorje,2. SNL,29,Miha Kobal,Striker,04/11/2007,19,Slovenia,
+NK Dekani,2. SNL,1,Jakob Kobal,Goalkeeper,19/02/2006,20,Slovenia,
+NK Dekani,2. SNL,30,Alen Jurca,Goalkeeper,15/01/2001,25,Slovenia,187
+NK Dekani,2. SNL,15,Matija Burin,Centre-Back,25/03/2001,25,Slovenia,181
+NK Dekani,2. SNL,36,Jan Kalsek,Centre-Back,02/02/2005,21,Slovenia,190
+NK Dekani,2. SNL,5,Denis Cerovec,Centre-Back,24/04/1991,35,Croatia,
+NK Dekani,2. SNL,16,Dino Vadnov,Centre-Back,19/08/2002,24,Croatia,
+NK Dekani,2. SNL,18,Adel Avdic,Centre-Back,01/01/2007,19,Slovenia,
+NK Dekani,2. SNL,2,Ognjen Obradov,Left-Back,13/12/2001,24,Serbia/Bosnia-Herzegovina,176
+NK Dekani,2. SNL,21,Enej Sosic,Left-Back,25/03/2004,22,Slovenia,
+NK Dekani,2. SNL,4,Marko Cvijetic,Right-Back,08/05/2007,19,Slovenia,
+NK Dekani,2. SNL,28,Luka Bradaric,Defensive Midfield,08/09/2003,23,Croatia,189
+NK Dekani,2. SNL,13,Anej Kujovic,Defensive Midfield,09/06/2003,23,Slovenia,
+NK Dekani,2. SNL,14,Denis Cukici,Defensive Midfield,10/02/2003,23,Finland/Kosovo,181
+NK Dekani,2. SNL,20,Enej Jurinčič,Defensive Midfield,15/02/2007,19,Slovenia,
+NK Dekani,2. SNL,6,Franko Cordas,Central Midfield,26/11/2003,22,Croatia,190
+NK Dekani,2. SNL,17,Jan Strcaj,Central Midfield,26/08/2007,19,Slovenia,
+NK Dekani,2. SNL,7,Nik Fortuna,Attacking Midfield,23/11/2002,23,Slovenia,
+NK Dekani,2. SNL,22,Mukadas Abdul Samed,Left Winger,30/11/2005,20,Ghana,183
+NK Dekani,2. SNL,80,Phelipe,Left Winger,20/05/2004,22,Brazil/Italy,
+NK Dekani,2. SNL,19,Tadej Zonta,Right Winger,05/10/1999,27,Slovenia,
+NK Dekani,2. SNL,8,Riad Silajdzic,Right Winger,13/02/2005,21,Slovenia/Bosnia-Herzegovina,183
+NK Dekani,2. SNL,49,Matija Grmek,Right Winger,12/06/2007,19,Slovenia,
+NK Dekani,2. SNL,11,Andreas Sculac,Centre-Forward,09/12/2005,20,Slovenia,
+NK Dekani,2. SNL,9,Adis Emruli,Centre-Forward,16/07/2000,26,Slovenia,182
+NK Dekani,2. SNL,90,Felipe Gabriel,Centre-Forward,01/01/2007,19,Brazil,
+NK Jesenice,2. SNL,22,Tony Macan,Goalkeeper,11/10/2000,26,Croatia,193
+NK Jesenice,2. SNL,1,Kjire Novakov,Goalkeeper,28/08/2003,23,North Macedonia,195
+NK Jesenice,2. SNL,16,Mark Stankovic,Defender,17/10/2003,23,Slovenia,
+NK Jesenice,2. SNL,17,Niko Cindric,Centre-Back,12/07/2005,21,Croatia,
+NK Jesenice,2. SNL,3,Gasper Kukavica,Centre-Back,19/05/2001,25,Slovenia,
+NK Jesenice,2. SNL,4,Denis Solakovic,Centre-Back,23/05/2004,22,Slovenia,
+NK Jesenice,2. SNL,15,Stefan Kladar,Centre-Back,22/02/1994,32,Bosnia-Herzegovina/Croatia,202
+NK Jesenice,2. SNL,99,Emir Velic,Left-Back,26/05/1999,27,Slovenia/Bosnia-Herzegovina,179
+NK Jesenice,2. SNL,6,David Stanojevic,Right-Back,07/05/2004,22,Slovenia,
+NK Jesenice,2. SNL,2,Din Cejvanovic,Right-Back,05/05/2004,22,Slovenia,185
+NK Jesenice,2. SNL,18,Milan Bikhan,Defensive Midfield,01/07/2003,23,Netherlands,178
+NK Jesenice,2. SNL,5,Armin Talic,Defensive Midfield,14/04/2000,26,Slovenia,
+NK Jesenice,2. SNL,88,Alen Ugljanin,Midfielder,23/09/2007,19,Slovenia,
+NK Jesenice,2. SNL,10,Edvin Krupic,Central Midfield,03/03/2004,22,Slovenia,184
+NK Jesenice,2. SNL,19,Maksim Vid Beljkas,Central Midfield,28/06/2007,19,Slovenia,
+NK Jesenice,2. SNL,23,Timon Railic,Central Midfield,13/06/2006,20,Slovenia,
+NK Jesenice,2. SNL,9,Gabriele Giacchino,Attacking Midfield,27/09/2003,23,Italy,170
+NK Jesenice,2. SNL,8,Borna Panic,Attacking Midfield,22/01/2005,21,Croatia,174
+NK Jesenice,2. SNL,7,Qiniso Ngobese,Attacking Midfield,01/01/2003,23,Netherlands,
+NK Jesenice,2. SNL,33,Matija Grek,Left Winger,23/08/2001,25,Serbia,180
+NK Jesenice,2. SNL,99,Roko Mavra,Right Winger,08/09/2006,20,Croatia,
+NK Jesenice,2. SNL,11,Ivan Nikcevic,Centre-Forward,19/10/2004,22,Montenegro/Serbia,180
+NK Jesenice,2. SNL,27,Deen Adrovic,Centre-Forward,11/08/2004,22,Slovenia,193
+NK Jesenice,2. SNL,72,Matej Zec,Centre-Forward,27/01/2005,21,Slovenia,
+ND Dravinja Kostroj,2. SNL,23,Matic Skrbinsek,Goalkeeper,22/02/1998,28,Slovenia,
+ND Dravinja Kostroj,2. SNL,1,Grega Kusar,Goalkeeper,06/07/2003,23,Slovenia,204
+ND Dravinja Kostroj,2. SNL,21,Luka Privosnik,Centre-Back,26/03/2003,23,Slovenia,
+ND Dravinja Kostroj,2. SNL,47,Benjamin Brglez,Centre-Back,12/08/2006,20,Slovenia,
+ND Dravinja Kostroj,2. SNL,,Blaz Kolar,Centre-Back,14/12/2001,24,Slovenia,
+ND Dravinja Kostroj,2. SNL,19,Enej Herman,Centre-Back,31/01/2006,20,Slovenia,
+ND Dravinja Kostroj,2. SNL,7,Aljaz Vodopivec,Left-Back,08/08/2006,20,Slovenia,
+ND Dravinja Kostroj,2. SNL,42,Denis Vezjak,Left-Back,26/09/1995,31,Slovenia,180
+ND Dravinja Kostroj,2. SNL,17,Tjas Cresnar,Left-Back,24/05/2006,20,Slovenia,188
+ND Dravinja Kostroj,2. SNL,15,Lovro Turinek,Right-Back,14/02/2005,21,Slovenia,
+ND Dravinja Kostroj,2. SNL,32,Tevz Debelak,Right-Back,23/09/2002,24,Slovenia,178
+ND Dravinja Kostroj,2. SNL,20,Nik Rauter,Right-Back,08/03/2002,24,Slovenia,
+ND Dravinja Kostroj,2. SNL,5,Jakob Tic,Right-Back,30/11/1998,27,Slovenia,
+ND Dravinja Kostroj,2. SNL,6,Alen Crnolic,Midfielder,28/02/2007,19,Slovenia,
+ND Dravinja Kostroj,2. SNL,98,Gasper Recnik,Midfielder,01/01/2007,19,Slovenia,
+ND Dravinja Kostroj,2. SNL,99,Tian Pecic,Midfielder,08/12/2008,17,Slovenia,
+ND Dravinja Kostroj,2. SNL,8,Zan Luka Zuzek,Central Midfield,21/02/2007,19,Slovenia,
+ND Dravinja Kostroj,2. SNL,80,Maj Skoflek,Central Midfield,11/02/2004,22,Slovenia,
+ND Dravinja Kostroj,2. SNL,77,Andraz Kolar,Central Midfield,17/01/1997,29,Slovenia,
+ND Dravinja Kostroj,2. SNL,10,Matic Kopac,Attacking Midfield,23/11/1998,27,Slovenia,167
+ND Dravinja Kostroj,2. SNL,14,Niko Zamuda,Left Winger,22/07/2005,21,Slovenia,181
+ND Dravinja Kostroj,2. SNL,11,Blaz Rozmaric,Right Winger,24/07/1997,29,Slovenia,188
+ND Dravinja Kostroj,2. SNL,16,Mateo Koprivc,Centre-Forward,17/12/2003,22,Slovenia,181
+ND Dravinja Kostroj,2. SNL,9,Luka Pucnik,Centre-Forward,09/03/2005,21,Slovenia,185
+ND Dravinja Kostroj,2. SNL,4,Uros Mrdakovic,Centre-Forward,11/09/2004,22,Serbia,189
+ND Dravinja Kostroj,2. SNL,26,Nikola Kljevkovic,Striker,11/02/2008,18,Slovenia,
+NK Krsko,2. SNL,1,Marko Zalokar,Goalkeeper,18/06/1990,36,Slovenia,190
+NK Krsko,2. SNL,12,Tiijan Zorko,Goalkeeper,07/03/2007,19,Slovenia,
+NK Krsko,2. SNL,2,Gabriel Bacan,Centre-Back,30/06/2006,20,Croatia,
+NK Krsko,2. SNL,23,Tomaz Zakrajsek,Centre-Back,24/03/2000,26,Slovenia,188
+NK Krsko,2. SNL,26,Aleksa Djurasovic,Centre-Back,21/04/2004,22,Bosnia-Herzegovina/Serbia,195
+NK Krsko,2. SNL,25,Josip Zuljevic,Centre-Back,20/11/2003,22,Croatia,190
+NK Krsko,2. SNL,3,Archange Rothen Bambi,Left-Back,29/10/2005,21,France,
+NK Krsko,2. SNL,4,Blaz Stopar,Right-Back,27/09/2002,24,Slovenia,170
+NK Krsko,2. SNL,16,Primoz Vidmar,Right-Back,06/03/2000,26,Slovenia,185
+NK Krsko,2. SNL,24,Lan Milanovic,Defensive Midfield,13/02/2005,21,Slovenia,192
+NK Krsko,2. SNL,21,Aljaz Ajdisek,Midfielder,01/05/2006,20,Slovenia,
+NK Krsko,2. SNL,6,Tian Mitic,Defensive Midfield,10/06/2006,20,Slovenia,
+NK Krsko,2. SNL,19,Nik Stanic,Midfielder,19/09/2004,22,Slovenia,
+NK Krsko,2. SNL,14,Jakob Zbasnik,Central Midfield,14/07/2004,22,Slovenia,
+NK Krsko,2. SNL,13,Simun Sintic,Central Midfield,19/07/2005,21,Croatia,
+NK Krsko,2. SNL,10,Nik Pirc,Attacking Midfield,29/08/2006,20,Slovenia,182
+NK Krsko,2. SNL,7,Matic Kustrin,Left Winger,29/03/2002,24,Slovenia,178
+NK Krsko,2. SNL,8,Jure Judez,Right Winger,24/04/2006,20,Slovenia,187
+NK Krsko,2. SNL,9,Fran Stunja,Centre-Forward,16/05/2006,20,Croatia,
+NK Krsko,2. SNL,11,Petar Srsen,Striker,31/07/2007,19,Croatia,
+NK Krsko,2. SNL,17,Ismir Nadarevic,Centre-Forward,29/08/2003,23,Bosnia-Herzegovina,185
+NK Fuzinar,3. SNL,13,Miha Linasi Jeromel,Goalkeeper,18/05/2006,20,Slovenia,185
+NK Fuzinar,3. SNL,,Kristjan Irmancnik,Centre-Back,01/11/2003,23,Slovenia,190
+NK Fuzinar,3. SNL,6,Denis Klinar,Centre-Back,21/02/1992,34,Slovenia,185
+NK Fuzinar,3. SNL,16,Andraz Paradiz,Centre-Back,06/02/1999,27,Slovenia,183
+NK Fuzinar,3. SNL,44,Leander Mark Zelenko,Centre-Back,23/10/2007,19,Slovenia,
+NK Fuzinar,3. SNL,18,Martin Hovnik,Left-Back,12/03/2004,22,Slovenia,185
+NK Fuzinar,3. SNL,22,Lovro Potocnik,Left-Back,01/01/2007,19,Slovenia,
+NK Fuzinar,3. SNL,23,Matevz Turkus,Right-Back,15/05/1999,27,Slovenia,179
+NK Fuzinar,3. SNL,14,Jaka Vidmar,Right-Back,12/07/2007,19,Slovenia,
+NK Fuzinar,3. SNL,,Gasper Pumpas,Midfielder,01/01/2007,19,Slovenia,
+NK Fuzinar,3. SNL,5,Ziga Skrube,Defensive Midfield,01/01/2007,19,Slovenia,
+NK Fuzinar,3. SNL,9,Leon Pliso,Midfielder,07/02/2006,20,Croatia,
+NK Fuzinar,3. SNL,21,Jaka Krevh,Central Midfield,16/02/2005,21,Slovenia,
+NK Fuzinar,3. SNL,,Amas Omic,Central Midfield,08/11/2007,19,Slovenia,
+NK Fuzinar,3. SNL,8,Anej Rizmal,Central Midfield,09/07/2006,20,Slovenia,
+NK Fuzinar,3. SNL,,Noel Stajnko Knez,Attacking Midfield,01/01/2007,19,Slovenia,
+NK Fuzinar,3. SNL,,Samuel Bravo,Attacking Midfield,01/01/2007,19,Chile,
+NK Fuzinar,3. SNL,20,Tjas Svitlica,Attacking Midfield,21/03/2007,19,Slovenia,
+NK Fuzinar,3. SNL,10,Damjan Vukolic,Left Winger,04/02/2005,21,Slovenia,181
+NK Fuzinar,3. SNL,11,Ardit Vezaj,Left Winger,02/04/2001,25,Slovenia,179
+NK Fuzinar,3. SNL,,Luka Mlakar,Right Winger,24/05/2005,21,Slovenia,
+NK Fuzinar,3. SNL,77,Andraz Turinek,Right Winger,30/04/2006,20,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,26,Matevz Vidovsek,Goalkeeper,30/10/1999,27,Slovenia,199
+NK Olimpija Ljubljana,Prva Liga,22,Denis Pintol,Goalkeeper,07/02/2000,26,Slovenia,188
+NK Olimpija Ljubljana,Prva Liga,,Luka Bele,Goalkeeper,01/01/2007,19,Slovenia,191
+NK Olimpija Ljubljana,Prva Liga,4,Veljko Jelenkovic,Centre-Back,05/06/2003,23,Bulgaria/Serbia,187
+NK Olimpija Ljubljana,Prva Liga,30,Jan Gorenc,Centre-Back,26/07/1999,27,Slovenia,192
+NK Olimpija Ljubljana,Prva Liga,23,Davit Kobouri,Centre-Back,24/01/1998,28,Georgia,187
+NK Olimpija Ljubljana,Prva Liga,15,Marko Ristic,Centre-Back,01/11/2004,22,Slovenia,192
+NK Olimpija Ljubljana,Prva Liga,,Artur Vinicius,Centre-Back,11/09/2007,19,Brazil,
+NK Olimpija Ljubljana,Prva Liga,54,Jan Jurgec,Centre-Back,13/03/2007,19,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,3,Jost Urbancic,Left-Back,12/04/2001,25,Slovenia,177
+NK Olimpija Ljubljana,Prva Liga,33,Jordi Govea,Left-Back,09/03/1999,27,Ecuador/Spain,179
+NK Olimpija Ljubljana,Prva Liga,28,Diga,Right-Back,30/03/1998,28,Portugal,177
+NK Olimpija Ljubljana,Prva Liga,14,Kristjan Bendra,Right-Back,30/01/2006,20,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,34,Agustín Doffo,Defensive Midfield,25/05/1995,31,Argentina/Italy,179
+NK Olimpija Ljubljana,Prva Liga,6,Luis Perea,Defensive Midfield,25/08/1997,29,Spain,191
+NK Olimpija Ljubljana,Prva Liga,90,Robert Miskovic,Central Midfield,20/10/1999,27,Croatia/Germany,190
+NK Olimpija Ljubljana,Prva Liga,9,Dino Kojic,Attacking Midfield,04/04/2005,21,Slovenia,187
+NK Olimpija Ljubljana,Prva Liga,8,Bruno Lourenço,Attacking Midfield,02/02/1998,28,Portugal,179
+NK Olimpija Ljubljana,Prva Liga,58,Job Brecelj,Attacking Midfield,18/03/2007,19,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,,Xande,Left Winger,24/04/2001,25,Brazil,170
+NK Olimpija Ljubljana,Prva Liga,99,Antonio Marin,Left Winger,09/01/<｜begin▁of▁sentence｜># etc
+
+</｜DSML｜ parameter>
+</｜DSML｜ invoke>
+</｜DSML｜ calls>

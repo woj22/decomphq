@@ -14545,1986 +14545,6234 @@
    "name": "PrvaLiga",
    "clubs": {
     "NK Aluminij": {
-     "source": "wikipedia",
+     "source": "user",
      "players": [
       {
-       "name": "Anej Mrežar",
-       "position": "Goalkeeper",
+       "name": "Anej Mrezar",
        "shirt": "1",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Domen Zajšek",
-       "position": "Defender",
-       "shirt": "3",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Rok Schaubach",
-       "position": "Defender",
-       "shirt": "4",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Matija Boben",
-       "position": "Centre-Back",
-       "shirt": "5",
-       "nat_code": "SVN",
-       "tm_id": 149810,
-       "dob": "1994-02-26",
-       "height_cm": 191,
-       "foot": "right",
+       "position": "Goalkeeper",
+       "age": 26,
+       "dob": "2000-05-25",
        "nationality": "Slovenia",
-       "market_value_eur": 300000
-      },
-      {
-       "name": "Dino Šimunić",
-       "position": "Defender",
-       "shirt": "6",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Marko Mladenović",
-       "position": "Attacking Midfield",
-       "shirt": "7",
-       "nat_code": "SRB",
-       "tm_id": 922413,
-       "dob": "2005-01-30",
-       "height_cm": 174,
-       "foot": "both",
-       "nationality": "Serbia",
-       "market_value_eur": 500000
-      },
-      {
-       "name": "Seyni Babacar Sène",
-       "position": "Midfield",
-       "shirt": "8",
-       "nat_code": "SEN"
-      },
-      {
-       "name": "Adriano Bloudek",
-       "position": "Attack",
-       "shirt": "9",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Robert Ramšak",
-       "position": "Centre-Forward",
-       "shirt": "10",
-       "nat_code": "GER",
-       "tm_id": 941177,
-       "dob": "2006-10-28",
-       "height_cm": 185,
-       "foot": "right",
-       "nationality": "Germany"
-      },
-      {
-       "name": "Bede Osuji",
-       "position": "Attack",
-       "shirt": "11",
-       "nat_code": "NGA"
-      },
-      {
-       "name": "Ante Bekavac",
-       "position": "Left-Back",
-       "shirt": "12",
-       "nat_code": "CRO",
-       "tm_id": 702664,
-       "dob": "2002-01-29",
-       "height_cm": 178,
-       "foot": "left",
-       "nationality": "Croatia",
-       "market_value_eur": 600000
-      },
-      {
-       "name": "Matic Vrbanec",
-       "position": "Midfield",
-       "shirt": "13",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Tomislav Jagić",
-       "position": "Midfield",
-       "shirt": "14",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Simon Rogina",
-       "position": "Midfield",
-       "shirt": "18",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Ivijan Svržnjak",
-       "position": "Attacking Midfield",
-       "shirt": "20",
-       "nat_code": "CRO",
-       "tm_id": 432763,
-       "dob": "2001-08-02",
-       "height_cm": 180,
-       "foot": "right",
-       "nationality": "Croatia",
-       "market_value_eur": 250000
-      },
-      {
-       "name": "Lan Drevenšek",
-       "position": "Defender",
-       "shirt": "21",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Enej Kramberger",
-       "position": "Defender",
-       "shirt": "23",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Tai Luka Modrić",
-       "position": "Attack",
-       "shirt": "24",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Murat Bajraj",
-       "position": "Attack",
-       "shirt": "25",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Maj Blažič",
-       "position": "Midfield",
-       "shirt": "27",
-       "nat_code": "SVN"
+       "height_cm": 185
       },
       {
        "name": "Florijan Raduha",
-       "position": "Goalkeeper",
        "shirt": "31",
-       "nat_code": "SVN"
+       "position": "Goalkeeper",
+       "age": 29,
+       "dob": "1997-04-01",
+       "nationality": "Slovenia",
+       "height_cm": 186
       },
       {
-       "name": "Vito Težak",
+       "name": "Lukas Tomazic",
+       "shirt": "66",
+       "position": "Goalkeeper",
+       "age": 21,
+       "dob": "2005-03-15",
+       "nationality": "Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Rok Schaubach",
+       "shirt": "4",
        "position": "Centre-Back",
-       "shirt": "32",
-       "nat_code": "CRO",
-       "tm_id": 997551,
-       "dob": "2005-03-31",
-       "height_cm": 186,
-       "foot": "left",
+       "age": 22,
+       "dob": "2004-10-04",
+       "nationality": "Slovenia",
+       "height_cm": 188
+      },
+      {
+       "name": "Dino Simunic",
+       "shirt": "6",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-09-11",
        "nationality": "Croatia",
+       "height_cm": 187
+      },
+      {
+       "name": "Vito Tezak",
+       "shirt": "32",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-03-31",
+       "nationality": "Croatia",
+       "height_cm": 186,
+       "tm_id": 997551,
+       "foot": "left",
        "market_value_eur": 150000
       },
       {
-       "name": "Miha Schaubach",
-       "position": "Defender",
-       "shirt": "34",
-       "nat_code": "SVN"
+       "name": "Matija Boben",
+       "shirt": "5",
+       "position": "Centre-Back",
+       "age": 32,
+       "dob": "1994-02-26",
+       "nationality": "Slovenia",
+       "height_cm": 191,
+       "tm_id": 149810,
+       "foot": "right",
+       "market_value_eur": 300000
       },
       {
-       "name": "Petar Petriško",
-       "position": "Attack",
-       "shirt": "44",
-       "nat_code": "CRO"
+       "name": "Domen Zajsek",
+       "shirt": "3",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-04-06",
+       "nationality": "Slovenia",
+       "height_cm": 186
       },
       {
-       "name": "Bamba Susso",
-       "position": "Attack",
-       "shirt": "45",
-       "nat_code": "GAM"
+       "name": "Lan Drevensek",
+       "shirt": "21",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-04-15",
+       "nationality": "Slovenia",
+       "height_cm": 187
       },
       {
-       "name": "Lukas Tomažič",
-       "position": "Goalkeeper",
-       "shirt": "66",
-       "nat_code": "SVN"
+       "name": "Ante Bekavac",
+       "shirt": "12",
+       "position": "Left-Back",
+       "age": 24,
+       "dob": "2002-01-29",
+       "nationality": "Croatia",
+       "height_cm": 178,
+       "tm_id": 702664,
+       "foot": "left",
+       "market_value_eur": 600000
       },
       {
        "name": "Hanus Sørensen",
-       "position": "Right-Back",
        "shirt": "80",
-       "nat_code": "FAR",
-       "tm_id": 470503,
+       "position": "Right-Back",
+       "age": 25,
        "dob": "2001-02-19",
-       "height_cm": 182,
-       "foot": "right",
        "nationality": "Faroe Islands",
+       "height_cm": 182,
+       "tm_id": 470503,
+       "foot": "right",
        "market_value_eur": 200000
       },
       {
-       "name": "Jaka Tetičkovič Domjan",
-       "position": "Attack",
-       "shirt": "98",
-       "nat_code": "SVN"
+       "name": "Miha Schaubach",
+       "shirt": "34",
+       "position": "Right-Back",
+       "age": 18,
+       "dob": "2007-11-29",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tomislav Jagic",
+       "shirt": "14",
+       "position": "Defensive Midfield",
+       "age": 29,
+       "dob": "1997-05-29",
+       "nationality": "Croatia",
+       "height_cm": 178
+      },
+      {
+       "name": "Enej Kramberger",
+       "shirt": "23",
+       "position": "Defensive Midfield",
+       "age": 19,
+       "dob": "2007-03-31",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Matic Vrbanec",
+       "shirt": "13",
+       "position": "Central Midfield",
+       "age": 30,
+       "dob": "1996-10-28",
+       "nationality": "Slovenia",
+       "height_cm": 178
+      },
+      {
+       "name": "Maj Blazic",
+       "shirt": "27",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-01-25",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Marko Mladenovic",
+       "shirt": "7",
+       "position": "Attacking Midfield",
+       "age": 21,
+       "dob": "2005-01-30",
+       "nationality": "Germany/Serbia",
+       "height_cm": 174,
+       "tm_id": 922413,
+       "foot": "both",
+       "market_value_eur": 500000
+      },
+      {
+       "name": "Petar Petrisko",
+       "shirt": "44",
+       "position": "Attacking Midfield",
+       "age": 24,
+       "dob": "2002-05-11",
+       "nationality": "Croatia",
+       "height_cm": 179
+      },
+      {
+       "name": "Simon Rogina",
+       "shirt": "18",
+       "position": "Attacking Midfield",
+       "age": 25,
+       "dob": "2001-03-26",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Filip Pongracic",
+       "position": "Left Winger",
+       "age": 19,
+       "dob": "2007-05-23",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Ivijan Svrznjak",
+       "shirt": "20",
+       "position": "Right Winger",
+       "age": 25,
+       "dob": "2001-08-02",
+       "nationality": "Croatia",
+       "height_cm": 180,
+       "tm_id": 432763,
+       "foot": "right",
+       "market_value_eur": 250000
+      },
+      {
+       "name": "Adriano Bloudek",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 23,
+       "dob": "2003-10-24",
+       "nationality": "Slovenia",
+       "height_cm": 193
+      },
+      {
+       "name": "Bamba Susso",
+       "shirt": "45",
+       "position": "Centre-Forward",
+       "age": 24,
+       "dob": "2002-10-09",
+       "nationality": "The Gambia",
+       "height_cm": 191
+      },
+      {
+       "name": "Robert Ramsak",
+       "shirt": "10",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-10-28",
+       "nationality": "Germany",
+       "height_cm": 185,
+       "tm_id": 941177,
+       "foot": "right"
+      },
+      {
+       "name": "Bede Osuji",
+       "shirt": "11",
+       "position": "Centre-Forward",
+       "age": 30,
+       "dob": "1996-01-21",
+       "nationality": "Nigeria/Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Murat Bajraj",
+       "shirt": "25",
+       "position": "Centre-Forward",
+       "age": 26,
+       "dob": "2000-07-08",
+       "nationality": "Slovenia/Kosovo",
+       "height_cm": 185
+      },
+      {
+       "name": "Jaka Domjan",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-05-05",
+       "nationality": "Slovenia",
+       "height_cm": 184
       }
      ]
     },
     "NK Bravo": {
-     "source": "wikipedia",
+     "source": "user",
      "players": [
       {
+       "name": "Benjamin Maticic",
+       "shirt": "22",
+       "position": "Goalkeeper",
+       "age": 19,
+       "dob": "2007-02-20",
+       "nationality": "Slovenia",
+       "height_cm": 195
+      },
+      {
+       "name": "Matjaz Rozman",
+       "shirt": "77",
+       "position": "Goalkeeper",
+       "age": 39,
+       "dob": "1987-01-03",
+       "nationality": "Slovenia",
+       "height_cm": 192
+      },
+      {
        "name": "Christalino Atemona",
-       "position": "Centre-Back",
        "shirt": "3",
-       "nat_code": "GER",
-       "tm_id": 605225,
+       "position": "Centre-Back",
+       "age": 24,
        "dob": "2002-04-26",
-       "height_cm": 187,
-       "foot": "right",
        "nationality": "Germany",
+       "height_cm": 187,
+       "tm_id": 605225,
+       "foot": "right",
        "market_value_eur": 100000
       },
       {
        "name": "Jakob Brunnhofer",
-       "position": "Centre-Back",
        "shirt": "4",
-       "nat_code": "AUT",
-       "tm_id": 793101,
+       "position": "Centre-Back",
+       "age": 20,
        "dob": "2006-04-25",
+       "nationality": "Austria",
        "height_cm": 187,
-       "foot": "right",
-       "nationality": "Austria"
+       "tm_id": 793101,
+       "foot": "right"
       },
       {
        "name": "Ibrahim Halilou",
-       "position": "Defender",
        "shirt": "5",
-       "nat_code": "CMR"
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-02-24",
+       "nationality": "Cameroon",
+       "height_cm": 188
       },
       {
-       "name": "Jon Ficko",
-       "position": "Midfield",
-       "shirt": "6",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Divine Omoregie",
-       "position": "Attack",
-       "shirt": "7",
-       "nat_code": "ITA"
-      },
-      {
-       "name": "Sandi Nuhanović",
-       "position": "Midfield",
-       "shirt": "8",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Aldin Jakupović",
-       "position": "Attack",
-       "shirt": "9",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Jakoslav Stanković",
-       "position": "Attack",
-       "shirt": "10",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Okpo Mazié",
-       "position": "Attack",
-       "shirt": "11",
-       "nat_code": "CIV"
-      },
-      {
-       "name": "Luka Dakić",
-       "position": "Goalkeeper",
-       "shirt": "12",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Enrik Ostrc",
-       "position": "Midfield",
-       "shirt": "14",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "James Arinze",
-       "position": "Midfield",
-       "shirt": "17",
-       "nat_code": "NGA"
-      },
-      {
-       "name": "Nadon Kouassi",
-       "position": "Midfield",
-       "shirt": "20",
-       "nat_code": "CIV"
-      },
-      {
-       "name": "Lan Štravs",
-       "position": "Midfield",
-       "shirt": "21",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Benjamin Matičič",
-       "position": "Goalkeeper",
-       "shirt": "22",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Artem Grom",
-       "position": "Goalkeeper",
-       "shirt": "23",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Gašper Jovan",
-       "position": "Defender",
-       "shirt": "24",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "David Stojanoski",
-       "position": "Defender",
-       "shirt": "27",
-       "nat_code": "MKD"
-      },
-      {
-       "name": "Svit Blaško",
-       "position": "Midfield",
+       "name": "Molade Olanrewaju",
        "shirt": "28",
-       "nat_code": "SVN"
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-04-15",
+       "nationality": "Nigeria",
+       "height_cm": 187
       },
       {
-       "name": "Viktor Božić",
-       "position": "Defender",
-       "shirt": "31",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Rok Kopatin",
-       "position": "Attack",
-       "shirt": "35",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Svit Mlekuž",
-       "position": "Defender",
-       "shirt": "37",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "An Kumer Čelik",
-       "position": "Defender",
-       "shirt": "42",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Tit Kostić",
-       "position": "Midfield",
-       "shirt": "44",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Jaša Kraševec",
-       "position": "Defender",
-       "shirt": "66",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Marwann Nzuzi",
-       "position": "Right-Back",
-       "shirt": "68",
-       "nat_code": "FRA",
-       "tm_id": 1052287,
-       "dob": "2004-05-16",
-       "height_cm": null,
-       "foot": "right",
-       "nationality": "France",
-       "market_value_eur": 300000
-      },
-      {
-       "name": "Andrej Pečar",
-       "position": "Attack",
-       "shirt": "75",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Matjaž Rozman",
-       "position": "Goalkeeper",
-       "shirt": "77",
-       "nat_code": "SVN"
+       "name": "Gasper Jovan",
+       "shirt": "24",
+       "position": "Left-Back",
+       "age": 25,
+       "dob": "2001-02-25",
+       "nationality": "Slovenia"
       },
       {
        "name": "Maj Fogec",
-       "position": "Defender",
        "shirt": "95",
-       "nat_code": "SVN"
+       "position": "Left-Back",
+       "age": 24,
+       "dob": "2002-07-01",
+       "nationality": "Slovenia"
       },
       {
-       "name": "Marko Simonič",
-       "position": "Midfield",
+       "name": "Marwann Nzuzi",
+       "shirt": "68",
+       "position": "Right-Back",
+       "age": 22,
+       "dob": "2004-05-16",
+       "nationality": "France/Algeria",
+       "height_cm": 182,
+       "tm_id": 1052287,
+       "foot": "right",
+       "market_value_eur": 300000
+      },
+      {
+       "name": "Raúl Parra",
+       "shirt": "2",
+       "position": "Right-Back",
+       "age": 26,
+       "dob": "1999-11-26",
+       "nationality": "Spain",
+       "height_cm": 187,
+       "tm_id": 784719,
+       "foot": "right",
+       "market_value_eur": 300000
+      },
+      {
+       "name": "Jasa Krasevec",
+       "shirt": "66",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Marko Simonic",
        "shirt": "99",
-       "nat_code": "SVN"
+       "position": "Defensive Midfield",
+       "age": 21,
+       "dob": "2005-06-21",
+       "nationality": "Slovenia",
+       "height_cm": 186
+      },
+      {
+       "name": "Nadon Kouassi",
+       "shirt": "20",
+       "position": "Defensive Midfield",
+       "age": 20,
+       "dob": "2006-03-21",
+       "nationality": "Cote d'Ivoire",
+       "height_cm": 185
+      },
+      {
+       "name": "Enrik Ostrc",
+       "shirt": "14",
+       "position": "Defensive Midfield",
+       "age": 24,
+       "dob": "2002-06-21",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Lan Stravs",
+       "shirt": "21",
+       "position": "Defensive Midfield",
+       "age": 26,
+       "dob": "2000-03-04",
+       "nationality": "Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Sandi Nuhanovic",
+       "shirt": "8",
+       "position": "Central Midfield",
+       "age": 27,
+       "dob": "1998-12-05",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "James Arinze",
+       "shirt": "17",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-01-04",
+       "nationality": "Nigeria",
+       "height_cm": 187
+      },
+      {
+       "name": "Jon Ficko",
+       "shirt": "6",
+       "position": "Left Midfield",
+       "age": 22,
+       "dob": "2004-01-27",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Timotej Drobez",
+       "shirt": "47",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-02-01",
+       "nationality": "Slovenia",
+       "height_cm": 182
+      },
+      {
+       "name": "Jakoslav Stankovic",
+       "shirt": "10",
+       "position": "Left Winger",
+       "age": 25,
+       "dob": "2001-04-10",
+       "nationality": "Slovenia",
+       "height_cm": 175
+      },
+      {
+       "name": "Divine Omoregie",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 21,
+       "dob": "2005-01-19",
+       "nationality": "Italy/Nigeria"
+      },
+      {
+       "name": "Okpo Mazié",
+       "shirt": "11",
+       "position": "Left Winger",
+       "age": 22,
+       "dob": "2003-12-26",
+       "nationality": "Cote d'Ivoire/France",
+       "height_cm": 179
+      },
+      {
+       "name": "Matej Malensek",
+       "shirt": "40",
+       "position": "Left Winger",
+       "age": 21,
+       "dob": "2005-05-27",
+       "nationality": "Slovenia/Croatia",
+       "height_cm": 183,
+       "tm_id": 1013087,
+       "foot": "right",
+       "market_value_eur": 375000
+      },
+      {
+       "name": "Aldin Jakupovic",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-06-04",
+       "nationality": "Slovenia",
+       "height_cm": 181
+      },
+      {
+       "name": "Milan Tucic",
+       "shirt": "33",
+       "position": "Centre-Forward",
+       "age": 30,
+       "dob": "1996-08-15",
+       "nationality": "Slovenia",
+       "height_cm": 187,
+       "tm_id": 513646,
+       "foot": "left",
+       "market_value_eur": 150000
+      },
+      {
+       "name": "Rok Kopatin",
+       "shirt": "35",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-07-25",
+       "nationality": "Slovenia"
       }
      ]
     },
     "NK Brinje Grosuplje": {
-     "source": "wikipedia",
-     "players": []
-    },
-    "NK Celje": {
-     "source": "wikipedia",
+     "source": "user",
      "players": [
       {
-       "name": "Žan-Luk Leban",
+       "name": "Jaka Zrnec",
+       "shirt": "25",
        "position": "Goalkeeper",
+       "age": 20,
+       "dob": "2006-06-09",
+       "nationality": "Slovenia",
+       "height_cm": 191
+      },
+      {
+       "name": "Tim Strasberger",
        "shirt": "1",
-       "nat_code": "SVN",
-       "tm_id": 605757,
-       "dob": "2002-12-15",
-       "height_cm": 188,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 600000
-      },
-      {
-       "name": "Pijus Širvys",
-       "position": "Right-Back",
-       "shirt": "2",
-       "nat_code": "LTU",
-       "tm_id": 427821,
-       "dob": "1998-04-01",
-       "height_cm": 183,
-       "foot": "right",
-       "nationality": "Lithuania",
-       "market_value_eur": 700000
-      },
-      {
-       "name": "Damjan Vuklišević",
-       "position": "Defender",
-       "shirt": "3",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Darko Hrka",
-       "position": "Midfield",
-       "shirt": "4",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Gašper Vodeb",
-       "position": "Defender",
-       "shirt": "5",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Artemijus Tutyškinas",
-       "position": "Centre-Back",
-       "shirt": "6",
-       "nat_code": "LTU",
-       "tm_id": 647701,
-       "dob": "2003-08-08",
-       "height_cm": 190,
-       "foot": "left",
-       "nationality": "Lithuania",
-       "market_value_eur": 800000
-      },
-      {
-       "name": "Benjamin Verbič",
-       "position": "Left Winger",
-       "shirt": "7",
-       "nat_code": "SVN",
-       "tm_id": 188180,
-       "dob": "1993-11-27",
-       "height_cm": 183,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 500000
-      },
-      {
-       "name": "Mario Kvesić",
-       "position": "Midfield",
-       "shirt": "8",
-       "nat_code": "BIH"
-      },
-      {
-       "name": "Blaž Kramer",
-       "position": "Centre-Forward",
-       "shirt": "9",
-       "nat_code": "SVN",
-       "tm_id": 322288,
-       "dob": "1996-06-01",
-       "height_cm": 191,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 900000
-      },
-      {
-       "name": "Svit Sešlar",
-       "position": "Attacking Midfield",
-       "shirt": "10",
-       "nat_code": "SVN",
-       "tm_id": 603368,
-       "dob": "2002-01-09",
-       "height_cm": 186,
-       "foot": "left",
-       "nationality": "Slovenia",
-       "market_value_eur": 2500000
-      },
-      {
-       "name": "Milot Avdyli",
-       "position": "Right Winger",
-       "shirt": "11",
-       "nat_code": "KOS",
-       "tm_id": 636756,
-       "dob": "2002-07-28",
-       "height_cm": 180,
-       "foot": "left",
-       "nationality": "Kosovo",
-       "market_value_eur": 350000
-      },
-      {
-       "name": "Luka Kolar",
        "position": "Goalkeeper",
-       "shirt": "12",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Papa Daniel",
-       "position": "Central Midfield",
-       "shirt": "13",
-       "nat_code": "NGA",
-       "tm_id": 860297,
-       "dob": "2002-01-01",
-       "height_cm": null,
-       "foot": "left",
-       "nationality": "Nigeria",
-       "market_value_eur": 250000
-      },
-      {
-       "name": "Luka Vešner Tičić",
-       "position": "Central Midfield",
-       "shirt": "14",
-       "nat_code": "SVN",
-       "tm_id": 624030,
-       "dob": "2000-10-25",
-       "height_cm": 177,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 800000
-      },
-      {
-       "name": "Žan Žužek",
-       "position": "Centre-Back",
-       "shirt": "15",
-       "nat_code": "SVN",
-       "tm_id": 325222,
-       "dob": "1997-01-26",
-       "height_cm": 186,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 700000
-      },
-      {
-       "name": "Andrej Kotnik",
-       "position": "Attacking Midfield",
-       "shirt": "17",
-       "nat_code": "SVN",
-       "tm_id": 382007,
-       "dob": "1995-08-04",
-       "height_cm": 189,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 350000
-      },
-      {
-       "name": "Mark Zabukovnik",
-       "position": "Defensive Midfield",
-       "shirt": "19",
-       "nat_code": "SVN",
-       "tm_id": 577785,
-       "dob": "2000-12-27",
-       "height_cm": 185,
-       "foot": "right",
+       "age": 21,
+       "dob": "2005-04-02",
        "nationality": "Slovenia"
       },
       {
-       "name": "Alpha Diounkou",
-       "position": "Centre-Back",
-       "shirt": "20",
-       "nat_code": "SEN",
-       "tm_id": 554175,
-       "dob": "2001-10-10",
-       "height_cm": 184,
-       "foot": "right",
-       "nationality": "Senegal",
-       "market_value_eur": 300000
-      },
-      {
-       "name": "Žiga Frelih",
-       "position": "Goalkeeper",
+       "name": "Nejc Pusnik",
        "shirt": "23",
-       "nat_code": "SVN",
-       "tm_id": 383774,
-       "dob": "1998-02-06",
-       "height_cm": 197,
-       "foot": "left",
+       "position": "Centre-Back",
+       "age": 28,
+       "dob": "1998-08-06",
        "nationality": "Slovenia",
-       "market_value_eur": 400000
+       "height_cm": 185
       },
       {
-       "name": "Veton Tusha",
-       "position": "Centre-Forward",
-       "shirt": "25",
-       "nat_code": "KOS",
-       "tm_id": 636752,
-       "dob": "2002-12-29",
-       "height_cm": 183,
-       "foot": "right",
-       "nationality": "Kosovo",
+       "name": "Rok Maher",
+       "shirt": "18",
+       "position": "Centre-Back",
+       "age": 25,
+       "dob": "2001-07-20",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Samo Matjaž",
+       "shirt": "19",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-05-02",
+       "nationality": "Slovenia",
+       "height_cm": 190
+      },
+      {
+       "name": "Matevz Matko",
+       "shirt": "20",
+       "position": "Centre-Back",
+       "age": 25,
+       "dob": "2001-10-09",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Dominik Ivkic",
+       "shirt": "72",
+       "position": "Centre-Back",
+       "age": 29,
+       "dob": "1997-07-31",
+       "nationality": "Slovenia",
+       "height_cm": 190
+      },
+      {
+       "name": "Dominik Braun",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2003-12-03",
+       "nationality": "Croatia",
+       "height_cm": 186
+      },
+      {
+       "name": "Nejc Klasnja",
+       "shirt": "15",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-05-03",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Amar Milisic",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-01-30",
+       "nationality": "Belgium/Bosnia-Herzegovina",
+       "height_cm": 190
+      },
+      {
+       "name": "Kevin Benkic",
+       "shirt": "2",
+       "position": "Left-Back",
+       "age": 21,
+       "dob": "2005-09-07",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Matija Kavcic",
+       "shirt": "28",
+       "position": "Left-Back",
+       "age": 29,
+       "dob": "1997-07-11",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Zan Mesko",
+       "shirt": "24",
+       "position": "Right-Back",
+       "age": 18,
+       "dob": "2008-01-25",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ivan Krolo",
+       "shirt": "80",
+       "position": "Defensive Midfield",
+       "age": 23,
+       "dob": "2003-01-23",
+       "nationality": "Croatia",
+       "height_cm": 189,
+       "tm_id": 49001,
+       "foot": "right"
+      },
+      {
+       "name": "Aleks Zlatkov",
+       "shirt": "5",
+       "position": "Defensive Midfield",
+       "age": 24,
+       "dob": "2002-03-19",
+       "nationality": "North Macedonia/Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Tin Levanic",
+       "shirt": "17",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2005-05-05",
+       "nationality": "Bosnia-Herzegovina/Croatia",
+       "height_cm": 176
+      },
+      {
+       "name": "Almin Kurtovic",
+       "shirt": "49",
+       "position": "Central Midfield",
+       "age": 26,
+       "dob": "2000-03-16",
+       "nationality": "Slovenia",
+       "height_cm": 177
+      },
+      {
+       "name": "Luka Turudija",
+       "position": "Central Midfield",
+       "age": 22,
+       "dob": "2004-07-24",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Maj Roric",
+       "shirt": "8",
+       "position": "Central Midfield",
+       "age": 26,
+       "dob": "2000-02-07",
+       "nationality": "Slovenia",
+       "tm_id": 459890,
+       "height_cm": 179,
+       "foot": "left",
        "market_value_eur": 100000
       },
       {
-       "name": "Ivan Ćalušić",
-       "position": "Defensive Midfield",
+       "name": "Jasmin Kurtic",
        "shirt": "27",
-       "nat_code": "CRO",
-       "tm_id": 641060,
-       "dob": "1999-09-12",
-       "height_cm": 187,
+       "position": "Central Midfield",
+       "age": 37,
+       "dob": "1989-01-10",
+       "nationality": "Slovenia",
+       "height_cm": 186,
+       "tm_id": 85825,
        "foot": "right",
-       "nationality": "Croatia"
+       "market_value_eur": 800000
       },
       {
-       "name": "Leonardo Koutris",
-       "position": "Left-Back",
-       "shirt": "33",
-       "nat_code": "GRE",
-       "tm_id": 187530,
-       "dob": "1995-07-23",
-       "height_cm": 175,
-       "foot": "left",
-       "nationality": "Greece",
-       "market_value_eur": 500000
+       "name": "Nikola Jovicevic",
+       "shirt": "10",
+       "position": "Attacking Midfield",
+       "age": 23,
+       "dob": "2003-09-30",
+       "nationality": "Montenegro/Slovenia",
+       "height_cm": 185
       },
       {
-       "name": "Łukasz Bejger",
-       "position": "Centre-Back",
-       "shirt": "44",
-       "nat_code": "POL",
-       "tm_id": 554969,
-       "dob": "2002-01-11",
-       "height_cm": 190,
-       "foot": "right",
-       "nationality": "Poland"
+       "name": "Nik Zrnec",
+       "shirt": "11",
+       "position": "Attacking Midfield",
+       "age": 22,
+       "dob": "2004-04-16",
+       "nationality": "Slovenia"
       },
       {
-       "name": "Armandas Kučys",
-       "position": "Centre-Forward",
-       "shirt": "47",
-       "nat_code": "LTU",
-       "tm_id": 668433,
-       "dob": "2003-02-27",
-       "height_cm": 194,
-       "foot": "right",
-       "nationality": "Lithuania",
-       "market_value_eur": 700000
+       "name": "Nal Lan Koren",
+       "shirt": "22",
+       "position": "Left Winger",
+       "age": 20,
+       "dob": "2006-06-21",
+       "nationality": "Slovenia"
       },
       {
-       "name": "Matic Ivanšek",
-       "position": "Defender",
+       "name": "Vid Hojc",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 21,
+       "dob": "2005-03-30",
+       "nationality": "Slovenia",
+       "height_cm": 177
+      },
+      {
+       "name": "Erik Milosevic",
+       "shirt": "21",
+       "position": "Left Winger",
+       "age": 19,
+       "dob": "2007-03-21",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Vuk Vlahovic",
        "shirt": "77",
-       "nat_code": "SVN"
+       "position": "Left Winger",
+       "age": 19,
+       "dob": "2007-01-10",
+       "nationality": "Montenegro"
       },
       {
-       "name": "Yaya Dukuly",
+       "name": "Gal Kurez",
+       "shirt": "37",
        "position": "Right Winger",
-       "shirt": "91",
-       "nat_code": "AUS",
-       "tm_id": 652487,
-       "dob": "2003-01-17",
-       "height_cm": 176,
+       "age": 25,
+       "dob": "2001-04-27",
+       "nationality": "Slovenia",
+       "height_cm": 182
+      },
+      {
+       "name": "Haris Vuckic",
+       "shirt": "9",
+       "position": "Second Striker",
+       "age": 34,
+       "dob": "1992-08-21",
+       "nationality": "Slovenia",
+       "height_cm": 188,
+       "tm_id": 76560,
        "foot": "left",
-       "nationality": "Australia",
+       "market_value_eur": 800000
+      },
+      {
+       "name": "Jan Kovac",
+       "shirt": "14",
+       "position": "Centre-Forward",
+       "age": 24,
+       "dob": "2002-05-05",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Reinhard Young",
+       "shirt": "30",
+       "position": "Centre-Forward",
+       "age": 25,
+       "dob": "2001-08-18",
+       "nationality": "Nigeria",
+       "height_cm": 185
+      }
+     ]
+    },
+    "NK Celje": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Zan-Luk Leban",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 23,
+       "dob": "2002-12-15",
+       "nationality": "Slovenia",
+       "height_cm": 188,
+       "tm_id": 605757,
+       "foot": "right",
        "market_value_eur": 600000
       },
       {
-       "name": "Rudi Požeg Vancaš",
-       "position": "Attack",
+       "name": "Ziga Frelih",
+       "position": "Goalkeeper",
+       "age": 28,
+       "dob": "1998-02-06",
+       "nationality": "Slovenia",
+       "height_cm": 197,
+       "shirt": "23",
+       "tm_id": 383774,
+       "foot": "left",
+       "market_value_eur": 400000
+      },
+      {
+       "name": "Simon Sluga",
+       "shirt": "21",
+       "position": "Goalkeeper",
+       "age": 33,
+       "dob": "1993-03-17",
+       "nationality": "Croatia",
+       "height_cm": 191
+      },
+      {
+       "name": "Luka Kolar",
+       "shirt": "12",
+       "position": "Goalkeeper",
+       "age": 21,
+       "dob": "2005-09-09",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Artemijus Tutyškinas",
+       "shirt": "6",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-08-08",
+       "nationality": "Lithuania",
+       "height_cm": 190,
+       "tm_id": 647701,
+       "foot": "left",
+       "market_value_eur": 800000
+      },
+      {
+       "name": "Zan Zuzek",
+       "shirt": "15",
+       "position": "Centre-Back",
+       "age": 29,
+       "dob": "1997-01-26",
+       "nationality": "Slovenia",
+       "height_cm": 186,
+       "tm_id": 325222,
+       "foot": "right",
+       "market_value_eur": 700000
+      },
+      {
+       "name": "Łukasz Bejger",
+       "shirt": "44",
+       "position": "Centre-Back",
+       "age": 24,
+       "dob": "2002-01-11",
+       "nationality": "Poland",
+       "height_cm": 190,
+       "tm_id": 554969,
+       "foot": "right"
+      },
+      {
+       "name": "Damjan Vuklisevic",
+       "shirt": "3",
+       "position": "Centre-Back",
+       "age": 31,
+       "dob": "1995-06-28",
+       "nationality": "Slovenia",
+       "height_cm": 193
+      },
+      {
+       "name": "Darko Hrka",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 26,
+       "dob": "1999-11-20",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Zan Luka Sega",
+       "shirt": "99",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-11-17",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Leonardo Koutris",
+       "shirt": "33",
+       "position": "Left-Back",
+       "age": 31,
+       "dob": "1995-07-23",
+       "nationality": "Greece/Brazil",
+       "height_cm": 175,
+       "tm_id": 187530,
+       "foot": "left",
+       "market_value_eur": 500000
+      },
+      {
+       "name": "Pijus Širvys",
+       "shirt": "2",
+       "position": "Right-Back",
+       "age": 28,
+       "dob": "1998-04-01",
+       "nationality": "Lithuania",
+       "height_cm": 183,
+       "tm_id": 427821,
+       "foot": "right",
+       "market_value_eur": 700000
+      },
+      {
+       "name": "Alpha Diounkou",
+       "shirt": "20",
+       "position": "Right-Back",
+       "age": 25,
+       "dob": "2001-10-10",
+       "nationality": "Senegal/Spain",
+       "height_cm": 184,
+       "tm_id": 554175,
+       "foot": "right",
+       "market_value_eur": 300000
+      },
+      {
+       "name": "Mark Zabukovnik",
+       "shirt": "19",
+       "position": "Defensive Midfield",
+       "age": 25,
+       "dob": "2000-12-27",
+       "nationality": "Slovenia",
+       "height_cm": 185,
+       "tm_id": 577785,
+       "foot": "right"
+      },
+      {
+       "name": "Jost Pisek",
+       "position": "Defensive Midfield",
+       "age": 24,
+       "dob": "2002-03-10",
+       "nationality": "Slovenia",
+       "height_cm": 182
+      },
+      {
+       "name": "Ivan Calusic",
+       "shirt": "27",
+       "position": "Defensive Midfield",
+       "age": 27,
+       "dob": "1999-09-12",
+       "nationality": "Croatia",
+       "height_cm": 187,
+       "tm_id": 641060,
+       "foot": "right"
+      },
+      {
+       "name": "Luka Vesner Ticic",
+       "shirt": "14",
+       "position": "Central Midfield",
+       "age": 26,
+       "dob": "2000-10-25",
+       "nationality": "Slovenia",
+       "height_cm": 177,
+       "tm_id": 624030,
+       "foot": "right",
+       "market_value_eur": 800000
+      },
+      {
+       "name": "Papa Daniel",
+       "shirt": "13",
+       "position": "Central Midfield",
+       "age": 24,
+       "dob": "2002-01-01",
+       "nationality": "Nigeria",
+       "tm_id": 860297,
+       "height_cm": null,
+       "foot": "left",
+       "market_value_eur": 250000
+      },
+      {
+       "name": "Svit Seslar",
+       "shirt": "10",
+       "position": "Attacking Midfield",
+       "age": 24,
+       "dob": "2002-01-09",
+       "nationality": "Slovenia",
+       "height_cm": 186,
+       "tm_id": 603368,
+       "foot": "left",
+       "market_value_eur": 2500000
+      },
+      {
+       "name": "Andrej Kotnik",
+       "shirt": "17",
+       "position": "Attacking Midfield",
+       "age": 31,
+       "dob": "1995-08-04",
+       "nationality": "Slovenia",
+       "height_cm": 189,
+       "tm_id": 382007,
+       "foot": "right",
+       "market_value_eur": 350000
+      },
+      {
+       "name": "Rudi Pozeg Vancas",
        "shirt": "94",
-       "nat_code": "SVN"
+       "position": "Attacking Midfield",
+       "age": 32,
+       "dob": "1994-03-15",
+       "nationality": "Slovenia",
+       "height_cm": 174
+      },
+      {
+       "name": "Mario Kvesic",
+       "shirt": "8",
+       "position": "Attacking Midfield",
+       "age": 34,
+       "dob": "1992-01-12",
+       "nationality": "Bosnia-Herzegovina/Croatia",
+       "height_cm": 175
+      },
+      {
+       "name": "Benjamin Verbic",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 32,
+       "dob": "1993-11-27",
+       "nationality": "Slovenia",
+       "height_cm": 183,
+       "tm_id": 188180,
+       "foot": "right",
+       "market_value_eur": 500000
+      },
+      {
+       "name": "Veton Tusha",
+       "shirt": "25",
+       "position": "Left Winger",
+       "age": 23,
+       "dob": "2002-12-29",
+       "nationality": "Kosovo",
+       "height_cm": 183,
+       "tm_id": 636752,
+       "foot": "right",
+       "market_value_eur": 100000
+      },
+      {
+       "name": "Yaya Dukuly",
+       "shirt": "91",
+       "position": "Right Winger",
+       "age": 23,
+       "dob": "2003-01-17",
+       "nationality": "Australia/Guinea",
+       "height_cm": 176,
+       "tm_id": 652487,
+       "foot": "left",
+       "market_value_eur": 600000
+      },
+      {
+       "name": "Milot Avdyli",
+       "shirt": "11",
+       "position": "Right Winger",
+       "age": 24,
+       "dob": "2002-07-28",
+       "nationality": "Kosovo",
+       "height_cm": 180,
+       "tm_id": 636756,
+       "foot": "left",
+       "market_value_eur": 350000
+      },
+      {
+       "name": "Matic Ivansek",
+       "shirt": "77",
+       "position": "Right Winger",
+       "age": 22,
+       "dob": "2004-07-26",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Dejan Suhovrsnik",
+       "shirt": "31",
+       "position": "Right Winger",
+       "age": 19,
+       "dob": "2007-02-16",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Blaz Kramer",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 30,
+       "dob": "1996-06-01",
+       "nationality": "Slovenia",
+       "height_cm": 191,
+       "tm_id": 322288,
+       "foot": "right",
+       "market_value_eur": 900000
+      },
+      {
+       "name": "Armandas Kučys",
+       "shirt": "47",
+       "position": "Centre-Forward",
+       "age": 23,
+       "dob": "2003-02-27",
+       "nationality": "Lithuania",
+       "height_cm": 194,
+       "tm_id": 668433,
+       "foot": "right",
+       "market_value_eur": 700000
       }
      ]
     },
     "FC Koper": {
-     "source": "wikipedia",
+     "source": "user",
      "players": [
       {
-       "name": "Luka Baš",
-       "position": "Goalkeeper",
+       "name": "Luka Bas",
        "shirt": "1",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Florian Hartherz",
-       "position": "Left Midfield",
-       "shirt": "3",
-       "nat_code": "GER",
-       "tm_id": 93571,
-       "dob": "1993-05-29",
-       "height_cm": 187,
-       "foot": "left",
-       "nationality": "Germany",
-       "market_value_eur": 250000
-      },
-      {
-       "name": "Leo Štulac",
-       "position": "Defensive Midfield",
-       "shirt": "4",
-       "nat_code": "SVN",
-       "tm_id": 171159,
-       "dob": "1994-09-26",
-       "height_cm": 175,
-       "foot": "right",
+       "position": "Goalkeeper",
+       "age": 24,
+       "dob": "2002-04-30",
        "nationality": "Slovenia",
-       "market_value_eur": 400000
+       "height_cm": 191
       },
       {
-       "name": "Filip Bačkulja",
-       "position": "Centre-Back",
-       "shirt": "5",
-       "nat_code": "SRB",
-       "tm_id": 698902,
-       "dob": "2002-06-25",
-       "height_cm": 187,
-       "foot": "left",
-       "nationality": "Serbia",
-       "market_value_eur": 400000
-      },
-      {
-       "name": "Fran Tomek",
-       "position": "Midfield",
-       "shirt": "6",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Bassirou N'Diaye",
-       "position": "Centre-Forward",
-       "shirt": "8",
-       "nat_code": "SEN",
-       "tm_id": 938009,
-       "dob": "2002-02-15",
-       "height_cm": 181,
+       "name": "Edoardo Piana",
+       "shirt": "90",
+       "position": "Goalkeeper",
+       "age": 23,
+       "dob": "2003-09-29",
+       "nationality": "Italy",
+       "height_cm": 198,
+       "tm_id": 612059,
        "foot": "right",
-       "nationality": "Senegal",
-       "market_value_eur": 500000
+       "market_value_eur": 25000
       },
       {
-       "name": "Brown Irabor",
-       "position": "Attack",
-       "shirt": "9",
-       "nat_code": "NGA"
-      },
-      {
-       "name": "Leo Rimac",
-       "position": "Centre-Forward",
-       "shirt": "10",
-       "nat_code": "SVN",
-       "tm_id": 1056457,
+       "name": "Lan Jovanovic",
+       "shirt": "28",
+       "position": "Goalkeeper",
+       "age": 20,
        "dob": "2006-03-14",
-       "height_cm": null,
-       "foot": "left",
        "nationality": "Slovenia"
       },
       {
-       "name": "Ilann Petrisot",
-       "position": "Midfield",
-       "shirt": "11",
-       "nat_code": "FRA"
+       "name": "Filip Backulja",
+       "shirt": "5",
+       "position": "Centre-Back",
+       "age": 24,
+       "dob": "2002-06-25",
+       "nationality": "Serbia",
+       "height_cm": 187,
+       "tm_id": 698902,
+       "foot": "left",
+       "market_value_eur": 400000
       },
       {
-       "name": "Tijan Krošelj",
-       "position": "Goalkeeper",
-       "shirt": "12",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Jan Strcaj",
-       "position": "Midfield",
-       "shirt": "14",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Bor Pirih Kerma",
-       "position": "Defender",
-       "shirt": "16",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Aleksej Šutalo",
-       "position": "Midfield",
-       "shirt": "17",
-       "nat_code": "SVN"
+       "name": "Luka Gucek",
+       "shirt": "29",
+       "position": "Centre-Back",
+       "age": 27,
+       "dob": "1999-01-29",
+       "nationality": "Slovenia",
+       "height_cm": 189,
+       "tm_id": 365779,
+       "foot": "right",
+       "market_value_eur": 300000
       },
       {
        "name": "Giuseppe Agyemang",
-       "position": "Defender",
        "shirt": "18",
-       "nat_code": "ITA"
+       "position": "Left-Back",
+       "age": 24,
+       "dob": "2002-04-26",
+       "nationality": "Italy/Ghana",
+       "height_cm": 178
       },
       {
-       "name": "Check Oumar Diakité",
-       "position": "Midfield",
-       "shirt": "22",
-       "nat_code": "FRA"
+       "name": "Amadej Marinic",
+       "shirt": "33",
+       "position": "Left-Back",
+       "age": 26,
+       "dob": "2000-10-10",
+       "nationality": "Slovenia"
       },
       {
-       "name": "Bangaly Diawara",
-       "position": "Midfield",
-       "shirt": "25",
-       "nat_code": "FRA"
+       "name": "Florian Hartherz",
+       "shirt": "3",
+       "position": "Left-Back",
+       "age": 33,
+       "dob": "1993-05-29",
+       "nationality": "Germany",
+       "height_cm": 187,
+       "tm_id": 93571,
+       "foot": "left",
+       "market_value_eur": 250000
       },
       {
-       "name": "Benjamin Adrović",
-       "position": "Midfield",
-       "shirt": "26",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Andraž Ruedl",
-       "position": "Midfield",
-       "shirt": "27",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Lan Jovanović",
-       "position": "Goalkeeper",
-       "shirt": "28",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Luka Guček",
-       "position": "Centre-Back",
-       "shirt": "29",
-       "nat_code": "SVN",
-       "tm_id": 365779,
-       "dob": "1999-01-29",
-       "height_cm": 189,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 300000
-      },
-      {
-       "name": "Veljko Mijailović",
-       "position": "Defender",
+       "name": "Veljko Mijailovic",
        "shirt": "32",
-       "nat_code": "SRB"
-      },
-      {
-       "name": "Isaac Matondo",
-       "position": "Midfield",
-       "shirt": "45",
-       "nat_code": "FRA"
+       "position": "Right-Back",
+       "age": 25,
+       "dob": "2000-12-29",
+       "nationality": "Serbia",
+       "height_cm": 180
       },
       {
        "name": "Álvaro Roncal",
-       "position": "Defender",
        "shirt": "47",
-       "nat_code": "ESP"
-      },
-      {
-       "name": "Omar El Manssouri",
-       "position": "Midfield",
-       "shirt": "67",
-       "nat_code": "FRA"
+       "position": "Right-Back",
+       "age": 25,
+       "dob": "2000-12-25",
+       "nationality": "Spain",
+       "height_cm": 171
       },
       {
        "name": "Brice Negouai",
-       "position": "Centre-Back",
        "shirt": "69",
-       "nat_code": "FRA",
-       "tm_id": 875638,
+       "position": "Right-Back",
+       "age": 24,
        "dob": "2002-02-17",
+       "nationality": "France/Martinique",
        "height_cm": 185,
+       "tm_id": 875638,
+       "foot": "right"
+      },
+      {
+       "name": "Mody Boune",
+       "shirt": "2",
+       "position": "Right-Back",
+       "age": 24,
+       "dob": "2002-03-08",
+       "nationality": "France",
+       "tm_id": 855614,
+       "height_cm": null,
        "foot": "right",
-       "nationality": "France"
+       "market_value_eur": 50000
       },
       {
-       "name": "Josip Iličić",
-       "position": "Attacking Midfield",
-       "shirt": "72",
-       "nat_code": "SVN",
-       "tm_id": 80351,
-       "dob": "1988-01-29",
-       "height_cm": 190,
-       "foot": "left",
-       "nationality": "Slovenia",
-       "market_value_eur": 300000
+       "name": "Fran Tomek",
+       "shirt": "6",
+       "position": "Defensive Midfield",
+       "age": 24,
+       "dob": "2002-06-25",
+       "nationality": "Croatia",
+       "height_cm": 180
       },
       {
-       "name": "Stefano Surdanović",
-       "position": "Midfield",
+       "name": "Stefano Surdanovic",
        "shirt": "86",
-       "nat_code": "AUT"
+       "position": "Defensive Midfield",
+       "age": 27,
+       "dob": "1998-11-23",
+       "nationality": "Austria",
+       "height_cm": 183
+      },
+      {
+       "name": "Leo Stulac",
+       "shirt": "4",
+       "position": "Defensive Midfield",
+       "age": 32,
+       "dob": "1994-09-26",
+       "nationality": "Slovenia",
+       "height_cm": 175,
+       "tm_id": 171159,
+       "foot": "right",
+       "market_value_eur": 400000
+      },
+      {
+       "name": "Nsana Simon",
+       "shirt": "11",
+       "position": "Central Midfield",
+       "age": 26,
+       "dob": "2000-03-11",
+       "nationality": "Congo/France",
+       "height_cm": 171
+      },
+      {
+       "name": "Bangaly Diawara",
+       "shirt": "25",
+       "position": "Central Midfield",
+       "age": 23,
+       "dob": "2003-03-25",
+       "nationality": "Cote d'Ivoire/France",
+       "height_cm": 176
+      },
+      {
+       "name": "Check Oumar Diakité",
+       "shirt": "22",
+       "position": "Central Midfield",
+       "age": 23,
+       "dob": "2002-12-05",
+       "nationality": "France/Mali",
+       "height_cm": 173
+      },
+      {
+       "name": "Mark Kavrecic",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-02-11",
+       "nationality": "Slovenia"
       },
       {
        "name": "Kamil Manseri",
-       "position": "Midfield",
        "shirt": "99",
-       "nat_code": "FRA"
+       "position": "Right Midfield",
+       "age": 25,
+       "dob": "2001-06-12",
+       "nationality": "France/Algeria",
+       "height_cm": 183
+      },
+      {
+       "name": "David Pejičić",
+       "shirt": "79",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-06-14",
+       "nationality": "Slovenia",
+       "height_cm": 177,
+       "tm_id": 1009633,
+       "foot": "right",
+       "market_value_eur": 1000000
+      },
+      {
+       "name": "Josip Ilicic",
+       "shirt": "72",
+       "position": "Attacking Midfield",
+       "age": 38,
+       "dob": "1988-01-29",
+       "nationality": "Slovenia/Croatia",
+       "height_cm": 190,
+       "tm_id": 80351,
+       "foot": "left",
+       "market_value_eur": 300000
+      },
+      {
+       "name": "Isaac Matondo",
+       "shirt": "45",
+       "position": "Left Winger",
+       "age": 27,
+       "dob": "1999-03-24",
+       "nationality": "France/DR Congo",
+       "height_cm": 172,
+       "tm_id": 368889,
+       "foot": "right"
+      },
+      {
+       "name": "Bassirou N'Diaye",
+       "shirt": "8",
+       "position": "Left Winger",
+       "age": 24,
+       "dob": "2002-02-15",
+       "nationality": "Senegal",
+       "height_cm": 181,
+       "tm_id": 938009,
+       "foot": "right",
+       "market_value_eur": 500000
+      },
+      {
+       "name": "Andraz Ruedl",
+       "shirt": "27",
+       "position": "Left Winger",
+       "age": 22,
+       "dob": "2004-01-20",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Ibrahim Lawal Oluwaseun",
+       "shirt": "20",
+       "position": "Left Winger",
+       "age": 20,
+       "dob": "2006-01-01",
+       "nationality": "Nigeria"
+      },
+      {
+       "name": "Benjamin Adrovic",
+       "shirt": "26",
+       "position": "Right Winger",
+       "age": 18,
+       "dob": "2007-12-20",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Leo Rimac",
+       "shirt": "10",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-03-14",
+       "nationality": "Slovenia/Croatia",
+       "height_cm": 186,
+       "tm_id": 1056457,
+       "foot": "left"
+      },
+      {
+       "name": "Brown Irabor",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-03-30",
+       "nationality": "Nigeria/France",
+       "height_cm": 175
+      },
+      {
+       "name": "Robert Beric",
+       "shirt": "19",
+       "position": "Centre-Forward",
+       "age": 35,
+       "dob": "1991-06-17",
+       "nationality": "Slovenia",
+       "height_cm": 188,
+       "tm_id": 91415,
+       "foot": "right",
+       "market_value_eur": 800000
       }
      ]
     },
     "NK Maribor": {
-     "source": "wikipedia",
+     "source": "user",
      "players": [
       {
-       "name": "Ažbe Jug",
-       "position": "Goalkeeper",
+       "name": "Azbe Jug",
        "shirt": "1",
-       "nat_code": "SVN",
-       "tm_id": 116918,
+       "position": "Goalkeeper",
+       "age": 34,
        "dob": "1992-03-03",
-       "height_cm": 192,
-       "foot": "right",
        "nationality": "Slovenia",
+       "height_cm": 192,
+       "tm_id": 116918,
+       "foot": "right",
        "market_value_eur": 300000
       },
       {
-       "name": "Čedomir Bumbić",
-       "position": "Defender",
+       "name": "Ivan Lainovic",
+       "shirt": "39",
+       "position": "Goalkeeper",
+       "age": 21,
+       "dob": "2005-07-03",
+       "nationality": "Serbia/Croatia",
+       "height_cm": 193,
+       "tm_id": 779969,
+       "foot": "right",
+       "market_value_eur": 50000
+      },
+      {
+       "name": "Téva Gardies",
+       "shirt": "98",
+       "position": "Goalkeeper",
+       "age": 25,
+       "dob": "2001-04-01",
+       "nationality": "Madagascar/France",
+       "height_cm": 200
+      },
+      {
+       "name": "Tanej Handanovic",
+       "shirt": "43",
+       "position": "Goalkeeper",
+       "age": 18,
+       "dob": "2008-08-24",
+       "nationality": "Slovenia",
+       "height_cm": 202
+      },
+      {
+       "name": "Bradley M'Bondo",
+       "shirt": "6",
+       "position": "Centre-Back",
+       "age": 25,
+       "dob": "2001-10-30",
+       "nationality": "France/DR Congo",
+       "height_cm": 184
+      },
+      {
+       "name": "Miha Blazic",
+       "shirt": "25",
+       "position": "Centre-Back",
+       "age": 33,
+       "dob": "1993-05-08",
+       "nationality": "Slovenia",
+       "height_cm": 185,
+       "tm_id": 179806,
+       "foot": "right",
+       "market_value_eur": 1500000
+      },
+      {
+       "name": "Lan Vidmar",
+       "shirt": "50",
+       "position": "Centre-Back",
+       "age": 25,
+       "dob": "2001-09-11",
+       "nationality": "Slovenia",
+       "height_cm": 186
+      },
+      {
+       "name": "Vid Koderman",
+       "shirt": "21",
+       "position": "Left-Back",
+       "age": 23,
+       "dob": "2003-04-18",
+       "nationality": "Slovenia",
+       "height_cm": 177
+      },
+      {
+       "name": "Cedomir Bumbic",
        "shirt": "3",
-       "nat_code": "AUT"
+       "position": "Left-Back",
+       "age": 27,
+       "dob": "1999-09-08",
+       "nationality": "Austria",
+       "height_cm": 184
+      },
+      {
+       "name": "Zan Karnicnik",
+       "shirt": "23",
+       "position": "Right-Back",
+       "age": 32,
+       "dob": "1994-09-18",
+       "nationality": "Slovenia",
+       "height_cm": 184,
+       "tm_id": 507403,
+       "foot": "right"
+      },
+      {
+       "name": "Mark Spanring",
+       "shirt": "55",
+       "position": "Right-Back",
+       "age": 25,
+       "dob": "2001-06-13",
+       "nationality": "Slovenia",
+       "height_cm": 181
+      },
+      {
+       "name": "Zan Jevsenak",
+       "shirt": "5",
+       "position": "Defensive Midfield",
+       "age": 23,
+       "dob": "2003-05-15",
+       "nationality": "Slovenia",
+       "height_cm": 191
       },
       {
        "name": "Nejc Viher",
-       "position": "Midfield",
        "shirt": "4",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Žan Jevšenak",
-       "position": "Midfield",
-       "shirt": "5",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Bradley M'bondo",
-       "position": "Defender",
-       "shirt": "6",
-       "nat_code": "FRA"
-      },
-      {
-       "name": "Tio Cipot",
-       "position": "Centre-Forward",
-       "shirt": "7",
-       "nat_code": "SVN",
-       "tm_id": 795431,
-       "dob": "2003-04-20",
-       "height_cm": 184,
-       "foot": "right",
+       "position": "Defensive Midfield",
+       "age": 18,
+       "dob": "2008-02-13",
        "nationality": "Slovenia",
-       "market_value_eur": 700000
+       "height_cm": 185
       },
       {
        "name": "Claude Gonçalves",
-       "position": "Defensive Midfield",
        "shirt": "8",
-       "nat_code": "POR",
-       "tm_id": 280178,
+       "position": "Defensive Midfield",
+       "age": 32,
        "dob": "1994-04-09",
+       "nationality": "Portugal/France",
        "height_cm": 174,
+       "tm_id": 280178,
        "foot": "right",
-       "nationality": "Portugal",
        "market_value_eur": 200000
       },
       {
-       "name": "Žiga Repas",
-       "position": "Midfield",
-       "shirt": "10",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Ali Reghba",
-       "position": "Midfield",
-       "shirt": "11",
-       "nat_code": "IRL"
-      },
-      {
        "name": "Jean Michaël Seri",
-       "position": "Defensive Midfield",
        "shirt": "14",
-       "nat_code": "CIV",
-       "tm_id": 178614,
+       "position": "Defensive Midfield",
+       "age": 35,
        "dob": "1991-07-19",
-       "height_cm": 169,
-       "foot": "right",
        "nationality": "Cote d'Ivoire",
+       "height_cm": 169,
+       "tm_id": 178614,
+       "foot": "right",
        "market_value_eur": 1500000
       },
       {
        "name": "Eric Taylor",
-       "position": "Midfield",
        "shirt": "15",
-       "nat_code": "GHA"
-      },
-      {
-       "name": "Luka Kokol",
-       "position": "Defender",
-       "shirt": "16",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Jan Mlakar",
-       "position": "Centre-Forward",
-       "shirt": "17",
-       "nat_code": "SVN",
-       "tm_id": 309180,
-       "dob": "1998-10-23",
-       "height_cm": 183,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 2800000
-      },
-      {
-       "name": "Vid Koderman",
-       "position": "Defender",
-       "shirt": "21",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Žan Karničnik",
-       "position": "Right-Back",
-       "shirt": "23",
-       "nat_code": "SVN",
-       "tm_id": 507403,
-       "dob": "1994-09-18",
-       "height_cm": 184,
-       "foot": "right",
-       "nationality": "Slovenia"
-      },
-      {
-       "name": "Miha Blažič",
-       "position": "Centre-Back",
-       "shirt": "25",
-       "nat_code": "SVN",
-       "tm_id": 179806,
-       "dob": "1993-05-08",
-       "height_cm": 185,
-       "foot": "right",
-       "nationality": "",
-       "market_value_eur": 1500000
-      },
-      {
-       "name": "Dario Vizinger",
-       "position": "Attack",
-       "shirt": "29",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Petar Stojanović",
-       "position": "Right Midfield",
-       "shirt": "30",
-       "nat_code": "SVN",
-       "tm_id": 183841,
-       "dob": "1995-10-07",
-       "height_cm": 178,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 350000
-      },
-      {
-       "name": "Timon Kikec",
-       "position": "Defender",
-       "shirt": "34",
-       "nat_code": "SVN"
+       "position": "Central Midfield",
+       "age": 25,
+       "dob": "2001-04-14",
+       "nationality": "Ghana",
+       "height_cm": 178
       },
       {
        "name": "Niko Osterc",
-       "position": "Midfield",
        "shirt": "38",
-       "nat_code": "SVN"
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-05-22",
+       "nationality": "Slovenia"
       },
       {
-       "name": "Ivan Lainović",
-       "position": "Goalkeeper",
-       "shirt": "39",
-       "nat_code": "SRB",
-       "tm_id": 779969,
-       "dob": "2005-07-03",
-       "height_cm": 193,
-       "foot": "right",
-       "nationality": "Serbia",
-       "market_value_eur": 50000
-      },
-      {
-       "name": "Tanej Handanović",
-       "position": "Goalkeeper",
-       "shirt": "43",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Lan Vidmar",
-       "position": "Defender",
-       "shirt": "50",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Mark Španring",
-       "position": "Defender",
-       "shirt": "55",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Isaac Tshipamba",
-       "position": "Midfield",
-       "shirt": "70",
-       "nat_code": "FRA"
-      },
-      {
-       "name": "Luka Zahović",
-       "position": "Centre-Forward",
-       "shirt": "79",
-       "nat_code": "SVN",
-       "tm_id": 169362,
-       "dob": "1995-11-15",
-       "height_cm": 177,
-       "foot": "right",
+       "name": "Petar Stojanović",
+       "shirt": "30",
+       "position": "Right Midfield",
+       "age": 31,
+       "dob": "1995-10-07",
        "nationality": "Slovenia",
-       "market_value_eur": 400000
+       "height_cm": 178,
+       "tm_id": 183841,
+       "foot": "right",
+       "market_value_eur": 350000
       },
       {
-       "name": "Téva Gardies",
-       "position": "Goalkeeper",
-       "shirt": "98",
-       "nat_code": "MAD"
+       "name": "Ziga Repas",
+       "shirt": "10",
+       "position": "Attacking Midfield",
+       "age": 25,
+       "dob": "2001-05-29",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Tio Cipot",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 23,
+       "dob": "2003-04-20",
+       "nationality": "Slovenia",
+       "height_cm": 184,
+       "tm_id": 795431,
+       "foot": "right",
+       "market_value_eur": 700000
+      },
+      {
+       "name": "Ali Reghba",
+       "shirt": "11",
+       "position": "Left Winger",
+       "age": 26,
+       "dob": "2000-01-14",
+       "nationality": "Ireland/Algeria",
+       "height_cm": 183
       },
       {
        "name": "Behar Feta",
-       "position": "Midfield",
        "shirt": "99",
-       "nat_code": "MKD"
+       "position": "Right Winger",
+       "age": 23,
+       "dob": "2003-04-07",
+       "nationality": "North Macedonia",
+       "height_cm": 167
+      },
+      {
+       "name": "Jan Mlakar",
+       "shirt": "17",
+       "position": "Centre-Forward",
+       "age": 28,
+       "dob": "1998-10-23",
+       "nationality": "Slovenia",
+       "height_cm": 183,
+       "tm_id": 309180,
+       "foot": "right",
+       "market_value_eur": 2800000
+      },
+      {
+       "name": "Dario Vizinger",
+       "shirt": "29",
+       "position": "Centre-Forward",
+       "age": 28,
+       "dob": "1998-06-06",
+       "nationality": "Croatia",
+       "height_cm": 180
+      },
+      {
+       "name": "Isaac Tshipamba",
+       "shirt": "70",
+       "position": "Centre-Forward",
+       "age": 26,
+       "dob": "2000-11-09",
+       "nationality": "France/DR Congo",
+       "height_cm": 186
+      },
+      {
+       "name": "Luka Zahovic",
+       "shirt": "79",
+       "position": "Centre-Forward",
+       "age": 31,
+       "dob": "1995-11-15",
+       "nationality": "Slovenia/Portugal",
+       "height_cm": 177,
+       "tm_id": 169362,
+       "foot": "right",
+       "market_value_eur": 400000
+      },
+      {
+       "name": "Matej Tadic",
+       "shirt": "36",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-07-26",
+       "nationality": "Slovenia",
+       "height_cm": 187
       }
      ]
     },
     "NŠ Mura": {
-     "source": "wikipedia",
+     "source": "user",
      "players": [
       {
-       "name": "Faad Sana",
-       "position": "Defender",
-       "shirt": "2",
-       "nat_code": "TOG"
+       "name": "Adnan Golubovic",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 31,
+       "dob": "1995-07-22",
+       "nationality": "Slovenia/Bosnia-Herzegovina",
+       "height_cm": 186,
+       "tm_id": 183848,
+       "foot": "right"
       },
       {
-       "name": "Aleksandar Zeljković",
-       "position": "Defender",
-       "shirt": "3",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Žan Flis",
-       "position": "Defender",
-       "shirt": "4",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Ivan Jelić Balta",
-       "position": "Defensive Midfield",
-       "shirt": "5",
-       "nat_code": "CRO",
-       "tm_id": 319143,
-       "dob": "1992-09-17",
-       "height_cm": 193,
-       "foot": "left",
-       "nationality": "Croatia",
-       "market_value_eur": 200000
-      },
-      {
-       "name": "Florjan Jevšenak",
-       "position": "Midfield",
-       "shirt": "6",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Niko Kasalo",
-       "position": "Attack",
-       "shirt": "7",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Luka Bobičanec",
-       "position": "Midfield",
-       "shirt": "8",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Marko Aščić",
-       "position": "Attack",
-       "shirt": "9",
-       "nat_code": "CRO",
-       "tm_id": 1300638,
-       "dob": "2007-04-14",
-       "height_cm": null,
+       "name": "Matevz Dajcar",
+       "shirt": "52",
+       "position": "Goalkeeper",
+       "age": 24,
+       "dob": "2002-02-05",
+       "nationality": "Slovenia",
+       "height_cm": 190,
+       "tm_id": 704079,
        "foot": "right",
-       "nationality": "Croatia",
-       "market_value_eur": 100000
+       "market_value_eur": 50000
       },
       {
-       "name": "Nino Kouter",
-       "position": "Midfield",
-       "shirt": "10",
-       "nat_code": "SVN"
+       "name": "Ziga Fermisek",
+       "shirt": "33",
+       "position": "Goalkeeper",
+       "age": 24,
+       "dob": "2002-03-20",
+       "nationality": "Slovenia",
+       "height_cm": 186
       },
       {
-       "name": "Alen Kozar",
-       "position": "Midfield",
-       "shirt": "14",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Anej Roman Leljak",
-       "position": "Midfield",
-       "shirt": "15",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Kristjan Trdin",
-       "position": "Defender",
-       "shirt": "17",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Aljaž Zalaznik",
-       "position": "Midfield",
-       "shirt": "18",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Samo Sečkar",
-       "position": "Defender",
-       "shirt": "20",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Žan Petrovič",
-       "position": "Defender",
-       "shirt": "21",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Nejc Ajhmajer",
-       "position": "Defender",
-       "shirt": "22",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Jan Kovačič",
-       "position": "Midfield",
-       "shirt": "23",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Lovro Kitin",
-       "position": "Centre-Back",
-       "shirt": "24",
-       "nat_code": "CRO",
-       "tm_id": 1133004,
-       "dob": "2007-02-03",
-       "height_cm": null,
-       "foot": null,
-       "nationality": "Croatia"
+       "name": "Nejc Antonic",
+       "shirt": "81",
+       "position": "Goalkeeper",
+       "age": 19,
+       "dob": "2007-03-07",
+       "nationality": "Slovenia"
       },
       {
        "name": "Borna Proleta",
-       "position": "Defender",
        "shirt": "26",
-       "nat_code": "CRO"
+       "position": "Centre-Back",
+       "age": 24,
+       "dob": "2001-11-26",
+       "nationality": "Croatia",
+       "height_cm": 194
+      },
+      {
+       "name": "Aleksandar Zeljkovic",
+       "shirt": "3",
+       "position": "Centre-Back",
+       "age": 27,
+       "dob": "1999-07-04",
+       "nationality": "Slovenia",
+       "height_cm": 194
+      },
+      {
+       "name": "Matej Matic",
+       "shirt": "56",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-06-05",
+       "nationality": "Croatia",
+       "height_cm": 188,
+       "tm_id": 950181,
+       "foot": "left",
+       "market_value_eur": 400000
+      },
+      {
+       "name": "Zan Flis",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 29,
+       "dob": "1997-07-30",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Kristjan Trdin",
+       "shirt": "17",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-03-01",
+       "nationality": "Slovenia",
+       "height_cm": 189
+      },
+      {
+       "name": "Lovro Kitin",
+       "shirt": "24",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-02-03",
+       "nationality": "Croatia",
+       "tm_id": 1133004,
+       "height_cm": null,
+       "foot": null
+      },
+      {
+       "name": "Samo Seckar",
+       "shirt": "20",
+       "position": "Centre-Back",
+       "age": 18,
+       "dob": "2007-12-18",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Zan Petrovic",
+       "shirt": "21",
+       "position": "Left-Back",
+       "age": 19,
+       "dob": "2007-02-26",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Darius Oroian",
+       "shirt": "77",
+       "position": "Right-Back",
+       "age": 23,
+       "dob": "2003-08-01",
+       "nationality": "Romania",
+       "height_cm": 178
+      },
+      {
+       "name": "Faad Sana",
+       "shirt": "2",
+       "position": "Right-Back",
+       "age": 23,
+       "dob": "2003-04-15",
+       "nationality": "Togo/Burkina Faso"
+      },
+      {
+       "name": "Nejc Ajhmajer",
+       "shirt": "22",
+       "position": "Right-Back",
+       "age": 23,
+       "dob": "2003-04-22",
+       "nationality": "Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Luka Svjetlanovic",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-03-05",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Alen Kozar",
+       "shirt": "14",
+       "position": "Defensive Midfield",
+       "age": 31,
+       "dob": "1995-04-07",
+       "nationality": "Slovenia",
+       "height_cm": 174
+      },
+      {
+       "name": "Ivan Borna Jelic Balta",
+       "shirt": "5",
+       "position": "Defensive Midfield",
+       "age": 34,
+       "dob": "1992-09-17",
+       "nationality": "Croatia/Bosnia-Herzegovina",
+       "height_cm": 193,
+       "tm_id": 319143,
+       "foot": "left",
+       "market_value_eur": 200000
+      },
+      {
+       "name": "Alen Korosec",
+       "shirt": "88",
+       "position": "Central Midfield",
+       "age": 25,
+       "dob": "2001-11-17",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Nino Kouter",
+       "shirt": "10",
+       "position": "Central Midfield",
+       "age": 32,
+       "dob": "1993-12-19",
+       "nationality": "Slovenia",
+       "height_cm": 170
       },
       {
        "name": "Mai Kolbl",
-       "position": "Defender",
-       "shirt": "27",
-       "nat_code": "SVN"
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-03-16",
+       "nationality": "Slovenia",
+       "shirt": "27"
       },
       {
-       "name": "Kenan Kurtović",
-       "position": "Attack",
-       "shirt": "30",
-       "nat_code": "SVN"
+       "name": "Florjan Jevsenak",
+       "shirt": "6",
+       "position": "Attacking Midfield",
+       "age": 21,
+       "dob": "2005-04-06",
+       "nationality": "Slovenia"
       },
       {
-       "name": "Žiga Fermišek",
-       "position": "Goalkeeper",
-       "shirt": "33",
-       "nat_code": "SVN"
+       "name": "Aljaz Zalaznik",
+       "shirt": "18",
+       "position": "Attacking Midfield",
+       "age": 20,
+       "dob": "2005-12-12",
+       "nationality": "Slovenia"
       },
       {
-       "name": "Amadej Filipčič",
-       "position": "Midfield",
-       "shirt": "34",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Šimun Butić",
-       "position": "Right Winger",
-       "shirt": "47",
-       "nat_code": "CRO",
-       "tm_id": 1249161,
-       "dob": "2006-04-07",
-       "height_cm": null,
-       "foot": null,
+       "name": "Luka Bobicanec",
+       "shirt": "8",
+       "position": "Attacking Midfield",
+       "age": 33,
+       "dob": "1993-05-23",
        "nationality": "Croatia",
-       "market_value_eur": 350000
+       "height_cm": 178
       },
       {
        "name": "Petar Pfeifer",
-       "position": "Midfield",
        "shirt": "49",
-       "nat_code": "CRO"
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-01-03",
+       "nationality": "Croatia",
+       "height_cm": 180
       },
       {
-       "name": "Luka Turudija",
-       "position": "Midfield",
-       "shirt": "77",
-       "nat_code": "SVN"
+       "name": "Niko Kasalo",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 20,
+       "dob": "2005-12-31",
+       "nationality": "Slovenia",
+       "height_cm": 181
       },
       {
-       "name": "Nejc Antonič",
-       "position": "Goalkeeper",
-       "shirt": "81",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Alen Korošec",
-       "position": "Midfield",
-       "shirt": "88",
-       "nat_code": "SVN"
+       "name": "Simun Butic",
+       "shirt": "47",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-04-07",
+       "nationality": "Croatia",
+       "tm_id": 1249161,
+       "height_cm": null,
+       "foot": null,
+       "market_value_eur": 350000
       },
       {
        "name": "Val Bislimaj",
-       "position": "Midfield",
-       "shirt": "89",
-       "nat_code": "SVN"
+       "position": "Right Winger",
+       "age": 19,
+       "dob": "2007-04-05",
+       "nationality": "Slovenia",
+       "shirt": "89"
       },
       {
-       "name": "Robert Čakš",
-       "position": "Attack",
+       "name": "Anej Roman Leljak",
+       "shirt": "15",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-05-20",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Boris Dimitrov",
+       "shirt": "71",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-03-29",
+       "nationality": "Bulgaria",
+       "height_cm": 183
+      },
+      {
+       "name": "Kenan Kurtovic",
+       "shirt": "30",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-01-18",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Marko Ascic",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-04-14",
+       "nationality": "Croatia",
+       "tm_id": 1300638,
+       "height_cm": null,
+       "foot": "right",
+       "market_value_eur": 100000
+      },
+      {
+       "name": "Robert Caks",
        "shirt": "99",
-       "nat_code": "SVN"
+       "position": "Centre-Forward",
+       "age": 25,
+       "dob": "2001-01-31",
+       "nationality": "Slovenia",
+       "height_cm": 197
+      },
+      {
+       "name": "Onur Yilmaz",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Türkiye/Germany"
       }
      ]
     },
     "NK Nafta 1903": {
-     "source": "wikipedia",
+     "source": "user",
      "players": [
       {
-       "name": "Lucas Erjavšek",
-       "position": "Goalkeeper",
+       "name": "Lucas Erjavsek",
        "shirt": "1",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Rok Pirtovšek",
-       "position": "Defender",
-       "shirt": "2",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Josip Ivan Zorica",
-       "position": "Midfield",
-       "shirt": "7",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Michael Ogwuche",
-       "position": "Midfield",
-       "shirt": "8",
-       "nat_code": "NGA"
-      },
-      {
-       "name": "Luka Pihler",
-       "position": "Midfield",
-       "shirt": "10",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Anis Jašaragić",
-       "position": "Attack",
-       "shirt": "11",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Noel Keresztes",
-       "position": "Midfield",
-       "shirt": "14",
-       "nat_code": "HUN"
-      },
-      {
-       "name": "Amadej Maroša",
-       "position": "Attack",
-       "shirt": "17",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Aleks Pihler",
-       "position": "Midfield",
-       "shirt": "18",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Blaž Sintič",
-       "position": "Defender",
-       "shirt": "19",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "André Ferreira",
-       "position": "Defender",
-       "shirt": "20",
-       "nat_code": "POR"
-      },
-      {
-       "name": "Shyon Omrani",
-       "position": "Midfield",
-       "shirt": "21",
-       "nat_code": "CAN"
-      },
-      {
-       "name": "Jure Ajhmajer",
        "position": "Goalkeeper",
-       "shirt": "22",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Luka Kambič",
-       "position": "Defender",
-       "shirt": "23",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Tibor Gorenc Stankovič",
-       "position": "Defender",
-       "shirt": "29",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Mátyás Vidnyánszky",
-       "position": "Midfield",
-       "shirt": "30",
-       "nat_code": "HUN"
-      },
-      {
-       "name": "Luka Poredoš",
-       "position": "Defender",
-       "shirt": "33",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Kimi Lavrenčič",
-       "position": "Midfield",
-       "shirt": "41",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Matic Habjanič",
-       "position": "Midfield",
-       "shirt": "49",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Žiga Kosi",
-       "position": "Defender",
-       "shirt": "51",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Domen Brumec",
-       "position": "Midfield",
-       "shirt": "77",
-       "nat_code": "SVN"
+       "age": 22,
+       "dob": "2004-07-05",
+       "nationality": "Slovenia",
+       "height_cm": 190
       },
       {
        "name": "Ervin Németh",
-       "position": "Goalkeeper",
        "shirt": "89",
-       "nat_code": "HUN"
-      },
-      {
-       "name": "Umar Jamiu",
-       "position": "Attack",
-       "shirt": "90",
-       "nat_code": "NGR"
+       "position": "Goalkeeper",
+       "age": 23,
+       "dob": "2003-07-05",
+       "nationality": "Hungary",
+       "height_cm": 192
       },
       {
        "name": "Áron Dragóner",
-       "position": "Defender",
        "shirt": "98",
-       "nat_code": "HUN"
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-06-11",
+       "nationality": "Hungary"
       },
       {
-       "name": "Andrej Mićić",
-       "position": "Left Winger",
-       "shirt": "99",
-       "nat_code": "CRO",
-       "tm_id": 895264,
-       "dob": "2007-01-21",
-       "height_cm": 170,
+       "name": "Rok Pirtovsek",
+       "shirt": "2",
+       "position": "Centre-Back",
+       "age": 30,
+       "dob": "1996-04-03",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tibor Gorenc Stankovic",
+       "shirt": "29",
+       "position": "Centre-Back",
+       "age": 26,
+       "dob": "1999-12-29",
+       "nationality": "Slovenia",
+       "height_cm": 190
+      },
+      {
+       "name": "Luka Poredos",
+       "shirt": "33",
+       "position": "Left-Back",
+       "age": 21,
+       "dob": "2005-06-10",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "André Ferreira",
+       "shirt": "20",
+       "position": "Right-Back",
+       "age": 23,
+       "dob": "2003-04-08",
+       "nationality": "Portugal",
+       "height_cm": 177,
+       "tm_id": 667120,
        "foot": "right",
-       "nationality": "Croatia"
+       "market_value_eur": 250000
+      },
+      {
+       "name": "Luka Kambic",
+       "shirt": "23",
+       "position": "Right-Back",
+       "age": 27,
+       "dob": "1998-12-20",
+       "nationality": "Slovenia",
+       "height_cm": 178
+      },
+      {
+       "name": "Kimi Lavrencic",
+       "shirt": "41",
+       "position": "Defensive Midfield",
+       "age": 20,
+       "dob": "2006-08-29",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Maj Rusjan",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-07-24",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Shyon Omrani",
+       "shirt": "21",
+       "position": "Central Midfield",
+       "age": 23,
+       "dob": "2003-10-21",
+       "nationality": "Canada/Portugal",
+       "height_cm": 178
+      },
+      {
+       "name": "Aleks Pihler",
+       "shirt": "18",
+       "position": "Central Midfield",
+       "age": 32,
+       "dob": "1994-01-15",
+       "nationality": "Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Mátyás Vidnyánszky",
+       "shirt": "30",
+       "position": "Attacking Midfield",
+       "age": 20,
+       "dob": "2006-01-25",
+       "nationality": "Hungary"
+      },
+      {
+       "name": "Noel Keresztes",
+       "shirt": "14",
+       "position": "Attacking Midfield",
+       "age": 22,
+       "dob": "2004-09-16",
+       "nationality": "Hungary",
+       "height_cm": 184
+      },
+      {
+       "name": "Michael Ogwuche",
+       "shirt": "8",
+       "position": "Attacking Midfield",
+       "age": 22,
+       "dob": "2004-06-15",
+       "nationality": "Nigeria",
+       "height_cm": 185
       },
       {
        "name": "Divaio Bobson",
-       "position": "Right Winger",
-       "shirt": null,
-       "nat_code": "NED",
-       "tm_id": 648887,
+       "shirt": "16",
+       "position": "Attacking Midfield",
+       "age": 22,
        "dob": "2004-02-06",
+       "nationality": "Netherlands/Suriname",
        "height_cm": 182,
+       "tm_id": 648887,
        "foot": "right",
-       "nationality": "Netherlands",
        "market_value_eur": 200000
+      },
+      {
+       "name": "Josip Ivan Zorica",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 25,
+       "dob": "2001-07-13",
+       "nationality": "Croatia/Canada",
+       "height_cm": 175
+      },
+      {
+       "name": "Anis Jasaragic",
+       "shirt": "11",
+       "position": "Left Winger",
+       "age": 27,
+       "dob": "1999-08-09",
+       "nationality": "Slovenia",
+       "height_cm": 178
+      },
+      {
+       "name": "Andrej Micic",
+       "shirt": "99",
+       "position": "Left Winger",
+       "age": 19,
+       "dob": "2007-01-21",
+       "nationality": "Bosnia-Herzegovina/Croatia",
+       "height_cm": 170,
+       "tm_id": 895264,
+       "foot": "right"
+      },
+      {
+       "name": "Luka Pihler",
+       "shirt": "10",
+       "position": "Right Winger",
+       "age": 28,
+       "dob": "1998-02-10",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Manu Vallejo",
+       "shirt": "97",
+       "position": "Second Striker",
+       "age": 29,
+       "dob": "1997-02-14",
+       "nationality": "Spain",
+       "height_cm": 167,
+       "tm_id": 527350,
+       "foot": "right",
+       "market_value_eur": 1500000
+      },
+      {
+       "name": "Yannick Toure",
+       "position": "Centre-Forward",
+       "age": 26,
+       "dob": "2000-09-29",
+       "nationality": "Switzerland/Senegal",
+       "height_cm": 184,
+       "tm_id": 421824,
+       "foot": "right",
+       "market_value_eur": 300000
+      },
+      {
+       "name": "Amadej Marosa",
+       "shirt": "17",
+       "position": "Centre-Forward",
+       "age": 32,
+       "dob": "1994-02-07",
+       "nationality": "Slovenia",
+       "height_cm": 177
+      },
+      {
+       "name": "Umar Jamiu",
+       "shirt": "90",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-08-14",
+       "nationality": "Nigeria"
+      },
+      {
+       "name": "Adama Sarr",
+       "shirt": "19",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Nigeria"
       }
      ]
     },
     "NK Olimpija Ljubljana": {
-     "source": "wikipedia",
+     "source": "user",
      "players": [
       {
-       "name": "Jošt Urbančič",
-       "position": "Left-Back",
-       "shirt": "3",
-       "nat_code": "SVN",
-       "tm_id": 487605,
-       "dob": "2001-04-12",
-       "height_cm": 177,
-       "foot": "left",
+       "name": "Matevz Vidovsek",
+       "shirt": "26",
+       "position": "Goalkeeper",
+       "age": 27,
+       "dob": "1999-10-30",
+       "nationality": "Slovenia",
+       "height_cm": 199,
+       "tm_id": 371863,
+       "foot": "right"
+      },
+      {
+       "name": "Denis Pintol",
+       "shirt": "22",
+       "position": "Goalkeeper",
+       "age": 26,
+       "dob": "2000-02-07",
+       "nationality": "Slovenia",
+       "height_cm": 188,
+       "tm_id": 686717,
+       "foot": "right",
+       "market_value_eur": 100000
+      },
+      {
+       "name": "Luka Bele",
+       "position": "Goalkeeper",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia",
+       "height_cm": 191
+      },
+      {
+       "name": "Veljko Jelenkovic",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-06-05",
+       "nationality": "Bulgaria/Serbia",
+       "height_cm": 187
+      },
+      {
+       "name": "Jan Gorenc",
+       "shirt": "30",
+       "position": "Centre-Back",
+       "age": 27,
+       "dob": "1999-07-26",
+       "nationality": "Slovenia",
+       "height_cm": 192,
+       "tm_id": 476165,
+       "foot": "right",
+       "market_value_eur": 400000
+      },
+      {
+       "name": "Davit Kobouri",
+       "shirt": "23",
+       "position": "Centre-Back",
+       "age": 28,
+       "dob": "1998-01-24",
+       "nationality": "Georgia",
+       "height_cm": 187
+      },
+      {
+       "name": "Marko Ristic",
+       "shirt": "15",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-11-01",
+       "nationality": "Slovenia",
+       "height_cm": 192
+      },
+      {
+       "name": "Artur Vinicius",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-09-11",
+       "nationality": "Brazil"
+      },
+      {
+       "name": "Jan Jurgec",
+       "shirt": "54",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-03-13",
        "nationality": "Slovenia"
       },
       {
-       "name": "Veljko Jelenković",
-       "position": "Defender",
-       "shirt": "4",
-       "nat_code": "BUL"
+       "name": "Jost Urbancic",
+       "shirt": "3",
+       "position": "Left-Back",
+       "age": 25,
+       "dob": "2001-04-12",
+       "nationality": "Slovenia",
+       "height_cm": 177,
+       "tm_id": 487605,
+       "foot": "left"
       },
       {
-       "name": "Luis Perea",
-       "position": "Defensive Midfield",
-       "shirt": "6",
-       "nat_code": "ESP",
-       "tm_id": 396328,
-       "dob": "1997-08-25",
-       "height_cm": 191,
-       "foot": "right",
-       "nationality": "Spain",
-       "market_value_eur": 250000
+       "name": "Jordi Govea",
+       "shirt": "33",
+       "position": "Left-Back",
+       "age": 27,
+       "dob": "1999-03-09",
+       "nationality": "Ecuador/Spain",
+       "height_cm": 179
       },
       {
-       "name": "Bruno Lourenço",
-       "position": "Attacking Midfield",
-       "shirt": "8",
-       "nat_code": "POR",
-       "tm_id": 314942,
-       "dob": "1998-02-02",
-       "height_cm": 179,
-       "foot": "left",
+       "name": "Diga",
+       "shirt": "28",
+       "position": "Right-Back",
+       "age": 28,
+       "dob": "1998-03-30",
        "nationality": "Portugal",
-       "market_value_eur": 700000
-      },
-      {
-       "name": "Dino Kojić",
-       "position": "Attack",
-       "shirt": "9",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Dimitar Mitrovski",
-       "position": "Right Winger",
-       "shirt": "10",
-       "nat_code": "MKD",
-       "tm_id": 386794,
-       "dob": "1999-01-28",
-       "height_cm": 176,
-       "foot": "left",
-       "nationality": "North Macedonia"
-      },
-      {
-       "name": "Federico Rose",
-       "position": "Attack",
-       "shirt": "11",
-       "nat_code": "CAN"
+       "height_cm": 177,
+       "tm_id": 419458,
+       "foot": "right",
+       "market_value_eur": 350000
       },
       {
        "name": "Kristjan Bendra",
-       "position": "Right-Back",
        "shirt": "14",
-       "nat_code": "SVN",
-       "tm_id": 915410,
+       "position": "Right-Back",
+       "age": 20,
        "dob": "2006-01-30",
+       "nationality": "Slovenia",
+       "tm_id": 915410,
        "height_cm": null,
+       "foot": "right"
+      },
+      {
+       "name": "Agustín Doffo",
+       "shirt": "34",
+       "position": "Defensive Midfield",
+       "age": 31,
+       "dob": "1995-05-25",
+       "nationality": "Argentina/Italy",
+       "height_cm": 179
+      },
+      {
+       "name": "Luis Perea",
+       "shirt": "6",
+       "position": "Defensive Midfield",
+       "age": 29,
+       "dob": "1997-08-25",
+       "nationality": "Spain",
+       "height_cm": 191,
+       "tm_id": 396328,
        "foot": "right",
+       "market_value_eur": 250000
+      },
+      {
+       "name": "Robert Miskovic",
+       "shirt": "90",
+       "position": "Central Midfield",
+       "age": 27,
+       "dob": "1999-10-20",
+       "nationality": "Croatia/Germany",
+       "height_cm": 190,
+       "tm_id": 581358,
+       "foot": "right"
+      },
+      {
+       "name": "Dino Kojic",
+       "shirt": "9",
+       "position": "Attacking Midfield",
+       "age": 21,
+       "dob": "2005-04-04",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Bruno Lourenço",
+       "shirt": "8",
+       "position": "Attacking Midfield",
+       "age": 28,
+       "dob": "1998-02-02",
+       "nationality": "Portugal",
+       "height_cm": 179,
+       "tm_id": 314942,
+       "foot": "left",
+       "market_value_eur": 700000
+      },
+      {
+       "name": "Job Brecelj",
+       "shirt": "58",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-03-18",
        "nationality": "Slovenia"
       },
       {
-       "name": "Marko Ristić",
-       "position": "Defender",
-       "shirt": "15",
-       "nat_code": "SVN"
+       "name": "Xande",
+       "position": "Left Winger",
+       "age": 25,
+       "dob": "2001-04-24",
+       "nationality": "Brazil",
+       "height_cm": 170,
+       "shirt": "77"
       },
       {
-       "name": "Marvin Çuni",
-       "position": "Centre-Forward",
-       "shirt": "17",
-       "nat_code": "ALB",
-       "tm_id": 453864,
-       "dob": "2001-07-10",
-       "height_cm": 188,
-       "foot": "right",
-       "nationality": "Albania",
-       "market_value_eur": 800000
-      },
-      {
-       "name": "Marko Brest",
-       "position": "Attack",
-       "shirt": "18",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Indrit Tuci",
-       "position": "Centre-Forward",
-       "shirt": "19",
-       "nat_code": "ALB",
-       "tm_id": 675857,
-       "dob": "2000-09-14",
-       "height_cm": 191,
-       "foot": "right",
-       "nationality": "Albania",
-       "market_value_eur": 600000
+       "name": "Antonio Marin",
+       "shirt": "99",
+       "position": "Left Winger",
+       "age": 25,
+       "nationality": "Croatia"
       },
       {
        "name": "Nemanja Motika",
-       "position": "Left Winger",
        "shirt": "20",
-       "nat_code": "SRB",
+       "position": "Left Winger",
+       "age": 23,
+       "nationality": "Serbia/Germany",
        "tm_id": 604323,
        "dob": "2003-03-20",
        "height_cm": 179,
        "foot": "both",
-       "nationality": "Serbia",
        "market_value_eur": 1000000
       },
       {
-       "name": "Denis Pintol",
-       "position": "Goalkeeper",
-       "shirt": "22",
-       "nat_code": "SVN",
-       "tm_id": 686717,
-       "dob": "2000-02-07",
-       "height_cm": 188,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 100000
-      },
-      {
-       "name": "Davit Kobouri",
-       "position": "Defender",
-       "shirt": "23",
-       "nat_code": "GEO"
-      },
-      {
-       "name": "Alex Tamm",
-       "position": "Centre-Forward",
-       "shirt": "24",
-       "nat_code": "EST",
-       "tm_id": 427446,
-       "dob": "2001-07-24",
-       "height_cm": 190,
-       "foot": "right",
-       "nationality": "Estonia",
-       "market_value_eur": 400000
-      },
-      {
-       "name": "Matevž Vidovšek",
-       "position": "Goalkeeper",
-       "shirt": "26",
-       "nat_code": "SVN",
-       "tm_id": 371863,
-       "dob": "1999-10-30",
-       "height_cm": 199,
-       "foot": "right",
+       "name": "Marko Brest",
+       "shirt": "18",
+       "position": "Left Winger",
+       "age": 24,
        "nationality": "Slovenia"
       },
       {
-       "name": "Diogo Almeida",
-       "position": "Centre-Forward",
-       "shirt": "28",
-       "nat_code": "POR",
-       "tm_id": 514240,
-       "dob": "2000-09-08",
-       "height_cm": 184,
-       "foot": "right",
-       "nationality": "Portugal",
-       "market_value_eur": 275000
-      },
-      {
-       "name": "Jan Gorenc",
-       "position": "Centre-Back",
-       "shirt": "30",
-       "nat_code": "SVN",
-       "tm_id": 476165,
-       "dob": "1999-07-26",
-       "height_cm": 192,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 400000
-      },
-      {
-       "name": "Jordi Govea",
-       "position": "Defender",
-       "shirt": "33",
-       "nat_code": "ECU"
-      },
-      {
-       "name": "Agustín Doffo",
-       "position": "Midfield",
-       "shirt": "34",
-       "nat_code": "ARG"
-      },
-      {
-       "name": "Jan Jurgec",
-       "position": "Midfield",
-       "shirt": "54",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Matej Henjak",
-       "position": "Defender",
-       "shirt": "55",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Tien Goga",
-       "position": "Midfield",
-       "shirt": "71",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Xande",
-       "position": "Attack",
-       "shirt": "77",
-       "nat_code": "BRA"
+       "name": "Dimitar Mitrovski",
+       "shirt": "10",
+       "position": "Right Winger",
+       "age": 27,
+       "nationality": "North Macedonia",
+       "tm_id": 386794,
+       "dob": "1999-01-28",
+       "height_cm": 176,
+       "foot": "left"
       },
       {
        "name": "Yayah Kallon",
-       "position": "Right Winger",
        "shirt": "79",
-       "nat_code": "SLE",
+       "position": "Right Winger",
+       "age": 25,
+       "nationality": "Sierra Leone/Italy",
        "tm_id": 623040,
        "dob": "2001-06-30",
        "height_cm": 175,
        "foot": "left",
-       "nationality": "Sierra Leone",
        "market_value_eur": 1000000
       },
       {
-       "name": "Robert Mišković",
-       "position": "Central Midfield",
-       "shirt": "90",
-       "nat_code": "CRO",
-       "tm_id": 581358,
-       "dob": "1999-10-20",
+       "name": "Indrit Tuci",
+       "shirt": "19",
+       "position": "Centre-Forward",
+       "age": 26,
+       "nationality": "Albania",
+       "tm_id": 675857,
+       "dob": "2000-09-14",
+       "height_cm": 191,
+       "foot": "right",
+       "market_value_eur": 600000
+      },
+      {
+       "name": "Marvin Cuni",
+       "shirt": "17",
+       "position": "Centre-Forward",
+       "age": 25,
+       "nationality": "Albania/Germany",
+       "tm_id": 453864,
+       "dob": "2001-07-10",
+       "height_cm": 188,
+       "foot": "right",
+       "market_value_eur": 800000
+      },
+      {
+       "name": "Alex Tamm",
+       "shirt": "24",
+       "position": "Centre-Forward",
+       "age": 25,
+       "nationality": "Estonia",
+       "tm_id": 427446,
+       "dob": "2001-07-24",
        "height_cm": 190,
        "foot": "right",
-       "nationality": "Croatia"
+       "market_value_eur": 400000
       },
       {
-       "name": "Antonio Marin",
-       "position": "Attack",
-       "shirt": "99",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Marko Elsner",
-       "position": "Defender",
-       "shirt": "5",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Danilo Popivoda",
-       "position": "Attack",
-       "shirt": "7",
-       "nat_code": "SVN"
+       "name": "Federico Rose",
+       "shirt": "11",
+       "position": "Centre-Forward",
+       "age": 22,
+       "nationality": "Argentina/Croatia"
       }
      ]
     },
     "NK Radomlje": {
-     "source": "wikipedia",
+     "source": "user",
      "players": [
       {
        "name": "Samo Pridgar",
-       "position": "Goalkeeper",
        "shirt": "1",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Ognjen Gnjatić",
-       "position": "Defensive Midfield",
-       "shirt": "6",
-       "nat_code": "BIH",
-       "tm_id": 190811,
-       "dob": "1991-10-16",
-       "height_cm": 190,
-       "foot": "right",
-       "nationality": "Bosnia-Herzegovina",
-       "market_value_eur": 100000
-      },
-      {
-       "name": "Vid Chinoso Juvančič",
-       "position": "Attack",
-       "shirt": "7",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Nino Kukovec",
-       "position": "Attack",
-       "shirt": "9",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Andrej Pogačar",
-       "position": "Midfield",
-       "shirt": "10",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Jakob Kobal",
        "position": "Goalkeeper",
-       "shirt": "12",
-       "nat_code": "SVN"
+       "age": 23,
+       "dob": "2003-03-10",
+       "nationality": "Slovenia",
+       "height_cm": 191
       },
       {
-       "name": "Jaša Martinčič",
-       "position": "Midfield",
-       "shirt": "15",
-       "nat_code": "SVN"
+       "name": "Nejc Dermastija",
+       "shirt": "13",
+       "position": "Goalkeeper",
+       "age": 22,
+       "dob": "2004-02-20",
+       "nationality": "Slovenia"
       },
       {
-       "name": "Aleksandar Vucenovic",
-       "position": "Attack",
-       "shirt": "19",
-       "nat_code": "AUT"
+       "name": "Daniil Churakov",
+       "shirt": "73",
+       "position": "Goalkeeper",
+       "age": 18,
+       "dob": "2008-04-14",
+       "nationality": "Russia"
       },
       {
-       "name": "Matej Mamić",
-       "position": "Defender",
+       "name": "Aleksa Paic",
        "shirt": "22",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Nino Vukasović",
-       "position": "Defender",
-       "shirt": "23",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Dejan Vokić",
-       "position": "Attacking Midfield",
-       "shirt": "27",
-       "nat_code": "SVN",
-       "tm_id": 290698,
-       "dob": "1996-06-12",
-       "height_cm": 193,
-       "foot": "left",
-       "nationality": "Slovenia",
-       "market_value_eur": 100000
-      },
-      {
-       "name": "Moses Barnabas",
-       "position": "Midfield",
-       "shirt": "30",
-       "nat_code": "NGR"
-      },
-      {
-       "name": "Halifa Kujabi",
-       "position": "Attack",
-       "shirt": "31",
-       "nat_code": "GAM"
-      },
-      {
-       "name": "Rok Ljutić",
-       "position": "Defender",
-       "shirt": "33",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Marko Cukon",
-       "position": "Midfield",
-       "shirt": "41",
-       "nat_code": "CRO"
-      },
-      {
-       "name": "Tilen Gašper Štiftar",
-       "position": "Goalkeeper",
-       "shirt": "43",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Matej Malenšek",
-       "position": "Left Winger",
-       "shirt": "44",
-       "nat_code": "SVN",
-       "tm_id": 1013087,
-       "dob": "2005-05-27",
-       "height_cm": 183,
-       "foot": "right",
-       "nationality": "Slovenia",
-       "market_value_eur": 375000
-      },
-      {
-       "name": "Žan Žaler",
-       "position": "Defender",
-       "shirt": "77",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Sandro Zukić",
-       "position": "Defender",
-       "shirt": "97",
-       "nat_code": "SVN"
-      },
-      {
-       "name": "Som Kumar",
-       "position": "Goalkeeper",
-       "shirt": "99",
-       "nat_code": "IND"
-      },
-      {
-       "name": "Bine Anželj",
-       "position": "Defender",
-       "shirt": null,
-       "nat_code": "SVN"
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-09-22",
+       "nationality": "Serbia/Croatia",
+       "height_cm": 191,
+       "tm_id": 709020,
+       "foot": "right"
       },
       {
        "name": "Enej Klampfer",
-       "position": "Defender",
-       "shirt": null,
-       "nat_code": "SVN"
+       "shirt": "5",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-05-03",
+       "nationality": "Slovenia",
+       "height_cm": 192
       },
       {
-       "name": "Amadej Marinič",
-       "position": "Defender",
-       "shirt": null,
-       "nat_code": "SVN"
+       "name": "Bine Anzelj",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-10-09",
+       "nationality": "Slovenia",
+       "height_cm": 192
       },
       {
-       "name": "Hanan Duraković",
-       "position": "Midfield",
-       "shirt": null,
-       "nat_code": "BIH"
+       "name": "David Buvac",
+       "shirt": "16",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-04-06",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Borna Graonic",
+       "shirt": "87",
+       "position": "Left-Back",
+       "age": 21,
+       "dob": "2005-01-31",
+       "nationality": "Croatia",
+       "height_cm": 183
+      },
+      {
+       "name": "Antonio Bosec",
+       "shirt": "2",
+       "position": "Right-Back",
+       "age": 29,
+       "dob": "1997-08-28",
+       "nationality": "Croatia",
+       "height_cm": 178,
+       "tm_id": 450290,
+       "foot": "right",
+       "market_value_eur": 400000
+      },
+      {
+       "name": "Matej Dvorsak",
+       "shirt": "44",
+       "position": "Right-Back",
+       "age": 21,
+       "dob": "2005-01-24",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Mihael Zaper",
+       "shirt": "41",
+       "position": "Defensive Midfield",
+       "age": 28,
+       "dob": "1998-08-11",
+       "nationality": "Croatia",
+       "height_cm": 188,
+       "tm_id": 434557,
+       "foot": "right"
+      },
+      {
+       "name": "Bruno Burcul",
+       "shirt": "24",
+       "position": "Defensive Midfield",
+       "age": 21,
+       "dob": "2004-11-20",
+       "nationality": "Croatia",
+       "height_cm": 187,
+       "tm_id": 927847,
+       "foot": null,
+       "market_value_eur": 400000
+      },
+      {
+       "name": "Ognjen Gnjatic",
+       "shirt": "6",
+       "position": "Defensive Midfield",
+       "age": 35,
+       "dob": "1991-10-16",
+       "nationality": "Bosnia-Herzegovina/Croatia",
+       "height_cm": 190,
+       "tm_id": 190811,
+       "foot": "right",
+       "market_value_eur": 100000
+      },
+      {
+       "name": "Nik Marinsek",
+       "shirt": "10",
+       "position": "Central Midfield",
+       "age": 27,
+       "dob": "1999-02-17",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Dejan Kantuzer",
+       "shirt": "66",
+       "position": "Central Midfield",
+       "age": 23,
+       "dob": "2003-06-02",
+       "nationality": "Slovenia",
+       "height_cm": 186
+      },
+      {
+       "name": "Jasa Jelen",
+       "shirt": "8",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-04-15",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Aljaz Zabukovnik",
+       "shirt": "15",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-05-03",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tomas Puc",
+       "shirt": "33",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-07-11",
+       "nationality": "Slovenia",
+       "height_cm": 191
+      },
+      {
+       "name": "Denis Mazreku",
+       "shirt": "72",
+       "position": "Attacking Midfield",
+       "age": 18,
+       "dob": "2007-11-29",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Josip Balic",
+       "shirt": "23",
+       "position": "Left Winger",
+       "age": 22,
+       "dob": "2004-03-10",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Jasa Martincic",
+       "shirt": "11",
+       "position": "Left Winger",
+       "age": 25,
+       "dob": "2001-11-06",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Vid Chinoso Juvancic",
+       "shirt": "19",
+       "position": "Left Winger",
+       "age": 18,
+       "dob": "2008-04-16",
+       "nationality": "Slovenia/The Gambia",
+       "height_cm": 184
+      },
+      {
+       "name": "Divine Igwe Ikenna",
+       "shirt": "7",
+       "position": "Right Winger",
+       "age": 22,
+       "dob": "2004-05-05",
+       "nationality": "Nigeria"
+      },
+      {
+       "name": "Vanja Pelko",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 24,
+       "dob": "2002-03-25",
+       "nationality": "Croatia",
+       "height_cm": 192,
+       "tm_id": 619280,
+       "foot": "right"
+      },
+      {
+       "name": "Saydou Bangura",
+       "shirt": "27",
+       "position": "Centre-Forward",
+       "age": 23,
+       "dob": "2003-01-05",
+       "nationality": "Netherlands/Guinea",
+       "height_cm": 188,
+       "tm_id": 687267,
+       "foot": "right"
+      }
+     ]
+    }
+   }
+  },
+  "slovenia_2snl": {
+   "name": "2. SNL",
+   "clubs": {
+    "NK Vrhnika": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Tijan Vasic",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 19,
+       "dob": "2007-02-11",
+       "nationality": "Slovenia",
+       "height_cm": 194
+      },
+      {
+       "name": "Aljaž Božič",
+       "shirt": "12",
+       "position": "Goalkeeper",
+       "age": 22,
+       "dob": "2004-04-06",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Amel Avdic",
+       "shirt": "17",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-04-07",
+       "nationality": "Bosnia-Herzegovina/Austria",
+       "height_cm": 190
+      },
+      {
+       "name": "Sergej Lazarevic",
+       "shirt": "18",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-03-03",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Gal Pecjak",
+       "shirt": "15",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-04-18",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ilija Cutovic",
+       "shirt": "25",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-10-02",
+       "nationality": "Serbia"
+      },
+      {
+       "name": "Mark Tomsic",
+       "shirt": "3",
+       "position": "Left-Back",
+       "age": 20,
+       "dob": "2006-01-28",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ronaldo Sarifo Djalo",
+       "shirt": "4",
+       "position": "Left-Back",
+       "age": 22,
+       "dob": "2004-10-06",
+       "nationality": "Portugal"
+      },
+      {
+       "name": "Boris Bosnjovic",
+       "shirt": "19",
+       "position": "Right-Back",
+       "age": 23,
+       "dob": "2003-10-08",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Matevz Kobal",
+       "shirt": "5",
+       "position": "Right-Back",
+       "age": 21,
+       "dob": "2005-03-08",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ziga Kolar",
+       "shirt": "2",
+       "position": "Defensive Midfield",
+       "age": 24,
+       "dob": "2002-10-25",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Marko Nikitovic",
+       "shirt": "16",
+       "position": "Defensive Midfield",
+       "age": 19,
+       "dob": "2007-03-23",
+       "nationality": "Serbia/Croatia",
+       "height_cm": 182
+      },
+      {
+       "name": "David Vitamvas",
+       "shirt": "23",
+       "position": "Defensive Midfield",
+       "age": 20,
+       "dob": "2006-01-03",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Lovre Katic",
+       "shirt": "8",
+       "position": "Central Midfield",
+       "age": 23,
+       "dob": "2003-09-09",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Nasir Muhammed",
+       "shirt": "22",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2005-01-01",
+       "nationality": "Nigeria"
+      },
+      {
+       "name": "Arijan Djelovci",
+       "shirt": "27",
+       "position": "Central Midfield",
+       "age": 23,
+       "dob": "2003-03-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Adamson Sharafa",
+       "shirt": "6",
+       "position": "Central Midfield",
+       "age": 23,
+       "dob": "2003-06-05",
+       "nationality": "Nigeria",
+       "height_cm": 185
+      },
+      {
+       "name": "Ziga Pecjak",
+       "shirt": "10",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-02-21",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Peter Sever",
+       "shirt": "13",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Frano Mohorovicic",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 18,
+       "dob": "2008-04-30",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Mark Seliskar",
+       "shirt": "20",
+       "position": "Left Winger",
+       "age": 24,
+       "dob": "2002-01-16",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Jonathan Alukwu",
+       "shirt": "14",
+       "position": "Left Winger",
+       "age": 23,
+       "dob": "2003-03-15",
+       "nationality": "Nigeria",
+       "height_cm": 185
+      },
+      {
+       "name": "Inas Kukavica",
+       "shirt": "9",
+       "position": "Right Winger",
+       "age": 18,
+       "dob": "2007-12-21",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Filip Nikola Ostojic",
+       "shirt": "11",
+       "position": "Right Winger",
+       "age": 24,
+       "dob": "2002-07-06",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Nura Salisu",
+       "shirt": "21",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-10-29",
+       "nationality": "Nigeria/Slovenia"
+      },
+      {
+       "name": "Andrea Djuric",
+       "shirt": "16",
+       "position": "Centre-Forward",
+       "age": 25,
+       "dob": "2001-01-12",
+       "nationality": "Italy/Serbia",
+       "height_cm": 178
+      }
+     ]
+    },
+    "NK Krka": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Luka Cadez",
+       "shirt": "54",
+       "position": "Goalkeeper",
+       "age": 26,
+       "dob": "2000-03-01",
+       "nationality": "Slovenia",
+       "height_cm": 189
+      },
+      {
+       "name": "Jasa Hribar",
+       "shirt": "31",
+       "position": "Goalkeeper",
+       "age": 20,
+       "dob": "2006-09-09",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Andraz Lipec",
+       "shirt": "3",
+       "position": "Centre-Back",
+       "age": 24,
+       "dob": "2001-12-06",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Veron Salja",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 28,
+       "dob": "1998-05-29",
+       "nationality": "Kosovo/Slovenia",
+       "height_cm": 193
+      },
+      {
+       "name": "Gasper Vodeb",
+       "shirt": "6",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-06-30",
+       "nationality": "Slovenia",
+       "height_cm": 192
+      },
+      {
+       "name": "Miha Dobnikar",
+       "shirt": "55",
+       "position": "Centre-Back",
+       "age": 29,
+       "dob": "1997-03-19",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Matic Malnar",
+       "shirt": "23",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-07-24",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tadej Petancic",
+       "shirt": "17",
+       "position": "Left-Back",
+       "age": 22,
+       "dob": "2004-01-08",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "David Stojanoski",
+       "shirt": "5",
+       "position": "Left-Back",
+       "age": 19,
+       "dob": "2007-03-20",
+       "nationality": "North Macedonia/Slovenia",
+       "height_cm": 186
+      },
+      {
+       "name": "Lovro-Luka Ukalovic",
+       "shirt": "20",
+       "position": "Right-Back",
+       "age": 21,
+       "dob": "2005-04-16",
+       "nationality": "Croatia",
+       "height_cm": 183
+      },
+      {
+       "name": "Gideon Owusu",
+       "shirt": "15",
+       "position": "Defensive Midfield",
+       "age": 21,
+       "dob": "2005-09-30",
+       "nationality": "Ghana"
+      },
+      {
+       "name": "Ante Matic",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-01-08",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Nik Kapun",
+       "shirt": "10",
+       "position": "Central Midfield",
+       "age": 32,
+       "dob": "1994-01-09",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Val Sterle",
+       "shirt": "24",
+       "position": "Central Midfield",
+       "age": 18,
+       "dob": "2008-06-17",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Sven Opacic",
+       "shirt": "25",
+       "position": "Attacking Midfield",
+       "age": 23,
+       "dob": "2003-05-20",
+       "nationality": "Croatia",
+       "height_cm": 183
+      },
+      {
+       "name": "Dominik Iskric",
+       "shirt": "14",
+       "position": "Attacking Midfield",
+       "age": 21,
+       "dob": "2004-12-30",
+       "nationality": "Croatia",
+       "height_cm": 176
+      },
+      {
+       "name": "Luka Andre Zurkic",
+       "position": "Attacking Midfield",
+       "age": 18,
+       "dob": "2007-11-28",
+       "nationality": "Serbia/Australia",
+       "height_cm": 172
+      },
+      {
+       "name": "Leon Bicanic",
+       "shirt": "28",
+       "position": "Left Winger",
+       "age": 22,
+       "dob": "2004-05-20",
+       "nationality": "Croatia",
+       "height_cm": 178
+      },
+      {
+       "name": "Tai Meze",
+       "shirt": "16",
+       "position": "Left Winger",
+       "age": 20,
+       "dob": "2006-06-14",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Mark Gliha",
+       "shirt": "11",
+       "position": "Right Winger",
+       "age": 22,
+       "dob": "2004-06-17",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Halifa Kujabi",
+       "shirt": "27",
+       "position": "Right Winger",
+       "age": 21,
+       "dob": "2005-01-31",
+       "nationality": "The Gambia",
+       "height_cm": 177
+      },
+      {
+       "name": "Gasper Cerne",
+       "shirt": "18",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-02-24",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Kristian Dakic",
+       "shirt": "8",
+       "position": "Centre-Forward",
+       "age": 25,
+       "dob": "2001-11-01",
+       "nationality": "Slovenia",
+       "height_cm": 186
+      },
+      {
+       "name": "Tilen Kovacic",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 21,
+       "dob": "2005-03-11",
+       "nationality": "Slovenia",
+       "height_cm": 178
+      },
+      {
+       "name": "Marko Donchovski",
+       "shirt": "26",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-04-03",
+       "nationality": "North Macedonia"
+      },
+      {
+       "name": "Tilen Tomac",
+       "shirt": "99",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-02-10",
+       "nationality": "Slovenia"
+      }
+     ]
+    },
+    "ND Primorje": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Dino Rendic",
+       "shirt": "13",
+       "position": "Goalkeeper",
+       "age": 24,
+       "dob": "2002-03-16",
+       "nationality": "Croatia",
+       "height_cm": 189
+      },
+      {
+       "name": "Matej Mavric",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 32,
+       "dob": "1994-01-23",
+       "nationality": "Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Arian Moslavac",
+       "shirt": "88",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-10-27",
+       "nationality": "Croatia",
+       "tm_id": 1123875,
+       "height_cm": null,
+       "foot": null
+      },
+      {
+       "name": "Miljan Pantic",
+       "shirt": "53",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-06-12",
+       "nationality": "Bosnia-Herzegovina",
+       "height_cm": 196
+      },
+      {
+       "name": "Mark Gomizelj",
+       "shirt": "90",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-03-15",
+       "nationality": "Slovenia",
+       "height_cm": 174
+      },
+      {
+       "name": "Ivan Bikic",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-02-12",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Nejc Prosen",
+       "shirt": "14",
+       "position": "Left-Back",
+       "age": 19,
+       "dob": "2007-05-28",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tilen Vendramin",
+       "shirt": "3",
+       "position": "Right-Back",
+       "age": 22,
+       "dob": "2004-03-17",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Vasilije Perkovic",
+       "shirt": "27",
+       "position": "Right-Back",
+       "age": 24,
+       "dob": "2002-08-21",
+       "nationality": "Germany/Bosnia-Herzegovina"
+      },
+      {
+       "name": "Haris Dedic",
+       "shirt": "15",
+       "position": "Defensive Midfield",
+       "age": 29,
+       "dob": "1997-07-06",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Leo Peranovic",
+       "shirt": "26",
+       "position": "Defensive Midfield",
+       "age": 20,
+       "dob": "2006-08-22",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Abel Marc",
+       "shirt": "20",
+       "position": "Central Midfield",
+       "age": 25,
+       "dob": "2001-04-19",
+       "nationality": "Slovenia",
+       "height_cm": 172
+      },
+      {
+       "name": "Jaka Kolenc",
+       "shirt": "7",
+       "position": "Attacking Midfield",
+       "age": 32,
+       "dob": "1994-02-23",
+       "nationality": "Slovenia",
+       "height_cm": 181
+      },
+      {
+       "name": "Luka Mestrovic",
+       "shirt": "24",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-07-25",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Tais Sabotic",
+       "shirt": "8",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-09-04",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Jan Franc Kopatin",
+       "shirt": "10",
+       "position": "Left Winger",
+       "age": 22,
+       "dob": "2004-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Mile Parmac",
+       "shirt": "11",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-05-20",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Betim Cadraki",
+       "shirt": "32",
+       "position": "Right Winger",
+       "age": 16,
+       "dob": "2010-03-10",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Mark Gulic",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 29,
+       "dob": "1997-08-15",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Taj Rozic Suligoj",
+       "shirt": "93",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-10-27",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Miha Kobal",
+       "shirt": "29",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-11-04",
+       "nationality": "Slovenia"
+      }
+     ]
+    },
+    "NK Dekani": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Jakob Kobal",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 20,
+       "dob": "2006-02-19",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Alen Jurca",
+       "shirt": "30",
+       "position": "Goalkeeper",
+       "age": 25,
+       "dob": "2001-01-15",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Matija Burin",
+       "shirt": "15",
+       "position": "Centre-Back",
+       "age": 25,
+       "dob": "2001-03-25",
+       "nationality": "Slovenia",
+       "height_cm": 181
+      },
+      {
+       "name": "Jan Kalsek",
+       "shirt": "36",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-02-02",
+       "nationality": "Slovenia",
+       "height_cm": 190
+      },
+      {
+       "name": "Denis Cerovec",
+       "shirt": "5",
+       "position": "Centre-Back",
+       "age": 35,
+       "dob": "1991-04-24",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Dino Vadnov",
+       "shirt": "16",
+       "position": "Centre-Back",
+       "age": 24,
+       "dob": "2002-08-19",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Adel Avdic",
+       "shirt": "18",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ognjen Obradov",
+       "shirt": "2",
+       "position": "Left-Back",
+       "age": 24,
+       "dob": "2001-12-13",
+       "nationality": "Serbia/Bosnia-Herzegovina",
+       "height_cm": 176
+      },
+      {
+       "name": "Enej Sosic",
+       "shirt": "21",
+       "position": "Left-Back",
+       "age": 22,
+       "dob": "2004-03-25",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Marko Cvijetic",
+       "shirt": "4",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-05-08",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Luka Bradaric",
+       "shirt": "28",
+       "position": "Defensive Midfield",
+       "age": 23,
+       "dob": "2003-09-08",
+       "nationality": "Croatia",
+       "height_cm": 189
+      },
+      {
+       "name": "Anej Kujovic",
+       "shirt": "13",
+       "position": "Defensive Midfield",
+       "age": 23,
+       "dob": "2003-06-09",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Denis Cukici",
+       "shirt": "14",
+       "position": "Defensive Midfield",
+       "age": 23,
+       "dob": "2003-02-10",
+       "nationality": "Finland/Kosovo",
+       "height_cm": 181
+      },
+      {
+       "name": "Enej Jurinčič",
+       "shirt": "20",
+       "position": "Defensive Midfield",
+       "age": 19,
+       "dob": "2007-02-15",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Franko Cordas",
+       "shirt": "6",
+       "position": "Central Midfield",
+       "age": 22,
+       "dob": "2003-11-26",
+       "nationality": "Croatia",
+       "height_cm": 190
+      },
+      {
+       "name": "Jan Strcaj",
+       "shirt": "17",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-08-26",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Nik Fortuna",
+       "shirt": "7",
+       "position": "Attacking Midfield",
+       "age": 23,
+       "dob": "2002-11-23",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Mukadas Abdul Samed",
+       "shirt": "22",
+       "position": "Left Winger",
+       "age": 20,
+       "dob": "2005-11-30",
+       "nationality": "Ghana",
+       "height_cm": 183
+      },
+      {
+       "name": "Phelipe",
+       "shirt": "80",
+       "position": "Left Winger",
+       "age": 22,
+       "dob": "2004-05-20",
+       "nationality": "Brazil/Italy"
+      },
+      {
+       "name": "Tadej Zonta",
+       "shirt": "19",
+       "position": "Right Winger",
+       "age": 27,
+       "dob": "1999-10-05",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Riad Silajdzic",
+       "shirt": "8",
+       "position": "Right Winger",
+       "age": 21,
+       "dob": "2005-02-13",
+       "nationality": "Slovenia/Bosnia-Herzegovina",
+       "height_cm": 183
+      },
+      {
+       "name": "Matija Grmek",
+       "shirt": "49",
+       "position": "Right Winger",
+       "age": 19,
+       "dob": "2007-06-12",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Andreas Sculac",
+       "shirt": "11",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2005-12-09",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Adis Emruli",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 26,
+       "dob": "2000-07-16",
+       "nationality": "Slovenia",
+       "height_cm": 182
+      },
+      {
+       "name": "Felipe Gabriel",
+       "shirt": "90",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Brazil"
+      }
+     ]
+    },
+    "NK Jesenice": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Tony Macan",
+       "shirt": "22",
+       "position": "Goalkeeper",
+       "age": 26,
+       "dob": "2000-10-11",
+       "nationality": "Croatia",
+       "height_cm": 193
+      },
+      {
+       "name": "Kjire Novakov",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 23,
+       "dob": "2003-08-28",
+       "nationality": "North Macedonia",
+       "height_cm": 195
+      },
+      {
+       "name": "Mark Stankovic",
+       "shirt": "16",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-10-17",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Niko Cindric",
+       "shirt": "17",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-07-12",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Gasper Kukavica",
+       "shirt": "3",
+       "position": "Centre-Back",
+       "age": 25,
+       "dob": "2001-05-19",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Denis Solakovic",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-05-23",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Stefan Kladar",
+       "shirt": "15",
+       "position": "Centre-Back",
+       "age": 32,
+       "dob": "1994-02-22",
+       "nationality": "Bosnia-Herzegovina/Croatia",
+       "height_cm": 202
+      },
+      {
+       "name": "Emir Velic",
+       "shirt": "99",
+       "position": "Left-Back",
+       "age": 27,
+       "dob": "1999-05-26",
+       "nationality": "Slovenia/Bosnia-Herzegovina",
+       "height_cm": 179
+      },
+      {
+       "name": "David Stanojevic",
+       "shirt": "6",
+       "position": "Right-Back",
+       "age": 22,
+       "dob": "2004-05-07",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Din Cejvanovic",
+       "shirt": "2",
+       "position": "Right-Back",
+       "age": 22,
+       "dob": "2004-05-05",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Milan Bikhan",
+       "shirt": "18",
+       "position": "Defensive Midfield",
+       "age": 23,
+       "dob": "2003-07-01",
+       "nationality": "Netherlands",
+       "height_cm": 178
+      },
+      {
+       "name": "Armin Talic",
+       "shirt": "5",
+       "position": "Defensive Midfield",
+       "age": 26,
+       "dob": "2000-04-14",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Alen Ugljanin",
+       "shirt": "88",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-09-23",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Edvin Krupic",
+       "shirt": "10",
+       "position": "Central Midfield",
+       "age": 22,
+       "dob": "2004-03-03",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Maksim Vid Beljkas",
+       "shirt": "19",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-06-28",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Timon Railic",
+       "shirt": "23",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-06-13",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Gabriele Giacchino",
+       "shirt": "9",
+       "position": "Attacking Midfield",
+       "age": 23,
+       "dob": "2003-09-27",
+       "nationality": "Italy",
+       "height_cm": 170
+      },
+      {
+       "name": "Borna Panic",
+       "shirt": "8",
+       "position": "Attacking Midfield",
+       "age": 21,
+       "dob": "2005-01-22",
+       "nationality": "Croatia",
+       "height_cm": 174,
+       "tm_id": 895877,
+       "foot": "left"
+      },
+      {
+       "name": "Qiniso Ngobese",
+       "shirt": "7",
+       "position": "Attacking Midfield",
+       "age": 23,
+       "dob": "2003-01-01",
+       "nationality": "Netherlands"
+      },
+      {
+       "name": "Matija Grek",
+       "shirt": "33",
+       "position": "Left Winger",
+       "age": 25,
+       "dob": "2001-08-23",
+       "nationality": "Serbia",
+       "height_cm": 180
+      },
+      {
+       "name": "Roko Mavra",
+       "shirt": "99",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-09-08",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Ivan Nikcevic",
+       "shirt": "11",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-10-19",
+       "nationality": "Montenegro/Serbia",
+       "height_cm": 180
+      },
+      {
+       "name": "Deen Adrovic",
+       "shirt": "27",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-08-11",
+       "nationality": "Slovenia",
+       "height_cm": 193
+      },
+      {
+       "name": "Matej Zec",
+       "shirt": "72",
+       "position": "Centre-Forward",
+       "age": 21,
+       "dob": "2005-01-27",
+       "nationality": "Slovenia"
+      }
+     ]
+    },
+    "ND Dravinja Kostroj": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Matic Skrbinsek",
+       "shirt": "23",
+       "position": "Goalkeeper",
+       "age": 28,
+       "dob": "1998-02-22",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Grega Kusar",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 23,
+       "dob": "2003-07-06",
+       "nationality": "Slovenia",
+       "height_cm": 204
+      },
+      {
+       "name": "Luka Privosnik",
+       "shirt": "21",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-03-26",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Benjamin Brglez",
+       "shirt": "47",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-08-12",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Blaz Kolar",
+       "position": "Centre-Back",
+       "age": 24,
+       "dob": "2001-12-14",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Enej Herman",
+       "shirt": "19",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-01-31",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Aljaz Vodopivec",
+       "shirt": "7",
+       "position": "Left-Back",
+       "age": 20,
+       "dob": "2006-08-08",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Denis Vezjak",
+       "shirt": "42",
+       "position": "Left-Back",
+       "age": 31,
+       "dob": "1995-09-26",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Tjas Cresnar",
+       "shirt": "17",
+       "position": "Left-Back",
+       "age": 20,
+       "dob": "2006-05-24",
+       "nationality": "Slovenia",
+       "height_cm": 188
+      },
+      {
+       "name": "Lovro Turinek",
+       "shirt": "15",
+       "position": "Right-Back",
+       "age": 21,
+       "dob": "2005-02-14",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tevz Debelak",
+       "shirt": "32",
+       "position": "Right-Back",
+       "age": 24,
+       "dob": "2002-09-23",
+       "nationality": "Slovenia",
+       "height_cm": 178
+      },
+      {
+       "name": "Nik Rauter",
+       "shirt": "20",
+       "position": "Right-Back",
+       "age": 24,
+       "dob": "2002-03-08",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Jakob Tic",
+       "shirt": "5",
+       "position": "Right-Back",
+       "age": 27,
+       "dob": "1998-11-30",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Alen Crnolic",
+       "shirt": "6",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-02-28",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Gasper Recnik",
+       "shirt": "98",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tian Pecic",
+       "shirt": "99",
+       "position": "Central Midfield",
+       "age": 17,
+       "dob": "2008-12-08",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Zan Luka Zuzek",
+       "shirt": "8",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-02-21",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Maj Skoflek",
+       "shirt": "80",
+       "position": "Central Midfield",
+       "age": 22,
+       "dob": "2004-02-11",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Andraz Kolar",
+       "shirt": "77",
+       "position": "Central Midfield",
+       "age": 29,
+       "dob": "1997-01-17",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Matic Kopac",
+       "shirt": "10",
+       "position": "Attacking Midfield",
+       "age": 27,
+       "dob": "1998-11-23",
+       "nationality": "Slovenia",
+       "height_cm": 167
+      },
+      {
+       "name": "Niko Zamuda",
+       "shirt": "14",
+       "position": "Left Winger",
+       "age": 21,
+       "dob": "2005-07-22",
+       "nationality": "Slovenia",
+       "height_cm": 181
+      },
+      {
+       "name": "Blaz Rozmaric",
+       "shirt": "11",
+       "position": "Right Winger",
+       "age": 29,
+       "dob": "1997-07-24",
+       "nationality": "Slovenia",
+       "height_cm": 188
+      },
+      {
+       "name": "Mateo Koprivc",
+       "shirt": "16",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2003-12-17",
+       "nationality": "Slovenia",
+       "height_cm": 181
+      },
+      {
+       "name": "Luka Pucnik",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 21,
+       "dob": "2005-03-09",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Uros Mrdakovic",
+       "shirt": "4",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-09-11",
+       "nationality": "Serbia",
+       "height_cm": 189
+      },
+      {
+       "name": "Nikola Kljevkovic",
+       "shirt": "26",
+       "position": "Centre-Forward",
+       "age": 18,
+       "dob": "2008-02-11",
+       "nationality": "Slovenia"
+      }
+     ]
+    },
+    "NK Krsko": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Marko Zalokar",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 36,
+       "dob": "1990-06-18",
+       "nationality": "Slovenia",
+       "height_cm": 190
+      },
+      {
+       "name": "Tiijan Zorko",
+       "shirt": "12",
+       "position": "Goalkeeper",
+       "age": 19,
+       "dob": "2007-03-07",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Gabriel Bacan",
+       "shirt": "2",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-06-30",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Tomaz Zakrajsek",
+       "shirt": "23",
+       "position": "Centre-Back",
+       "age": 26,
+       "dob": "2000-03-24",
+       "nationality": "Slovenia",
+       "height_cm": 188
+      },
+      {
+       "name": "Aleksa Djurasovic",
+       "shirt": "26",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-04-21",
+       "nationality": "Bosnia-Herzegovina/Serbia",
+       "height_cm": 195,
+       "tm_id": 636601,
+       "foot": "left",
+       "market_value_eur": 1500000
+      },
+      {
+       "name": "Josip Zuljevic",
+       "shirt": "25",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2003-11-20",
+       "nationality": "Croatia",
+       "height_cm": 190
+      },
+      {
+       "name": "Archange Rothen Bambi",
+       "shirt": "3",
+       "position": "Left-Back",
+       "age": 21,
+       "dob": "2005-10-29",
+       "nationality": "France"
+      },
+      {
+       "name": "Blaz Stopar",
+       "shirt": "4",
+       "position": "Right-Back",
+       "age": 24,
+       "dob": "2002-09-27",
+       "nationality": "Slovenia",
+       "height_cm": 170
+      },
+      {
+       "name": "Primoz Vidmar",
+       "shirt": "16",
+       "position": "Right-Back",
+       "age": 26,
+       "dob": "2000-03-06",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Lan Milanovic",
+       "shirt": "24",
+       "position": "Defensive Midfield",
+       "age": 21,
+       "dob": "2005-02-13",
+       "nationality": "Slovenia",
+       "height_cm": 192
+      },
+      {
+       "name": "Aljaz Ajdisek",
+       "shirt": "21",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-05-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tian Mitic",
+       "shirt": "6",
+       "position": "Defensive Midfield",
+       "age": 20,
+       "dob": "2006-06-10",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Nik Stanic",
+       "shirt": "19",
+       "position": "Central Midfield",
+       "age": 22,
+       "dob": "2004-09-19",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Jakob Zbasnik",
+       "shirt": "14",
+       "position": "Central Midfield",
+       "age": 22,
+       "dob": "2004-07-14",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Simun Sintic",
+       "shirt": "13",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2005-07-19",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Nik Pirc",
+       "shirt": "10",
+       "position": "Attacking Midfield",
+       "age": 20,
+       "dob": "2006-08-29",
+       "nationality": "Slovenia",
+       "height_cm": 182
+      },
+      {
+       "name": "Matic Kustrin",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 24,
+       "dob": "2002-03-29",
+       "nationality": "Slovenia",
+       "height_cm": 178
+      },
+      {
+       "name": "Jure Judez",
+       "shirt": "8",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-04-24",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Fran Stunja",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-05-16",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Petar Srsen",
+       "shirt": "11",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-07-31",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Ismir Nadarevic",
+       "shirt": "17",
+       "position": "Centre-Forward",
+       "age": 23,
+       "dob": "2003-08-29",
+       "nationality": "Bosnia-Herzegovina",
+       "height_cm": 185
+      }
+     ]
+    },
+    "NK Fuzinar": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Miha Linasi Jeromel",
+       "shirt": "13",
+       "position": "Goalkeeper",
+       "age": 20,
+       "dob": "2006-05-18",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Kristjan Irmancnik",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-11-01",
+       "nationality": "Slovenia",
+       "height_cm": 190
+      },
+      {
+       "name": "Denis Klinar",
+       "shirt": "6",
+       "position": "Centre-Back",
+       "age": 34,
+       "dob": "1992-02-21",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Andraz Paradiz",
+       "shirt": "16",
+       "position": "Centre-Back",
+       "age": 27,
+       "dob": "1999-02-06",
+       "nationality": "Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Leander Mark Zelenko",
+       "shirt": "44",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-10-23",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Martin Hovnik",
+       "shirt": "18",
+       "position": "Left-Back",
+       "age": 22,
+       "dob": "2004-03-12",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Lovro Potocnik",
+       "shirt": "22",
+       "position": "Left-Back",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Matevz Turkus",
+       "shirt": "23",
+       "position": "Right-Back",
+       "age": 27,
+       "dob": "1999-05-15",
+       "nationality": "Slovenia",
+       "height_cm": 179
+      },
+      {
+       "name": "Jaka Vidmar",
+       "shirt": "14",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-07-12",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Gasper Pumpas",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ziga Skrube",
+       "shirt": "5",
+       "position": "Defensive Midfield",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Leon Pliso",
+       "shirt": "9",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-02-07",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Jaka Krevh",
+       "shirt": "21",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2005-02-16",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Amas Omic",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-11-08",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Anej Rizmal",
+       "shirt": "8",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-07-09",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Noel Stajnko Knez",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Samuel Bravo",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Chile"
+      },
+      {
+       "name": "Tjas Svitlica",
+       "shirt": "20",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-03-21",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Damjan Vukolic",
+       "shirt": "10",
+       "position": "Left Winger",
+       "age": 21,
+       "dob": "2005-02-04",
+       "nationality": "Slovenia",
+       "height_cm": 181
+      },
+      {
+       "name": "Ardit Vezaj",
+       "shirt": "11",
+       "position": "Left Winger",
+       "age": 25,
+       "dob": "2001-04-02",
+       "nationality": "Slovenia",
+       "height_cm": 179
+      },
+      {
+       "name": "Luka Mlakar",
+       "position": "Right Winger",
+       "age": 21,
+       "dob": "2005-05-24",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Andraz Turinek",
+       "shirt": "77",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-04-30",
+       "nationality": "Slovenia"
+      }
+     ]
+    },
+    "ND Ilirija 1911": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Alen Abdic",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 16,
+       "dob": "2010-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Gasper Petek",
+       "shirt": "13",
+       "position": "Centre-Back",
+       "age": 24,
+       "dob": "2002-07-03",
+       "nationality": "Slovenia",
+       "height_cm": 190
+      },
+      {
+       "name": "Lukas Hempt",
+       "shirt": "14",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-09-10",
+       "nationality": "Slovenia",
+       "height_cm": 193
+      },
+      {
+       "name": "Gabriel Pevc Carrera",
+       "shirt": "2",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-05-23",
+       "nationality": "Bosnia-Herzegovina"
+      },
+      {
+       "name": "Jan Nikolic",
+       "shirt": "13",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-02-23",
+       "nationality": "Slovenia/Bosnia-Herzegovina"
+      },
+      {
+       "name": "Alen Korosec",
+       "shirt": "4",
+       "position": "Left-Back",
+       "age": 21,
+       "dob": "2005-11-17",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Blaz Komic",
+       "position": "Left-Back",
+       "age": 19,
+       "dob": "2007-03-13",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Lan Hribar",
+       "shirt": "6",
+       "position": "Right-Back",
+       "age": 21,
+       "dob": "2005-07-24",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ajdin Dergic",
+       "shirt": "16",
+       "position": "Right-Back",
+       "age": 24,
+       "dob": "2002-07-11",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ales Stornik",
+       "position": "Right-Back",
+       "age": 24,
+       "dob": "2002-10-23",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Modou Jammeh",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "The Gambia"
+      },
+      {
+       "name": "Ahmed Teaima",
+       "shirt": "15",
+       "position": "Defensive Midfield",
+       "age": 23,
+       "dob": "2003-05-10",
+       "nationality": "Egypt/Greece",
+       "height_cm": 188
+      },
+      {
+       "name": "Noah Pušić",
+       "shirt": "3",
+       "position": "Central Midfield",
+       "age": 22,
+       "dob": "2004-09-20",
+       "nationality": "Netherlands/Croatia",
+       "height_cm": 189
+      },
+      {
+       "name": "Ladji Mori Kane",
+       "shirt": "8",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2005-11-05",
+       "nationality": "Italy/Cote d'Ivoire",
+       "height_cm": 179
+      },
+      {
+       "name": "Mark Antonij Intihar",
+       "shirt": "20",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-01-12",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Cabral",
+       "shirt": "23",
+       "position": "Central Midfield",
+       "age": 24,
+       "dob": "2002-10-14",
+       "nationality": "Portugal",
+       "height_cm": 180
+      },
+      {
+       "name": "Črt Rotar",
+       "shirt": "5",
+       "position": "Attacking Midfield",
+       "age": 22,
+       "dob": "2004-01-14",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Kobi Bajc",
+       "shirt": "22",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-06-07",
+       "nationality": "Slovenia/Ghana"
+      },
+      {
+       "name": "Nik Belovic",
+       "shirt": "25",
+       "position": "Attacking Midfield",
+       "age": 18,
+       "dob": "2008-07-09",
+       "nationality": "Slovenia",
+       "height_cm": 179
+      },
+      {
+       "name": "Niko Grlic",
+       "shirt": "10",
+       "position": "Left Winger",
+       "age": 20,
+       "dob": "2006-08-17",
+       "nationality": "Slovenia",
+       "height_cm": 182
+      },
+      {
+       "name": "Denis Videnovic",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 18,
+       "dob": "2008-05-15",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Alen Muminovic",
+       "position": "Left Winger",
+       "age": 19,
+       "dob": "2007-09-04",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Nick Perc",
+       "shirt": "17",
+       "position": "Right Winger",
+       "age": 23,
+       "dob": "2003-05-27",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Tine Cuk",
+       "shirt": "11",
+       "position": "Right Winger",
+       "age": 21,
+       "dob": "2005-02-15",
+       "nationality": "Slovenia",
+       "height_cm": 182
+      },
+      {
+       "name": "Nik Podlesnik",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-03-15",
+       "nationality": "Slovenia",
+       "height_cm": 186
+      },
+      {
+       "name": "Darian Yana",
+       "shirt": "26",
+       "position": "Centre-Forward",
+       "age": 23,
+       "dob": "2003-10-04",
+       "nationality": "Switzerland",
+       "height_cm": 192
+      },
+      {
+       "name": "Ali Shawky",
+       "shirt": "21",
+       "position": "Centre-Forward",
+       "age": 23,
+       "dob": "2003-07-17",
+       "nationality": "Egypt"
+      },
+      {
+       "name": "Lukas Dikic",
+       "shirt": "19",
+       "position": "Centre-Forward",
+       "age": 18,
+       "dob": "2008-05-18",
+       "nationality": "Canada/Croatia",
+       "height_cm": 195
+      }
+     ]
+    },
+    "NK Tabor Sezana": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Dennis Zeriali",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 22,
+       "dob": "2004-07-23",
+       "nationality": "Italy/Slovenia",
+       "height_cm": 189
+      },
+      {
+       "name": "Urban Trobec",
+       "shirt": "12",
+       "position": "Goalkeeper",
+       "age": 21,
+       "dob": "2005-02-01",
+       "nationality": "Slovenia",
+       "height_cm": 197
+      },
+      {
+       "name": "Anel Zulić",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-11-07",
+       "nationality": "Slovenia/Bosnia-Herzegovina",
+       "height_cm": 192,
+       "tm_id": 935640,
+       "foot": "left",
+       "market_value_eur": 150000
+      },
+      {
+       "name": "Mihael Briski",
+       "shirt": "23",
+       "position": "Centre-Back",
+       "age": 27,
+       "dob": "1999-01-02",
+       "nationality": "Croatia",
+       "height_cm": 178
+      },
+      {
+       "name": "Rok Ljutic",
+       "shirt": "3",
+       "position": "Centre-Back",
+       "age": 23,
+       "dob": "2003-07-20",
+       "nationality": "Slovenia",
+       "height_cm": 195
+      },
+      {
+       "name": "Gaber Dobrovoljc",
+       "shirt": "18",
+       "position": "Centre-Back",
+       "age": 33,
+       "dob": "1993-01-27",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Luka Tomsic",
+       "shirt": "47",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-03-23",
+       "nationality": "Slovenia",
+       "height_cm": 181
+      },
+      {
+       "name": "Matevz Medic Slacek",
+       "shirt": "27",
+       "position": "Left-Back",
+       "age": 22,
+       "dob": "2004-08-27",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Antonio Majcenic",
+       "shirt": "17",
+       "position": "Left-Back",
+       "age": 27,
+       "dob": "1999-01-22",
+       "nationality": "Croatia",
+       "height_cm": 177
+      },
+      {
+       "name": "Jan Krajnc",
+       "shirt": "20",
+       "position": "Right-Back",
+       "age": 20,
+       "dob": "2006-06-14",
+       "nationality": "Slovenia",
+       "height_cm": 176
+      },
+      {
+       "name": "Stanislav Petkov",
+       "shirt": "21",
+       "position": "Defensive Midfield",
+       "age": 22,
+       "dob": "2004-06-10",
+       "nationality": "Bulgaria",
+       "height_cm": 175
+      },
+      {
+       "name": "Josip Marinic",
+       "shirt": "24",
+       "position": "Defensive Midfield",
+       "age": 26,
+       "dob": "2000-10-29",
+       "nationality": "Croatia",
+       "height_cm": 181
+      },
+      {
+       "name": "Tevz Pokorn",
+       "shirt": "76",
+       "position": "Defensive Midfield",
+       "age": 26,
+       "dob": "2000-06-16",
+       "nationality": "Slovenia",
+       "height_cm": 170
+      },
+      {
+       "name": "Tomislav Ladan",
+       "shirt": "14",
+       "position": "Defensive Midfield",
+       "age": 20,
+       "dob": "2006-04-26",
+       "nationality": "Croatia",
+       "height_cm": 179
+      },
+      {
+       "name": "Tarik Candic",
+       "shirt": "5",
+       "position": "Central Midfield",
+       "age": 24,
+       "dob": "2002-07-26",
+       "nationality": "Bosnia-Herzegovina/Slovenia",
+       "height_cm": 189
+      },
+      {
+       "name": "Luka Zavbi",
+       "shirt": "6",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-01-20",
+       "nationality": "Slovenia",
+       "height_cm": 179
+      },
+      {
+       "name": "Josip Spoljaric",
+       "shirt": "10",
+       "position": "Attacking Midfield",
+       "age": 29,
+       "dob": "1997-01-05",
+       "nationality": "Croatia",
+       "height_cm": 184,
+       "tm_id": 293196,
+       "foot": "right",
+       "market_value_eur": 150000
+      },
+      {
+       "name": "Luka Baruca",
+       "shirt": "97",
+       "position": "Attacking Midfield",
+       "age": 23,
+       "dob": "2003-01-09",
+       "nationality": "Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Genesis Odiya Ocen",
+       "shirt": "8",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-10-05",
+       "nationality": "Uganda",
+       "height_cm": 179
+      },
+      {
+       "name": "Jaros Cadez",
+       "shirt": "19",
+       "position": "Right Winger",
+       "age": 23,
+       "dob": "2003-02-22",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Ben Osman",
+       "shirt": "7",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-01-20",
+       "nationality": "Ghana"
       },
       {
        "name": "Stanislav Krapukhin",
+       "shirt": "9",
        "position": "Centre-Forward",
-       "shirt": null,
-       "nat_code": "RUS",
-       "tm_id": 397030,
+       "age": 28,
        "dob": "1998-03-28",
-       "height_cm": 191,
-       "foot": "right",
        "nationality": "Russia",
+       "height_cm": 191,
+       "tm_id": 397030,
+       "foot": "right",
        "market_value_eur": 225000
+      },
+      {
+       "name": "Luka Mlakar",
+       "shirt": "11",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-04-27",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      }
+     ]
+    },
+    "ND Beltinci": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Stefan Mocic",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 25,
+       "dob": "2001-07-03",
+       "nationality": "Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Vid Sumenjak",
+       "shirt": "28",
+       "position": "Goalkeeper",
+       "age": 21,
+       "dob": "2005-02-26",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Patrik Legen",
+       "shirt": "25",
+       "position": "Goalkeeper",
+       "age": 20,
+       "dob": "2006-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Luka Hunjet",
+       "shirt": "15",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-07-02",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Alan Kaucic",
+       "shirt": "47",
+       "position": "Centre-Back",
+       "age": 25,
+       "dob": "2001-08-11",
+       "nationality": "Slovenia",
+       "height_cm": 188
+      },
+      {
+       "name": "Tian Rantasa",
+       "shirt": "27",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2004-12-25",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Nejc Vöröš",
+       "shirt": "3",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-05-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tilen Scernjavic",
+       "shirt": "22",
+       "position": "Left-Back",
+       "age": 23,
+       "dob": "2003-09-20",
+       "nationality": "Slovenia",
+       "height_cm": 175
+      },
+      {
+       "name": "Niko Graj",
+       "shirt": "66",
+       "position": "Left-Back",
+       "age": 21,
+       "dob": "2005-08-16",
+       "nationality": "Slovenia",
+       "height_cm": 182
+      },
+      {
+       "name": "Marin Rantasa",
+       "shirt": "88",
+       "position": "Right-Back",
+       "age": 24,
+       "dob": "2002-03-22",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Mihailo Zobenica",
+       "shirt": "29",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-09-29",
+       "nationality": "Croatia/Canada"
+      },
+      {
+       "name": "Luka Socic",
+       "shirt": "23",
+       "position": "Defensive Midfield",
+       "age": 26,
+       "dob": "2000-10-12",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Dominik Drk",
+       "shirt": "41",
+       "position": "Defensive Midfield",
+       "age": 26,
+       "dob": "2000-08-22",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Jure Borsic",
+       "shirt": "44",
+       "position": "Central Midfield",
+       "age": 18,
+       "dob": "2007-12-06",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Anej Mihajlovic",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Aljaz Antolin",
+       "shirt": "16",
+       "position": "Attacking Midfield",
+       "age": 24,
+       "dob": "2002-08-02",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Nejc Mocnik",
+       "shirt": "10",
+       "position": "Attacking Midfield",
+       "age": 23,
+       "dob": "2003-03-16",
+       "nationality": "Slovenia",
+       "height_cm": 181
+      },
+      {
+       "name": "Anej Jelovica",
+       "shirt": "34",
+       "position": "Left Winger",
+       "age": 21,
+       "dob": "2005-03-16",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Vid Stefanec",
+       "shirt": "17",
+       "position": "Left Winger",
+       "age": 21,
+       "dob": "2005-07-11",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Samod Adeola Akinremi",
+       "shirt": "7",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-05-10",
+       "nationality": "Nigeria"
+      },
+      {
+       "name": "Lukas Ceh",
+       "shirt": "99",
+       "position": "Right Winger",
+       "age": 19,
+       "dob": "2007-06-07",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Klemen Mlakar",
+       "shirt": "97",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-02-20",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Golden Okocha Gibson",
+       "shirt": "20",
+       "position": "Centre-Forward",
+       "age": 24,
+       "dob": "2001-12-12",
+       "nationality": "Nigeria",
+       "height_cm": 187
+      }
+     ]
+    },
+    "NK Triglav Kranj": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Ajdin Mulalic",
+       "shirt": "84",
+       "position": "Goalkeeper",
+       "age": 32,
+       "dob": "1994-09-13",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Timon Popelar",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 23,
+       "dob": "2003-10-06",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "David Brkljac",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-04-12",
+       "nationality": "Bosnia-Herzegovina"
+      },
+      {
+       "name": "Stefan Radosavljevic",
+       "shirt": "18",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-10-12",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Marin Magdic",
+       "shirt": "29",
+       "position": "Centre-Back",
+       "age": 27,
+       "dob": "1999-04-13",
+       "nationality": "Croatia/Bosnia-Herzegovina"
+      },
+      {
+       "name": "Nace Cencic",
+       "shirt": "87",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-05-06",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tin Kupresak",
+       "shirt": "23",
+       "position": "Left-Back",
+       "age": 23,
+       "dob": "2003-07-26",
+       "nationality": "Croatia",
+       "height_cm": 180
+      },
+      {
+       "name": "Lan Jerak",
+       "shirt": "77",
+       "position": "Left-Back",
+       "age": 22,
+       "dob": "2003-12-04",
+       "nationality": "Slovenia",
+       "height_cm": 174
+      },
+      {
+       "name": "Tilen Klemencic",
+       "shirt": "4",
+       "position": "Right-Back",
+       "age": 31,
+       "dob": "1995-08-21",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Anej Doric",
+       "shirt": "2",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-02-02",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Jakub Supuk",
+       "shirt": "66",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Edvin Lukacevic",
+       "shirt": "58",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2005-07-12",
+       "nationality": "Bosnia-Herzegovina"
+      },
+      {
+       "name": "Zan Kovacevic",
+       "shirt": "66",
+       "position": "Defensive Midfield",
+       "age": 20,
+       "dob": "2006-01-30",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Jakup Supuk",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-01-18",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Liam Strnad",
+       "shirt": "3",
+       "position": "Defensive Midfield",
+       "age": 20,
+       "dob": "2006-04-04",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tim Istenic",
+       "shirt": "85",
+       "position": "Defensive Midfield",
+       "age": 19,
+       "dob": "2007-05-29",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Luka Dovzan Karahodzic",
+       "shirt": "17",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-04-19",
+       "nationality": "Slovenia",
+       "height_cm": 188
+      },
+      {
+       "name": "Zan Zabkar",
+       "shirt": "80",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2005-03-30",
+       "nationality": "Slovenia",
+       "height_cm": 171
+      },
+      {
+       "name": "Gregor Medle",
+       "shirt": "8",
+       "position": "Central Midfield",
+       "age": 22,
+       "dob": "2004-06-28",
+       "nationality": "Slovenia",
+       "height_cm": 189
+      },
+      {
+       "name": "Nermin Hodzic",
+       "shirt": "10",
+       "position": "Central Midfield",
+       "age": 32,
+       "dob": "1994-07-13",
+       "nationality": "Bosnia-Herzegovina",
+       "height_cm": 179
+      },
+      {
+       "name": "Lucas Macak",
+       "shirt": "21",
+       "position": "Attacking Midfield",
+       "age": 21,
+       "dob": "2005-01-26",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Blaz Jemec",
+       "shirt": "76",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-05-06",
+       "nationality": "Slovenia",
+       "height_cm": 173
+      },
+      {
+       "name": "Niki Radovic",
+       "shirt": "7",
+       "position": "Left Winger",
+       "age": 22,
+       "dob": "2004-04-11",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Bor Bergant",
+       "shirt": "99",
+       "position": "Left Winger",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tihomir Maksimovic",
+       "shirt": "42",
+       "position": "Right Winger",
+       "age": 22,
+       "dob": "2004-03-24",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Anej Lorbek",
+       "shirt": "11",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-08-17",
+       "nationality": "Slovenia",
+       "height_cm": 175
+      },
+      {
+       "name": "Bujazid Hegic",
+       "shirt": "22",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-03-25",
+       "nationality": "Netherlands/Bosnia-Herzegovina",
+       "height_cm": 195
+      },
+      {
+       "name": "Zvonimir Plavcic",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-09-01",
+       "nationality": "Bosnia-Herzegovina",
+       "height_cm": 190
+      },
+      {
+       "name": "Matej Poplatnik",
+       "shirt": "15",
+       "position": "Centre-Forward",
+       "age": 34,
+       "dob": "1992-07-15",
+       "nationality": "Slovenia",
+       "tm_id": 235360,
+       "height_cm": 178,
+       "foot": "right",
+       "market_value_eur": 175000
+      }
+     ]
+    },
+    "ND Bilje": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Filip Panic",
+       "shirt": "13",
+       "position": "Goalkeeper",
+       "age": 18,
+       "dob": "2008-01-12",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Borna Bosnjak",
+       "shirt": "67",
+       "position": "Goalkeeper",
+       "age": 21,
+       "dob": "2005-03-03",
+       "nationality": "Croatia",
+       "height_cm": 190
+      },
+      {
+       "name": "Marko Furlan",
+       "shirt": "4",
+       "position": "Centre-Back",
+       "age": 22,
+       "dob": "2004-08-09",
+       "nationality": "Slovenia",
+       "height_cm": 188
+      },
+      {
+       "name": "Alexander Stozinic",
+       "shirt": "24",
+       "position": "Centre-Back",
+       "age": 27,
+       "dob": "1999-10-27",
+       "nationality": "Slovenia",
+       "height_cm": 189
+      },
+      {
+       "name": "Tilen Colja",
+       "shirt": "27",
+       "position": "Centre-Back",
+       "age": 18,
+       "dob": "2008-04-19",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Djordje Simic",
+       "shirt": "5",
+       "position": "Centre-Back",
+       "age": 31,
+       "dob": "1995-02-13",
+       "nationality": "Serbia/Bosnia-Herzegovina",
+       "height_cm": 186
+      },
+      {
+       "name": "Tine Kavcic",
+       "shirt": "23",
+       "position": "Centre-Back",
+       "age": 32,
+       "dob": "1994-02-16",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Vid Koder",
+       "shirt": "42",
+       "position": "Centre-Back",
+       "age": 18,
+       "dob": "2008-05-11",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Lev Stekar",
+       "shirt": "3",
+       "position": "Left-Back",
+       "age": 20,
+       "dob": "2006-02-25",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Mirko Mutavcic",
+       "shirt": "2",
+       "position": "Right-Back",
+       "age": 25,
+       "dob": "2001-01-29",
+       "nationality": "Slovenia",
+       "height_cm": 176
+      },
+      {
+       "name": "Rene Kogoi",
+       "shirt": "22",
+       "position": "Right-Back",
+       "age": 25,
+       "dob": "2001-08-16",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Alex Borjancic",
+       "shirt": "97",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-10-05",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Sven Blecic",
+       "shirt": "6",
+       "position": "Defensive Midfield",
+       "age": 20,
+       "dob": "2006-03-06",
+       "nationality": "Croatia",
+       "height_cm": 183
+      },
+      {
+       "name": "Svit Blasko",
+       "shirt": "16",
+       "position": "Defensive Midfield",
+       "age": 18,
+       "dob": "2008-01-28",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ivo Janakievski",
+       "shirt": "14",
+       "position": "Defensive Midfield",
+       "age": 33,
+       "dob": "1993-06-09",
+       "nationality": "North Macedonia/Bulgaria",
+       "height_cm": 178
+      },
+      {
+       "name": "Romeo Bric",
+       "shirt": "70",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-07-13",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Luka Spacapan",
+       "shirt": "73",
+       "position": "Central Midfield",
+       "age": 18,
+       "dob": "2008-06-19",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Leon Marinic",
+       "shirt": "30",
+       "position": "Attacking Midfield",
+       "age": 28,
+       "dob": "1997-11-21",
+       "nationality": "Slovenia",
+       "height_cm": 183
+      },
+      {
+       "name": "Kalani Almeida",
+       "shirt": "21",
+       "position": "Left Winger",
+       "age": 24,
+       "dob": "2002-02-04",
+       "nationality": "Brazil/Portugal",
+       "height_cm": 177,
+       "tm_id": 815651,
+       "foot": "right",
+       "market_value_eur": 25000
+      },
+      {
+       "name": "Martin Ascic Pijaza",
+       "shirt": "17",
+       "position": "Left Winger",
+       "age": 21,
+       "dob": "2004-12-06",
+       "nationality": "Slovenia",
+       "height_cm": 175
+      },
+      {
+       "name": "Kristjan Kozar",
+       "shirt": "19",
+       "position": "Centre-Forward",
+       "age": 18,
+       "dob": "2008-06-13",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Bissenty Ambroise Mendy",
+       "shirt": "7",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-01-03",
+       "nationality": "Senegal"
+      },
+      {
+       "name": "Gideon Effiong Ukpong",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Nigeria"
+      }
+     ]
+    },
+    "NK Kety Emmi Bistrica": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Primoz Fridrih",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 22,
+       "dob": "2004-05-09",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Eldar Taghizada",
+       "shirt": "12",
+       "position": "Goalkeeper",
+       "age": 23,
+       "dob": "2003-05-30",
+       "nationality": "Azerbaijan",
+       "height_cm": 191
+      },
+      {
+       "name": "Luka Kramberger",
+       "shirt": "13",
+       "position": "Goalkeeper",
+       "age": 17,
+       "dob": "2009-11-11",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Leo Jusic",
+       "shirt": "5",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-04-27",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tin Martic",
+       "shirt": "23",
+       "position": "Centre-Back",
+       "age": 30,
+       "dob": "1996-03-27",
+       "nationality": "Croatia",
+       "height_cm": 186
+      },
+      {
+       "name": "Aleks Korosec",
+       "shirt": "88",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Klevis Haxhari",
+       "shirt": "33",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-05-01",
+       "nationality": "Albania/United States"
+      },
+      {
+       "name": "Sen Dzumhur",
+       "shirt": "3",
+       "position": "Left-Back",
+       "age": 21,
+       "dob": "2005-10-26",
+       "nationality": "Slovenia",
+       "height_cm": 178
+      },
+      {
+       "name": "Stijan Gobec",
+       "shirt": "21",
+       "position": "Right-Back",
+       "age": 17,
+       "dob": "2008-12-18",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Mark Kerin",
+       "shirt": "66",
+       "position": "Defensive Midfield",
+       "age": 19,
+       "dob": "2007-06-06",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Vid Tramsek",
+       "shirt": "9",
+       "position": "Central Midfield",
+       "age": 18,
+       "dob": "2008-05-14",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tit Vezovisek",
+       "shirt": "30",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-02-09",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Ermal Memaj",
+       "shirt": "33",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-05-12",
+       "nationality": "Kosovo/Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Lan Mesaric",
+       "shirt": "55",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-08-11",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Miha Sitar",
+       "shirt": "24",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2004-12-04",
+       "nationality": "Slovenia",
+       "height_cm": 178
+      },
+      {
+       "name": "Bruno Putica",
+       "shirt": "20",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-07-27",
+       "nationality": "Croatia",
+       "height_cm": 181
+      },
+      {
+       "name": "Aleks Repina",
+       "shirt": "47",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-01-16",
+       "nationality": "Slovenia",
+       "height_cm": 188
+      },
+      {
+       "name": "Vicko Ozegovic",
+       "shirt": "22",
+       "position": "Attacking Midfield",
+       "age": 24,
+       "dob": "2002-08-17",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Domagoj Vidovic",
+       "shirt": "8",
+       "position": "Attacking Midfield",
+       "age": 21,
+       "dob": "2005-07-05",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Patrik Katic",
+       "shirt": "7",
+       "position": "Attacking Midfield",
+       "age": 21,
+       "dob": "2005-04-05",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Domen Brumec",
+       "shirt": "15",
+       "position": "Right Winger",
+       "age": 21,
+       "dob": "2005-02-23",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Marcel Cernivsek",
+       "shirt": "78",
+       "position": "Right Winger",
+       "age": 19,
+       "dob": "2007-05-14",
+       "nationality": "Slovenia",
+       "height_cm": 175
+      },
+      {
+       "name": "Maro Vrdoljak",
+       "shirt": "11",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-05-02",
+       "nationality": "Croatia",
+       "height_cm": 189
+      },
+      {
+       "name": "Lazar Ikac",
+       "shirt": "10",
+       "position": "Centre-Forward",
+       "age": 23,
+       "dob": "2003-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Aleksander Juvan",
+       "shirt": "16",
+       "position": "Centre-Forward",
+       "age": 18,
+       "dob": "2008-04-05",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Rok Kidric",
+       "shirt": "77",
+       "position": "Centre-Forward",
+       "age": 31,
+       "dob": "1995-04-27",
+       "nationality": "Slovenia",
+       "height_cm": 194,
+       "tm_id": 316467,
+       "foot": "left"
+      }
+     ]
+    },
+    "ND Slovan Ljubljana": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Som Kumar",
+       "shirt": "1",
+       "position": "Goalkeeper",
+       "age": 21,
+       "dob": "2005-02-27",
+       "nationality": "India",
+       "height_cm": 191
+      },
+      {
+       "name": "Deen Dekleva",
+       "shirt": "16",
+       "position": "Goalkeeper",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Leonardo Adrovic",
+       "shirt": "6",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-02-23",
+       "nationality": "Slovenia",
+       "height_cm": 192
+      },
+      {
+       "name": "Lev Bohinc",
+       "shirt": "24",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-06-08",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Andraz Miklic",
+       "shirt": "3",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-02-16",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Mark Stojinovic",
+       "shirt": "25",
+       "position": "Centre-Back",
+       "age": 21,
+       "dob": "2005-05-18",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Sragvin Machihally Venkatesh",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-01-01",
+       "nationality": "India"
+      },
+      {
+       "name": "Svit Oblak",
+       "shirt": "23",
+       "position": "Left-Back",
+       "age": 19,
+       "dob": "2007-06-29",
+       "nationality": "Slovenia",
+       "height_cm": 178
+      },
+      {
+       "name": "Tilen Mlakar",
+       "shirt": "17",
+       "position": "Left-Back",
+       "age": 31,
+       "dob": "1995-04-26",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Aldin Sakanovic",
+       "shirt": "2",
+       "position": "Left-Back",
+       "age": 19,
+       "dob": "2007-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tej Benedicic Bizjak",
+       "shirt": "18",
+       "position": "Right-Back",
+       "age": 20,
+       "dob": "2006-06-14",
+       "nationality": "Slovenia",
+       "height_cm": 187
+      },
+      {
+       "name": "Tim Matanovic",
+       "shirt": "27",
+       "position": "Right-Back",
+       "age": 20,
+       "dob": "2005-12-08",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Evan Avsenek",
+       "shirt": "21",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-09-11",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Hanan Durakovic",
+       "shirt": "5",
+       "position": "Defensive Midfield",
+       "age": 21,
+       "dob": "2005-04-16",
+       "nationality": "Bosnia-Herzegovina",
+       "height_cm": 184
+      },
+      {
+       "name": "David Zinko",
+       "shirt": "22",
+       "position": "Defensive Midfield",
+       "age": 19,
+       "dob": "2007-10-16",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Matej Crnugelj",
+       "shirt": "4",
+       "position": "Central Midfield",
+       "age": 19,
+       "dob": "2007-05-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Luca Swinton",
+       "shirt": "20",
+       "position": "Defensive Midfield",
+       "age": 23,
+       "dob": "2003-05-28",
+       "nationality": "Italy/Scotland",
+       "height_cm": 184
+      },
+      {
+       "name": "Matevz Vrabec",
+       "shirt": "7",
+       "position": "Central Midfield",
+       "age": 20,
+       "dob": "2006-10-17",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Aboubakar Sidiki Drame",
+       "shirt": "14",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2005-01-01",
+       "nationality": "Nigeria"
+      },
+      {
+       "name": "Joce Siber",
+       "shirt": "15",
+       "position": "Central Midfield",
+       "age": 26,
+       "dob": "2000-10-07",
+       "nationality": "France"
+      },
+      {
+       "name": "Tian Kujovic",
+       "shirt": "10",
+       "position": "Left Winger",
+       "age": 21,
+       "dob": "2005-03-03",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Jon Kancilija",
+       "shirt": "11",
+       "position": "Left Winger",
+       "age": 18,
+       "dob": "2007-12-20",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Martin Magister",
+       "shirt": "30",
+       "position": "Right Winger",
+       "age": 23,
+       "dob": "2003-09-03",
+       "nationality": "Slovenia/Argentina"
+      },
+      {
+       "name": "Denis Leban",
+       "shirt": "13",
+       "position": "Right Winger",
+       "age": 22,
+       "dob": "2004-02-17",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Jakob Raspet",
+       "shirt": "26",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-08-05",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Danijel Dzajic",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 22,
+       "dob": "2004-07-15",
+       "nationality": "Slovenia",
+       "height_cm": 185
+      },
+      {
+       "name": "Eso Hankusic",
+       "shirt": "19",
+       "position": "Centre-Forward",
+       "age": 18,
+       "dob": "2008-10-13",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Denis Hamulic",
+       "shirt": "99",
+       "position": "Centre-Forward",
+       "age": 20,
+       "dob": "2006-07-10",
+       "nationality": "Slovenia"
+      }
+     ]
+    },
+    "NK Rudar Velenje": {
+     "source": "user",
+     "players": [
+      {
+       "name": "Denny Tiganj",
+       "shirt": "66",
+       "position": "Goalkeeper",
+       "age": 23,
+       "dob": "2003-03-04",
+       "nationality": "Slovenia",
+       "height_cm": 195
+      },
+      {
+       "name": "Nemanja Novakovic",
+       "shirt": "31",
+       "position": "Goalkeeper",
+       "age": 23,
+       "dob": "2003-07-03",
+       "nationality": "Serbia/Croatia",
+       "height_cm": 197
+      },
+      {
+       "name": "Nemanja Studen",
+       "shirt": "16",
+       "position": "Centre-Back",
+       "age": 19,
+       "dob": "2007-08-25",
+       "nationality": "Serbia",
+       "height_cm": 187
+      },
+      {
+       "name": "Benjamin Valentic",
+       "shirt": "18",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-01-01",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Luka Mociler",
+       "shirt": "25",
+       "position": "Centre-Back",
+       "age": 20,
+       "dob": "2006-02-16",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tilen Rajter Krebs",
+       "shirt": "5",
+       "position": "Left-Back",
+       "age": 20,
+       "dob": "2005-12-03",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Davud Jusic",
+       "shirt": "24",
+       "position": "Left-Back",
+       "age": 18,
+       "dob": "2008-01-03",
+       "nationality": "Bosnia-Herzegovina/Austria"
+      },
+      {
+       "name": "Alen Bukovec",
+       "shirt": "15",
+       "position": "Right-Back",
+       "age": 20,
+       "dob": "2005-12-13",
+       "nationality": "Slovenia",
+       "height_cm": 182
+      },
+      {
+       "name": "Luka Pek",
+       "shirt": "14",
+       "position": "Right-Back",
+       "age": 19,
+       "dob": "2007-09-11",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Gasper Rotovnik Gabersek",
+       "shirt": "3",
+       "position": "Defensive Midfield",
+       "age": 22,
+       "dob": "2004-06-10",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Adam Vosnjak",
+       "shirt": "20",
+       "position": "Defensive Midfield",
+       "age": 26,
+       "dob": "2000-07-26",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Zak Paulo Piplica",
+       "shirt": "23",
+       "position": "Defensive Midfield",
+       "age": 25,
+       "dob": "2001-08-14",
+       "nationality": "Germany/Bosnia-Herzegovina",
+       "height_cm": 179
+      },
+      {
+       "name": "Jure Bernjak",
+       "shirt": "13",
+       "position": "Defensive Midfield",
+       "age": 19,
+       "dob": "2007-01-15",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Gal Gorenak",
+       "shirt": "8",
+       "position": "Central Midfield",
+       "age": 23,
+       "dob": "2003-10-24",
+       "nationality": "Slovenia",
+       "height_cm": 180
+      },
+      {
+       "name": "Martin Plavec Markovic",
+       "shirt": "6",
+       "position": "Central Midfield",
+       "age": 21,
+       "dob": "2005-07-11",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Rocco Vicol",
+       "shirt": "10",
+       "position": "Attacking Midfield",
+       "age": 22,
+       "dob": "2004-01-02",
+       "nationality": "Austria/Romania",
+       "height_cm": 175
+      },
+      {
+       "name": "Matija Stojanovic",
+       "shirt": "22",
+       "position": "Attacking Midfield",
+       "age": 20,
+       "dob": "2005-11-24",
+       "nationality": "Serbia",
+       "height_cm": 175
+      },
+      {
+       "name": "Balsa Vukcevic",
+       "shirt": "4",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-10-10",
+       "nationality": "Montenegro",
+       "height_cm": 191
+      },
+      {
+       "name": "Lan Husejnovic",
+       "shirt": "17",
+       "position": "Attacking Midfield",
+       "age": 19,
+       "dob": "2007-01-10",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Tian Pantelic",
+       "shirt": "17",
+       "position": "Left Winger",
+       "age": 25,
+       "dob": "2001-05-31",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Marko Simic",
+       "shirt": "11",
+       "position": "Left Winger",
+       "age": 22,
+       "dob": "2004-07-12",
+       "nationality": "Switzerland/Serbia",
+       "height_cm": 183
+      },
+      {
+       "name": "Sabur Ali",
+       "shirt": "21",
+       "position": "Left Winger",
+       "age": 20,
+       "dob": "2005-11-23",
+       "nationality": "Slovenia"
+      },
+      {
+       "name": "Sandro Zukic",
+       "shirt": "7",
+       "position": "Right Winger",
+       "age": 26,
+       "dob": "2000-08-02",
+       "nationality": "Slovenia/Serbia",
+       "height_cm": 178
+      },
+      {
+       "name": "Valent Savor",
+       "shirt": "6",
+       "position": "Right Winger",
+       "age": 20,
+       "dob": "2006-08-06",
+       "nationality": "Slovenia",
+       "height_cm": 184
+      },
+      {
+       "name": "Josip Perkovic",
+       "shirt": "9",
+       "position": "Centre-Forward",
+       "age": 21,
+       "dob": "2005-02-14",
+       "nationality": "Croatia"
+      },
+      {
+       "name": "Dominik Simic",
+       "shirt": "19",
+       "position": "Centre-Forward",
+       "age": 19,
+       "dob": "2007-07-01",
+       "nationality": "Croatia/Switzerland"
       }
      ]
     }

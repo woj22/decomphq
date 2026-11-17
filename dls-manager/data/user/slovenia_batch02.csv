@@ -1,0 +1,490 @@
+club,league,shirt,player,position,dob,age,nationality,height_cm
+NK Celje,Prva Liga,1,Zan-Luk Leban,Goalkeeper,15/12/2002,23,Slovenia,188
+NK Celje,Prva Liga,,Ziga Frelih,Goalkeeper,06/02/1998,28,Slovenia,197
+NK Celje,Prva Liga,21,Simon Sluga,Goalkeeper,17/03/1993,33,Croatia,191
+NK Celje,Prva Liga,12,Luka Kolar,Goalkeeper,09/09/2005,21,Slovenia,
+NK Celje,Prva Liga,6,Artemijus Tutyškinas,Centre-Back,08/08/2003,23,Lithuania,190
+NK Celje,Prva Liga,15,Zan Zuzek,Centre-Back,26/01/1997,29,Slovenia,186
+NK Celje,Prva Liga,44,Łukasz Bejger,Centre-Back,11/01/2002,24,Poland,190
+NK Celje,Prva Liga,3,Damjan Vuklisevic,Centre-Back,28/06/1995,31,Slovenia,193
+NK Celje,Prva Liga,4,Darko Hrka,Centre-Back,20/11/1999,26,Slovenia,187
+NK Celje,Prva Liga,99,Zan Luka Sega,Centre-Back,17/11/2007,19,Slovenia,
+NK Celje,Prva Liga,33,Leonardo Koutris,Left-Back,23/07/1995,31,Greece/Brazil,175
+NK Celje,Prva Liga,2,Pijus Širvys,Right-Back,01/04/1998,28,Lithuania,183
+NK Celje,Prva Liga,20,Alpha Diounkou,Right-Back,10/10/2001,25,Senegal/Spain,184
+NK Celje,Prva Liga,19,Mark Zabukovnik,Defensive Midfield,27/12/2000,25,Slovenia,185
+NK Celje,Prva Liga,,Jost Pisek,Defensive Midfield,10/03/2002,24,Slovenia,182
+NK Celje,Prva Liga,27,Ivan Calusic,Defensive Midfield,12/09/1999,27,Croatia,187
+NK Celje,Prva Liga,14,Luka Vesner Ticic,Central Midfield,25/10/2000,26,Slovenia,177
+NK Celje,Prva Liga,13,Papa Daniel,Central Midfield,01/01/2002,24,Nigeria,
+NK Celje,Prva Liga,10,Svit Seslar,Attacking Midfield,09/01/2002,24,Slovenia,186
+NK Celje,Prva Liga,17,Andrej Kotnik,Attacking Midfield,04/08/1995,31,Slovenia,189
+NK Celje,Prva Liga,94,Rudi Pozeg Vancas,Attacking Midfield,15/03/1994,32,Slovenia,174
+NK Celje,Prva Liga,8,Mario Kvesic,Attacking Midfield,12/01/1992,34,Bosnia-Herzegovina/Croatia,175
+NK Celje,Prva Liga,7,Benjamin Verbic,Left Winger,27/11/1993,32,Slovenia,183
+NK Celje,Prva Liga,25,Veton Tusha,Left Winger,29/12/2002,23,Kosovo,183
+NK Celje,Prva Liga,91,Yaya Dukuly,Right Winger,17/01/2003,23,Australia/Guinea,176
+NK Celje,Prva Liga,11,Milot Avdyli,Right Winger,28/07/2002,24,Kosovo,180
+NK Celje,Prva Liga,77,Matic Ivansek,Right Winger,26/07/2004,22,Slovenia,
+NK Celje,Prva Liga,31,Dejan Suhovrsnik,Right Winger,16/02/2007,19,Slovenia,
+NK Celje,Prva Liga,9,Blaz Kramer,Centre-Forward,01/06/1996,30,Slovenia,191
+NK Celje,Prva Liga,47,Armandas Kučys,Centre-Forward,27/02/2003,23,Lithuania,194
+NK Olimpija Ljubljana,Prva Liga,26,Matevz Vidovsek,Goalkeeper,,27,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,22,Denis Pintol,Goalkeeper,,26,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,,Luka Bele,Goalkeeper,,19,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,4,Veljko Jelenkovic,Centre-Back,,23,Bulgaria/Serbia,
+NK Olimpija Ljubljana,Prva Liga,30,Jan Gorenc,Centre-Back,,27,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,23,Davit Kobouri,Centre-Back,,28,Georgia,
+NK Olimpija Ljubljana,Prva Liga,15,Marko Ristic,Centre-Back,,22,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,,Artur Vinicius,Centre-Back,,19,Brazil,
+NK Olimpija Ljubljana,Prva Liga,54,Jan Jurgec,Centre-Back,,19,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,3,Jost Urbancic,Left-Back,,25,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,33,Jordi Govea,Left-Back,,27,Ecuador/Spain,
+NK Olimpija Ljubljana,Prva Liga,28,Diga,Right-Back,,28,Portugal,
+NK Olimpija Ljubljana,Prva Liga,14,Kristjan Bendra,Right-Back,,20,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,34,Agustín Doffo,Defensive Midfield,,31,Argentina/Italy,
+NK Olimpija Ljubljana,Prva Liga,6,Luis Perea,Defensive Midfield,,29,Spain,
+NK Olimpija Ljubljana,Prva Liga,90,Robert Miskovic,Central Midfield,,27,Croatia/Germany,
+NK Olimpija Ljubljana,Prva Liga,9,Dino Kojic,Attacking Midfield,,21,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,8,Bruno Lourenço,Attacking Midfield,,28,Portugal,
+NK Olimpija Ljubljana,Prva Liga,58,Job Brecelj,Attacking Midfield,,19,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,,Xande,Left Winger,,25,Brazil,
+NK Olimpija Ljubljana,Prva Liga,99,Antonio Marin,Left Winger,,25,Croatia,
+NK Olimpija Ljubljana,Prva Liga,20,Nemanja Motika,Left Winger,,23,Serbia/Germany,
+NK Olimpija Ljubljana,Prva Liga,18,Marko Brest,Left Winger,,24,Slovenia,
+NK Olimpija Ljubljana,Prva Liga,10,Dimitar Mitrovski,Right Winger,,27,North Macedonia,
+NK Olimpija Ljubljana,Prva Liga,79,Yayah Kallon,Right Winger,,25,Sierra Leone/Italy,
+NK Olimpija Ljubljana,Prva Liga,19,Indrit Tuci,Centre-Forward,,26,Albania,
+NK Olimpija Ljubljana,Prva Liga,17,Marvin Cuni,Centre-Forward,,25,Albania/Germany,
+NK Olimpija Ljubljana,Prva Liga,24,Alex Tamm,Centre-Forward,,25,Estonia,
+NK Olimpija Ljubljana,Prva Liga,11,Federico Rose,Centre-Forward,,22,Argentina/Croatia,
+NK Maribor,Prva Liga,1,Azbe Jug,Goalkeeper,03/03/1992,34,Slovenia,192
+NK Maribor,Prva Liga,39,Ivan Lainovic,Goalkeeper,03/07/2005,21,Serbia/Croatia,193
+NK Maribor,Prva Liga,98,Téva Gardies,Goalkeeper,01/04/2001,25,Madagascar/France,200
+NK Maribor,Prva Liga,43,Tanej Handanovic,Goalkeeper,24/08/2008,18,Slovenia,202
+NK Maribor,Prva Liga,6,Bradley M'Bondo,Centre-Back,30/10/2001,25,France/DR Congo,184
+NK Maribor,Prva Liga,25,Miha Blazic,Centre-Back,08/05/1993,33,Slovenia,185
+NK Maribor,Prva Liga,50,Lan Vidmar,Centre-Back,11/09/2001,25,Slovenia,186
+NK Maribor,Prva Liga,21,Vid Koderman,Left-Back,18/04/2003,23,Slovenia,177
+NK Maribor,Prva Liga,3,Cedomir Bumbic,Left-Back,08/09/1999,27,Austria,184
+NK Maribor,Prva Liga,23,Zan Karnicnik,Right-Back,18/09/1994,32,Slovenia,184
+NK Maribor,Prva Liga,55,Mark Spanring,Right-Back,13/06/2001,25,Slovenia,181
+NK Maribor,Prva Liga,5,Zan Jevsenak,Defensive Midfield,15/05/2003,23,Slovenia,191
+NK Maribor,Prva Liga,4,Nejc Viher,Defensive Midfield,13/02/2008,18,Slovenia,185
+NK Maribor,Prva Liga,8,Claude Gonçalves,Defensive Midfield,09/04/1994,32,Portugal/France,174
+NK Maribor,Prva Liga,14,Jean Michaël Seri,Defensive Midfield,19/07/1991,35,Cote d'Ivoire,169
+NK Maribor,Prva Liga,15,Eric Taylor,Central Midfield,14/04/2001,25,Ghana,178
+NK Maribor,Prva Liga,38,Niko Osterc,Central Midfield,22/05/2007,19,Slovenia,
+NK Maribor,Prva Liga,30,Petar Stojanović,Right Midfield,07/10/1995,31,Slovenia,178
+NK Maribor,Prva Liga,10,Ziga Repas,Attacking Midfield,29/05/2001,25,Slovenia,180
+NK Maribor,Prva Liga,7,Tio Cipot,Left Winger,20/04/2003,23,Slovenia,184
+NK Maribor,Prva Liga,11,Ali Reghba,Left Winger,14/01/2000,26,Ireland/Algeria,183
+NK Maribor,Prva Liga,99,Behar Feta,Right Winger,07/04/2003,23,North Macedonia,167
+NK Maribor,Prva Liga,17,Jan Mlakar,Centre-Forward,23/10/1998,28,Slovenia,183
+NK Maribor,Prva Liga,29,Dario Vizinger,Centre-Forward,06/06/1998,28,Croatia,180
+NK Maribor,Prva Liga,70,Isaac Tshipamba,Centre-Forward,09/11/2000,26,France/DR Congo,186
+NK Maribor,Prva Liga,79,Luka Zahovic,Centre-Forward,15/11/1995,31,Slovenia/Portugal,177
+NK Maribor,Prva Liga,36,Matej Tadic,Centre-Forward,26/07/2007,19,Slovenia,187
+FC Koper,Prva Liga,1,Luka Bas,Goalkeeper,30/04/2002,24,Slovenia,191
+FC Koper,Prva Liga,90,Edoardo Piana,Goalkeeper,29/09/2003,23,Italy,198
+FC Koper,Prva Liga,28,Lan Jovanovic,Goalkeeper,14/03/2006,20,Slovenia,
+FC Koper,Prva Liga,5,Filip Backulja,Centre-Back,25/06/2002,24,Serbia,187
+FC Koper,Prva Liga,29,Luka Gucek,Centre-Back,29/01/1999,27,Slovenia,189
+FC Koper,Prva Liga,18,Giuseppe Agyemang,Left-Back,26/04/2002,24,Italy/Ghana,178
+FC Koper,Prva Liga,33,Amadej Marinic,Left-Back,10/10/2000,26,Slovenia,
+FC Koper,Prva Liga,3,Florian Hartherz,Left-Back,29/05/1993,33,Germany,187
+FC Koper,Prva Liga,32,Veljko Mijailovic,Right-Back,29/12/2000,25,Serbia,180
+FC Koper,Prva Liga,47,Álvaro Roncal,Right-Back,25/12/2000,25,Spain,171
+FC Koper,Prva Liga,69,Brice Negouai,Right-Back,17/02/2002,24,France/Martinique,185
+FC Koper,Prva Liga,2,Mody Boune,Right-Back,08/03/2002,24,France,
+FC Koper,Prva Liga,6,Fran Tomek,Defensive Midfield,25/06/2002,24,Croatia,180
+FC Koper,Prva Liga,86,Stefano Surdanovic,Defensive Midfield,23/11/1998,27,Austria,183
+FC Koper,Prva Liga,4,Leo Stulac,Defensive Midfield,26/09/1994,32,Slovenia,175
+FC Koper,Prva Liga,11,Nsana Simon,Central Midfield,11/03/2000,26,Congo/France,171
+FC Koper,Prva Liga,25,Bangaly Diawara,Central Midfield,25/03/2003,23,Cote d'Ivoire/France,176
+FC Koper,Prva Liga,22,Check Oumar Diakité,Central Midfield,05/12/2002,23,France/Mali,173
+FC Koper,Prva Liga,,Mark Kavrecic,Central Midfield,11/02/2007,19,Slovenia,
+FC Koper,Prva Liga,99,Kamil Manseri,Right Midfield,12/06/2001,25,France/Algeria,183
+FC Koper,Prva Liga,79,David Pejičić,Attacking Midfield,14/06/2007,19,Slovenia,177
+FC Koper,Prva Liga,72,Josip Ilicic,Attacking Midfield,29/01/1988,38,Slovenia/Croatia,190
+FC Koper,Prva Liga,45,Isaac Matondo,Left Winger,24/03/1999,27,France/DR Congo,172
+FC Koper,Prva Liga,8,Bassirou N'Diaye,Left Winger,15/02/2002,24,Senegal,181
+FC Koper,Prva Liga,27,Andraz Ruedl,Left Winger,20/01/2004,22,Slovenia,184
+FC Koper,Prva Liga,20,Ibrahim Lawal Oluwaseun,Left Winger,01/01/2006,20,Nigeria,
+FC Koper,Prva Liga,26,Benjamin Adrovic,Right Winger,20/12/2007,18,Slovenia,
+FC Koper,Prva Liga,10,Leo Rimac,Centre-Forward,14/03/2006,20,Slovenia/Croatia,186
+FC Koper,Prva Liga,9,Brown Irabor,Centre-Forward,30/03/2004,22,Nigeria/France,175
+FC Koper,Prva Liga,19,Robert Beric,Centre-Forward,17/06/1991,35,Slovenia,188
+NK Bravo,Prva Liga,22,Benjamin Maticic,Goalkeeper,20/02/2007,19,Slovenia,195
+NK Bravo,Prva Liga,77,Matjaz Rozman,Goalkeeper,03/01/1987,39,Slovenia,192
+NK Bravo,Prva Liga,3,Christalino Atemona,Centre-Back,26/04/2002,24,Germany,187
+NK Bravo,Prva Liga,4,Jakob Brunnhofer,Centre-Back,25/04/2006,20,Austria,187
+NK Bravo,Prva Liga,5,Ibrahim Halilou,Centre-Back,24/02/2005,21,Cameroon,188
+NK Bravo,Prva Liga,28,Molade Olanrewaju,Centre-Back,15/04/2004,22,Nigeria,187
+NK Bravo,Prva Liga,24,Gasper Jovan,Left-Back,25/02/2001,25,Slovenia,
+NK Bravo,Prva Liga,95,Maj Fogec,Left-Back,01/07/2002,24,Slovenia,
+NK Bravo,Prva Liga,68,Marwann Nzuzi,Right-Back,16/05/2004,22,France/Algeria,182
+NK Bravo,Prva Liga,2,Raúl Parra,Right-Back,26/11/1999,26,Spain,187
+NK Bravo,Prva Liga,66,Jasa Krasevec,Right-Back,01/01/2007,19,Slovenia,
+NK Bravo,Prva Liga,99,Marko Simonic,Defensive Midfield,21/06/2005,21,Slovenia,186
+NK Bravo,Prva Liga,20,Nadon Kouassi,Defensive Midfield,21/03/2006,20,Cote d'Ivoire,185
+NK Bravo,Prva Liga,14,Enrik Ostrc,Defensive Midfield,21/06/2002,24,Slovenia,187
+NK Bravo,Prva Liga,21,Lan Stravs,Defensive Midfield,04/03/2000,26,Slovenia,183
+NK Bravo,Prva Liga,8,Sandi Nuhanovic,Central Midfield,05/12/1998,27,Slovenia,180
+NK Bravo,Prva Liga,17,James Arinze,Central Midfield,04/01/2006,20,Nigeria,187
+NK Bravo,Prva Liga,6,Jon Ficko,Left Midfield,27/01/2004,22,Slovenia,
+NK Bravo,Prva Liga,47,Timotej Drobez,Attacking Midfield,01/02/2007,19,Slovenia,182
+NK Bravo,Prva Liga,10,Jakoslav Stankovic,Left Winger,10/04/2001,25,Slovenia,175
+NK Bravo,Prva Liga,7,Divine Omoregie,Left Winger,19/01/2005,21,Italy/Nigeria,
+NK Bravo,Prva Liga,11,Okpo Mazié,Left Winger,26/12/2003,22,Cote d'Ivoire/France,179
+NK Bravo,Prva Liga,40,Matej Malensek,Left Winger,27/05/2005,21,Slovenia/Croatia,183
+NK Bravo,Prva Liga,9,Aldin Jakupovic,Centre-Forward,04/06/2006,20,Slovenia,181
+NK Bravo,Prva Liga,33,Milan Tucic,Centre-Forward,15/08/1996,30,Slovenia,187
+NK Bravo,Prva Liga,35,Rok Kopatin,Centre-Forward,25/07/2006,20,Slovenia,
+NS Mura,Prva Liga,1,Adnan Golubovic,Goalkeeper,22/07/1995,31,Slovenia/Bosnia-Herzegovina,186
+NS Mura,Prva Liga,52,Matevz Dajcar,Goalkeeper,05/02/2002,24,Slovenia,190
+NS Mura,Prva Liga,33,Ziga Fermisek,Goalkeeper,20/03/2002,24,Slovenia,186
+NS Mura,Prva Liga,81,Nejc Antonic,Goalkeeper,07/03/2007,19,Slovenia,
+NS Mura,Prva Liga,26,Borna Proleta,Centre-Back,26/11/2001,24,Croatia,194
+NS Mura,Prva Liga,3,Aleksandar Zeljkovic,Centre-Back,04/07/1999,27,Slovenia,194
+NS Mura,Prva Liga,56,Matej Matic,Centre-Back,05/06/2004,22,Croatia,188
+NS Mura,Prva Liga,4,Zan Flis,Centre-Back,30/07/1997,29,Slovenia,187
+NS Mura,Prva Liga,17,Kristjan Trdin,Centre-Back,01/03/2004,22,Slovenia,189
+NS Mura,Prva Liga,24,Lovro Kitin,Centre-Back,03/02/2007,19,Croatia,
+NS Mura,Prva Liga,20,Samo Seckar,Centre-Back,18/12/2007,18,Slovenia,
+NS Mura,Prva Liga,21,Zan Petrovic,Left-Back,26/02/2007,19,Slovenia,
+NS Mura,Prva Liga,77,Darius Oroian,Right-Back,01/08/2003,23,Romania,178
+NS Mura,Prva Liga,2,Faad Sana,Right-Back,15/04/2003,23,Togo/Burkina Faso,
+NS Mura,Prva Liga,22,Nejc Ajhmajer,Right-Back,22/04/2003,23,Slovenia,183
+NS Mura,Prva Liga,,Luka Svjetlanovic,Right-Back,05/03/2007,19,Slovenia,
+NS Mura,Prva Liga,14,Alen Kozar,Defensive Midfield,07/04/1995,31,Slovenia,174
+NS Mura,Prva Liga,5,Ivan Borna Jelic Balta,Defensive Midfield,17/09/1992,34,Croatia/Bosnia-Herzegovina,193
+NS Mura,Prva Liga,88,Alen Korosec,Central Midfield,17/11/2001,25,Slovenia,180
+NS Mura,Prva Liga,10,Nino Kouter,Central Midfield,19/12/1993,32,Slovenia,170
+NS Mura,Prva Liga,,Mai Kolbl,Central Midfield,16/03/2007,19,Slovenia,
+NS Mura,Prva Liga,6,Florjan Jevsenak,Attacking Midfield,06/04/2005,21,Slovenia,
+NS Mura,Prva Liga,18,Aljaz Zalaznik,Attacking Midfield,12/12/2005,20,Slovenia,
+NS Mura,Prva Liga,8,Luka Bobicanec,Attacking Midfield,23/05/1993,33,Croatia,178
+NS Mura,Prva Liga,49,Petar Pfeifer,Attacking Midfield,03/01/2007,19,Croatia,180
+NS Mura,Prva Liga,7,Niko Kasalo,Left Winger,31/12/2005,20,Slovenia,181
+NS Mura,Prva Liga,47,Simun Butic,Right Winger,07/04/2006,20,Croatia,
+NS Mura,Prva Liga,,Val Bislimaj,Right Winger,05/04/2007,19,Slovenia,
+NS Mura,Prva Liga,15,Anej Roman Leljak,Right Winger,20/05/2006,20,Slovenia,
+NS Mura,Prva Liga,71,Boris Dimitrov,Centre-Forward,29/03/2004,22,Bulgaria,183
+NS Mura,Prva Liga,30,Kenan Kurtovic,Centre-Forward,18/01/2007,19,Slovenia,187
+NS Mura,Prva Liga,9,Marko Ascic,Centre-Forward,14/04/2007,19,Croatia,
+NS Mura,Prva Liga,99,Robert Caks,Centre-Forward,31/01/2001,25,Slovenia,197
+NS Mura,Prva Liga,,Onur Yilmaz,Striker,01/01/2007,19,Türkiye/Germany,
+NK Aluminij Kidricevo,Prva Liga,1,Anej Mrezar,Goalkeeper,25/05/2000,26,Slovenia,185
+NK Aluminij Kidricevo,Prva Liga,31,Florijan Raduha,Goalkeeper,01/04/1997,29,Slovenia,186
+NK Aluminij Kidricevo,Prva Liga,66,Lukas Tomazic,Goalkeeper,15/03/2005,21,Slovenia,183
+NK Aluminij Kidricevo,Prva Liga,4,Rok Schaubach,Centre-Back,04/10/2004,22,Slovenia,188
+NK Aluminij Kidricevo,Prva Liga,6,Dino Simunic,Centre-Back,11/09/2003,23,Croatia,187
+NK Aluminij Kidricevo,Prva Liga,32,Vito Tezak,Centre-Back,31/03/2005,21,Croatia,186
+NK Aluminij Kidricevo,Prva Liga,5,Matija Boben,Centre-Back,26/02/1994,32,Slovenia,191
+NK Aluminij Kidricevo,Prva Liga,3,Domen Zajsek,Centre-Back,06/04/2003,23,Slovenia,186
+NK Aluminij Kidricevo,Prva Liga,21,Lan Drevensek,Centre-Back,15/04/2007,19,Slovenia,187
+NK Aluminij Kidricevo,Prva Liga,12,Ante Bekavac,Left-Back,29/01/2002,24,Croatia,178
+NK Aluminij Kidricevo,Prva Liga,80,Hanus Sørensen,Right-Back,19/02/2001,25,Faroe Islands,182
+NK Aluminij Kidricevo,Prva Liga,34,Miha Schaubach,Right-Back,29/11/2007,18,Slovenia,
+NK Aluminij Kidricevo,Prva Liga,14,Tomislav Jagic,Defensive Midfield,29/05/1997,29,Croatia,178
+NK Aluminij Kidricevo,Prva Liga,23,Enej Kramberger,Defensive Midfield,31/03/2007,19,Slovenia,185
+NK Aluminij Kidricevo,Prva Liga,13,Matic Vrbanec,Central Midfield,28/10/1996,30,Slovenia,178
+NK Aluminij Kidricevo,Prva Liga,27,Maj Blazic,Central Midfield,25/01/2007,19,Slovenia,187
+NK Aluminij Kidricevo,Prva Liga,7,Marko Mladenovic,Attacking Midfield,30/01/2005,21,Germany/Serbia,174
+NK Aluminij Kidricevo,Prva Liga,44,Petar Petrisko,Attacking Midfield,11/05/2002,24,Croatia,179
+NK Aluminij Kidricevo,Prva Liga,18,Simon Rogina,Attacking Midfield,26/03/2001,25,Slovenia,187
+NK Aluminij Kidricevo,Prva Liga,,Filip Pongracic,Left Winger,23/05/2007,19,Slovenia,184
+NK Aluminij Kidricevo,Prva Liga,20,Ivijan Svrznjak,Right Winger,02/08/2001,25,Croatia,180
+NK Aluminij Kidricevo,Prva Liga,9,Adriano Bloudek,Centre-Forward,24/10/2003,23,Slovenia,193
+NK Aluminij Kidricevo,Prva Liga,45,Bamba Susso,Centre-Forward,09/10/2002,24,The Gambia,191
+NK Aluminij Kidricevo,Prva Liga,10,Robert Ramsak,Centre-Forward,28/10/2006,20,Germany,185
+NK Aluminij Kidricevo,Prva Liga,11,Bede Osuji,Centre-Forward,21/01/1996,30,Nigeria/Slovenia,183
+NK Aluminij Kidricevo,Prva Liga,25,Murat Bajraj,Centre-Forward,08/07/2000,26,Slovenia/Kosovo,185
+NK Aluminij Kidricevo,Prva Liga,,Jaka Domjan,Centre-Forward,05/05/2004,22,Slovenia,184
+NK Radomlje,Prva Liga,1,Samo Pridgar,Goalkeeper,10/03/2003,23,Slovenia,191
+NK Radomlje,Prva Liga,13,Nejc Dermastija,Goalkeeper,20/02/2004,22,Slovenia,
+NK Radomlje,Prva Liga,73,Daniil Churakov,Goalkeeper,14/04/2008,18,Russia,
+NK Radomlje,Prva Liga,22,Aleksa Paic,Centre-Back,22/09/2003,23,Serbia/Croatia,191
+NK Radomlje,Prva Liga,5,Enej Klampfer,Centre-Back,03/05/2004,22,Slovenia,192
+NK Radomlje,Prva Liga,4,Bine Anzelj,Centre-Back,09/10/2006,20,Slovenia,192
+NK Radomlje,Prva Liga,16,David Buvac,Centre-Back,06/04/2007,19,Slovenia,
+NK Radomlje,Prva Liga,87,Borna Graonic,Left-Back,31/01/2005,21,Croatia,183
+NK Radomlje,Prva Liga,2,Antonio Bosec,Right-Back,28/08/1997,29,Croatia,178
+NK Radomlje,Prva Liga,44,Matej Dvorsak,Right-Back,24/01/2005,21,Slovenia,185
+NK Radomlje,Prva Liga,41,Mihael Zaper,Defensive Midfield,11/08/1998,28,Croatia,188
+NK Radomlje,Prva Liga,24,Bruno Burcul,Defensive Midfield,20/11/2004,21,Croatia,187
+NK Radomlje,Prva Liga,6,Ognjen Gnjatic,Defensive Midfield,16/10/1991,35,Bosnia-Herzegovina/Croatia,190
+NK Radomlje,Prva Liga,10,Nik Marinsek,Central Midfield,17/02/1999,27,Slovenia,180
+NK Radomlje,Prva Liga,66,Dejan Kantuzer,Central Midfield,02/06/2003,23,Slovenia,186
+NK Radomlje,Prva Liga,8,Jasa Jelen,Central Midfield,15/04/2006,20,Slovenia,
+NK Radomlje,Prva Liga,15,Aljaz Zabukovnik,Central Midfield,03/05/2006,20,Slovenia,
+NK Radomlje,Prva Liga,33,Tomas Puc,Attacking Midfield,11/07/2007,19,Slovenia,191
+NK Radomlje,Prva Liga,72,Denis Mazreku,Attacking Midfield,29/11/2007,18,Slovenia,
+NK Radomlje,Prva Liga,23,Josip Balic,Left Winger,10/03/2004,22,Croatia,
+NK Radomlje,Prva Liga,11,Jasa Martincic,Left Winger,06/11/2001,25,Slovenia,
+NK Radomlje,Prva Liga,19,Vid Chinoso Juvancic,Left Winger,16/04/2008,18,Slovenia/The Gambia,184
+NK Radomlje,Prva Liga,7,Divine Igwe Ikenna,Right Winger,05/05/2004,22,Nigeria,
+NK Radomlje,Prva Liga,9,Vanja Pelko,Centre-Forward,25/03/2002,24,Croatia,192
+NK Radomlje,Prva Liga,27,Saydou Bangura,Centre-Forward,05/01/2003,23,Netherlands/Guinea,188
+NK Nafta 1903,Prva Liga,1,Lucas Erjavsek,Goalkeeper,05/07/2004,22,Slovenia,190
+NK Nafta 1903,Prva Liga,89,Ervin Németh,Goalkeeper,05/07/2003,23,Hungary,192
+NK Nafta 1903,Prva Liga,98,Áron Dragóner,Centre-Back,11/06/2004,22,Hungary,
+NK Nafta 1903,Prva Liga,2,Rok Pirtovsek,Centre-Back,03/04/1996,30,Slovenia,
+NK Nafta 1903,Prva Liga,29,Tibor Gorenc Stankovic,Centre-Back,29/12/1999,26,Slovenia,190
+NK Nafta 1903,Prva Liga,33,Luka Poredos,Left-Back,10/06/2005,21,Slovenia,
+NK Nafta 1903,Prva Liga,20,André Ferreira,Right-Back,08/04/2003,23,Portugal,177
+NK Nafta 1903,Prva Liga,23,Luka Kambic,Right-Back,20/12/1998,27,Slovenia,178
+NK Nafta 1903,Prva Liga,41,Kimi Lavrencic,Defensive Midfield,29/08/2006,20,Slovenia,
+NK Nafta 1903,Prva Liga,,Maj Rusjan,Midfielder,24/07/2007,19,Slovenia,
+NK Nafta 1903,Prva Liga,21,Shyon Omrani,Central Midfield,21/10/2003,23,Canada/Portugal,178
+NK Nafta 1903,Prva Liga,18,Aleks Pihler,Central Midfield,15/01/1994,32,Slovenia,183
+NK Nafta 1903,Prva Liga,30,Mátyás Vidnyánszky,Attacking Midfield,25/01/2006,20,Hungary,
+NK Nafta 1903,Prva Liga,14,Noel Keresztes,Attacking Midfield,16/09/2004,22,Hungary,184
+NK Nafta 1903,Prva Liga,8,Michael Ogwuche,Attacking Midfield,15/06/2004,22,Nigeria,185
+NK Nafta 1903,Prva Liga,16,Divaio Bobson,Attacking Midfield,06/02/2004,22,Netherlands/Suriname,182
+NK Nafta 1903,Prva Liga,7,Josip Ivan Zorica,Left Winger,13/07/2001,25,Croatia/Canada,175
+NK Nafta 1903,Prva Liga,11,Anis Jasaragic,Left Winger,09/08/1999,27,Slovenia,178
+NK Nafta 1903,Prva Liga,99,Andrej Micic,Left Winger,21/01/2007,19,Bosnia-Herzegovina/Croatia,170
+NK Nafta 1903,Prva Liga,10,Luka Pihler,Right Winger,10/02/1998,28,Slovenia,
+NK Nafta 1903,Prva Liga,97,Manu Vallejo,Second Striker,14/02/1997,29,Spain,167
+NK Nafta 1903,Prva Liga,,Yannick Toure,Centre-Forward,29/09/2000,26,Switzerland/Senegal,184
+NK Nafta 1903,Prva Liga,17,Amadej Marosa,Centre-Forward,07/02/1994,32,Slovenia,177
+NK Nafta 1903,Prva Liga,90,Umar Jamiu,Centre-Forward,14/08/2007,19,Nigeria,
+NK Nafta 1903,Prva Liga,19,Adama Sarr,Striker,01/01/2007,19,Nigeria,
+NK Brinje Grosuplje,Prva Liga,25,Jaka Zrnec,Goalkeeper,09/06/2006,20,Slovenia,191
+NK Brinje Grosuplje,Prva Liga,1,Tim Strasberger,Goalkeeper,02/04/2005,21,Slovenia,
+NK Brinje Grosuplje,Prva Liga,23,Nejc Pusnik,Centre-Back,06/08/1998,28,Slovenia,185
+NK Brinje Grosuplje,Prva Liga,18,Rok Maher,Centre-Back,20/07/2001,25,Slovenia,185
+NK Brinje Grosuplje,Prva Liga,19,Samo Matjaž,Centre-Back,02/05/2004,22,Slovenia,190
+NK Brinje Grosuplje,Prva Liga,20,Matevz Matko,Centre-Back,09/10/2001,25,Slovenia,180
+NK Brinje Grosuplje,Prva Liga,72,Dominik Ivkic,Centre-Back,31/07/1997,29,Slovenia,190
+NK Brinje Grosuplje,Prva Liga,,Dominik Braun,Centre-Back,03/12/2003,22,Croatia,186
+NK Brinje Grosuplje,Prva Liga,15,Nejc Klasnja,Centre-Back,03/05/2004,22,Slovenia,
+NK Brinje Grosuplje,Prva Liga,4,Amar Milisic,Centre-Back,30/01/2007,19,Belgium/Bosnia-Herzegovina,190
+NK Brinje Grosuplje,Prva Liga,2,Kevin Benkic,Left-Back,07/09/2005,21,Slovenia,
+NK Brinje Grosuplje,Prva Liga,28,Matija Kavcic,Left-Back,11/07/1997,29,Slovenia,184
+NK Brinje Grosuplje,Prva Liga,24,Zan Mesko,Right-Back,25/01/2008,18,Slovenia,
+NK Brinje Grosuplje,Prva Liga,80,Ivan Krolo,Defensive Midfield,23/01/2003,23,Croatia,189
+NK Brinje Grosuplje,Prva Liga,5,Aleks Zlatkov,Defensive Midfield,19/03/2002,24,North Macedonia/Slovenia,183
+NK Brinje Grosuplje,Prva Liga,17,Tin Levanic,Central Midfield,05/05/2005,21,Bosnia-Herzegovina/Croatia,176
+NK Brinje Grosuplje,Prva Liga,49,Almin Kurtovic,Central Midfield,16/03/2000,26,Slovenia,177
+NK Brinje Grosuplje,Prva Liga,,Luka Turudija,Central Midfield,24/07/2004,22,Slovenia,
+NK Brinje Grosuplje,Prva Liga,8,Maj Roric,Central Midfield,07/02/2000,26,Slovenia,
+NK Brinje Grosuplje,Prva Liga,27,Jasmin Kurtic,Central Midfield,10/01/1989,37,Slovenia,186
+NK Brinje Grosuplje,Prva Liga,10,Nikola Jovicevic,Attacking Midfield,30/09/2003,23,Montenegro/Slovenia,185
+NK Brinje Grosuplje,Prva Liga,11,Nik Zrnec,Attacking Midfield,16/04/2004,22,Slovenia,
+NK Brinje Grosuplje,Prva Liga,22,Nal Lan Koren,Left Winger,21/06/2006,20,Slovenia,
+NK Brinje Grosuplje,Prva Liga,7,Vid Hojc,Left Winger,30/03/2005,21,Slovenia,177
+NK Brinje Grosuplje,Prva Liga,21,Erik Milosevic,Left Winger,21/03/2007,19,Slovenia,
+NK Brinje Grosuplje,Prva Liga,77,Vuk Vlahovic,Left Winger,10/01/2007,19,Montenegro,
+NK Brinje Grosuplje,Prva Liga,37,Gal Kurez,Right Winger,27/04/2001,25,Slovenia,182
+NK Brinje Grosuplje,Prva Liga,9,Haris Vuckic,Second Striker,21/08/1992,34,Slovenia,188
+NK Brinje Grosuplje,Prva Liga,14,Jan Kovac,Centre-Forward,05/05/2002,24,Slovenia,
+NK Brinje Grosuplje,Prva Liga,30,Reinhard Young,Centre-Forward,18/08/2001,25,Nigeria,185
+ND Ilirija 1911,2. SNL,1,Alen Abdic,Goalkeeper,01/01/2010,16,Slovenia,
+ND Ilirija 1911,2. SNL,13,Gasper Petek,Centre-Back,03/07/2002,24,Slovenia,190
+ND Ilirija 1911,2. SNL,14,Lukas Hempt,Centre-Back,10/09/2005,21,Slovenia,193
+ND Ilirija 1911,2. SNL,2,Gabriel Pevc Carrera,Centre-Back,23/05/2007,19,Bosnia-Herzegovina,
+ND Ilirija 1911,2. SNL,13,Jan Nikolic,Centre-Back,23/02/2007,19,Slovenia/Bosnia-Herzegovina,
+ND Ilirija 1911,2. SNL,4,Alen Korosec,Left-Back,17/11/2005,21,Slovenia,
+ND Ilirija 1911,2. SNL,,Blaz Komic,Left-Back,13/03/2007,19,Slovenia,
+ND Ilirija 1911,2. SNL,6,Lan Hribar,Right-Back,24/07/2005,21,Slovenia,
+ND Ilirija 1911,2. SNL,16,Ajdin Dergic,Right-Back,11/07/2002,24,Slovenia,
+ND Ilirija 1911,2. SNL,,Ales Stornik,Right-Back,23/10/2002,24,Slovenia,
+ND Ilirija 1911,2. SNL,,Modou Jammeh,Right-Back,01/01/2007,19,The Gambia,
+ND Ilirija 1911,2. SNL,15,Ahmed Teaima,Defensive Midfield,10/05/2003,23,Egypt/Greece,188
+ND Ilirija 1911,2. SNL,3,Noah Pušić,Central Midfield,20/09/2004,22,Netherlands/Croatia,189
+ND Ilirija 1911,2. SNL,8,Ladji Mori Kane,Central Midfield,05/11/2005,21,Italy/Cote d'Ivoire,179
+ND Ilirija 1911,2. SNL,20,Mark Antonij Intihar,Central Midfield,12/01/2007,19,Slovenia,
+ND Ilirija 1911,2. SNL,23,Cabral,Central Midfield,14/10/2002,24,Portugal,180
+ND Ilirija 1911,2. SNL,5,Črt Rotar,Attacking Midfield,14/01/2004,22,Slovenia,180
+ND Ilirija 1911,2. SNL,22,Kobi Bajc,Attacking Midfield,07/06/2007,19,Slovenia/Ghana,
+ND Ilirija 1911,2. SNL,25,Nik Belovic,Attacking Midfield,09/07/2008,18,Slovenia,179
+ND Ilirija 1911,2. SNL,10,Niko Grlic,Left Winger,17/08/2006,20,Slovenia,182
+ND Ilirija 1911,2. SNL,7,Denis Videnovic,Left Winger,15/05/2008,18,Slovenia,
+ND Ilirija 1911,2. SNL,,Alen Muminovic,Left Winger,04/09/2007,19,Slovenia,
+ND Ilirija 1911,2. SNL,17,Nick Perc,Right Winger,27/05/2003,23,Slovenia,180
+ND Ilirija 1911,2. SNL,11,Tine Cuk,Right Winger,15/02/2005,21,Slovenia,182
+ND Ilirija 1911,2. SNL,9,Nik Podlesnik,Centre-Forward,15/03/2007,19,Slovenia,186
+ND Ilirija 1911,2. SNL,26,Darian Yana,Centre-Forward,04/10/2003,23,Switzerland,192
+ND Ilirija 1911,2. SNL,21,Ali Shawky,Centre-Forward,17/07/2003,23,Egypt,
+ND Ilirija 1911,2. SNL,19,Lukas Dikic,Centre-Forward,18/05/2008,18,Canada/Croatia,195
+NK Tabor Sezana,2. SNL,1,Dennis Zeriali,Goalkeeper,23/07/2004,22,Italy/Slovenia,189
+NK Tabor Sezana,2. SNL,12,Urban Trobec,Goalkeeper,01/02/2005,21,Slovenia,197
+NK Tabor Sezana,2. SNL,4,Anel Zulić,Centre-Back,07/11/2004,22,Slovenia/Bosnia-Herzegovina,192
+NK Tabor Sezana,2. SNL,23,Mihael Briski,Centre-Back,02/01/1999,27,Croatia,178
+NK Tabor Sezana,2. SNL,3,Rok Ljutic,Centre-Back,20/07/2003,23,Slovenia,195
+NK Tabor Sezana,2. SNL,18,Gaber Dobrovoljc,Centre-Back,27/01/1993,33,Slovenia,185
+NK Tabor Sezana,2. SNL,47,Luka Tomsic,Centre-Back,23/03/2007,19,Slovenia,181
+NK Tabor Sezana,2. SNL,27,Matevz Medic Slacek,Left-Back,27/08/2004,22,Slovenia,184
+NK Tabor Sezana,2. SNL,17,Antonio Majcenic,Left-Back,22/01/1999,27,Croatia,177
+NK Tabor Sezana,2. SNL,20,Jan Krajnc,Right-Back,14/06/2006,20,Slovenia,176
+NK Tabor Sezana,2. SNL,21,Stanislav Petkov,Defensive Midfield,10/06/2004,22,Bulgaria,175
+NK Tabor Sezana,2. SNL,24,Josip Marinic,Defensive Midfield,29/10/2000,26,Croatia,181
+NK Tabor Sezana,2. SNL,76,Tevz Pokorn,Defensive Midfield,16/06/2000,26,Slovenia,170
+NK Tabor Sezana,2. SNL,14,Tomislav Ladan,Defensive Midfield,26/04/2006,20,Croatia,179
+NK Tabor Sezana,2. SNL,5,Tarik Candic,Central Midfield,26/07/2002,24,Bosnia-Herzegovina/Slovenia,189
+NK Tabor Sezana,2. SNL,6,Luka Zavbi,Central Midfield,20/01/2006,20,Slovenia,179
+NK Tabor Sezana,2. SNL,10,Josip Spoljaric,Attacking Midfield,05/01/1997,29,Croatia,184
+NK Tabor Sezana,2. SNL,97,Luka Baruca,Attacking Midfield,09/01/2003,23,Slovenia,183
+NK Tabor Sezana,2. SNL,8,Genesis Odiya Ocen,Attacking Midfield,05/10/2007,19,Uganda,179
+NK Tabor Sezana,2. SNL,19,Jaros Cadez,Right Winger,22/02/2003,23,Slovenia,184
+NK Tabor Sezana,2. SNL,7,Ben Osman,Right Winger,20/01/2006,20,Ghana,
+NK Tabor Sezana,2. SNL,9,Stanislav Krapukhin,Centre-Forward,28/03/1998,28,Russia,191
+NK Tabor Sezana,2. SNL,11,Luka Mlakar,Centre-Forward,27/04/2006,20,Slovenia,180
+ND Beltinci,2. SNL,1,Stefan Mocic,Goalkeeper,03/07/2001,25,Slovenia,183
+ND Beltinci,2. SNL,28,Vid Sumenjak,Goalkeeper,26/02/2005,21,Slovenia,
+ND Beltinci,2. SNL,25,Patrik Legen,Goalkeeper,01/01/2006,20,Slovenia,
+ND Beltinci,2. SNL,15,Luka Hunjet,Centre-Back,02/07/2005,21,Slovenia,
+ND Beltinci,2. SNL,47,Alan Kaucic,Centre-Back,11/08/2001,25,Slovenia,188
+ND Beltinci,2. SNL,27,Tian Rantasa,Centre-Back,25/12/2004,21,Slovenia,
+ND Beltinci,2. SNL,3,Nejc Vöröš,Centre-Back,01/05/2007,19,Slovenia,
+ND Beltinci,2. SNL,22,Tilen Scernjavic,Left-Back,20/09/2003,23,Slovenia,175
+ND Beltinci,2. SNL,66,Niko Graj,Left-Back,16/08/2005,21,Slovenia,182
+ND Beltinci,2. SNL,88,Marin Rantasa,Right-Back,22/03/2002,24,Slovenia,
+ND Beltinci,2. SNL,29,Mihailo Zobenica,Right-Back,29/09/2007,19,Croatia/Canada,
+ND Beltinci,2. SNL,23,Luka Socic,Defensive Midfield,12/10/2000,26,Slovenia,
+ND Beltinci,2. SNL,41,Dominik Drk,Defensive Midfield,22/08/2000,26,Croatia,
+ND Beltinci,2. SNL,44,Jure Borsic,Central Midfield,06/12/2007,18,Slovenia,
+ND Beltinci,2. SNL,,Anej Mihajlovic,Central Midfield,01/01/2007,19,Slovenia,
+ND Beltinci,2. SNL,16,Aljaz Antolin,Attacking Midfield,02/08/2002,24,Slovenia,180
+ND Beltinci,2. SNL,10,Nejc Mocnik,Attacking Midfield,16/03/2003,23,Slovenia,181
+ND Beltinci,2. SNL,34,Anej Jelovica,Left Winger,16/03/2005,21,Slovenia,
+ND Beltinci,2. SNL,17,Vid Stefanec,Left Winger,11/07/2005,21,Slovenia,
+ND Beltinci,2. SNL,7,Samod Adeola Akinremi,Right Winger,10/05/2006,20,Nigeria,
+ND Beltinci,2. SNL,99,Lukas Ceh,Right Winger,07/06/2007,19,Slovenia,185
+ND Beltinci,2. SNL,97,Klemen Mlakar,Centre-Forward,20/02/2004,22,Slovenia,
+ND Beltinci,2. SNL,20,Golden Okocha Gibson,Centre-Forward,12/12/2001,24,Nigeria,187
+NK Triglav Kranj,2. SNL,84,Ajdin Mulalic,Goalkeeper,13/09/1994,32,Slovenia,187
+NK Triglav Kranj,2. SNL,1,Timon Popelar,Goalkeeper,06/10/2003,23,Slovenia,
+NK Triglav Kranj,2. SNL,,David Brkljac,Defender,12/04/2007,19,Bosnia-Herzegovina,
+NK Triglav Kranj,2. SNL,18,Stefan Radosavljevic,Centre-Back,12/10/2006,20,Slovenia,
+NK Triglav Kranj,2. SNL,29,Marin Magdic,Centre-Back,13/04/1999,27,Croatia/Bosnia-Herzegovina,
+NK Triglav Kranj,2. SNL,87,Nace Cencic,Centre-Back,06/05/2006,20,Slovenia,
+NK Triglav Kranj,2. SNL,23,Tin Kupresak,Left-Back,26/07/2003,23,Croatia,180
+NK Triglav Kranj,2. SNL,77,Lan Jerak,Left-Back,04/12/2003,22,Slovenia,174
+NK Triglav Kranj,2. SNL,4,Tilen Klemencic,Right-Back,21/08/1995,31,Slovenia,180
+NK Triglav Kranj,2. SNL,2,Anej Doric,Right-Back,02/02/2007,19,Slovenia,
+NK Triglav Kranj,2. SNL,66,Jakub Supuk,Right-Back,01/01/2007,19,Slovenia,
+NK Triglav Kranj,2. SNL,58,Edvin Lukacevic,Midfielder,12/07/2005,21,Bosnia-Herzegovina,
+NK Triglav Kranj,2. SNL,66,Zan Kovacevic,Defensive Midfield,30/01/2006,20,Slovenia,
+NK Triglav Kranj,2. SNL,,Jakup Supuk,Midfielder,18/01/2007,19,Slovenia,
+NK Triglav Kranj,2. SNL,3,Liam Strnad,Defensive Midfield,04/04/2006,20,Slovenia,
+NK Triglav Kranj,2. SNL,85,Tim Istenic,Defensive Midfield,29/05/2007,19,Slovenia,
+NK Triglav Kranj,2. SNL,17,Luka Dovzan Karahodzic,Central Midfield,19/04/2006,20,Slovenia,188
+NK Triglav Kranj,2. SNL,80,Zan Zabkar,Central Midfield,30/03/2005,21,Slovenia,171
+NK Triglav Kranj,2. SNL,8,Gregor Medle,Central Midfield,28/06/2004,22,Slovenia,189
+NK Triglav Kranj,2. SNL,10,Nermin Hodzic,Central Midfield,13/07/1994,32,Bosnia-Herzegovina,179
+NK Triglav Kranj,2. SNL,21,Lucas Macak,Attacking Midfield,26/01/2005,21,Slovenia,185
+NK Triglav Kranj,2. SNL,76,Blaz Jemec,Attacking Midfield,06/05/2007,19,Slovenia,173
+NK Triglav Kranj,2. SNL,7,Niki Radovic,Left Winger,11/04/2004,22,Slovenia,184
+NK Triglav Kranj,2. SNL,99,Bor Bergant,Left Winger,01/01/2007,19,Slovenia,
+NK Triglav Kranj,2. SNL,42,Tihomir Maksimovic,Right Winger,24/03/2004,22,Slovenia,
+NK Triglav Kranj,2. SNL,11,Anej Lorbek,Right Winger,17/08/2006,20,Slovenia,175
+NK Triglav Kranj,2. SNL,22,Bujazid Hegic,Centre-Forward,25/03/2004,22,Netherlands/Bosnia-Herzegovina,195
+NK Triglav Kranj,2. SNL,9,Zvonimir Plavcic,Centre-Forward,01/09/2004,22,Bosnia-Herzegovina,190
+NK Triglav Kranj,2. SNL,15,Matej Poplatnik,Centre-Forward,15/07/1992,34,Slovenia,
+ND Bilje,2. SNL,13,Filip Panic,Goalkeeper,12/01/2008,18,Slovenia,
+ND Bilje,2. SNL,67,Borna Bosnjak,Goalkeeper,03/03/2005,21,Croatia,190
+ND Bilje,2. SNL,4,Marko Furlan,Centre-Back,09/08/2004,22,Slovenia,188
+ND Bilje,2. SNL,24,Alexander Stozinic,Centre-Back,27/10/1999,27,Slovenia,189
+ND Bilje,2. SNL,27,Tilen Colja,Centre-Back,19/04/2008,18,Slovenia,
+ND Bilje,2. SNL,5,Djordje Simic,Centre-Back,13/02/1995,31,Serbia/Bosnia-Herzegovina,186
+ND Bilje,2. SNL,23,Tine Kavcic,Centre-Back,16/02/1994,32,Slovenia,185
+ND Bilje,2. SNL,42,Vid Koder,Centre-Back,11/05/2008,18,Slovenia,
+ND Bilje,2. SNL,3,Lev Stekar,Left-Back,25/02/2006,20,Slovenia,
+ND Bilje,2. SNL,2,Mirko Mutavcic,Right-Back,29/01/2001,25,Slovenia,176
+ND Bilje,2. SNL,22,Rene Kogoi,Right-Back,16/08/2001,25,Slovenia,
+ND Bilje,2. SNL,97,Alex Borjancic,Right-Back,05/10/2007,19,Slovenia,
+ND Bilje,2. SNL,6,Sven Blecic,Defensive Midfield,06/03/2006,20,Croatia,183
+ND Bilje,2. SNL,16,Svit Blasko,Defensive Midfield,28/01/2008,18,Slovenia,
+ND Bilje,2. SNL,14,Ivo Janakievski,Defensive Midfield,09/06/1993,33,North Macedonia/Bulgaria,178
+ND Bilje,2. SNL,70,Romeo Bric,Central Midfield,13/07/2006,20,Slovenia,
+ND Bilje,2. SNL,73,Luka Spacapan,Central Midfield,19/06/2008,18,Slovenia,
+ND Bilje,2. SNL,30,Leon Marinic,Attacking Midfield,21/11/1997,28,Slovenia,183
+ND Bilje,2. SNL,21,Kalani Almeida,Left Winger,04/02/2002,24,Brazil/Portugal,177
+ND Bilje,2. SNL,17,Martin Ascic Pijaza,Left Winger,06/12/2004,21,Slovenia,175
+ND Bilje,2. SNL,19,Kristjan Kozar,Centre-Forward,13/06/2008,18,Slovenia,
+ND Bilje,2. SNL,7,Bissenty Ambroise Mendy,Centre-Forward,03/01/2006,20,Senegal,
+ND Bilje,2. SNL,9,Gideon Effiong Ukpong,Centre-Forward,01/01/2007,19,Nigeria,
+NK Kety Emmi Bistrica,2. SNL,1,Primoz Fridrih,Goalkeeper,09/05/2004,22,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,12,Eldar Taghizada,Goalkeeper,30/05/2003,23,Azerbaijan,191
+NK Kety Emmi Bistrica,2. SNL,13,Luka Kramberger,Goalkeeper,11/11/2009,17,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,5,Leo Jusic,Centre-Back,27/04/2006,20,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,23,Tin Martic,Centre-Back,27/03/1996,30,Croatia,186
+NK Kety Emmi Bistrica,2. SNL,88,Aleks Korosec,Centre-Back,01/01/2006,20,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,33,Klevis Haxhari,Centre-Back,01/05/2005,21,Albania/United States,
+NK Kety Emmi Bistrica,2. SNL,3,Sen Dzumhur,Left-Back,26/10/2005,21,Slovenia,178
+NK Kety Emmi Bistrica,2. SNL,21,Stijan Gobec,Right-Back,18/12/2008,17,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,66,Mark Kerin,Defensive Midfield,06/06/2007,19,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,9,Vid Tramsek,Midfielder,14/05/2008,18,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,30,Tit Vezovisek,Midfielder,09/02/2007,19,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,33,Ermal Memaj,Midfielder,12/05/2006,20,Kosovo/Slovenia,185
+NK Kety Emmi Bistrica,2. SNL,55,Lan Mesaric,Midfielder,11/08/2006,20,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,24,Miha Sitar,Central Midfield,04/12/2004,21,Slovenia,178
+NK Kety Emmi Bistrica,2. SNL,20,Bruno Putica,Central Midfield,27/07/2006,20,Croatia,181
+NK Kety Emmi Bistrica,2. SNL,47,Aleks Repina,Central Midfield,16/01/2007,19,Slovenia,188
+NK Kety Emmi Bistrica,2. SNL,22,Vicko Ozegovic,Attacking Midfield,17/08/2002,24,Croatia,
+NK Kety Emmi Bistrica,2. SNL,8,Domagoj Vidovic,Attacking Midfield,05/07/2005,21,Croatia,
+NK Kety Emmi Bistrica,2. SNL,7,Patrik Katic,Attacking Midfield,05/04/2005,21,Slovenia,180
+NK Kety Emmi Bistrica,2. SNL,15,Domen Brumec,Right Winger,23/02/2005,21,Slovenia,180
+NK Kety Emmi Bistrica,2. SNL,78,Marcel Cernivsek,Right Winger,14/05/2007,19,Slovenia,175
+NK Kety Emmi Bistrica,2. SNL,11,Maro Vrdoljak,Centre-Forward,02/05/2004,22,Croatia,189
+NK Kety Emmi Bistrica,2. SNL,10,Lazar Ikac,Centre-Forward,01/01/2003,23,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,16,Aleksander Juvan,Centre-Forward,05/04/2008,18,Slovenia,
+NK Kety Emmi Bistrica,2. SNL,77,Rok Kidric,Centre-Forward,27/04/1995,31,Slovenia,194
+ND Slovan Ljubljana,2. SNL,1,Som Kumar,Goalkeeper,27/02/2005,21,India,191
+ND Slovan Ljubljana,2. SNL,16,Deen Dekleva,Goalkeeper,01/01/2007,19,Slovenia,
+ND Slovan Ljubljana,2. SNL,6,Leonardo Adrovic,Centre-Back,23/02/2005,21,Slovenia,192
+ND Slovan Ljubljana,2. SNL,24,Lev Bohinc,Centre-Back,08/06/2006,20,Slovenia,
+ND Slovan Ljubljana,2. SNL,3,Andraz Miklic,Centre-Back,16/02/2005,21,Slovenia,
+ND Slovan Ljubljana,2. SNL,25,Mark Stojinovic,Centre-Back,18/05/2005,21,Slovenia,
+ND Slovan Ljubljana,2. SNL,,Sragvin Machihally Venkatesh,Centre-Back,01/01/2006,20,India,
+ND Slovan Ljubljana,2. SNL,23,Svit Oblak,Left-Back,29/06/2007,19,Slovenia,178
+ND Slovan Ljubljana,2. SNL,17,Tilen Mlakar,Left-Back,26/04/1995,31,Slovenia,
+ND Slovan Ljubljana,2. SNL,2,Aldin Sakanovic,Left-Back,01/01/2007,19,Slovenia,
+ND Slovan Ljubljana,2. SNL,18,Tej Benedicic Bizjak,Right-Back,14/06/2006,20,Slovenia,187
+ND Slovan Ljubljana,2. SNL,27,Tim Matanovic,Right-Back,08/12/2005,20,Slovenia,
+ND Slovan Ljubljana,2. SNL,21,Evan Avsenek,Right-Back,11/09/2007,19,Slovenia,
+ND Slovan Ljubljana,2. SNL,5,Hanan Durakovic,Defensive Midfield,16/04/2005,21,Bosnia-Herzegovina,184
+ND Slovan Ljubljana,2. SNL,22,David Zinko,Defensive Midfield,16/10/2007,19,Slovenia,
+ND Slovan Ljubljana,2. SNL,4,Matej Crnugelj,Midfielder,01/05/2007,19,Slovenia,
+ND Slovan Ljubljana,2. SNL,20,Luca Swinton,Defensive Midfield,28/05/2003,23,Italy/Scotland,184
+ND Slovan Ljubljana,2. SNL,7,Matevz Vrabec,Central Midfield,17/10/2006,20,Slovenia,
+ND Slovan Ljubljana,2. SNL,14,Aboubakar Sidiki Drame,Central Midfield,01/01/2005,21,Nigeria,
+ND Slovan Ljubljana,2. SNL,15,Joce Siber,Central Midfield,07/10/2000,26,France,
+ND Slovan Ljubljana,2. SNL,10,Tian Kujovic,Left Winger,03/03/2005,21,Slovenia,
+ND Slovan Ljubljana,2. SNL,11,Jon Kancilija,Left Winger,20/12/2007,18,Slovenia,
+ND Slovan Ljubljana,2. SNL,30,Martin Magister,Right Winger,03/09/2003,23,Slovenia/Argentina,
+ND Slovan Ljubljana,2. SNL,13,Denis Leban,Right Winger,17/02/2004,22,Slovenia,
+ND Slovan Ljubljana,2. SNL,26,Jakob Raspet,Centre-Forward,05/08/2007,19,Slovenia,
+ND Slovan Ljubljana,2. SNL,9,Danijel Dzajic,Centre-Forward,15/07/2004,22,Slovenia,185
+ND Slovan Ljubljana,2. SNL,19,Eso Hankusic,Striker,13/10/2008,18,Slovenia,
+ND Slovan Ljubljana,2. SNL,99,Denis Hamulic,Centre-Forward,10/07/2006,20,Slovenia,
+NK Rudar Velenje,2. SNL,66,Denny Tiganj,Goalkeeper,04/03/2003,23,Slovenia,195
+NK Rudar Velenje,2. SNL,31,Nemanja Novakovic,Goalkeeper,03/07/2003,23,Serbia/Croatia,197
+NK Rudar Velenje,2. SNL,16,Nemanja Studen,Centre-Back,25/08/2007,19,Serbia,187
+NK Rudar Velenje,2. SNL,18,Benjamin Valentic,Centre-Back,01/01/2006,20,Slovenia,
+NK Rudar Velenje,2. SNL,25,Luka Mociler,Centre-Back,16/02/2006,20,Slovenia,
+NK Rudar Velenje,2. SNL,5,Tilen Rajter Krebs,Left-Back,03/12/2005,20,Slovenia,
+NK Rudar Velenje,2. SNL,24,Davud Jusic,Left-Back,03/01/2008,18,Bosnia-Herzegovina/Austria,
+NK Rudar Velenje,2. SNL,15,Alen Bukovec,Right-Back,13/12/2005,20,Slovenia,182
+NK Rudar Velenje,2. SNL,14,Luka Pek,Right-Back,11/09/2007,19,Slovenia,
+NK Rudar Velenje,2. SNL,3,Gasper Rotovnik Gabersek,Defensive Midfield,10/06/2004,22,Slovenia,
+NK Rudar Velenje,2. SNL,20,Adam Vosnjak,Defensive Midfield,26/07/2000,26,Slovenia,180
+NK Rudar Velenje,2. SNL,23,Zak Paulo Piplica,Defensive Midfield,14/08/2001,25,Germany/Bosnia-Herzegovina,179
+NK Rudar Velenje,2. SNL,13,Jure Bernjak,Defensive Midfield,15/01/2007,19,Slovenia,
+NK Rudar Velenje,2. SNL,8,Gal Gorenak,Central Midfield,24/10/2003,23,Slovenia,180
+NK Rudar Velenje,2. SNL,6,Martin Plavec Markovic,Central Midfield,11/07/2005,21,Croatia,
+NK Rudar Velenje,2. SNL,10,Rocco Vicol,Attacking Midfield,02/01/2004,22,Austria/Romania,175
+NK Rudar Velenje,2. SNL,22,Matija Stojanovic,Attacking Midfield,24/11/2005,20,Serbia,175
+NK Rudar Velenje,2. SNL,4,Balsa Vukcevic,Attacking Midfield,10/10/2007,19,Montenegro,191
+NK Rudar Velenje,2. SNL,17,Lan Husejnovic,Attacking Midfield,10/01/2007,19,Slovenia,
+NK Rudar Velenje,2. SNL,17,Tian Pantelic,Left Winger,31/05/2001,25,Slovenia,
+NK Rudar Velenje,2. SNL,11,Marko Simic,Left Winger,12/07/2004,22,Switzerland/Serbia,183
+NK Rudar Velenje,2. SNL,21,Sabur Ali,Left Winger,23/11/2005,20,Slovenia,
+NK Rudar Velenje,2. SNL,7,Sandro Zukic,Right Winger,02/08/2000,26,Slovenia/Serbia,178
+NK Rudar Velenje,2. SNL,6,Valent Savor,Right Winger,06/08/2006,20,Slovenia,184
+NK Rudar Velenje,2. SNL,9,Josip Perkovic,Centre-Forward,14/02/2005,21,Croatia,
+NK Rudar Velenje,2. SNL,19,Dominik Simic,Centre-Forward,01/07/2007,19,Croatia/Switzerland,
