@@ -619,7 +619,7 @@ input[type="search"], select {
     if (!fx) return viewHome();
     function side(cid) {
       var L = lineupOf(cid), bench = benchOf(cid).slice(0, 7);
-      return '<section class="panel" style="padding:12px;display:grid;gap:10px"><h3 style="margin:0"><span class="club-cell">' + badge(cid, 24) + esc(club(cid).name) + '</span> <span class="muted" style="font-weight:600">' + L.formation + "</span></h3>" +
+      return '<section class="panel" style="padding:12px;display:grid;gap:10px"><h3 style="margin:0;display:flex;align-items:center;gap:8px;line-height:1">' + badge(cid, 24) + "<span>" + esc(club(cid).name) + '</span><span class="muted" style="font-weight:600;margin-left:auto">' + L.formation + "</span></h3>" +
         miniPitch(cid) + '<div class="label">Substitutes</div><div style="display:grid;gap:4px">' + bench.map(function (p) {
           return '<div class="row-b" style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center"><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span><span>" + esc(p.name) + '</span><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + "</span></div>";
         }).join("") + "</div></section>";
