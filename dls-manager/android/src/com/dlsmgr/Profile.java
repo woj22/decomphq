@@ -99,15 +99,6 @@ final class Profile {
             }
             order.set(j + 1, x);
         }
-        int n = order.size();
-        // The squad holds the club's players by their DLS database ids, the same way the game
-        // stores signed players (e.g. Ronaldo = 382). Custom-player records are left as they
-        // are (match history refers to them) but no longer in the squad.
-        int[] ids = new int[n];
-        for (int i = 0; i < n; i++) {
-            ids[i] = order.get(i).getInt("id");
-        }
-
         // old layout
         int nOld = d[0x20] & 0xFF;
         int p = 0x21 + nOld * REC;
@@ -125,6 +116,20 @@ final class Profile {
         int luN = d[lu] & 0xFF;
         int afterLu = lu + 1 + 2 * luN;
         int takersO = afterLu + 3;
+
+        // Every list keeps its current length (v42 lengthened the squad/line-up lists, which
+        // shifted the data after them and the game crashed reading its competitions). The
+        // squad holds the club's players by DLS database id, as the game stores signed players;
+        // custom-player records stay in the file (history refers to them) but leave the squad.
+        int n = sOld;
+        if (order.size() < n || devCnt != sOld || luN != sOld) {
+            throw new Exception("unexpected save layout: squad " + sOld + ", development " + devCnt
+                    + ", line-up " + luN + ", club players " + order.size());
+        }
+        int[] ids = new int[n];
+        for (int i = 0; i < n; i++) {
+            ids[i] = order.get(i).getInt("id");
+        }
 
         ByteArrayOutputStream o = new ByteArrayOutputStream(d.length + 8192);
         o.write(d, 0, p);  // header + custom players unchanged

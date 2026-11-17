@@ -338,14 +338,14 @@ public final class Overlay {
      * club-switch file, keeping the current profile as profile_backup_recover1.dat.
      */
     static void recover(Context ctx, File dir) {
-        File mark = new File(dir, "dlsmgr_recovered1.done");
+        File mark = new File(dir, "dlsmgr_recovered2.done");  // v43: second recovery (v42 saves crashed)
         if (mark.exists()) {
             return;
         }
         try {
             File prof = new File(dir, "profile.dat");
             if (prof.exists()) {
-                copy(new FileInputStream(prof), new File(dir, "profile_backup_recover1.dat"));
+                copy(new FileInputStream(prof), new File(dir, "profile_backup_recover2.dat"));
             }
             copy(ctx.getAssets().open("dlsmgr/profile_restore_orig1.dat"), prof);
             String[] gone = {"profile_temp.dat", "dlsmgr_club.txt", "dlsmgr_pending_club.txt", "dlsmgr_switching.txt",
