@@ -76,6 +76,30 @@ void FUN_001dc1d8(void *);
 void *fopen_plt(const char *, const char *);
 int fprintf_plt(void *, const char *, ...);
 int fclose_plt(void *);
+long *FUN_0034da64(void);                 /* JNIEnv* for this thread */
+void *FUN_0034db84(const char *);         /* game class by short name (local ref) */
+void FUN_000a45f0(long *, void *, void *, ...);  /* CallStaticVoidMethod */
+
+/*
+ * Tell the menus about the match, straight from the game thread: calls the static Java method
+ * FTTMainActivity.DlsmgrEvent(int) (added in smali, forwards to com.dlsmgr.Overlay.nativeEvent)
+ * the way the game calls CheckImmersive. 1 = the match is on screen, 2 = full time.
+ */
+static void java_event(int code)
+{
+    long *env = FUN_0034da64();
+    if (!env)
+        return;
+    void **fn = *(void ***)env;
+    void *cls = FUN_0034db84("MainActivity");
+    if (!cls)
+        return;
+    void *mid = ((void *(*)(long *, void *, const char *, const char *))fn[0x388 / 8])(env, cls, "DlsmgrEvent", "(I)V");
+    if (mid)
+        FUN_000a45f0(env, cls, mid, code);
+    ((void (*)(long *))fn[0x88 / 8])(env);              /* ExceptionClear */
+    ((void (*)(long *, void *))fn[0xb8 / 8])(env, cls);  /* DeleteLocalRef */
+}
 
 /* full-time result for the menus (app-private files dir; Java polls it) */
 #define RESULT_FILE "/data/data/com.firsttouchgames.dls3/files/dlsmgr_result.txt"
@@ -94,11 +118,13 @@ static void exhibition_fulltime(void)
     r[0xe] = m[0x9f0c];
     *(u32 *)r = *(u32 *)r + 1;
     *(u16 *)(PAGE + 0xf04) = 0;  /* one match per request */
+    PAGE[0xf0c] = 0;
     void *f = fopen_plt(RESULT_FILE, "w");
     if (f) {
         fprintf_plt(f, "%d,%d,%d,%d,%u\n", *(int *)(r + 4), *(int *)(r + 8), r[0xc], r[0xd], *(u32 *)r);
         fclose_plt(f);
     }
+    java_event(2);  /* menus up now (score already in the file), before the hub is drawn */
     /* back to the hub, as the league handler does, without touching the season or saving */
     FUN_00169f44(5, 0, 0, 0, m[0x9ef4] == 0, 0);
 }
@@ -208,6 +234,15 @@ static void *make_sheet(u8 *sheet, int team, u8 *src)
  */
 void exhibition_poll(void)
 {
+    /* match screen (FUN_0013f9d4, its object recorded by match_screen_hook) finished loading:
+       the match is on screen, the menus can step aside */
+    if (PAGE[0xf0c] == 1) {
+        u8 *scr = *(u8 **)(PAGE + 0xf28);
+        if (scr && scr[0x139]) {
+            PAGE[0xf0c] = 2;
+            java_event(1);
+        }
+    }
     if (PAGE[0xf00] != 4)
         return;
     PAGE[0xf00] = 0;
@@ -218,6 +253,8 @@ void exhibition_poll(void)
     int home = (ov & 0x4000) ? USER : team;
     int away = (ov & 0x4000) ? team : USER;
     u64 hbuf[0x50], abuf[0x50];  /* 0x280 bytes each; a sheet is 0x1a0 */
+    *(u64 *)(PAGE + 0xf28) = 0;
+    PAGE[0xf0c] = 1;
     FUN_001d728c(0);
     FUN_001d72ec();
     void *hs = make_sheet((u8 *)hbuf, home, PAGE + 0xf40);

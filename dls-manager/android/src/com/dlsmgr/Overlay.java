@@ -633,6 +633,36 @@ public final class Overlay {
         }
     }
 
+    static volatile boolean matchShown;
+
+    /**
+     * Called by the game thread through FTTMainActivity.DlsmgrEvent (tools/apk_patch/exhibition.c):
+     * 1 = the match has loaded and is on screen, 2 = full time (before DLS shows its own screens).
+     */
+    public static void nativeEvent(int code) {
+        if (code == 1) {
+            matchShown = true;
+            activity.runOnUiThread(new MatchTask());
+        } else if (code == 2) {
+            activity.runOnUiThread(new ShowTask());
+        }
+    }
+
+    /** If the match-loaded call never arrives, step aside after 30 s so the match can be played. */
+    static final class LoadTimeout implements Runnable {
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                return;
+            }
+            if (!matchShown) {
+                activity.runOnUiThread(new MatchTask());
+            }
+        }
+    }
+
     /** During a match nothing of ours is on screen (not even the Manager button). */
     static final class MatchTask implements Runnable {
         @Override
@@ -683,10 +713,14 @@ public final class Overlay {
                 // opponent first, then 0x5A5E0004 = start it on the next game frame. The menus
                 // come back by themselves at full time (ResultWatch).
                 String before = resultSeq();
+                matchShown = false;
                 nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
                 nativeRequest(0x5A5E0004);
-                activity.runOnUiThread(new MatchTask());
+                // The menus stay up (showing their kick-off screen) while DLS loads the match;
+                // the game calls nativeEvent(1) once the match is on screen and nativeEvent(2) at
+                // full time. ResultWatch / LoadTimeout are fallbacks if those calls never come.
                 new Thread(new ResultWatch(before), "dlsmgr-result").start();
+                new Thread(new LoadTimeout(), "dlsmgr-load").start();
                 return "";
             } catch (Throwable t) {
                 return String.valueOf(t);
@@ -719,10 +753,14 @@ public final class Overlay {
                     nativeRequest(0x5A5E2000 | (b & 0xff));
                 }
                 String before = resultSeq();
+                matchShown = false;
                 nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
                 nativeRequest(0x5A5E0004);
-                activity.runOnUiThread(new MatchTask());
+                // The menus stay up (showing their kick-off screen) while DLS loads the match;
+                // the game calls nativeEvent(1) once the match is on screen and nativeEvent(2) at
+                // full time. ResultWatch / LoadTimeout are fallbacks if those calls never come.
                 new Thread(new ResultWatch(before), "dlsmgr-result").start();
+                new Thread(new LoadTimeout(), "dlsmgr-load").start();
                 return "";
             } catch (Throwable t) {
                 lastError = String.valueOf(t);

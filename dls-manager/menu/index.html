@@ -491,7 +491,7 @@ input[type="search"], select {
   function render() {
     if (ui.title) return renderTitle();
     if (!S) return renderNewGame();
-    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch }[ui.screen] || viewHome)() + "</main>";
+    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
   }
@@ -629,6 +629,14 @@ input[type="search"], select {
       '<section class="panel score-card"><div class="scoreline"><div class="side">' + badge(fx.home, 56) + esc(club(fx.home).name) + '</div><div class="score">vs</div><div class="side">' + badge(fx.away, 56) + esc(club(fx.away).name) + '</div></div>' +
       '<p class="muted" style="margin:0;text-align:center">' + esc(club(fx.home).stadium || "") + " · " + dateOf(fx.week) + "</p></section>" +
       '<div class="two-col">' + side(fx.home) + side(fx.away) + "</div>";
+  }
+
+  function viewKickoff() {
+    var fx = nextFixture();
+    if (!fx) return viewHome();
+    return '<section class="panel score-card" style="margin-top:12vh"><div class="scoreline"><div class="side">' + badge(fx.home, 72) + esc(club(fx.home).name) +
+      '</div><div class="score">vs</div><div class="side">' + badge(fx.away, 72) + esc(club(fx.away).name) + "</div></div>" +
+      '<p class="muted" style="margin:0;text-align:center">' + esc(club(fx.home).stadium || "") + '</p><p style="margin:0;text-align:center;font-weight:800">Kick-off…</p></section>';
   }
 
   function viewFixtures() {
@@ -820,8 +828,11 @@ input[type="search"], select {
                       before: window.DLSManager.lastMatch() };
         save();
         var sheets = { home: dlsSheet(fx.home), away: dlsSheet(fx.away) };
-        var err = window.DLSManager.kickOff(opp, userHome, JSON.stringify(sheets));
-        if (err) modal('<h2>Could not start the match</h2><p class="muted" style="margin:0">' + esc(err) + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+        ui.screen = "kickoff"; render();  // stays up while the game loads the match underneath
+        setTimeout(function () {
+          var err = window.DLSManager.kickOff(opp, userHome, JSON.stringify(sheets));
+          if (err) { ui.screen = "prematch"; render(); modal('<h2>Could not start the match</h2><p class="muted" style="margin:0">' + esc(err) + '</p><button class="btn primary" data-act="closemodal">OK</button>'); }
+        }, 60);
         return;
       }
       return modal('<h2>Kick-off</h2><p class="muted" style="margin:0">Inside the game this starts the real DLS19 match with these two line-ups. In the web preview use Quick Sim.</p><button class="btn primary" data-act="closemodal">OK</button>');
