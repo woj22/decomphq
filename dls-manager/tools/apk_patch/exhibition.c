@@ -176,6 +176,10 @@ int exhibition_start2(int home, int away, void *homeSheet, void *awaySheet)
     *(u64 *)(PTR_compinfo + 8) = 0;
     FUN_001d69f4((void *)exhibition_fulltime);
     *(u8 **)(PTR_state + 0xfb8) = prof + 0x22800;
+    /* Assists off for our matches (profile control settings, as the game's Controls screen
+       sets them): +0x6145 cross assist (0 off), +0x6146 kick assist (0 off). */
+    prof[0x6145] = 0;
+    prof[0x6146] = 0;
     long kitinfo = (long)((u64)*(u32 *)(prof + 0x6144) << 32);
     FUN_001d6ba8(USER != *(int *)(m + 0x3848), &kitinfo);
 

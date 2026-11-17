@@ -162,6 +162,15 @@ public final class Overlay {
         File current = new File(dir, "dlsmgr_club.txt");
         File prof0 = new File(dir, "profile.dat");
         saveLogcat(dir);
+        // DLS keeps a "match in progress" file and resumes that match at start-up; a match
+        // interrupted by a crash then crashed every launch (v56). Matches are only ever started
+        // from the menus, so it's always removed.
+        for (String nm : new String[]{"CurrentMatch.dat", "currentmatch.dat"}) {
+            File cm = new File(dir, nm);
+            if (cm.exists() && cm.delete()) {
+                log(dir, "removed DLS's interrupted-match file " + nm);
+            }
+        }
         recover(ctx, dir);
         try {
             // One-off: the player's own save (exported before v33) bundled as

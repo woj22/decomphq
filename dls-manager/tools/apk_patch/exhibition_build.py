@@ -20,7 +20,7 @@ HOOK = 0x273170           # FUN_00273170 entry: stp x28, x27, [sp, #-0x60]!
 SYMS = {
     "PTR_profile": 0x54cc30, "PTR_match": 0x54d950, "PTR_state": 0x54ccc8, "PTR_compinfo": 0x54d928,
     "PTR_compdef": 0x54c4f8, "PAGE": 0x7c3000, "time_plt": 0x8a310, "memcpy_plt": 0x8a4c0,
-    "memcpy": 0x8a4c0, "fopen_plt": 0x8ad40, "fprintf_plt": 0x8a610, "fclose_plt": 0x8b390, "FUN_002b9150": 0x2b9150, "FUN_0013f9d8": 0x13f9d8, "WEATHER": 0x5cd804, "TIMEOFDAY": 0x5cc8dc, "memset": 0x8a820, "FUN_00273174": 0x273174, "PROFILE_FRAME": 0x525280,
+    "memcpy": 0x8a4c0, "fopen_plt": 0x8ad40, "fprintf_plt": 0x8a610, "fclose_plt": 0x8b390, "FUN_002b9150": 0x2b9150, "FUN_0013f9d8": 0x13f9d8, "FUN_001dc6c0": 0x1dc6c0, "WEATHER": 0x5cd804, "TIMEOFDAY": 0x5cc8dc, "memset": 0x8a820, "FUN_00273174": 0x273174, "PROFILE_FRAME": 0x525280,
 }
 FUNCS = ["002a25f8", "001d8354", "000a4a00", "001d8b34", "0027dc84", "0027eabc", "0027eac4", "00283470",
          "002b5760", "000b35c8", "001d72a0", "001d69f4", "001d6ba8", "00273a9c", "002b70e8", "002b70dc",
@@ -62,6 +62,13 @@ ndb_hook:
     str x19, [sp, #-0x20]!
     b FUN_002b9150
 
+.global sheet_guard
+sheet_guard:                  // FUN_001dc6bc(team sheet): nothing to do without a sheet
+    cbz x0, 2f
+    stp x28, x27, [sp, #-0x60]!
+    b FUN_001dc6c0
+2:  ret
+
 .global match_screen_hook
 match_screen_hook:
     adrp x16, PAGE
@@ -69,6 +76,7 @@ match_screen_hook:
     str d8, [sp, #-0x30]!
     b FUN_0013f9d8
 """
+SHEETFN = 0x1dc6bc        # FUN_001dc6bc: stp x28, x27, [sp, #-0x60]!
 INTRO = 0x2624ac          # FUN_002620f8: bl FUN_00257820 (show the team-intro card?)
 RENDER = 0x1692a8         # FUN_001691d4: bl FUN_001693e8 (draw the screen stack)
 MSCREEN = 0x13f9d4        # FUN_0013f9d4 (match screen update): str d8, [sp, #-0x30]!
@@ -117,6 +125,9 @@ def main():
     old = struct.unpack_from("<I", lib, NDB)[0]
     assert old == 0xf81e0ff3, hex(old)
     words[NDB] = (old, 0x14000000 | (((sym["ndb_hook"] - NDB) >> 2) & 0x3ffffff))
+    old = struct.unpack_from("<I", lib, SHEETFN)[0]
+    assert old == 0xa9ba6ffc, hex(old)
+    words[SHEETFN] = (old, 0x14000000 | (((sym["sheet_guard"] - SHEETFN) >> 2) & 0x3ffffff))
     old = struct.unpack_from("<I", lib, INTRO)[0]
     assert old == 0x97ffd4dd, hex(old)
     words[INTRO] = (old, 0x94000000 | (((sym["intro_gate"] - INTRO) >> 2) & 0x3ffffff))
