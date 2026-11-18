@@ -62,6 +62,11 @@ public final class Overlay {
         applyClub(context);
         activity = (Activity) context;
         try {
+            activity.getApplication().registerActivityLifecycleCallbacks(new Life());
+        } catch (Throwable t) {
+            lastError = String.valueOf(t);
+        }
+        try {
             Loader.show(activity);  // the AM27 loading screen, over DLS's own splash
         } catch (Throwable t) {
             lastError = String.valueOf(t);
@@ -87,7 +92,7 @@ public final class Overlay {
         s.setDomStorageEnabled(true);
         s.setDatabaseEnabled(true);
         s.setAllowFileAccess(true);
-        s.setMediaPlaybackRequiresUserGesture(true);
+        s.setMediaPlaybackRequiresUserGesture(false);  // menu music starts by itself
         w.setBackgroundColor(Color.rgb(11, 14, 13));
         w.setWebViewClient(new WebViewClient());
         w.setWebChromeClient(new WebChromeClient());
@@ -149,6 +154,7 @@ public final class Overlay {
         reopen.setVisibility(View.GONE);
         Loader.top();
         frontEnd(false);
+        music("hidden", false);
         web.evaluateJavascript("window.dlsOnShow && window.dlsOnShow()", null);
     }
 
@@ -160,6 +166,7 @@ public final class Overlay {
         reopen.setVisibility(View.VISIBLE);
         reopen.bringToFront();
         frontEnd(true);  // the player asked to see DLS itself
+        music("hidden", true);
     }
 
     /**
@@ -1153,6 +1160,24 @@ public final class Overlay {
         public void run() {
             Overlay.hide();
         }
+    }
+
+    /** Tell the menus' music player about something that should silence it (or no longer). */
+    static void music(String gate, boolean on) {
+        if (web != null) {
+            web.evaluateJavascript("window.dlsMusicGate && window.dlsMusicGate('" + gate + "'," + on + ")", null);
+        }
+    }
+
+    /** The app going to the background (or coming back) pauses the menu music. */
+    static final class Life implements android.app.Application.ActivityLifecycleCallbacks {
+        public void onActivityPaused(Activity a) { if (a == activity) music("paused", true); }
+        public void onActivityResumed(Activity a) { if (a == activity) music("paused", false); }
+        public void onActivityCreated(Activity a, android.os.Bundle b) {}
+        public void onActivityStarted(Activity a) {}
+        public void onActivityStopped(Activity a) { if (a == activity) music("paused", true); }
+        public void onActivitySaveInstanceState(Activity a, android.os.Bundle b) {}
+        public void onActivityDestroyed(Activity a) {}
     }
 
     static final class LoadedTask implements Runnable {

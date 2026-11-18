@@ -25,6 +25,8 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--leagues", help="folder of league logos <league id>.png (copied to leagues/)")
     ap.add_argument("--clubs", help="clubs.json (build_club_squads.py): adds each player's DLS id as 'dls'")
+    ap.add_argument("--ui", help="folder of title / loading pictures and logos (copied to bg/)")
+    ap.add_argument("--music", help="folder of menu songs (.m4a/.mp3/.ogg, copied to music/ and listed in music/list.js)")
     a = ap.parse_args()
 
     if os.path.exists(a.out):
@@ -47,7 +49,7 @@ def main():
         html = ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" '
                 'content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>\n'
                 + html + "\n</body></html>\n")
-    html = html.replace("<script>", '<script src="data.js"></script>\n<script>', 1)
+    html = html.replace("<script>", '<script src="data.js"></script>\n<script src="music/list.js"></script>\n<script>', 1)
     open(os.path.join(a.out, "index.html"), "w", encoding="utf-8").write(html)
 
     data = json.load(open(os.path.join(a.menu, "data.json"), encoding="utf-8"))
@@ -83,8 +85,22 @@ def main():
         if f.endswith(".png"):
             shutil.copy(os.path.join(a.badges, f), os.path.join(a.out, "badges", f))
             n += 1
+    if a.ui:
+        os.makedirs(os.path.join(a.out, "bg"), exist_ok=True)
+        for f in os.listdir(a.ui):
+            if f.lower().endswith((".jpg", ".png")):
+                shutil.copy(os.path.join(a.ui, f), os.path.join(a.out, "bg", f))
+    songs = []
+    if a.music:
+        os.makedirs(os.path.join(a.out, "music"), exist_ok=True)
+        for f in sorted(os.listdir(a.music)):
+            if f.lower().endswith((".m4a", ".mp3", ".ogg")):
+                shutil.copy(os.path.join(a.music, f), os.path.join(a.out, "music", f))
+                songs.append("music/" + f)
+        with open(os.path.join(a.out, "music", "list.js"), "w") as fh:
+            fh.write("window.MUSIC_FILES = " + json.dumps(songs) + ";\n")
     size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(a.out) for f in fs)
-    print(f"menu assets: index.html, data.js, {n} badges, {len(faces)} font weights, {size // 1024} KB -> {a.out}")
+    print(f"menu assets: index.html, data.js, {n} badges, {len(faces)} font weights, {len(songs)} songs, {size // 1024} KB -> {a.out}")
 
 
 if __name__ == "__main__":

@@ -72,18 +72,26 @@ def main():
         d = os.path.join(a.out_res, "mipmap-" + dn)
         os.makedirs(d, exist_ok=True)
         full = int(108 * k)     # adaptive layers: 108dp, safe zone the middle 66dp
-        # the painting is landscape with his face near the top: show it a little smaller and
-        # lower, over a blurred copy, so masks (circles, squircles) keep the whole head
-        base = cover(src, full, cx=0.56, cy=0.0, zoom=1.0)
-        bg = base.filter(ImageFilter.GaussianBlur(full * 0.05))
-        inner = cover(src, int(full * 0.86), cx=0.56, cy=0.0, zoom=1.0)
-        fade = Image.new("L", inner.size, 255)
-        fd = ImageDraw.Draw(fade)
-        e = int(inner.width * 0.12)
-        for i in range(e):
-            v = int(255 * i / e)
-            fd.rectangle((i, i, inner.width - 1 - i, inner.height - 1 - i), outline=v)
-        bg.paste(inner, ((full - inner.width) // 2, int(full * 0.17)), fade)
+        # the painting edge to edge (no blurred fill); the crop starts at its top edge so the
+        # whole head stays inside round and squircle masks
+        # the painting a bit smaller and lower, the strip above filled with a mirrored copy of
+        # its own top edge (the rainy stand), so his whole head sits inside the launcher masks
+        top = int(full * 0.2)
+        bh = full - top
+        sc = img_scale = bh / src.height
+        wide = src.resize((round(src.width * img_scale), bh), Image.LANCZOS)
+        x0 = max(0, min(wide.width - full, int(wide.width * 0.56 - full / 2)))
+        body = wide.crop((x0, 0, x0 + full, bh))
+        bg = Image.new("RGBA", (full, full))
+        # filler from the empty stand at the painting's left edge (no head in it), tiled with
+        # mirrored copies so there are no hard seams
+        pw = max(8, int(wide.width * 0.25))
+        piece = wide.crop((0, 0, pw, top)).transpose(Image.FLIP_TOP_BOTTOM)
+        strip = Image.new("RGBA", (full, top))
+        for i, x in enumerate(range(0, full, pw)):
+            strip.paste(piece if i % 2 == 0 else piece.transpose(Image.FLIP_LEFT_RIGHT), (x, 0))
+        bg.paste(strip, (0, 0))
+        bg.paste(body, (0, top))
         # darken the lower half a little so the logo stands out
         shade = Image.new("RGBA", (full, full))
         sd = ImageDraw.Draw(shade)
@@ -93,8 +101,8 @@ def main():
         bg.alpha_composite(shade)
         fg = Image.new("RGBA", (full, full))
         lg = logo(a.font, int(full * 0.2))
-        lg.thumbnail((int(full * 0.58), full), Image.LANCZOS)
-        fg.alpha_composite(lg, ((full - lg.width) // 2, int(full * 0.79) - lg.height))
+        lg.thumbnail((int(full * 0.46), full), Image.LANCZOS)
+        fg.alpha_composite(lg, ((full - lg.width) // 2, int(full * 0.77) - lg.height))
         bg.save(os.path.join(d, "ic_launcher_background.png"), optimize=True)
         fg.save(os.path.join(d, "ic_launcher_foreground.png"), optimize=True)
         legacy = int(48 * k)

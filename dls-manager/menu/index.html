@@ -2468,6 +2468,7 @@ input[type="search"], select {
     if (ev.target && ev.target.hasAttribute && ev.target.hasAttribute("data-indiv") && S) { (S.indiv = S.indiv || {})[ev.target.getAttribute("data-indiv")] = ev.target.value; save(); return; }
     if (ev.target && ev.target.id === "badj") { var bv = +ev.target.value, bt = document.getElementById("badjv"); if (bt) bt.textContent = bv > 0 ? fmtM(bv) + " from transfers → +" + fmtM(bv / 104) + "/wk wages" : bv < 0 ? fmtM(-bv / 104) + "/wk wages → +" + fmtM(-bv) + " transfers" : "No change"; return; }
     if (ev.target && ev.target.id === "mgrname" && S) { mgr().name = ev.target.value.trim().slice(0, 28); save(); }
+    if (ev.target && (ev.target.id === "musicon" || ev.target.id === "musicvol")) { var mp = Music.prefs(); if (ev.target.id === "musicon") mp.on = ev.target.value === "1"; else mp.vol = (+ev.target.value || 0) / 100; Music.setPrefs(mp); }
     if (ev.target && ev.target.id === "themesel") { try { localStorage.setItem("dlsmgr-theme", ev.target.value); } catch (e) {} applyTheme(ev.target.value); ui.titleBg = null; render(); }
     if (ev.target && ev.target.id === "diffsel" && S) { S.difficulty = ev.target.value; save(); }
   });
@@ -3075,6 +3076,47 @@ input[type="search"], select {
       "</div></nav></main>";
   }
 
+  // ---- menu music: the owner's songs (assets/dlsmgr/music, listed in music/list.js), shuffled,
+  // only while the menus are what's on screen (never in matches, intros, DLS's own menus or
+  // with the app in the background); fades in and out. Settings: on/off and volume (per device).
+  var Music = (function () {
+    var a = null, order = [], pos = 0, last = -1, gates = {}, cur = 0, started = false;
+    function prefs() { try { return JSON.parse(localStorage.getItem("dlsmgr-music")) || { on: true, vol: 0.6 }; } catch (e) { return { on: true, vol: 0.6 }; } }
+    function setPrefs(p) { try { localStorage.setItem("dlsmgr-music", JSON.stringify(p)); } catch (e) {} tick(); }
+    function files() { return window.MUSIC_FILES || []; }
+    function shuffle() {
+      order = files().map(function (_, i) { return i; });
+      for (var i = order.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = order[i]; order[i] = order[j]; order[j] = t; }
+      if (order.length > 1 && order[0] === last) { order.push(order.shift()); }
+      pos = 0;
+    }
+    function next() {
+      if (!a || !files().length) return;
+      if (pos >= order.length) shuffle();
+      last = order[pos++];
+      a.src = files()[last];
+      if (want()) a.play().catch(function () {});
+    }
+    function want() {
+      var p = prefs();
+      return p.on && files().length > 0 && !window.inMatch && !document.documentElement.classList.contains("intro") && !gates.hidden && !gates.paused;
+    }
+    function tick() {
+      var w = want(), target = w ? prefs().vol : 0;
+      if (w && !a) { a = new Audio(); a.preload = "auto"; a.volume = 0; a.addEventListener("ended", next); shuffle(); next(); }
+      if (!a) return;
+      if (w && a.paused) a.play().then(function () { started = true; }).catch(function () {});
+      cur += Math.max(-0.06, Math.min(0.04, target - cur));
+      if (Math.abs(target - cur) < 0.02) cur = target;
+      try { a.volume = Math.max(0, Math.min(1, cur)); } catch (e) {}
+      if (!w && cur <= 0.001 && !a.paused) a.pause();
+    }
+    setInterval(tick, 120);
+    // if the WebView blocks autoplay, the first touch starts it
+    document.addEventListener("pointerdown", function () { if (a && a.paused && want()) a.play().catch(function () {}); }, true);
+    window.dlsMusicGate = function (k, on) { gates[k] = !!on; tick(); };
+    return { prefs: prefs, setPrefs: setPrefs, skip: function () { if (a) next(); }, count: function () { return files().length; } };
+  })();
   function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || "#4cc86a"; }
   var THEMES = [["classic", "Classic (green)"], ["ucl", "Champions League"], ["sm", "San Marino"]];
   function themeNow() { try { return localStorage.getItem("dlsmgr-theme") || "classic"; } catch (e) { return "classic"; } }
@@ -3482,6 +3524,7 @@ input[type="search"], select {
       if (S) { S.aiOff = false; save(); } closeModal();
       return modal('<h2>AI</h2><p class="muted" style="margin:0">' + (window.DLSManager && window.DLSManager.aiStatus && window.DLSManager.aiStatus() ? "Saved. You can now answer in your own words in press conferences (" + esc(window.DLSManager.aiStatus()) + ")." : "No key saved.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
+    if (act === "musicskip") { Music.skip(); return; }
     if (act === "aioff") { if (S) { S.aiOff = !S.aiOff; save(); } closeModal(); return; }
     if (act === "aiclear") { if (window.DLSManager && window.DLSManager.clearAiKey) window.DLSManager.clearAiKey(); closeModal(); return; }
     if (act === "msgback") { ui.msg = null; return render(); }
@@ -3545,6 +3588,9 @@ input[type="search"], select {
       var cur = (S && S.difficulty) || "hard";
       return modal('<h2>Settings</h2><label class="label" for="themesel">Theme</label><select id="themesel">' +
         THEMES.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === themeNow() ? " selected" : "") + ">" + x[1] + "</option>"; }).join("") + "</select>" +
+        (Music.count() ? '<label class="label" for="musicon">Menu music (' + Music.count() + " songs, shuffled)</label>" +
+          '<div style="display:flex;gap:8px;align-items:center"><select id="musicon"><option value="1"' + (Music.prefs().on ? " selected" : "") + '>On</option><option value="0"' + (Music.prefs().on ? "" : " selected") + ">Off</option></select>" +
+          '<input id="musicvol" type="range" min="0" max="100" value="' + Math.round(Music.prefs().vol * 100) + '" aria-label="Music volume" style="flex:1"><button class="btn ghost" data-act="musicskip">Next song</button></div>' : "") +
         '<label class="label" for="diffsel">Match difficulty</label><select id="diffsel">' +
         [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"], ["veryhard", "Very hard"], ["elite", "Elite (DLS's hardest)"]].map(function (d) { return '<option value="' + d[0] + '"' + (d[0] === cur ? " selected" : "") + ">" + d[1] + "</option>"; }).join("") +
         '</select><p class="muted" style="margin:0">Assists are off in matches. Your career is saved on this device automatically.</p>' + aiSettings() + (S && !ui.title ? '<button class="btn" data-act="askreset">Start a new career…</button>' : "") + '<button class="btn ghost" data-act="closemodal">Close</button>');
