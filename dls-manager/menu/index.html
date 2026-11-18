@@ -394,7 +394,24 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .lm-circle { left: 50%; top: 50%; width: 17%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); }
 .lm-box { top: 22%; bottom: 22%; width: 15%; }
 .lm-box.l { left: -2px; } .lm-box.r { right: -2px; }
-.lm-dot { position: absolute; width: 4.2%; aspect-ratio: 1; border-radius: 50%; border: 2px solid #fff; transform: translate(-50%, -50%); transition: left var(--lm-t) ease, top var(--lm-t) ease; box-shadow: 0 1px 3px rgba(0,0,0,.5); }
+.lm-dot { position: absolute; width: 4.4%; aspect-ratio: 1; border-radius: 50%; border: 2px solid #fff; transform: translate(-50%, -50%); transition: left var(--lm-t) ease-in-out, top var(--lm-t) ease-in-out; box-shadow: 0 1px 3px rgba(0,0,0,.5);
+  display: grid; place-items: center; font-style: normal; font-weight: 800; font-size: clamp(6px, 1.25vw, 12px); line-height: 1; z-index: 1; }
+.lm-dot.on { box-shadow: 0 0 0 3px rgba(255,211,77,.85), 0 1px 3px rgba(0,0,0,.5); z-index: 2; }
+.lm-carry { position: absolute; transform: translate(-50%, -235%); font-size: clamp(8px, 1.3vw, 12px); font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000, 0 0 4px #000; white-space: nowrap; pointer-events: none; transition: left var(--lm-t) ease-in-out, top var(--lm-t) ease-in-out, opacity .2s; z-index: 3; }
+.lm-six { top: 37%; bottom: 37%; width: 5.2%; } .lm-six.l { left: -2px; } .lm-six.r { right: -2px; }
+.lm-spot { width: 0.7%; aspect-ratio: 1; border-radius: 50%; background: rgba(255,255,255,.5); border: 0 !important; transform: translate(-50%, -50%); top: 50%; }
+.lm-spot.c { left: 50%; } .lm-spot.l { left: 10.5%; } .lm-spot.r { left: 89.5%; }
+.lm-goal { top: 44.6%; bottom: 44.6%; width: 1.4%; background: rgba(255,255,255,.18); } .lm-goal.l { left: -1.2%; } .lm-goal.r { right: -1.2%; }
+.lm-pitch.goal { animation: lmFlash .9s ease-out; }
+@keyframes lmFlash { 0% { box-shadow: inset 0 0 0 2px rgba(255,255,255,.25), inset 0 0 0 0 rgba(255,211,77,.0); } 30% { box-shadow: inset 0 0 0 2px rgba(255,255,255,.25), inset 0 0 60px 10px rgba(255,211,77,.55); } 100% { box-shadow: inset 0 0 0 2px rgba(255,255,255,.25); } }
+#lmReplay { position: absolute; top: 6px; right: 8px; padding: 3px 8px; border-radius: 4px; background: #e0605a; color: #fff; font-weight: 800; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; opacity: 0; transition: opacity .2s; z-index: 4; }
+#lmReplay.on { opacity: 1; animation: lmBlink 1s steps(2) infinite; }
+@keyframes lmBlink { 50% { opacity: .55; } }
+.lm-pwrap { min-height: 0; display: grid; place-items: start center; }
+.lm.pv .lm-main { grid-template-columns: minmax(0, 1fr) minmax(200px, .42fr); }
+.lm.pv .lm-feed { display: none; }
+.lm.pv .lm-pwrap { place-items: center; height: 100%; container-type: size; }
+.lm.pv .lm-pitch { width: min(100cqw, calc(100cqh * 105 / 68)); max-height: none; }
 .lm-ball { position: absolute; width: 2.2%; aspect-ratio: 1; border-radius: 50%; background: #fff; transform: translate(-50%, -50%); transition: left var(--lm-t) ease-out, top var(--lm-t) ease-out; box-shadow: 0 0 6px rgba(255,255,255,.8); z-index: 2; }
 .lm-feed { overflow-y: auto; display: flex; flex-direction: column; gap: 2px; background: #0f151a; border-radius: 8px; padding: 6px; box-shadow: inset 0 0 0 1px #1c2730; }
 .lm-ev { display: grid; grid-template-columns: 44px 1fr; gap: 6px; padding: 4px 6px; border-radius: 5px; font-size: .82rem; color: #b9c7d1; line-height: 1.3; }
@@ -462,7 +479,7 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .lm-sp.on { border-color: #ffd34d; } .lm-sp:disabled { opacity: .45; }
 .lm-sp em { font-style: normal; font-weight: 800; font-size: .74rem; }
 @media (max-height: 460px) { .lm-team { font-size: .8rem; padding: 4px 10px; } .lm-score b { font-size: 1.3rem; } .lm-hl { min-height: 24px; font-size: .8rem; } .lm-b { padding: 6px 9px; font-size: .74rem; } .lm-ev { font-size: .76rem; padding: 3px 5px; } }
-@media (max-width: 760px) { .lm-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .lm-side { display: none; } }
+@media (max-width: 760px) { .lm-main, .lm.pv .lm-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .lm-side { display: none; } .lm.pv .lm-main { grid-template-columns: 1fr; } }
 .storm { align-self: flex-start; color: var(--loss); border-color: rgba(226,85,85,.4); }
 .resp-tone { flex: none; font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
 .resp-sum { display: flex; gap: 20px; flex-wrap: wrap; font-weight: 600; }
@@ -2720,7 +2737,8 @@ input[type="search"], select {
     var fx = nextFixture();
     if (!fx) return;
     var seed = (S.seed ^ (fx.week * 7919 + 17)) ^ (Date.now() & 0xffff);
-    LM = { fx: fx, r: rng(seed >>> 0), min: 0, half: 1, phase: "pre", speed: 1, paused: true, feed: [], headline: null, panel: null, tab: "stats",
+    var view = "pitch"; try { view = localStorage.getItem("dlsmgr-lmview") || "pitch"; } catch (e) {}
+    LM = { view: view, hold: 0, acts: [], fx: fx, r: rng(seed >>> 0), min: 0, half: 1, phase: "pre", speed: 1, paused: true, feed: [], headline: null, panel: null, tab: "stats",
       h: null, a: null, ball: { x: 50, y: 50 }, poss: null, mom: [], stop1: 1 + Math.floor(Math.random() * 3), stop2: 2 + Math.floor(Math.random() * 5), events: [], talk: null, subsLog: [] };
     LM.h = lmSide(fx.home, fx.home === S.clubId, true);
     LM.a = lmSide(fx.away, fx.away === S.clubId, false);
@@ -2821,13 +2839,24 @@ input[type="search"], select {
   function lmRun() {
     clearTimeout(lmTimer);
     if (!LM || LM.paused || LM.phase !== "play" || LM.panel || LM.talk) return;
-    lmTimer = setTimeout(function () { lmStep(); lmRun(); }, LM_SPEEDS[LM.speed][1]);
+    lmTimer = setTimeout(function () { lmStep(); lmRun(); }, LM_SPEEDS[LM.speed][1] + (LM.hold || 0));
+    LM.hold = 0;
   }
   function lmStep() {
     if (!LM || LM.phase !== "play") return;
     LM.min++;
     var end = LM.half === 1 ? 45 + LM.stop1 : 90 + LM.stop2;
     lmMinute();
+    if (!LM.quiet) {
+      var ms = LM_SPEEDS[LM.speed][1], frames = lmPlan(), goal = frames.some(function (f) { return f.goal; });
+      lmAnimate(frames, ms * 0.95, false);
+      if (goal && LM.speed < 3) {
+        // a moment to celebrate, then the replay, slower
+        var rp = Math.max(1800, frames.length * 520);
+        LM.hold = 1400 + rp + 400;
+        lmAnimT.push(setTimeout(function () { if (LM) lmAnimate(frames, rp, true); }, ms + 1400));
+      }
+    }
     if (LM.min >= end) {
       if (LM.half === 1) {
         LM.phase = "ht"; LM.paused = true;
@@ -2854,6 +2883,7 @@ input[type="search"], select {
 
   // ---- one minute of football
   function lmMinute() {
+    LM.acts = [];
     var H = lmUnits(LM.h), A = lmUnits(LM.a), r = LM.r, m = LM.min;
     [LM.h, LM.a].forEach(function (sd) { if (!sd.mine) lmAi(sd, false); });
     var mh = LM.h.tac.ment - 2, ma = LM.a.tac.ment - 2;
@@ -2887,7 +2917,6 @@ input[type="search"], select {
     });
     // ball and commentary colour when nothing big happened
     var dir = att === LM.h ? 1 : -1;
-    LM.ball = { x: Math.max(6, Math.min(94, 50 + dir * (10 + r() * 32))), y: 12 + r() * 76 };
     if (LM.headlineMin !== m && r() < 0.42) lmColour(att, def);
     // tiredness
     [LM.h, LM.a].forEach(function (s) {
@@ -2921,14 +2950,16 @@ input[type="search"], select {
     s.st.shots++; s.st.xg += xg;
     lmRate(shooter, 0.04);
     var u = r(), S1 = lmSur(shooter), A1 = assister != null ? lmSur(assister) : null, team = club(s.cid).short || club(s.cid).name;
-    LM.ball = { x: side === "h" ? 88 + r() * 6 : 6 + r() * 6, y: 35 + r() * 30 };
+    var act = { t: "shot", side: side, p: shooter, a: assister, kind: kind, header: header };
+    LM.acts.push(act);
     if (u < pGoal) {
+      act.out = "goal";
       s.goals++; s.st.ot++;
       lmRate(shooter, 1.0); if (assister != null) lmRate(assister, 0.6);
       if (gkId != null) lmRate(gkId, -0.3);
       lmOn(o).forEach(function (id) { if (group(byId[id].pos) === "DF") lmRate(id, -0.12); });
       LM.events.push({ min: evMin(), side: side, type: "goal", p: shooter, a: assister, pen: kind === "pen" });
-      LM.ball = { x: side === "h" ? 98 : 2, y: 50 };
+      LM.kickoff = true;
       var line = kind === "pen" ? pk(["PENALTY! " + S1 + " sends the keeper the wrong way. GOAL!", S1 + " steps up and buries the penalty!"]) :
         header ? pk(["GOAL! " + (A1 ? A1 + " swings it in and " : "") + S1 + " heads it home!", "GOAL! A towering header from " + S1 + (A1 ? ", from " + A1 + "'s cross" : "") + "!"]) :
         kind === "big" ? pk(["GOAL! " + (A1 ? A1 + " slips it through and " : "") + S1 + " finishes coolly!", "GOAL! " + S1 + " makes no mistake from close range" + (A1 ? " after " + A1 + "'s pass" : "") + "!"]) :
@@ -2939,6 +2970,7 @@ input[type="search"], select {
       return;
     }
     if (u < onT) {
+      act.out = "save";
       s.st.ot++; o.st.saves++;
       if (gkId != null) lmRate(gkId, kind === "big" || kind === "pen" ? 0.35 : 0.15);
       if (assister != null && kind === "big") lmRate(assister, 0.1);
@@ -2948,6 +2980,7 @@ input[type="search"], select {
         pk([S1 + " tests " + gn + ", who holds on.", "A decent effort from " + S1 + ", straight at " + gn + ".", gn + " tips " + S1 + "'s shot over the bar."]), side);
       if (r() < 0.35) { s.st.corners++; if (r() < 0.4) lmFeed("info", "Corner to " + team + ".", side); }
     } else {
+      act.out = "miss";
       if (kind === "big") lmRate(shooter, -0.25);
       lmFeed(kind === "big" || kind === "pen" ? "chance" : "info", kind === "pen" ? S1 + " blazes the penalty over the bar!" :
         kind === "big" ? pk(["What a miss! " + S1 + " puts it wide with the goal at his mercy!", "Oh, " + S1 + " should have scored there! Over the bar."]) :
@@ -2962,6 +2995,7 @@ input[type="search"], select {
     var who = lmPick(s, function (p, g) { return g === "GK" ? 0.05 : g === "DF" ? 1.4 : g === "MF" ? 1.2 : 0.6; });
     if (who == null) return;
     s.st.fouls++;
+    LM.acts.push({ t: "foul", side: side, p: who });
     var card = 0.11 * (s.shout === "stuck" && LM.min < s.shoutTo ? 1.6 : 1) * (s.shout === "calm" && LM.min < s.shoutTo ? 0.6 : 1) * (1 + 0.25 * (s.tac.press - 1));
     if (LM.talkTone && LM.talkTone[side] === "Aggressive") card *= 1.2;
     var u = r();
@@ -3077,22 +3111,139 @@ input[type="search"], select {
 
   // ---- the screen (its own look: a broadcast-style match centre)
   function viewLive() {
-    return '<div class="lm" id="lm"><header class="lm-head" id="lmHead"></header><div class="lm-hl" id="lmHl"></div>' +
-      '<div class="lm-main"><div class="lm-pitch" id="lmPitch">' + lmPitchHtml() + '</div><div class="lm-feed" id="lmFeed"></div><aside class="lm-side" id="lmSide"></aside></div>' +
+    var pv = LM.view !== "feed";
+    return '<div class="lm' + (pv ? " pv" : "") + '" id="lm"><header class="lm-head" id="lmHead"></header><div class="lm-hl" id="lmHl"></div>' +
+      '<div class="lm-main"><div class="lm-pwrap"><div class="lm-pitch" id="lmPitch">' + lmPitchHtml() + '</div></div><div class="lm-feed" id="lmFeed"></div><aside class="lm-side" id="lmSide"></aside></div>' +
       '<nav class="lm-bar" id="lmBar"></nav><div id="lmOv"></div></div>';
   }
-  function lmDotXY(sd, i) {
-    var sl = FORMATIONS[sd.formation][i], depth = (100 - sl[2]) * 0.44 + 4, shift = (LM.ball.x - 50) * 0.28;
-    var x = sd === LM.h ? depth + shift + 2 : 100 - depth + shift - 2;
-    return { x: Math.max(2, Math.min(98, x)), y: sl[1] };
+  // where a player stands: his formation spot, pushed up and spread with the ball, deeper and
+  // narrower without it, the whole block sliding with the ball
+  function lmBase(sd, i, bx, by, poss) {
+    var sl = FORMATIONS[sd.formation][i], home = sd === LM.h, gk = sl[0] === "GK";
+    var x = 6 + (92 - sl[2]) * (42 / 78), y = sl[1];
+    var mine = (poss === "h") === home;
+    if (!gk) {
+      x += mine ? 12 : -3;
+      y = 50 + (y - 50) * (mine ? 1.12 : 0.86);
+      var bxs = home ? bx : 100 - bx;           // the ball, seen from this side's own goal
+      x += (bxs - 50) * 0.32;
+      y += (by - 50) * 0.18;
+    } else x = Math.min(14, 5 + Math.max(0, (home ? bx : 100 - bx) - 50) * 0.12);
+    if (!home) x = 100 - x;
+    return { x: Math.max(1.5, Math.min(98.5, x)), y: Math.max(3, Math.min(97, y)) };
+  }
+  function lmPositions(fr) {
+    var out = [[], []];
+    [LM.h, LM.a].forEach(function (sd, k) {
+      for (var i = 0; i < FORMATIONS[sd.formation].length; i++) out[k].push(sd.slots[i] == null ? null : lmBase(sd, i, fr.bx, fr.by, fr.poss));
+    });
+    // the one on the ball stands with it; the nearest two defenders close him down
+    if (fr.c) { var cp = out[fr.c[0]][fr.c[1]]; if (cp) { cp.x = fr.bx; cp.y = fr.by; } }
+    var dk = fr.poss === "h" ? 1 : 0, near = [];
+    out[dk].forEach(function (p, i) { if (p && FORMATIONS[(dk ? LM.a : LM.h).formation][i][0] !== "GK") near.push([Math.hypot(p.x - fr.bx, (p.y - fr.by) * 0.65), i]); });
+    near.sort(function (a, b) { return a[0] - b[0]; }).slice(0, 2).forEach(function (n, j) {
+      var p = out[dk][n[1]], f = j === 0 ? 0.62 : 0.32;
+      p.x += (fr.bx - p.x) * f; p.y += (fr.by - p.y) * f;
+    });
+    return out;
+  }
+  // a minute as a short sequence of frames: passes between real players, then the shot
+  function lmPlan() {
+    var r = LM.r, acts = LM.acts || [], frames = [];
+    if (LM.restart) { LM.ball = { x: 50, y: 50 }; LM.restart = false; }
+    if (LM.kickoff) { LM.restart = true; LM.kickoff = false; }
+    function idx(sd, pid) { return sd.slots.indexOf(pid); }
+    function sideOf(x) { return x === "h" ? LM.h : LM.a; }
+    function posOf(k, i, fr) { var sd = k ? LM.a : LM.h; return lmBase(sd, i, fr.bx, fr.by, fr.poss); }
+    function chainFrom(side, n, toward) {
+      var sd = sideOf(side), k = side === "h" ? 0 : 1, slots = FORMATIONS[sd.formation], cur = { bx: LM.ball.x, by: LM.ball.y, poss: side };
+      var order = { GK: 0, DF: 1, MF: 2, FW: 3 }, last = -1;
+      for (var s2 = 0; s2 < n; s2++) {
+        var stage = Math.min(3, 1 + Math.floor((s2 + (toward ? 1 : 0)) * 3 / Math.max(1, n)));
+        var opts = [];
+        sd.slots.forEach(function (pid, i) { if (pid != null && i !== last && Math.abs(order[group(slots[i][0])] - stage) <= 1 && slots[i][0] !== "GK") opts.push(i); });
+        if (!opts.length) break;
+        var i = opts[Math.floor(r() * opts.length)], p = posOf(k, i, cur);
+        cur = { bx: p.x, by: p.y, poss: side, c: [k, i] };
+        frames.push(cur); last = i;
+      }
+      return cur;
+    }
+    var shot = acts.filter(function (a) { return a.t === "shot"; }).pop(), foul = acts.filter(function (a) { return a.t === "foul"; }).pop();
+    if (shot) {
+      var k = shot.side === "h" ? 0 : 1, sd = sideOf(shot.side), gx = shot.side === "h" ? 100 : 0;
+      chainFrom(shot.side, 1 + Math.floor(r() * 2), true);
+      var ai = shot.a != null ? idx(sd, shot.a) : -1, si = idx(sd, shot.p);
+      var sx = shot.side === "h" ? 100 - (shot.kind === "long" ? 26 : shot.kind === "pen" ? 11 : 9 + r() * 9) : (shot.kind === "long" ? 26 : shot.kind === "pen" ? 11 : 9 + r() * 9);
+      var sy = shot.kind === "pen" ? 50 : 32 + r() * 36;
+      if (ai >= 0) {
+        var wide = shot.header ? (r() < 0.5 ? 10 : 90) : 30 + r() * 40;
+        frames.push({ bx: shot.side === "h" ? 100 - (shot.header ? 16 : 22) : (shot.header ? 16 : 22), by: wide, poss: shot.side, c: [k, ai] });
+      }
+      if (si >= 0) frames.push({ bx: sx, by: sy, poss: shot.side, c: [k, si], shot: true });
+      var oi = shot.side === "h" ? LM.a : LM.h, gi = 0;
+      if (shot.out === "goal") frames.push({ bx: shot.side === "h" ? 99.3 : 0.7, by: 45 + r() * 10, poss: shot.side, goal: true });
+      else if (shot.out === "save") frames.push({ bx: shot.side === "h" ? 96 : 4, by: 44 + r() * 12, poss: shot.side === "h" ? "a" : "h", c: oi.slots[gi] != null ? [1 - k, gi] : null });
+      else frames.push({ bx: shot.side === "h" ? 101.5 : -1.5, by: r() < 0.5 ? 38 + r() * 6 : 56 + r() * 6, poss: shot.side });
+    } else {
+      var side = LM.poss || "h", end = chainFrom(side, 2 + Math.floor(r() * 3), false);
+      if (foul) frames.push({ bx: end.bx, by: end.by, poss: foul.side === "h" ? "a" : "h", foul: true });
+      else if (r() < 0.35) {
+        // the move breaks down: a defender nips in
+        var dside = side === "h" ? "a" : "h", dk2 = dside === "h" ? 0 : 1, dsd = sideOf(dside), best = -1, bd = 1e9;
+        dsd.slots.forEach(function (pid, i) { if (pid == null || FORMATIONS[dsd.formation][i][0] === "GK") return; var p = posOf(dk2, i, end); var d = Math.hypot(p.x - end.bx, p.y - end.by); if (d < bd) { bd = d; best = i; } });
+        if (best >= 0) { var bp = posOf(dk2, best, end); frames.push({ bx: (bp.x + end.bx) / 2, by: (bp.y + end.by) / 2, poss: dside, c: [dk2, best] }); }
+      }
+    }
+    if (!frames.length) frames.push({ bx: LM.ball.x, by: LM.ball.y, poss: LM.poss || "h" });
+    return frames;
+  }
+  function lmShow(fr, ms) {
+    var pt = document.getElementById("lmPitch");
+    if (!pt) return;
+    pt.style.setProperty("--lm-t", Math.max(0.08, ms / 1000 * 0.92) + "s");
+    var pos = lmPositions(fr);
+    [LM.h, LM.a].forEach(function (sd, k) {
+      for (var i = 0; i < 11; i++) {
+        var d = document.getElementById("lmd" + k + "_" + i);
+        if (!d) continue;
+        var p = pos[k][i];
+        if (!p) { d.style.display = "none"; continue; }
+        d.style.display = ""; d.style.left = p.x + "%"; d.style.top = p.y + "%";
+        d.textContent = (byId[sd.slots[i]] || {}).shirt || "";
+        d.classList.toggle("on", !!(fr.c && fr.c[0] === k && fr.c[1] === i));
+      }
+    });
+    var b = document.getElementById("lmBall");
+    if (b) { b.style.left = fr.bx + "%"; b.style.top = fr.by + "%"; }
+    var lab = document.getElementById("lmCarry");
+    if (lab) {
+      var sd2 = fr.c ? (fr.c[0] ? LM.a : LM.h) : null, pid = sd2 ? sd2.slots[fr.c[1]] : null;
+      lab.textContent = pid != null ? lmSur(pid) : "";
+      lab.style.left = fr.bx + "%"; lab.style.top = fr.by + "%";
+      lab.style.opacity = pid != null ? 1 : 0;
+    }
+    pt.classList.toggle("goal", !!fr.goal);
+    LM.ball = { x: Math.max(2, Math.min(98, fr.bx)), y: fr.by };
+  }
+  var lmAnimT = [];
+  function lmAnimate(frames, total, replay) {
+    lmAnimT.forEach(clearTimeout); lmAnimT = [];
+    var n = frames.length, step = total / n;
+    if (step < 160) { lmShow(frames[n - 1], 120); return; }
+    frames.forEach(function (fr, i) { lmAnimT.push(setTimeout(function () { if (LM) lmShow(fr, step); }, i * step)); });
+    var rb = document.getElementById("lmReplay");
+    if (rb) rb.className = replay ? "on" : "";
+    if (replay) lmAnimT.push(setTimeout(function () { var x = document.getElementById("lmReplay"); if (x) x.className = ""; }, total + 200));
   }
   function lmPitchHtml() {
-    var html = '<div class="lm-lines"><i class="lm-half"></i><i class="lm-circle"></i><i class="lm-box l"></i><i class="lm-box r"></i></div>';
+    var html = '<div class="lm-lines"><i class="lm-half"></i><i class="lm-circle"></i><i class="lm-spot c"></i><i class="lm-box l"></i><i class="lm-box r"></i><i class="lm-six l"></i><i class="lm-six r"></i><i class="lm-spot l"></i><i class="lm-spot r"></i><i class="lm-goal l"></i><i class="lm-goal r"></i></div>';
     var kit = lmKits();
+    function ink(c) { c = String(c).replace("#", ""); if (c.length === 3) c = c.replace(/./g, "$&$&"); var n = parseInt(c, 16) || 0; return ((n >> 16 & 255) * 0.3 + (n >> 8 & 255) * 0.59 + (n & 255) * 0.11) > 150 ? "#111" : "#fff"; }
     [LM.h, LM.a].forEach(function (sd, k) {
-      for (var i = 0; i < 11; i++) html += '<i class="lm-dot" id="lmd' + k + "_" + i + '" style="background:' + esc(kit[k][0]) + ";border-color:" + esc(kit[k][1]) + '"></i>';
+      for (var i = 0; i < 11; i++) html += '<i class="lm-dot" id="lmd' + k + "_" + i + '" style="background:' + esc(kit[k][0]) + ";border-color:" + esc(kit[k][1]) + ";color:" + ink(kit[k][0]) + '"></i>';
     });
-    return html + '<i class="lm-ball" id="lmBall"></i>';
+    return html + '<i class="lm-ball" id="lmBall"></i><span class="lm-carry" id="lmCarry"></span><span id="lmReplay">Replay</span>';
   }
   // shirt colours on the pitch: the away side changes when the two are too alike
   function lmKits() {
@@ -3106,19 +3257,7 @@ input[type="search"], select {
     return [home, away];
   }
   function lmPaintPitch() {
-    [LM.h, LM.a].forEach(function (sd, k) {
-      for (var i = 0; i < 11; i++) {
-        var d = document.getElementById("lmd" + k + "_" + i);
-        if (!d) continue;
-        if (i >= FORMATIONS[sd.formation].length || sd.slots[i] == null) { d.style.display = "none"; continue; }
-        var p = lmDotXY(sd, i), j = (LM.r() - 0.5) * 3;
-        d.style.display = ""; d.style.left = (p.x + j) + "%"; d.style.top = (p.y + j) + "%";
-      }
-    });
-    var b = document.getElementById("lmBall");
-    if (b) { b.style.left = LM.ball.x + "%"; b.style.top = LM.ball.y + "%"; }
-    var pt = document.getElementById("lmPitch");
-    if (pt) pt.style.setProperty("--lm-t", Math.min(0.9, LM_SPEEDS[LM.speed][1] / 1000 * 0.8) + "s");
+    lmShow({ bx: LM.ball.x, by: LM.ball.y, poss: LM.poss || "h" }, 300);
   }
   function lmPaint() {
     if (!LM || LM.quiet || !document.getElementById("lm")) return;
@@ -3128,7 +3267,8 @@ input[type="search"], select {
       '<div class="lm-team h" style="--tc:' + esc(cl(h.cid).primary) + '">' + badge(h.cid, 30) + '<span class="lm-tn">' + esc(club(h.cid).name) + "</span></div>" +
       '<div class="lm-score"><b>' + h.goals + '</b><span class="lm-clock' + (LM.phase === "play" && !LM.paused ? " live" : "") + '">' + lmClock() + "</span><b>" + a.goals + "</b></div>" +
       '<div class="lm-team a" style="--tc:' + esc(cl(a.cid).primary) + '"><span class="lm-tn">' + esc(club(a.cid).name) + "</span>" + badge(a.cid, 30) + "</div>";
-    var hl = LM.headline;
+    // the pitch view's ticker: the latest line, unless something big happened in the same minute
+    var hl = LM.view !== "feed" && LM.feed[0] && !(LM.headline && LM.headline.min === LM.feed[0].min) ? LM.feed[0] : LM.headline;
     document.getElementById("lmHl").innerHTML = hl ? '<span class="lm-hl-min">' + hl.min + '</span><span class="lm-hl-t k-' + hl.kind + '">' + esc(hl.text) + "</span>" : "";
     document.getElementById("lmFeed").innerHTML = LM.feed.slice(0, 60).map(function (f) {
       return '<div class="lm-ev k-' + f.kind + (f.side ? " s-" + f.side : "") + '"><span class="lm-m">' + f.min + '</span><span>' + esc(f.text) + "</span></div>";
@@ -3142,6 +3282,7 @@ input[type="search"], select {
       '<button class="lm-b" data-lm="panel:tactics"' + (playing ? "" : " disabled") + ">Tactics</button>" +
       '<button class="lm-b" data-lm="panel:subs"' + (playing ? "" : " disabled") + ">Subs " + LM.me.subs + "/5</button>" +
       '<button class="lm-b" data-lm="panel:shouts"' + (playing ? "" : " disabled") + ">Shouts" + (LM.me.shout && LM.min < LM.me.shoutTo ? " ●" : "") + "</button>" +
+      '<button class="lm-b" data-lm="view">' + (LM.view !== "feed" ? "Commentary" : "2D pitch") + "</button>" +
       '<button class="lm-b" data-lm="skip"' + (playing ? "" : " disabled") + ">" + (LM.half === 1 ? "Skip to HT" : "Skip to FT") + ' <svg class="skip-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5v11l8.5-5.5z"/><rect x="11.5" y="2.5" width="2" height="11" rx=".5"/></svg></button>';
     document.getElementById("lmOv").innerHTML = LM.talk ? lmTalkHtml() : LM.panel ? lmPanelHtml() : "";
     lmPaintPitch();
@@ -3212,6 +3353,7 @@ input[type="search"], select {
     if (k[0] === "toggle") { LM.paused = !LM.paused; lmPaint(); return lmRun(); }
     if (k[0] === "speed") { LM.speed = +k[1]; lmPaint(); return lmRun(); }
     if (k[0] === "tab") { LM.tab = k[1]; return lmPaint(); }
+    if (k[0] === "view") { LM.view = LM.view !== "feed" ? "feed" : "pitch"; try { localStorage.setItem("dlsmgr-lmview", LM.view); } catch (e) {} return render(); }
     if (k[0] === "panel") { LM.panel = k[1]; LM.subOut = null; clearTimeout(lmTimer); return lmPaint(); }
     if (k[0] === "close") { LM.panel = null; lmPaint(); return lmRun(); }
     if (k[0] === "skip") { LM.panel = null; lmSkip(); lmPaint(); return; }
