@@ -28,6 +28,9 @@ final class Native {
     /** Team stats, events and player counters of the match so far (see dlsmgr.c). */
     static native int[] stats();
 
+    /** Queue a team's squad (DLS player ids, 11-32) to be written into DLS's team record. */
+    static native int setRoster(int team, int[] ids);
+
     /** Our pause button: opens DLS's pause screen (FUN_0018fdf0) on the next game frame. */
     static native void pause();
 

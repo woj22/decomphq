@@ -934,7 +934,7 @@ input[type="search"], select {
     }
     // training: development every Monday morning, a report on the 15th of each month
     if (h === 8 && dayDate(d).getUTCDay() === 1) weeklyDevelopment();
-    if (S.fin) { financeEvents(d, h); decideOffers(d, h); incomingBids(d, h); boardDecide(d, h); if (h === 1) { expireOffers(d); endLoans(d); } }
+    if (S.fin) { financeEvents(d, h); decideOffers(d, h); incomingBids(d, h); boardDecide(d, h); aiMarket(d, h); transferRoundup(d, h); if (h === 1) { expireOffers(d); endLoans(d); } }
     if (h === 7 && dayDate(d).getUTCDate() === 1 && d > 30) reassessPotential();
     if (h === 10 && dayDate(d).getUTCDate() === 15 && d > 30) trainingMail();
     // first of the month: board review and player of the month
@@ -953,6 +953,7 @@ input[type="search"], select {
     if (d === last + 3 && h === 10) {
       var fp = myPos(), tg = S.target || fp;
       if (S.fin) book("in", "Prize money", Math.round(S.fin.rev * 0.08 * (L.clubs.length - fp + 1) / L.clubs.length));
+      if (S.fin && fp === 1) book("in", "Title bonus", Math.round(S.fin.rev * 0.06));
       mail("The board", "Season review", ["The season is over: " + esc(c.name) + " finished <b>" + fp + ordinalTxt(fp) + "</b> in the " + esc(L.name) + ".",
         fp <= tg ? "You met the board's expectations. Well done." : fp <= tg + 3 ? "Slightly below what we hoped for, but there is a base to build on." : "That fell well short of our expectations."], { label: "Final table", go: "table" }, "board");
     }
@@ -1164,6 +1165,10 @@ input[type="search"], select {
   // the club's view of a player: asking price
   function squadRank(p) { return clubPlayers[p.club].slice().sort(function (a, b) { return b.ovr - a.ovr; }).indexOf(p) + 1; }
   function askingPrice(p) {
+    if (p.club !== "free" && p.club !== S.clubId && untouchable(p)) return askingPrice0(p) * 3;
+    return askingPrice0(p);
+  }
+  function askingPrice0(p) {
     var yl = yearsLeft(p), cf = yl >= 3 ? 1.25 : yl >= 2 ? 1.05 : yl >= 1 ? 0.85 : 0.55, key = squadRank(p) <= 5 ? 1.35 : squadRank(p) <= 11 ? 1.1 : 0.9;
     var listed = S.tlist && S.tlist[p.id] === "transfer" ? 0.85 : 1;
     return Math.max(10000, Math.round((p.value || 50000) * cf * key * listed / 10000) * 10000);
@@ -1173,6 +1178,8 @@ input[type="search"], select {
     var mine = lgFin(S.clubId).tier, his = lgFin(p.club).tier, best = clubPlayers[S.clubId].slice().sort(function (a, b) { return b.ovr - a.ovr; })[0];
     if (his > mine + 1 && p.ovr > (best ? best.ovr : 60) + 6) return "no";
     if (his > mine && p.ovr > (best ? best.ovr : 60) + 12) return "no";
+    // nobody far better than everyone in our league comes to play in it
+    if (p.ovr > leagueTop(myLeague().id) + 4) return "no";
     return "yes";
   }
   function wageDemand(p, renewal) {
@@ -1192,6 +1199,7 @@ input[type="search"], select {
       var L = S.lineups[S.clubId];
       if (L.xi.some(function (id) { return !byId[id] || byId[id].club !== S.clubId; })) L.xi = autoXI(S.clubId, L.formation);
     }
+    if (S) syncRosters();
   }
   function movePlayer(p, to) {
     if (!S.moves) S.moves = {};
@@ -1201,7 +1209,7 @@ input[type="search"], select {
   }
   function completeTransfer(o) {
     var p = byId[o.pid], from = p.club;
-    if (o.fee) book("out", "Transfer fees", o.fee);
+    if (o.fee) { book("out", "Transfer fees", o.fee); if (from !== "free") { aiBal(from); S.ai[from] += o.fee; } }
     S.fin.tb = Math.max(0, S.fin.tb - o.fee);
     (S.contracts = S.contracts || {})[p.id] = { end: (+dayDate(today()).getUTCFullYear() + o.years + (dayDate(today()).getUTCMonth() >= 6 ? 1 : 0)) + "-06-30", wage: o.wage };
     if (o.kind === "loan") { (S.loans = S.loans || {})[p.id] = { from: from, to: S.clubId, pct: o.pct, until: CAL_DAYS - 1 }; delete S.contracts[p.id]; applyMoves(); }
@@ -1219,6 +1227,7 @@ input[type="search"], select {
     if (loan) { (S.loans = S.loans || {})[p.id] = { from: S.clubId, to: buyer, pct: 100, until: CAL_DAYS - 1 }; applyMoves(); }
     else {
       book("in", "Player sales", fee);
+      S.ai = S.ai || {}; S.ai[buyer] = aiBal(buyer) - fee;
       S.fin.tb = Math.min(S.fin.bal, S.fin.tb + Math.round(fee * 0.6));   // the board lets you reinvest 60%
       movePlayer(p, buyer);
     }
@@ -1238,6 +1247,7 @@ input[type="search"], select {
       var p = byId[o.pid];
       if (!p || p.club === S.clubId) { o.status = "void"; return; }
       if (!windowOpen(d)) { o.status = "rejected"; o.why = "The transfer window is closed."; }
+      else if (p.club !== "free" && rivals(p.club, S.clubId)) { o.status = "rejected"; o.why = club(p.club).name + " will not do business with a rival."; }
       else if (p.club === "free") { o.status = "accepted"; }
       else if (o.kind === "loan") {
         var rank = squadRank(p), need = rank <= 11 ? 999 : rank <= 16 ? 75 : 50;
@@ -1272,7 +1282,7 @@ input[type="search"], select {
       if (c === S.clubId) return false;
       var t = lgFin(c).tier, best = clubPlayers[c].slice().sort(function (a, b) { return b.ovr - a.ovr; });
       var fits = best.length > 13 && p.ovr >= best[Math.min(13, best.length - 1)].ovr - 2 && p.ovr <= best[0].ovr + 3;
-      return fits && (loan ? t <= myTier : t >= myTier) && clubBudget(c) >= (p.value || 0) * 0.8;
+      return fits && !rivals(c, S.clubId) && (loan ? t <= myTier : t >= myTier) && (c === S.clubId ? 0 : aiBal(c)) >= (p.value || 0) * 0.8;
     });
     if (!buyers.length) return;
     var b = buyers[Math.floor(r() * buyers.length)], fee = loan ? 0 : Math.round((p.value || 50000) * (0.75 + r() * 0.5) / 5000) * 5000;
@@ -1292,6 +1302,91 @@ input[type="search"], select {
     if (d !== CAL_DAYS - 2 || !S.loans) return;
     Object.keys(S.loans).forEach(function (id) { delete S.loans[id]; });
     applyMoves();
+  }
+  // ---- rivals: no deals between them (either way)
+  var RIVALS = [["arsenal", "tottenham-hotspur"], ["arsenal", "chelsea"], ["chelsea", "tottenham-hotspur"], ["liverpool", "everton"], ["liverpool", "manchester-united"],
+    ["manchester-city", "manchester-united"], ["leeds-united", "manchester-united"], ["newcastle-united", "sunderland"], ["brighton", "crystal-palace"],
+    ["real-madrid", "barcelona"], ["real-madrid", "atletico-madrid"], ["barcelona", "espanyol"], ["sevilla", "real-betis"], ["athletic-club", "real-sociedad"],
+    ["valencia", "villarreal"], ["valencia", "levante"], ["deportivo", "celta-vigo"], ["olimpija-ljubljana", "maribor"]];
+  function rivals(a, b) { return RIVALS.some(function (r) { return (r[0] === a && r[1] === b) || (r[0] === b && r[1] === a); }); }
+  // the best young stars at the biggest clubs: only for enormous money, and rarely
+  function untouchable(p) { return p.club !== "free" && lgFin(p.club).tier >= 4 && p.ovr >= 86 && (p.age || 25) <= 26; }
+  function leagueTop(lid) { var best = 0; D.leagues.find(function (l) { return l.id === lid; }).clubs.forEach(function (c) { (clubPlayers[c] || []).forEach(function (p) { if (p.ovr > best) best = p.ovr; }); }); return best; }
+  function xiAvg(cid) { var ps = (clubPlayers[cid] || []).slice().sort(function (a, b) { return b.ovr - a.ovr; }).slice(0, 11); return ps.length ? ps.reduce(function (t, p) { return t + p.ovr; }, 0) / ps.length : 50; }
+  // other clubs' money: estimated at the start, then fees in and out
+  function aiBal(cid) {
+    if (!S.ai) S.ai = {};
+    if (S.ai[cid] == null) S.ai[cid] = Math.round(squadValue(cid) * (lgFin(cid).tier >= 4 ? 0.16 : 0.1));
+    return S.ai[cid];
+  }
+  // DLS's squads follow the moves (libdlsmgr writes the team records); the player's own team
+  // is DLS team 258 as well as the club's database team
+  function syncRosters() {
+    if (!window.DLSManager || !window.DLSManager.setRosters || !S) return;
+    var changed = {};
+    D.players.forEach(function (p) { if (p.club !== p.club0) { if (p.club0 && p.club0 !== "free") changed[p.club0] = 1; if (p.club !== "free") changed[p.club] = 1; } });
+    var out = {}, n = 0;
+    Object.keys(changed).forEach(function (cid) {
+      var ids = (clubPlayers[cid] || []).filter(function (p) { return p.dls; }).sort(function (a, b) { return b.ovr - a.ovr; }).slice(0, 32).map(function (p) { return p.dls; });
+      if (ids.length < 11) return;
+      var tid = window.DLSManager.clubTid(cid);
+      if (tid > 0) { out[tid] = ids; n++; }
+      if (cid === S.clubId) out[258] = ids;
+    });
+    if (!n && !out[258]) { ui.rosterPending = false; return; }
+    var r = window.DLSManager.setRosters(JSON.stringify(out));
+    ui.rosterPending = r < 0;
+  }
+  // ---- the AI transfer market: a few deals a day while a window is open, mostly modest ones
+  function aiMarket(d, h) {
+    if (h !== 14 || !windowOpen(d)) return;
+    var r = rng((S.seed ^ (d * 2654435761) ^ 0x5bd1e995) >>> 0), x0 = r(), deals = x0 < 0.1 ? 2 : x0 < 0.52 ? 1 : 0;
+    var clubs = Object.keys(D.clubs).filter(function (c) { return c !== S.clubId; }), tops = {};
+    function topOf(lid) { return tops[lid] != null ? tops[lid] : (tops[lid] = leagueTop(lid)); }
+    for (var k = 0; k < deals; k++) {
+      var buyer = clubs[Math.floor(r() * clubs.length)], bt = lgFin(buyer).tier, avg = xiAvg(buyer);
+      // the weakest position group in the buyer's XI
+      // (each line judged by its best few: 1 keeper, 4 defenders, 3 midfielders, 2 forwards)
+      var groups = { GK: [], DF: [], MF: [], FW: [] }, size = { GK: 1, DF: 4, MF: 3, FW: 2 };
+      clubPlayers[buyer].forEach(function (p) { groups[group(p.pos)].push(p.ovr); });
+      function lineAvg(g) { var a = groups[g].sort(function (x, y) { return y - x; }).slice(0, size[g]); while (a.length < size[g]) a.push(40); return a.reduce(function (t, v) { return t + v; }, 0) / a.length; }
+      var need = Object.keys(groups).map(function (g) { return [g, lineAvg(g) - (g === "GK" ? 2 : 0) + r() * 3]; }).sort(function (a, b) { return a[1] - b[1]; })[0][0];
+      var budget = aiBal(buyer) * 0.6;
+      var pool = D.players.filter(function (p) {
+        if (p.club === buyer || p.club === S.clubId || group(p.pos) !== need) return false;
+        if (p.club !== "free" && rivals(p.club, buyer)) return false;
+        if (S.loans && S.loans[p.id]) return false;
+        if (S.signed && S.signed[p.id] != null && d - S.signed[p.id] < 120) return false;
+        var st = p.club === "free" ? bt : lgFin(p.club).tier;
+        if (Math.abs(st - bt) > 2) return false;
+        if (p.ovr < avg - 1 || p.ovr > avg + 6) return false;                 // an upgrade, but not absurd
+        if (st > bt && p.ovr > topOf(club(buyer).league) + 3) return false;  // won't drop far down
+        var fee = p.club === "free" ? 0 : askingPrice(p) * (untouchable(p) ? 3 : 1);
+        return fee <= budget;
+      });
+      if (!pool.length) continue;
+      var p = pool[Math.floor(r() * pool.length)];
+      if (untouchable(p) && r() > 0.05) continue;
+      if (p.ovr >= 87 && r() > 0.12) continue;          // big names move rarely
+      if (p.ovr >= 84 && r() > 0.35) continue;
+      if ((p.age || 25) >= 33 && r() > 0.3) continue;
+      if (p.club !== "free" && squadRank(p) <= 3 && r() > 0.25) continue;     // clubs keep their best
+      var from = p.club, fee = from === "free" ? 0 : Math.round(askingPrice(p) * (untouchable(p) ? 3 : 1) * (0.95 + r() * 0.15) / 10000) * 10000;
+      S.ai[buyer] = aiBal(buyer) - fee;
+      if (from !== "free") S.ai[from] = aiBal(from) + fee;
+      (S.signed = S.signed || {})[p.id] = d;
+      (S.transfers = S.transfers || []).push({ d: d, pid: p.id, from: from, to: buyer, fee: fee });
+      movePlayer(p, buyer);
+      var big = p.ovr >= 80 || fee >= 20e6 || club(buyer).league === myLeague().id || (from !== "free" && club(from).league === myLeague().id);
+      if (big) post("media", journo(r), "✅ DONE DEAL | " + p.name + " joins " + club(buyer).name + (from === "free" ? " on a free transfer." : " from " + club(from).name + " for " + fmtM(fee) + "."), { hype: p.ovr >= 85 ? 3 : 1.2 });
+    }
+  }
+  function transferRoundup(d, h) {
+    if (h !== 9 || dayDate(d).getUTCDay() !== 5 || !S.transfers) return;
+    var wk = S.transfers.filter(function (t) { return t.d > d - 7; });
+    if (!wk.length) return;
+    wk.sort(function (a, b) { return b.fee - a.fee; });
+    mail("Transfer news", "This week's transfers", wk.slice(0, 8).map(function (t) { var p = byId[t.pid]; return "<b>" + esc(p.name) + "</b> (" + p.ovr + ") " + esc(t.from === "free" ? "free agent" : club(t.from).name) + " → " + esc(club(t.to).name) + (t.fee ? " · " + fmtM(t.fee) : ""); }).concat(wk.length > 8 ? ["…and " + (wk.length - 8) + " more."] : []), { label: "Transfers", go: "transfers" }, "league");
   }
   // ---- the board: confidence, and requests for more money (reluctant, never beyond the balance)
   function boardConfidence() {
@@ -1599,6 +1694,7 @@ input[type="search"], select {
     if (!S) return renderNewGame();
     ensureCal();
     ensureFin();
+    if (ui.rosterPending) syncRosters();
     var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);

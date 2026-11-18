@@ -112,6 +112,8 @@ static int match_in_stack(void)
     return 0;
 }
 
+static void roster_poll(void);
+
 /* ---- substitutions and tactics (our pause menu's panel)
  *
  * The user's team: M + M[0x9ab0] * 0x1028 + 0x3848; its sheet FUN_0018b940(team). The sheet's
@@ -279,6 +281,8 @@ void dlsmgr_frame(void)
        the counters while the match screen still sits under the menus */
     if (inMatch && scr && (type == 0 || type == 6))
         stats_poll();
+    if (!inMatch || (scr && type != 0))
+        roster_poll();          /* never while a match is being played */
     if (inMatch)
         run_op();
     else
@@ -411,6 +415,65 @@ void dlsmgr_render(void)
     *(int *)(mgr + 0x48) = draw;
     FN(0x1693e8, void (*)(void))();
     *(int *)(mgr + 0x48) = n;
+}
+
+/* ---- squads: transfers and loans made in the menus
+ *
+ * DLS keeps each team's squad in a 0x108-byte record (team manager DAT_00569380; records at
+ * +0x20 / count +0x28, or +0x38 / +0x58; FUN_000ae0f0(team id) finds the one in use): +0 team
+ * id, +4 player count, +8 + i*4: shirt number (u8) and flags (u16 at +0xa: starting XI,
+ * captain, set-piece takers), +0x88 + i*4: player ids (u32, up to 32). A match builds its
+ * teams from these (FUN_000b2298), so editing them moves players between DLS teams. Players
+ * who stay keep their entry; new ones get a blank one, then DLS's own repair (FUN_000adadc)
+ * gives shirt numbers and flags. Queued from Java, written on the game thread. */
+#define RQ_MAX 96
+static int rqTeam[RQ_MAX], rqN[RQ_MAX], rqIds[RQ_MAX][32];
+static volatile int rqHead, rqTail;
+
+static void roster_write(u8 *rec, const int *ids, int n)
+{
+    u32 oldEnt[32], oldId[32];
+    int on = *(int *)(rec + 4);
+    if (on < 0 || on > 32) on = 0;
+    for (int i = 0; i < on; i++) { oldEnt[i] = *(u32 *)(rec + 8 + i * 4); oldId[i] = *(u32 *)(rec + 0x88 + i * 4); }
+    for (int i = 0; i < n; i++) {
+        u32 ent = 0;
+        for (int j = 0; j < on; j++)
+            if (oldId[j] == (u32)ids[i]) { ent = oldEnt[j]; break; }
+        *(u32 *)(rec + 8 + i * 4) = ent;
+        *(u32 *)(rec + 0x88 + i * 4) = (u32)ids[i];
+    }
+    for (int i = n; i < 32; i++) { *(u32 *)(rec + 8 + i * 4) = 0; *(u32 *)(rec + 0x88 + i * 4) = 0; }
+    *(int *)(rec + 4) = n;
+    FN(0xadadc, void (*)(void *))(rec);
+}
+
+/* both record tables can hold the team; update it wherever it is */
+static int roster_apply(int team, const int *ids, int n)
+{
+    u8 *mgr = *(u8 **)(base + 0x569380);
+    int hits = 0;
+    if (!mgr || n < 11) return 0;
+    for (int t = 0; t < 2; t++) {
+        u8 *arr = *(u8 **)(mgr + (t ? 0x38 : 0x20));
+        int cnt = *(int *)(mgr + (t ? 0x58 : 0x28));
+        if (!arr || cnt <= 0 || cnt > 4000) continue;
+        for (int i = 0; i < cnt; i++) {
+            u8 *rec = arr + i * 0x108;
+            if (*(int *)rec == team) { roster_write(rec, ids, n); hits++; break; }
+        }
+    }
+    return hits;
+}
+
+static void roster_poll(void)
+{
+    while (rqTail != rqHead) {
+        int k = rqTail % RQ_MAX;
+        int h = roster_apply(rqTeam[k], rqIds[k], rqN[k]);
+        nlog("squad of team %d set (%d players, %d records)\n", rqTeam[k], rqN[k], h);
+        rqTail++;
+    }
 }
 
 /* ---- notifications: DLS's banners are replaced by the menus' tile (top right)
@@ -559,4 +622,17 @@ void *Java_com_dlsmgr_Native_stats(void *env, void *cls)
     if (arr)
         JFN(env, 211, void (*)(void *, void *, int, int, const int *))(env, arr, 0, n, out);
     return arr;
+}
+
+/* Queue a team's new squad (DLS player ids, 11-32) for the game thread; 0 if the queue is full. */
+int Java_com_dlsmgr_Native_setRoster(void *env, void *cls, int team, void *arr)
+{
+    int n = JFN(env, 171, int (*)(void *, void *))(env, arr);    /* GetArrayLength */
+    if (n < 11 || n > 32 || rqHead - rqTail >= RQ_MAX) return 0;
+    int k = rqHead % RQ_MAX;
+    JFN(env, 203, void (*)(void *, void *, int, int, int *))(env, arr, 0, n, rqIds[k]);  /* GetIntArrayRegion */
+    rqTeam[k] = team;
+    rqN[k] = n;
+    rqHead++;
+    return 1;
 }

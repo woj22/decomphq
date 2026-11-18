@@ -1182,6 +1182,33 @@ public final class Overlay {
             }
         }
 
+        /** Squads changed by transfers and loans: JSON {"teamId": [dls ids], ...}. Returns how
+         *  many were queued, or -1 when the native library isn't ready yet (try again later). */
+        @JavascriptInterface
+        public int setRosters(String json) {
+            try {
+                if (!Native.ready) {
+                    return -1;
+                }
+                JSONObject o = new JSONObject(json);
+                java.util.Iterator<String> it = o.keys();
+                int n = 0;
+                while (it.hasNext()) {
+                    String k = it.next();
+                    org.json.JSONArray a = o.getJSONArray(k);
+                    int[] ids = new int[a.length()];
+                    for (int i = 0; i < ids.length; i++) {
+                        ids[i] = a.getInt(i);
+                    }
+                    n += Native.setRoster(Integer.parseInt(k), ids);
+                }
+                return n;
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
+                return 0;
+            }
+        }
+
         /** The match's stats as recorded by DLS (libdlsmgr stats), taken at full time. */
         @JavascriptInterface
         public String matchStats() {
