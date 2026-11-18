@@ -684,6 +684,30 @@ public final class Overlay {
     }
 
     static volatile boolean matchShown;
+    static volatile String lastStats = "[]";
+
+    static String ints(int[] a) {
+        StringBuilder b = new StringBuilder("[");
+        for (int i = 0; a != null && i < a.length; i++) {
+            if (i > 0) {
+                b.append(',');
+            }
+            b.append(a[i]);
+        }
+        return b.append(']').toString();
+    }
+
+    /** Keep the match's stats at full time (before DLS moves on). */
+    static void snapStats() {
+        try {
+            if (Native.ready) {
+                lastStats = ints(Native.stats());
+                log(activity.getExternalFilesDir(null), "match stats " + lastStats);
+            }
+        } catch (Throwable t) {
+            lastError = String.valueOf(t);
+        }
+    }
 
     /**
      * Called by the game thread through FTTMainActivity.DlsmgrEvent (tools/apk_patch/exhibition.c):
@@ -732,7 +756,10 @@ public final class Overlay {
             int seq = ++flashSeq;
             activity.runOnUiThread(new OverlayJsTask("window.dlsReplayFlash && window.dlsReplayFlash()", true, true));
             activity.getWindow().getDecorView().postDelayed(new FlashEnd(seq), 1500);
+        } else if ((code & 0xff) == 17) {
+            activity.runOnUiThread(new JsTask("window.dlsSheetResult && window.dlsSheetResult(" + ((code >> 8) & 0xff) + ")"));
         } else if (code == 2) {
+            snapStats();
             introSeq++;
             activity.runOnUiThread(new ShowTask());
         } else if ((code & 0xff) == 9) {
@@ -744,6 +771,7 @@ public final class Overlay {
             activity.runOnUiThread(new OverlayJsTask("window.dlsPause && window.dlsPause(" + ((code >> 8) & 0xff) + ","
                     + ((code >> 16) & 0xff) + "," + ((code >> 24) & 0xff) + ")", true, false));
         } else if (code == 15) {
+            snapStats();
             // full time: DLS's full-time menu is skipped natively; hide our pause button and wait
             // for the result (event 2)
             introSeq++;
@@ -1122,6 +1150,35 @@ public final class Overlay {
         @JavascriptInterface
         public String lastMatch() {
             return resultLine();
+        }
+
+        /** The user's live team sheet in the match (libdlsmgr getSheet), as a JSON array. */
+        @JavascriptInterface
+        public String liveSheet() {
+            try {
+                return Native.ready ? ints(Native.getSheet()) : "[]";
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
+                return "[]";
+            }
+        }
+
+        /** Substitution / position swap (kind 1, player ids a and b) or tactics (kind 2,
+         *  formation a, mentality b); the outcome comes back as window.dlsSheetResult(code). */
+        @JavascriptInterface
+        public boolean sheetOp(int kind, int a, int b) {
+            try {
+                return Native.ready && Native.sheetOp(kind, a, b) != 0;
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
+                return false;
+            }
+        }
+
+        /** The match's stats as recorded by DLS (libdlsmgr stats), taken at full time. */
+        @JavascriptInterface
+        public String matchStats() {
+            return lastStats;
         }
 
         @JavascriptInterface

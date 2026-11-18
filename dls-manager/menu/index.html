@@ -44,6 +44,20 @@ html.intro, html.intro body { background: transparent !important; }
 @keyframes flash { 0% { opacity: 0; transform: scale(.7); } 25% { opacity: 1; transform: scale(1); } 75% { opacity: 1; transform: scale(1.04); } 100% { opacity: 0; transform: scale(1.15); } }
 .pause-card { width: min(560px, 92vw); display: grid; gap: 18px; background: var(--panel); border-radius: 18px; padding: 22px; border: 1px solid var(--line); }
 .pause-btns { display: grid; gap: 10px; }
+.subs-card { width: min(860px, 96vw); max-height: 94vh; overflow: auto; gap: 12px; padding: 16px; }
+.subs-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.subs-head h2 { margin: 0; font-size: 1.15rem; flex: 1; }
+.subs-left { font-weight: 700; color: var(--accent, #3ddc84); }
+.subs-tac { display: flex; gap: 12px; flex-wrap: wrap; }
+.subs-tac label { display: grid; gap: 4px; font-size: .8rem; font-weight: 600; color: var(--muted, #9aa); }
+.subs-msg { margin: 0; min-height: 1.2em; font-size: .9rem; }
+.subs-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.subs-cols > div { display: grid; gap: 4px; align-content: start; }
+.sub-row { display: grid; grid-template-columns: 44px 1fr auto; gap: 8px; align-items: center; text-align: left; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: inherit; font: inherit; min-height: 44px; }
+.sub-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sub-row.sel { border-color: var(--accent, #3ddc84); background: rgba(61,220,132,.15); }
+.sub-row.off { opacity: .45; }
+@media (max-height: 520px) { .sub-row { min-height: 36px; padding: 5px 8px; } .subs-card { padding: 12px; gap: 8px; } }
 .pause-btns .btn { justify-content: center; padding: 14px; font-size: 1rem; }
 #hud { display: none; position: fixed; top: 8px; left: 62px; z-index: 50; pointer-events: none; }
 .sb { display: flex; align-items: stretch; height: 34px; border-radius: 10px; overflow: hidden; background: rgba(11,14,13,.86); border: 1px solid rgba(255,255,255,.14); font-weight: 800; color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.35); }
@@ -432,6 +446,10 @@ input[type="search"], select {
       passAcc: [Math.round(74 + (H.mf - 55) * 0.4 + r() * 6), Math.round(74 + (A.mf - 55) * 0.4 + r() * 6)],
       saves: [Math.max(0, otA - ag), Math.max(0, otH - hg)]
     };
+    if (forced && forced.st) {
+      var real = realMatch(home, away, forced.st, r);
+      if (real) { events = real.events; stats = real.stats; return { h: home, a: away, hg: hg, ag: ag, real: true, dls: true, events: events, stats: stats, ratings: real.ratings, xi: real.xi }; }
+    }
     // player ratings
     var ratings = {};
     [["h", home, hg, ag], ["a", away, ag, hg]].forEach(function (x) {
@@ -445,11 +463,82 @@ input[type="search"], select {
     });
     return { h: home, a: away, hg: hg, ag: ag, real: !!forced, events: events, stats: stats, ratings: ratings, xi: { h: lineupOf(home).xi.slice(), a: lineupOf(away).xi.slice() } };
   }
+  // ---- the real match, from DLS's own counters (libdlsmgr stats, see android/native/dlsmgr.c):
+  // a = [50 team ints (side 0, side 1)][user side][event count][events x5][per side: n, players x8]
+  function parseDlsStats(a, userHome) {
+    if (!a || a.length < 52) return null;
+    var us = a[50], n = a[51], i = 52, ev = [], pl = [[], []];
+    function hs(s) { return (s === us) === !!userHome ? "h" : "a"; }   // DLS side -> h / a
+    for (var k = 0; k < n && i + 5 <= a.length; k++, i += 5) ev.push({ type: a[i], side: hs(a[i + 1]), dside: a[i + 1], id: a[i + 2], min: a[i + 3], extra: a[i + 4] });
+    for (var s = 0; s < 2 && i < a.length; s++) {
+      var c = a[i++];
+      for (var j = 0; j < c && i + 8 <= a.length; j++, i += 8) pl[s].push({ id: a[i], goals: a[i + 1], og: a[i + 2], ast: a[i + 3], yc: a[i + 4], rc: a[i + 5], saves: a[i + 6], touches: a[i + 7] });
+    }
+    var team = {}; [0, 1].forEach(function (s) { team[hs(s)] = a.slice(s * 25, s * 25 + 25); });
+    var players = {}; [0, 1].forEach(function (s) { players[hs(s)] = pl[s]; });
+    return { team: team, events: ev, players: players };
+  }
+  function realMatch(home, away, st, r) {
+    if (!st || !st.team.h || !st.team.a) return null;
+    var cid = { h: home, a: away };
+    function pid(side, dlsId) {
+      var p = clubPlayers[cid[side]].find(function (q) { return q.dls === dlsId; });
+      return p ? p.id : null;
+    }
+    var events = [], goals = [];
+    st.events.forEach(function (e) {
+      if (e.type === 1 || e.type === 2) {
+        // own goal: the player is on the conceding side
+        var g = { min: Math.max(1, e.min), side: e.type === 1 ? e.side : (e.side === "h" ? "a" : "h"), type: "goal", p: pid(e.side, e.id), a: null, og: e.type === 2 };
+        goals.push(g); events.push(g);
+      } else if (e.type === 3) {
+        var p = pid(e.side, e.id);
+        var g2 = goals.filter(function (g) { return g.side === e.side && g.a == null && !g.og && g.p !== p && Math.abs(g.min - Math.max(1, e.min)) <= 1; }).pop();
+        if (g2) g2.a = p;
+      } else if (e.type === 4 || e.type === 5) {
+        var q = pid(e.side, e.id);
+        if (q != null) events.push({ min: Math.max(1, e.min), side: e.side, type: e.type === 4 ? "yc" : "rc", p: q });
+      }
+    });
+    events.sort(function (x, y) { return x.min - y.min; });
+    var T = st.team;
+    function two(i) { return [T.h[i] | 0, T.a[i] | 0]; }
+    var pt = (T.h[0] + T.a[0]) || 0, poss = pt > 0 ? Math.round(T.h[0] * 100 / pt) : 50;
+    var sh = two(2), ot = two(3);
+    function saves(side) { return (st.players[side] || []).reduce(function (t, p) { return t + (p.saves | 0); }, 0); }
+    // xG estimated from DLS's shot counts: ~0.07 a shot off target, ~0.28 on target
+    function xg(i) { return +(Math.max(0, sh[i] - ot[i]) * 0.07 + ot[i] * 0.28).toFixed(2); }
+    function acc(side) { var t = st.team[side]; return t[4] > 0 ? Math.round(t[5] * 100 / t[4]) : 0; }
+    var stats = {
+      possession: [poss, 100 - poss], shots: sh, onTarget: ot, xg: [xg(0), xg(1)],
+      corners: two(23), fouls: two(16), passAcc: [acc("h"), acc("a")], saves: [saves("h"), saves("a")],
+      offsides: two(17), yellow: two(14), red: two(15)
+    };
+    // who played: the starting XI plus substitutes who touched the ball
+    var xi = { h: lineupOf(home).xi.slice(), a: lineupOf(away).xi.slice() }, ratings = {};
+    var gf = { h: 0, a: 0 }; goals.forEach(function (g) { gf[g.side]++; });
+    ["h", "a"].forEach(function (side) {
+      var other = side === "h" ? "a" : "h", ps = st.players[side] || [];
+      var touch = {}, tot = 0, cnt = 0;
+      ps.forEach(function (x) { var q = pid(side, x.id); if (q != null) { touch[q] = x; if (x.touches > 0) { tot += x.touches; cnt++; } } });
+      ps.forEach(function (x) { var q = pid(side, x.id); if (q != null && x.touches > 0 && xi[side].indexOf(q) < 0) xi[side].push(q); });
+      var avgT = cnt ? tot / cnt : 1;
+      xi[side].forEach(function (q) {
+        var x = touch[q] || {}, g = group(byId[q].pos);
+        var v = 6.3 + (gf[side] - gf[other]) * 0.2 + (r() - 0.5) * 0.4 + ((x.touches || 0) - avgT) / (avgT || 1) * 0.5;
+        if ((g === "DF" || g === "GK") && gf[other] === 0) v += 0.6;
+        v += (x.goals || 0) * 0.9 + (x.ast || 0) * 0.5 - (x.og || 0) * 0.6 - (x.yc || 0) * 0.2 - (x.rc || 0) * 1.5 + (g === "GK" ? (x.saves || 0) * 0.15 : 0);
+        ratings[q] = Math.max(4.5, Math.min(10, Math.round(v * 10) / 10));
+      });
+    });
+    return { events: events, stats: stats, ratings: ratings, xi: xi };
+  }
   function record(res) {
     function add(pid, k, n) { var s = S.pstats[pid] || (S.pstats[pid] = { apps: 0, goals: 0, assists: 0, rsum: 0, yc: 0, rc: 0, cs: 0 }); s[k] += n; }
     res.xi.h.concat(res.xi.a).forEach(function (pid) { add(pid, "apps", 1); add(pid, "rsum", res.ratings[pid] || 6.5); });
     res.events.forEach(function (e) {
-      if (e.type === "goal") { add(e.p, "goals", 1); if (e.a != null) add(e.a, "assists", 1); }
+      if (e.p == null) return;
+      if (e.type === "goal" && !e.og) { add(e.p, "goals", 1); if (e.a != null) add(e.a, "assists", 1); }
       if (e.type === "yc") add(e.p, "yc", 1);
       if (e.type === "rc") add(e.p, "rc", 1);
     });
@@ -751,8 +840,15 @@ input[type="search"], select {
   function viewReport() {
     var r = ui.report;
     var mine = r.h === S.clubId || r.a === S.clubId;
-    function side(s) { return r.events.filter(function (e) { return e.side === s && e.type !== "yc"; }).map(function (e) { return (e.type === "rc" ? "🟥 " : "⚽ ") + esc(byId[e.p].name) + " " + e.min + "'" + (e.a != null ? ' <span class="muted">(' + esc(byId[e.a].name.split(" ").slice(-1)[0]) + ")</span>" : ""); }).join("<br>"); }
+    function nm(id) { return id != null && byId[id] ? byId[id].name : "Unknown"; }
+    function side(s) {
+      return r.events.filter(function (e) { return e.side === s && (e.type !== "yc" || r.dls); }).map(function (e) {
+        var ic = e.type === "rc" ? "🟥 " : e.type === "yc" ? "🟨 " : "⚽ ";
+        return ic + esc(nm(e.p)) + " " + e.min + "'" + (e.og ? ' <span class="muted">(og)</span>' : "") + (e.a != null ? ' <span class="muted">(' + esc(nm(e.a).split(" ").slice(-1)[0]) + ")</span>" : "");
+      }).join("<br>");
+    }
     var st = r.stats, rows = [["Possession %", "possession"], ["Expected goals", "xg"], ["Shots", "shots"], ["On target", "onTarget"], ["Pass accuracy %", "passAcc"], ["Corners", "corners"], ["Saves", "saves"], ["Fouls", "fouls"]];
+    if (st.offsides) rows.push(["Offsides", "offsides"]);
     function ratingTable(cid, xi) {
       return '<section class="panel" style="padding:12px"><h3 style="margin-bottom:6px"><span class="club-cell">' + badge(cid, 20) + esc(club(cid).name) + "</span></h3><table><tbody>" +
         xi.map(function (pid) { var p = byId[pid], v = r.ratings[pid]; return '<tr class="row" tabindex="0" data-player="' + pid + '"><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span></td><td>" + esc(p.name) + '</td><td class="num rating" style="color:' + (v >= 7.5 ? "var(--win)" : v < 6 ? "var(--loss)" : "var(--fg)") + '">' + v.toFixed(1) + "</td></tr>"; }).join("") + "</tbody></table></section>";
@@ -838,7 +934,9 @@ input[type="search"], select {
     var want = P.userHome ? [258, P.oppTid] : [P.oppTid, 258];
     if (f[0] !== want[0] || f[1] !== want[1]) return;
     // the score goes straight into the season (rest of the matchweek simulated), then the report
-    var mineR = playWeek({ hg: f[2], ag: f[3] });
+    var real = null;
+    try { real = window.DLSManager.matchStats ? parseDlsStats(JSON.parse(window.DLSManager.matchStats()), P.userHome) : null; } catch (e) { real = null; }
+    var mineR = playWeek({ hg: f[2], ag: f[3], st: real });
     S.pending = null; save();
     if (mineR) { ui.report = mineR; ui.screen = "report"; } else ui.screen = "home";
     ui.title = false; closeModal();
@@ -883,11 +981,12 @@ input[type="search"], select {
   window.dlsPause = function (hg, ag) {
     var fx = S && S.pending ? S.pending : null;
     if (!fx) return;
+    pauseScore = [hg, ag];
     document.documentElement.classList.add("intro");
     app.innerHTML = '<div class="pause-wrap"><div class="pause-card">' +
       '<div class="scoreline"><div class="side">' + badge(fx.home, 48) + esc(club(fx.home).name) + '</div><div class="score">' + hg + " – " + ag + '</div><div class="side">' + badge(fx.away, 48) + esc(club(fx.away).name) + "</div></div>" +
       '<div class="pause-btns"><button class="btn primary" data-pause="8">Resume</button>' +
-      '<button class="btn" data-pause="1">Substitutions &amp; tactics</button>' +
+      '<button class="btn" data-pause="subs">Substitutions &amp; tactics</button>' +
       '<button class="btn ghost" data-pause="quit">Quit match</button></div></div></div>';
   };
   document.addEventListener("click", function (ev) {
@@ -899,9 +998,75 @@ input[type="search"], select {
         '<button class="btn primary" data-pause="7">Quit</button><button class="btn" data-pause="back">Back</button>';
       return;
     }
-    if (v === "back") return window.dlsPause.apply(null, (document.querySelector(".pause-card .score").textContent.split(" – ").map(Number)));
+    if (v === "back") return window.dlsPause(pauseScore[0], pauseScore[1]);
+    if (v === "subs") {
+      if (window.DLSManager.liveSheet && subsPanel()) return;
+      return window.DLSManager.pauseAction(1);   // no live sheet: DLS's own team screen
+    }
     window.DLSManager.pauseAction(+v);
   });
+
+  // ---- Substitutions & tactics during the match (pause menu). The user's live DLS sheet comes
+  // from libdlsmgr: [side, formation, mentality, subs left, count, (id, flags) x count]; XI first
+  // in DLS slot order, then the bench. Changes run DLS's own substitution code on the game thread.
+  var pauseScore = [0, 0], subsSel = null, subsBusy = false, subsMsg = "";
+  var MENTALITY = [[15, "Very defensive"], [32, "Defensive"], [50, "Balanced"], [68, "Attacking"], [85, "Very attacking"]];
+  var SUB_ERR = { 1: "A goalkeeper has to stay in goal.", 2: "A goalkeeper has to stay in goal.", 3: "That player has already been taken off or sent off.", 4: "No substitutions left.", 9: "That change isn't possible." };
+  function liveSheet() {
+    try { var a = JSON.parse(window.DLSManager.liveSheet()); return a.length >= 5 ? a : null; } catch (e) { return null; }
+  }
+  function formName(f) { for (var k in DLS_FORM) if (DLS_FORM[k][0] === f) return k; return null; }
+  function subsPanel() {
+    var a = liveSheet(), fx = S && S.pending;
+    if (!a || !fx) return false;
+    var cid = S.clubId, form = a[1], ment = a[2], left = a[3], n = a[4], fname = formName(form), list = [];
+    for (var i = 0; i < n; i++) list.push({ dls: a[5 + i * 2], flags: a[6 + i * 2], slot: i });
+    function row(x) {
+      var p = clubPlayers[cid].find(function (q) { return q.dls === x.dls; });
+      var lab = x.slot < 11 ? (fname ? FORMATIONS[fname][DLS_FORM[fname][1][x.slot]][0] : (p ? p.pos : "")) : "SUB";
+      var off = x.slot >= 11 && (x.flags & 8);
+      var g = p ? group(p.pos) : "MF";
+      return '<button class="sub-row' + (subsSel === x.dls ? " sel" : "") + (off ? " off" : "") + '" data-sub="' + x.dls + '"' + (off ? " disabled" : "") + '>' +
+        '<span class="pos-pill pos-' + (x.slot < 11 ? group(lab) : g) + '">' + esc(lab) + '</span><span class="nm">' + esc(p ? p.name : "Player " + x.dls) + '</span>' +
+        (off ? '<span class="muted">Off</span>' : '<span class="ovr" style="background:' + ovrColor(p ? p.ovr : 50) + '">' + (p ? p.ovr : "–") + "</span>") + "</button>";
+    }
+    var xi = list.slice(0, 11), bench = list.slice(11, 18);
+    var mIdx = 0; MENTALITY.forEach(function (m, i) { if (Math.abs(m[0] - ment) < Math.abs(MENTALITY[mIdx][0] - ment)) mIdx = i; });
+    document.documentElement.classList.add("intro");
+    app.innerHTML = '<div class="pause-wrap"><div class="pause-card subs-card">' +
+      '<div class="subs-head"><button class="btn ghost" data-pause="back"><span style="display:inline-grid;width:18px">' + icon("back") + '</span>Back</button><h2>Substitutions &amp; tactics</h2>' +
+      '<span class="subs-left">' + left + " sub" + (left === 1 ? "" : "s") + " left</span></div>" +
+      '<div class="subs-tac"><label>Formation <select id="subform">' + (fname ? "" : '<option value="' + form + '" selected>Current</option>') +
+      Object.keys(DLS_FORM).map(function (k) { return '<option value="' + DLS_FORM[k][0] + '"' + (k === fname ? " selected" : "") + ">" + k + "</option>"; }).join("") + "</select></label>" +
+      '<label>Mentality <select id="subment">' + MENTALITY.map(function (m, i) { return '<option value="' + m[0] + '"' + (i === mIdx ? " selected" : "") + ">" + m[1] + "</option>"; }).join("") + "</select></label></div>" +
+      '<p class="subs-msg" role="status">' + esc(subsMsg || (subsSel ? "Now tap the player to swap with." : "Tap a player, then the one to swap with. Starter ↔ bench is a substitution.")) + "</p>" +
+      '<div class="subs-cols"><div><div class="label">On the pitch</div>' + xi.map(row).join("") + '</div><div><div class="label">Bench</div>' + bench.map(row).join("") + "</div></div>" +
+      "</div></div>";
+    return true;
+  }
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-sub]");
+    if (!b || subsBusy) return;
+    var id = +b.getAttribute("data-sub");
+    subsMsg = "";
+    if (subsSel == null) { subsSel = id; return subsPanel(); }
+    if (subsSel === id) { subsSel = null; return subsPanel(); }
+    var a = subsSel; subsSel = null;
+    if (window.DLSManager.sheetOp(1, a, id)) { subsBusy = true; subsMsg = "Making the change…"; }
+    else subsMsg = "Busy, try again.";
+    subsPanel();
+  });
+  document.addEventListener("change", function (ev) {
+    if (!ev.target || (ev.target.id !== "subform" && ev.target.id !== "subment")) return;
+    var f = +document.getElementById("subform").value, m = +document.getElementById("subment").value;
+    if (window.DLSManager.sheetOp(2, f, m)) { subsBusy = true; subsMsg = "Updating tactics…"; subsPanel(); }
+  });
+  // outcome of a change from the game thread (0 = done, otherwise DLS's reason)
+  window.dlsSheetResult = function (code) {
+    subsBusy = false;
+    subsMsg = code === 0 ? "Done." : (SUB_ERR[code] || "That change isn't possible.");
+    if (document.querySelector(".subs-card")) subsPanel();
+  };
   // replays: the league's logo flashes where DLS showed its own logo wipe
   window.dlsReplayFlash = function () {
     var lg = S ? club(S.clubId).league : null;

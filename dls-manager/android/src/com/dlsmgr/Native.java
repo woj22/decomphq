@@ -19,6 +19,15 @@ final class Native {
 
     static native void pauseAction(int id);
 
+    /** The user's live sheet: side, formation, mentality, subs left, count, then id / flags pairs. */
+    static native int[] getSheet();
+
+    /** Queue a swap (kind 1) or tactics change (kind 2) for the game thread; 0 if one is pending. */
+    static native int sheetOp(int kind, int a, int b);
+
+    /** Team stats, events and player counters of the match so far (see dlsmgr.c). */
+    static native int[] stats();
+
     /** Our pause button: opens DLS's pause screen (FUN_0018fdf0) on the next game frame. */
     static native void pause();
 

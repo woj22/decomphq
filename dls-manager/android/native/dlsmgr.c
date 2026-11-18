@@ -112,6 +112,139 @@ static int match_in_stack(void)
     return 0;
 }
 
+/* ---- substitutions and tactics (our pause menu's panel)
+ *
+ * The user's team: M + M[0x9ab0] * 0x1028 + 0x3848; its sheet FUN_0018b940(team). The sheet's
+ * player list (sheet+0x140; count FUN_001dade0, id i FUN_001d985c) holds the XI in formation
+ * slot order, then the bench; +0x184 formation, +0x185 mentality (0-100). A swap goes through
+ * DLS's own FUN_001dd330(sheet, idA, idB, 0, -1, -1), as its team screen (FUN_000f69b8) does:
+ * it checks the substitution (0 ok, 4 none left, 3 already off / sent off, 1-2 goalkeeper,
+ * 9 unknown player), swaps the live players and re-applies the sheet; then FUN_0018ae9c(team).
+ * Changes are queued from Java and run on the game thread in dlsmgr_frame. */
+static u8 *user_team(void)
+{
+    u8 *m = match_data();
+    return m + (m[0x9ab0] & 1) * 0x1028 + 0x3848;
+}
+
+#define team_sheet(t)   FN(0x18b940, u8 *(*)(void *))(t)
+#define list_count(l)   FN(0x1dade0, int (*)(void *))(l)
+#define list_id(l, i)   FN(0x1d985c, u32 (*)(void *, int))(l, i)
+#define team_player(t, id) FN(0x18aad0, u8 *(*)(void *, u32))(t, id)
+#define subs_left(t)    FN(0x18abd4, int (*)(void *, int))(t, 1)
+
+static volatile int opKind;      /* 0 none, 1 swap, 2 tactics; set by Java, run by the frame */
+static int opA, opB;
+static volatile int opResult = -1;
+
+static void run_op(void)
+{
+    int k = opKind;
+    if (!k)
+        return;
+    u8 *team = user_team();
+    u8 *sheet = team_sheet(team);
+    int r = 9;
+    if (sheet) {
+        if (k == 1) {
+            r = FN(0x1dd330, int (*)(void *, u32, u32, int, int, int))(sheet, (u32)opA, (u32)opB, 0, -1, -1);
+            if (r == 0)
+                FN(0x18ae9c, void (*)(void *))(team);
+        } else {
+            if (opA >= 0 && opA < 12)
+                sheet[0x184] = (u8)opA;
+            if (opB >= 0 && opB <= 100)
+                sheet[0x185] = (u8)opB;
+            FN(0x1dc6bc, void (*)(void *))(sheet);
+            r = 0;
+        }
+    }
+    nlog("sheet op %d -> %d (a %d)\n", k, r, opA);
+    opResult = r;
+    opKind = 0;
+    event(17 | (r & 0xff) << 8);
+}
+
+/* ---- live match stats
+ *
+ * Team stats: 25 ints a side at *(base+0x54da40) (= 0x5a1864, cleared each match by
+ * FUN_00192404), as DLS's match stats screen reads them (FUN_00142c64, table 0x3c0c30):
+ * [0] possession counter, [2] shots, [3] on target, [4]/[5] passes / completed, [14] yellow
+ * cards, [15] red, [16] fouls, [17] offsides, [23] corners.
+ * Players: 0x7cc-byte records at 0x5a1d8c + side*0xf980 (count M[side*0x1028+0x3990]); +0 id,
+ * then counters by event type (FUN_00192810: +4*(type+1)): +0x28 saves (9), +0x44 assists
+ * (0x10), +0x4c touches (0x12), +0x50 yellow (0x13), +0x54 red (0x14); goals +0x2c, own goals
+ * +0x40 (FUN_00193e2c), with an event list (+0x5c8 count, 8 bytes each from +0x5cc: minute,
+ * goal, own goal, flag M[0xa958], red).
+ * Polled every frame: an increase becomes an event with the match minute. */
+#define TEAMSTATS() (*(int **)(base + 0x54da40))
+#define PREC(side, i) ((u8 *)(base + 0x5a1d8c + (side) * 0xf980 + (i) * 0x7cc))
+
+static int tstats[50];
+static int pstat[2][32][8];   /* id, goals, own goals, assists, yellow, red, saves, touches */
+static int pcount[2];
+static int evs[96][5];        /* type (1 goal, 2 own goal, 3 assist, 4 yellow, 5 red), side, id, minute, extra */
+static int evN;
+static int statsLive;
+static const int POFF[7] = {0x2c, 0x40, 0x44, 0x50, 0x54, 0x28, 0x4c};
+
+static void stats_reset(void)
+{
+    evN = 0;
+    for (int s = 0; s < 2; s++) {
+        pcount[s] = 0;
+        for (int i = 0; i < 32; i++)
+            for (int k = 0; k < 8; k++)
+                pstat[s][i][k] = 0;
+    }
+    for (int i = 0; i < 50; i++)
+        tstats[i] = 0;
+}
+
+static void stats_poll(void)
+{
+    u8 *m = match_data();
+    int *ts = TEAMSTATS();
+    if (ts)
+        for (int i = 0; i < 50; i++)
+            tstats[i] = ts[i];
+    int minute = *(int *)(m + 0xa704);
+    for (int s = 0; s < 2; s++) {
+        int n = m[s * 0x1028 + 0x3990];
+        if (n > 32) n = 32;
+        pcount[s] = n;
+        for (int i = 0; i < n; i++) {
+            u8 *r = PREC(s, i);
+            int *ps = pstat[s][i];
+            int id = *(int *)r;
+            if (ps[0] != id) {          /* new record: take it as it is */
+                ps[0] = id;
+                for (int k = 0; k < 7; k++)
+                    ps[k + 1] = *(int *)(r + POFF[k]);
+                continue;
+            }
+            for (int k = 0; k < 7; k++) {
+                int v = *(int *)(r + POFF[k]);
+                if (k < 5 && v > ps[k + 1] && v - ps[k + 1] < 4) {
+                    for (int j = ps[k + 1]; j < v && evN < 96; j++) {
+                        int extra = 0;
+                        if (k < 2) {         /* goal: its entry in the player's event list */
+                            int c = *(int *)(r + 0x5c8);
+                            if (c > 0 && c < 100)
+                                extra = r[0x5cc + (c - 1) * 8 + 6] | *(int *)(m + 0x9e34) << 8;
+                        }
+                        int *e = evs[evN++];
+                        e[0] = k + 1; e[1] = s; e[2] = id; e[3] = minute; e[4] = extra;
+                        nlog("stat event %d side %d id %d", k + 1, s, id);
+                        nlog(" min %d extra %x%d\n", minute, extra, 0);
+                    }
+                }
+                ps[k + 1] = v;
+            }
+        }
+    }
+}
+
 /* called once a frame on the game thread (from the cave's frame hook) */
 void dlsmgr_frame(void)
 {
@@ -134,8 +267,22 @@ void dlsmgr_frame(void)
         PAGE[0xf00] = 4;     /* the cave kicks off right after this returns */
         nlog("old match screen gone, kicking off%d%d%d\n", 0, 0, 0);
     }
+    int inMatch = match_in_stack();
+    if (inMatch && !statsLive) {
+        stats_reset();
+        nlog("match stats reset%d%d%d\n", 0, 0, 0);
+    }
+    statsLive = inMatch;
     int type = -1;
     u8 *scr = top_screen(&type);
+    /* only while the match (or its pause screen) is on top: after full time DLS may clear
+       the counters while the match screen still sits under the menus */
+    if (inMatch && scr && (type == 0 || type == 6))
+        stats_poll();
+    if (inMatch)
+        run_op();
+    else
+        opKind = 0;
     u8 *mgr = screen_mgr();
     int depth = *(int *)(mgr + 0x48);
     if (type != lastTop || depth != lastDepth) {
@@ -304,4 +451,75 @@ void Java_com_dlsmgr_Native_pause(void *env, void *cls)
 void Java_com_dlsmgr_Native_pauseAction(void *env, void *cls, int id)
 {
     pendingAction = id;
+}
+
+/* Live sheet of the user's team: [side, formation, mentality, subs left, count,
+   then per player: id, flags (0xac) | injury (0xaa) << 8 | 0xab << 16 ] */
+void *Java_com_dlsmgr_Native_getSheet(void *env, void *cls)
+{
+    int out[5 + 64];
+    int n = 0;
+    if (base && match_in_stack()) {
+        u8 *m = match_data();
+        u8 *team = user_team();
+        u8 *sheet = team_sheet(team);
+        if (sheet) {
+            int c = list_count(sheet + 0x140);
+            if (c > 32) c = 32;
+            out[0] = m[0x9ab0] & 1;
+            out[1] = sheet[0x184];
+            out[2] = sheet[0x185];
+            out[3] = subs_left(team);
+            out[4] = c;
+            n = 5;
+            for (int i = 0; i < c; i++) {
+                u32 id = list_id(sheet + 0x140, i);
+                u8 *p = team_player(team, id);
+                out[n++] = (int)id;
+                out[n++] = p ? (p[0xac] | p[0xaa] << 8 | p[0xab] << 16) : 0;
+            }
+        }
+    }
+    void *arr = JFN(env, 179, void *(*)(void *, int))(env, n);                       /* NewIntArray */
+    if (arr && n)
+        JFN(env, 211, void (*)(void *, void *, int, int, const int *))(env, arr, 0, n, out);  /* SetIntArrayRegion */
+    return arr;
+}
+
+/* Queue a change for the game thread: kind 1 swap players a <-> b, kind 2 formation a,
+   mentality b. The outcome comes back as event 17 | result << 8. */
+int Java_com_dlsmgr_Native_sheetOp(void *env, void *cls, int kind, int a, int b)
+{
+    if (opKind)
+        return 0;
+    opA = a;
+    opB = b;
+    opResult = -1;
+    opKind = kind;
+    return 1;
+}
+
+/* Match stats so far: [0..49] team stats (home, away), [50] user side, [51] event count,
+   events (type, side, id, minute, extra) x5, then per side: count, players x8 */
+void *Java_com_dlsmgr_Native_stats(void *env, void *cls)
+{
+    static int out[52 + 96 * 5 + 2 * (1 + 32 * 8)];
+    int n = 0;
+    for (int i = 0; i < 50; i++)
+        out[n++] = tstats[i];
+    out[n++] = base ? (match_data()[0x9ab0] & 1) : 0;
+    out[n++] = evN;
+    for (int i = 0; i < evN; i++)
+        for (int k = 0; k < 5; k++)
+            out[n++] = evs[i][k];
+    for (int s = 0; s < 2; s++) {
+        out[n++] = pcount[s];
+        for (int i = 0; i < pcount[s]; i++)
+            for (int k = 0; k < 8; k++)
+                out[n++] = pstat[s][i][k];
+    }
+    void *arr = JFN(env, 179, void *(*)(void *, int))(env, n);
+    if (arr)
+        JFN(env, 211, void (*)(void *, void *, int, int, const int *))(env, arr, 0, n, out);
+    return arr;
 }
