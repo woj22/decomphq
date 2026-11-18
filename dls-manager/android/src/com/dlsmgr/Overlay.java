@@ -683,6 +683,32 @@ public final class Overlay {
         }
     }
 
+    /** DLS's headshot for this player (newest DOCS/headshot_<id>_*.png) -> files/faces/<id>.png */
+    static boolean copyFace(int id) {
+        try {
+            File docs = activity.getExternalFilesDir(null);
+            File[] fs = docs.listFiles();
+            File best = null;
+            for (int i = 0; fs != null && i < fs.length; i++) {
+                String n = fs[i].getName();
+                if (n.startsWith("headshot_" + id + "_") && n.endsWith(".png") && (best == null || fs[i].lastModified() > best.lastModified())) {
+                    best = fs[i];
+                }
+            }
+            if (best == null) {
+                log(docs, "face " + id + ": no headshot file");
+                return false;
+            }
+            File dir = new File(docs, "faces");
+            dir.mkdirs();
+            copy(new FileInputStream(best), new File(dir, id + ".png"));
+            return true;
+        } catch (Throwable t) {
+            lastError = String.valueOf(t);
+            return false;
+        }
+    }
+
     static volatile boolean matchShown;
     static volatile String lastStats = "[]";
 
@@ -763,6 +789,12 @@ public final class Overlay {
             // goal / card / injury: kind, DLS side, user side, player id
             activity.runOnUiThread(new JsTask("window.dlsNotify && window.dlsNotify('player'," + ((code >> 8) & 15) + ","
                     + ((code >> 12) & 1) + "," + ((code >> 13) & 1) + "," + ((code >>> 16) & 0xffff) + ")"));
+        } else if ((code & 0xff) == 20 || (code & 0xff) == 21) {
+            // an in-game face has been rendered (20) or couldn't be (21): keep a copy of DLS's
+            // cached headshot (it can evict it later) and tell the menus
+            int id = code >>> 8;
+            boolean ok = (code & 0xff) == 20 && copyFace(id);
+            activity.runOnUiThread(new JsTask("window.dlsFace && window.dlsFace(" + id + "," + ok + ")"));
         } else if ((code & 0xff) == 17) {
             activity.runOnUiThread(new JsTask("window.dlsSheetResult && window.dlsSheetResult(" + ((code >> 8) & 0xff) + ")"));
         } else if (code == 2) {
@@ -1207,6 +1239,55 @@ public final class Overlay {
                 lastError = String.valueOf(t);
                 return 0;
             }
+        }
+
+        /** Render these players' in-game faces (JSON array of DLS ids); -1 if the library isn't ready. */
+        @JavascriptInterface
+        public int renderFaces(String json) {
+            try {
+                if (!Native.ready) {
+                    return -1;
+                }
+                org.json.JSONArray a = new org.json.JSONArray(json);
+                int[] ids = new int[a.length()];
+                for (int i = 0; i < ids.length; i++) {
+                    ids[i] = a.getInt(i);
+                }
+                return Native.renderFaces(ids);
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
+                return 0;
+            }
+        }
+
+        /** Where rendered faces are kept (file URL of files/faces/), "" outside the app. */
+        @JavascriptInterface
+        public String facesUrl() {
+            try {
+                return "file://" + new File(activity.getExternalFilesDir(null), "faces").getAbsolutePath() + "/";
+            } catch (Throwable t) {
+                return "";
+            }
+        }
+
+        /** The DLS ids that already have a rendered face (JSON array). */
+        @JavascriptInterface
+        public String facesDone() {
+            StringBuilder b = new StringBuilder("[");
+            try {
+                String[] fs = new File(activity.getExternalFilesDir(null), "faces").list();
+                for (int i = 0; fs != null && i < fs.length; i++) {
+                    if (fs[i].endsWith(".png")) {
+                        if (b.length() > 1) {
+                            b.append(',');
+                        }
+                        b.append(fs[i].substring(0, fs[i].length() - 4));
+                    }
+                }
+            } catch (Throwable t) {
+                // none
+            }
+            return b.append(']').toString();
         }
 
         /** The match's stats as recorded by DLS (libdlsmgr stats), taken at full time. */

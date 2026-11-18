@@ -31,6 +31,9 @@ final class Native {
     /** Queue a team's squad (DLS player ids, 11-32) to be written into DLS's team record. */
     static native int setRoster(int team, int[] ids);
 
+    /** Queue players (DLS ids) whose in-game face DLS should render (event 20 / 21 per player). */
+    static native int renderFaces(int[] ids);
+
     /** Our pause button: opens DLS's pause screen (FUN_0018fdf0) on the next game frame. */
     static native void pause();
 

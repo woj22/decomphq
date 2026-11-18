@@ -172,6 +172,10 @@ h3 { font-size: .95rem; }
 .zone-key span { display: flex; align-items: center; gap: 6px; }
 .zone-key i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 .loan-tag { font-size: .68rem; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: var(--panel-2); border: 1px solid var(--line); color: var(--muted); vertical-align: 1px; }
+.face { border-radius: 10px; background: #0e1312; object-fit: cover; flex: none; }
+.face-wait { width: 88px; height: 88px; display: grid; place-items: center; color: var(--muted); border: 1px dashed var(--line); }
+.nm-face { display: inline-flex; align-items: center; gap: 8px; }
+.nm-face .face { border-radius: 6px; }
 /* finances */
 .chip-link { appearance: none; background: none; border: 0; color: inherit; font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
 .fin-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
@@ -2015,11 +2019,11 @@ input[type="search"], select {
     var order = { GK: 0, CB: 1, LB: 2, RB: 3, DM: 4, CM: 5, LM: 6, RM: 7, AM: 8, LW: 9, RW: 10, SS: 11, ST: 12 };
     var xi = lineupOf(S.clubId).xi;
     var ps = clubPlayers[S.clubId].slice().sort(function (a, b) { return order[a.pos] - order[b.pos] || b.ovr - a.ovr; });
-    return screenHead("Squad", '<span class="muted">' + ps.length + " players · tap a player for details</span>") +
+    return screenHead("Squad", '<span class="muted">' + ps.length + " players · tap a player for details</span>" + (window.DLSManager && window.DLSManager.renderFaces ? '<button class="btn" data-act="faces">In-game faces</button>' : "")) +
       '<div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Pos</th><th class="num">Age</th><th>Nation</th><th class="num">OVR</th><th class="num">POT</th><th class="num">Apps</th><th class="num">Gls</th><th class="num">Ast</th><th class="num">Avg</th><th class="num">Value</th><th>Contract</th></tr></thead><tbody>' +
       ps.map(function (p) {
         var s = seasonLine(p.id);
-        return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td>' + (p.shirt || "–") + "</td><td><b>" + esc(p.name) + "</b>" + (xi.indexOf(p.id) >= 0 ? ' <span class="muted" title="In starting XI">●</span>' : "") + (S.loans && S.loans[p.id] ? ' <span class="loan-tag" title="On loan from ' + esc(loanFromName(S.loans[p.id])) + '">Loan</span>' : "") + '</td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span>" + (p.alt && p.alt.length ? ' <span class="muted" style="font-size:.75rem">' + p.alt.join(" ") + "</span>" : "") + '</td><td class="num">' + p.age + "</td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + potOf(p) + '</td><td class="num">' + s.apps + '</td><td class="num">' + s.goals + '</td><td class="num">' + s.assists + '</td><td class="num">' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</td><td class="num">' + money(p.value) + "</td><td>" + esc(p.contract || "–") + "</td></tr>";
+        return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td>' + (p.shirt || "–") + '</td><td><span class="nm-face">' + faceImg(p, 26) + "<b>" + esc(p.name) + "</b></span>" + (xi.indexOf(p.id) >= 0 ? ' <span class="muted" title="In starting XI">●</span>' : "") + (S.loans && S.loans[p.id] ? ' <span class="loan-tag" title="On loan from ' + esc(loanFromName(S.loans[p.id])) + '">Loan</span>' : "") + '</td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span>" + (p.alt && p.alt.length ? ' <span class="muted" style="font-size:.75rem">' + p.alt.join(" ") + "</span>" : "") + '</td><td class="num">' + p.age + "</td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + potOf(p) + '</td><td class="num">' + s.apps + '</td><td class="num">' + s.goals + '</td><td class="num">' + s.assists + '</td><td class="num">' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</td><td class="num">' + money(p.value) + "</td><td>" + esc(p.contract || "–") + "</td></tr>";
       }).join("") + "</tbody></table></div>";
   }
   // DLS19's own stats (players.dat order: speed, acceleration, stamina, strength, tackling,
@@ -2035,7 +2039,7 @@ input[type="search"], select {
     var names = order.map(function (i) { return allNames[i]; });
     var vals = order.map(function (i) { return p.attrs[i]; });
     return screenHead(p.name, '<button class="btn ghost" data-back-player>Back</button>') +
-      '<div class="profile"><section class="panel profile-head"><div style="display:flex;gap:12px;align-items:center">' + badge(p.club, 44) +
+      '<div class="profile"><section class="panel profile-head"><div style="display:flex;gap:12px;align-items:center">' + (faceImg(p, 88) || (askFaces([p]) || faceAsked[p.dls] ? '<div class="face face-wait" title="Rendering the in-game face…">…</div>' : "")) + badge(p.club, 44) +
       '<div><div class="shirt">' + (p.shirt || "–") + '</div><div class="muted">' + esc(c.name) + "</div></div>" +
       '<div style="margin-left:auto;display:grid;justify-items:center;gap:2px"><span class="ovr" style="font-size:1.4rem;padding:6px 12px;background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span><span class="muted" style="font-size:.75rem">OVR</span></div>' +
       '<div style="display:grid;justify-items:center;gap:2px"><span class="ovr pot" style="font-size:1.4rem;padding:6px 12px">' + potOf(p) + '</span><span class="muted" style="font-size:.75rem">POT</span></div></div>' +
@@ -2051,6 +2055,34 @@ input[type="search"], select {
       playerActions(p) +
       '<section class="panel season-line"><div><span class="label">Apps</span><b>' + s.apps + '</b></div><div><span class="label">Goals</span><b>' + s.goals + '</b></div><div><span class="label">Assists</span><b>' + s.assists + '</b></div><div><span class="label">Avg rating</span><b>' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</b></div><div><span class="label">Clean sheets</span><b>' + s.cs + '</b></div><div><span class="label">Yellow</span><b>' + s.yc + '</b></div><div><span class="label">Red</span><b>' + s.rc + "</b></div></section>";
   }
+  // ---- in-game faces: DLS renders a player's head (libdlsmgr renderFaces) and the picture is
+  // kept in files/faces/<dls id>.png
+  var FACES = null, faceBase = "", faceAsked = {}, faceStamp = Date.now();
+  function facesInit() {
+    if (FACES || !window.DLSManager || !window.DLSManager.facesDone) return;
+    FACES = {};
+    try { JSON.parse(window.DLSManager.facesDone()).forEach(function (id) { FACES[id] = 1; }); } catch (e) {}
+    faceBase = window.DLSManager.facesUrl ? window.DLSManager.facesUrl() : "";
+  }
+  function faceImg(p, size) {
+    facesInit();
+    if (!p.dls || !FACES || !FACES[p.dls] || !faceBase) return "";
+    return '<img class="face" src="' + faceBase + p.dls + ".png?" + faceStamp + '" width="' + size + '" height="' + size + '" alt="">';
+  }
+  function askFaces(list) {
+    facesInit();
+    if (!FACES || !window.DLSManager.renderFaces) return 0;
+    var ids = list.filter(function (p) { return p.dls && !FACES[p.dls] && !faceAsked[p.dls]; }).map(function (p) { faceAsked[p.dls] = 1; return p.dls; });
+    if (!ids.length) return 0;
+    var r = window.DLSManager.renderFaces(JSON.stringify(ids));
+    if (r < 0) ids.forEach(function (id) { delete faceAsked[id]; });
+    return r;
+  }
+  window.dlsFace = function (id, ok) {
+    if (ok) { FACES[id] = 1; faceStamp = Date.now(); }
+    delete faceAsked[id];
+    if (ui.screen === "player" || ui.screen === "squad") render();
+  };
   function fact(k, v) { return '<div class="fact"><span class="label">' + k + "</span><b>" + esc(v) + "</b></div>"; }
 
   function viewTactics() {
@@ -2994,6 +3026,10 @@ input[type="search"], select {
     }
     if (t.hasAttribute("data-slot") || t.hasAttribute("data-bench")) return tacticsTap(t);
     if (act === "drawer") return openDrawer();
+    if (act === "faces") {
+      var nf = askFaces(clubPlayers[S.clubId]);
+      return modal("<h2>In-game faces</h2><p class=\"muted\" style=\"margin:0\">" + (nf > 0 ? "DLS is rendering " + nf + " faces; they appear here as they finish (a second or two each)." : nf < 0 ? "The game isn't ready yet; try again in a moment." : "All faces in your squad are already rendered.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+    }
     if (act === "continue") return advance();
     if (act === "badj") {
       var v = +(document.getElementById("badj") || {}).value || 0, F = S.fin;

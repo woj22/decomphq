@@ -389,6 +389,50 @@ void dlsmgr_frame(void)
     }
 }
 
+/* ---- in-game faces for the menus
+ *
+ * DLS renders player headshots itself (the player card's FUN_000ea278 -> FUN_00125a1c): a
+ * request slot (state at +0xd0: 0 new ... 7 done) and the player's card data (0xb0 record +
+ * two ints, built by FUN_000ac480(buf, id, -2, 1, 0, -1) as FUN_000b08cc does) are passed
+ * once a frame until the head has been rendered and cached as DOCS:headshot_<id>_*.png.
+ * Requests are queued from Java and run one at a time on the render path; event 20 | id << 8
+ * when a face is done (Java copies the PNG), 21 | id << 8 when it gave up. */
+#define FQ_MAX 2048
+static int faceQ[FQ_MAX];
+static volatile int fqHead, fqTail;
+static u64 faceSlot[0x80], faceBuf[0x40];
+static int faceCur = -1, faceFrames, faceLast = -1;
+
+static void face_step(void)
+{
+    if (faceCur < 0) {
+        if (fqTail == fqHead) return;
+        faceCur = faceQ[fqTail % FQ_MAX];
+        fqTail++;
+        for (int i = 0; i < 0x80; i++) faceSlot[i] = 0;
+        for (int i = 0; i < 0x40; i++) faceBuf[i] = 0;
+        FN(0x18bc60, void (*)(void *))(faceBuf);
+        FN(0xac480, void (*)(void *, u32, int, int, int, int))(faceBuf, (u32)faceCur, -2, 1, 0, -1);
+        faceFrames = 0;
+        faceLast = -1;
+    }
+    u8 *slot = (u8 *)faceSlot, *buf = (u8 *)faceBuf;
+    FN(0x125a1c, void (*)(void *, void *, int, int))(slot, buf, *(int *)(buf + 0xb0), *(int *)(buf + 0xb4));
+    int st = *(int *)(slot + 0xd0);
+    if (st != faceLast) {
+        nlog("face %d: state %d (frame %d)\n", faceCur, st, faceFrames);
+        faceLast = st;
+    }
+    faceFrames++;
+    if (st == 7) {
+        event(20 | faceCur << 8);
+        faceCur = -1;
+    } else if (faceFrames > 900) {
+        event(21 | faceCur << 8);
+        faceCur = -1;
+    }
+}
+
 /*
  * Draw the screen stack (called by the cave's render gate instead of FUN_001693e8) without
  * DLS's pause / half-time screen on top: our menus replace it. Nothing is drawn unless the
@@ -396,6 +440,8 @@ void dlsmgr_frame(void)
  */
 void dlsmgr_render(void)
 {
+    if (!match_in_stack())
+        face_step();     /* faces are rendered while the menus are up, never during a match */
     u8 *mgr = screen_mgr();
     int n = *(int *)(mgr + 0x48);
     int match = -1;
@@ -635,4 +681,16 @@ int Java_com_dlsmgr_Native_setRoster(void *env, void *cls, int team, void *arr)
     rqN[k] = n;
     rqHead++;
     return 1;
+}
+
+/* Queue players (DLS ids) whose in-game face should be rendered for the menus. */
+int Java_com_dlsmgr_Native_renderFaces(void *env, void *cls, void *arr)
+{
+    int n = JFN(env, 171, int (*)(void *, void *))(env, arr), tmp[64], done = 0;
+    for (int off = 0; off < n; off += 64) {
+        int k = n - off < 64 ? n - off : 64;
+        JFN(env, 203, void (*)(void *, void *, int, int, int *))(env, arr, off, k, tmp);
+        for (int i = 0; i < k && fqHead - fqTail < FQ_MAX; i++) { faceQ[fqHead % FQ_MAX] = tmp[i]; fqHead++; done++; }
+    }
+    return done;
 }
