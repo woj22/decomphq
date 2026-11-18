@@ -492,7 +492,7 @@ input[type="search"], select {
   var FREE_AGENT = { name: "Free agent", short: "FA", city: "", stadium: "", league: "prvaliga", colors: { primary: "#4a5452", secondary: "#9aa5a2" } };
   function club(id) { return D.clubs[id] || FREE_AGENT; }
   // league logo (leagues/<id>.png); leagues without one show nothing
-  var LEAGUE_LOGOS = { slovenia_2snl: 1 };
+  var LEAGUE_LOGOS = { slovenia_2snl: 1, prvaliga: 1, la_liga: 1, premier_league: 1 };
   function leagueLogo(lid, h) { return LEAGUE_LOGOS[lid] ? '<img class="lg-logo" src="leagues/' + lid + '.png" alt="" style="height:' + h + 'px">' : ""; }
   function leagueOf(cid) { return D.leagues.find(function (l) { return l.id === club(cid).league; }); }
   function money(v) { if (!v) return "–"; return v >= 1e6 ? "€" + (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M" : "€" + Math.round(v / 1e3) + "K"; }
