@@ -168,6 +168,29 @@ h3 { font-size: .95rem; }
 .md-back { display: none; justify-self: start; }
 .msg-detail h3 { margin: 4px 0 0; font-size: 1.2rem; }
 .msg-detail p { margin: 0; line-height: 1.5; max-width: 65ch; }
+/* social */
+.feed { display: grid; gap: 10px; max-width: 720px; }
+.sc-post { display: grid; grid-template-columns: 40px 1fr; gap: 10px; padding: 12px 14px; }
+.sc-post.new { border-left: 3px solid #4f8ff7; }
+.sc-av { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; background: var(--panel-2); }
+.sc-av.ini { font-weight: 800; font-size: .8rem; }
+.sc-body { min-width: 0; display: grid; gap: 4px; }
+.sc-head { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.sc-tick { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; background: #4f8ff7; color: #fff; font-size: .62rem; font-weight: 900; }
+.sc-h { color: var(--muted); font-size: .8rem; }
+.sc-text { line-height: 1.45; }
+.sc-meta { display: flex; gap: 18px; color: var(--muted); font-size: .8rem; }
+.mood-row { display: flex; justify-content: center; gap: 14px; font-size: .82rem; color: var(--muted); }
+.mood-row b { color: var(--fg); }
+/* press conference */
+.press-card { padding: 18px; display: grid; gap: 14px; max-width: 760px; }
+.press-card h3, .press-card p { margin: 0; }
+.press-prog { font-size: .78rem; color: var(--muted); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.press-q { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: start; }
+.press-q p { margin: 4px 0 0; font-size: 1.08rem; font-weight: 600; line-height: 1.4; }
+.press-ans { display: grid; gap: 8px; }
+.press-a { justify-content: flex-start; text-align: left; display: grid; gap: 2px; padding: 10px 14px; white-space: normal; }
+.pa-tone { font-size: .7rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .05em; }
 /* calendar */
 .cal-nav { display: flex; align-items: center; gap: 8px; }
 .cal-nav b { min-width: 9em; text-align: center; }
@@ -488,6 +511,8 @@ input[type="search"], select {
     var defH = H.df * 0.7 + H.gk * 0.3, defA = A.df * 0.7 + A.gk * 0.3;
     var lamH = Math.min(4, Math.max(0.15, 1.42 * Math.exp((attH - defA) / 11 + (H.mf - A.mf) / 30)));
     var lamA = Math.min(4, Math.max(0.15, 1.12 * Math.exp((attA - defH) / 11 + (A.mf - H.mf) / 30)));
+    // squad morale (press conferences, results) nudges the user's team in simulated matches
+    if (S && S.morale != null) { var mf = 1 + (S.morale - 55) / 400; if (home === S.clubId) lamH *= mf; else if (away === S.clubId) lamA *= mf; }
     var hg = poisson(lamH, r), ag = poisson(lamA, r), events = [];
     if (forced) { hg = forced.hg; ag = forced.ag; }  // real result from the DLS match
     function scorers(cid, n, side) {
@@ -654,6 +679,9 @@ input[type="search"], select {
         mail("Assistant manager", "Result: " + club(mine.h).name + " " + mine.hg + "–" + mine.ag + " " + club(mine.a).name,
           [gF > gA ? "A good win, boss." : gF === gA ? "A point from that one." : "Not our day.", gl.length ? "Goals: " + gl.join(", ") + "." : "No goals."],
           { label: "Match report", report: myLeague().id + ":" + w + ":" + mine.h }, gF > gA ? "good" : gF < gA ? "bad" : "match").read = true;
+        moodAfter(gF, gA);
+        socialResult(mine, w);
+        pressMail("post", { home: mine.h, away: mine.a, week: w }, mine);
       }
     }
     save();
@@ -750,6 +778,8 @@ input[type="search"], select {
     var opp = f ? club(f.home === S.clubId ? f.away : f.home).name : null;
     mail("Assistant manager", "Pre-season plans", ["I've set the team up in a " + esc(lineupOf(S.clubId).formation) + " for now. Have a look at the tactics and pick the XI you trust.",
       opp ? "We open the league season against <b>" + esc(opp) + "</b> on " + dayLabel(weekDay(0)) + "." : ""].filter(Boolean), { label: "Tactics", go: "tactics" });
+    post("club", clubAcct(S.clubId), "👋 Welcome to our new manager! A new era begins at " + c.name + ". " + D.season + " starts now.", { hype: 1.5 });
+    post("fan", fan(S.clubId, rng(S.seed)), "New manager in. Let's see what they can do 🤞");
   }
   // messages and fixtures due at the start of hour h of day d; returns how many messages arrived
   function hourEvents(d, h) {
@@ -778,7 +808,10 @@ input[type="search"], select {
         { label: "Tactics", go: "tactics" });
     }
     var mf = myFixtureOn(d);
+    var tf = myFixtureOn(d + 1);
+    if (tf && h === 11 && S.week === tf.week) pressMail("pre", tf);
     if (mf && h === 9 && S.week === mf.week) {
+      socialMatchday(mf);
       var hc = club(mf.home);
       mail("Assistant manager", "Match day: " + hc.name + " v " + club(mf.away).name, ["Kick-off at 15:00" + (hc.stadium ? " at " + esc(hc.stadium) : "") + ". The squad is ready, boss."],
         { label: "Go to match", act: "play" }, "match");
@@ -790,6 +823,7 @@ input[type="search"], select {
       mail(L.name, "Matchweek " + (rw + 1) + " round-up", ["Top of the table: " + tb2.slice(0, 3).map(function (t, i) { return (i + 1) + ". " + esc(club(t.id).name) + " " + t.pts + " pts"; }).join(" · ") + ".",
         esc(c.name) + " are " + me + ordinalTxt(me) + " with " + tb2[me - 1].pts + " points.",
         ts ? "Top scorer: <b>" + esc(ts.p.name) + "</b> (" + esc(club(ts.p.club).name) + "), " + ts.g + " goals." : ""].filter(Boolean), { label: "League table", go: "table" }, "league");
+      socialRoundup(rw);
     }
     // first of the month: board review and player of the month
     if (d > 0 && dayDate(d).getUTCDate() === 1 && h === 10) {
@@ -827,6 +861,7 @@ input[type="search"], select {
     var p = byId[best], a = agg[best];
     mail(L.name, "Player of the month: " + p.name, ["<b>" + esc(p.name) + "</b> (" + esc(club(p.club).name) + ") is the " + esc(L.name) + " player of the month for " + m0.toLocaleDateString("en-GB", { month: "long", timeZone: "UTC" }) + ".",
       a.n + " appearances, average rating " + (a.r / a.n).toFixed(2) + (a.g ? ", " + a.g + " goal" + (a.g > 1 ? "s" : "") : "") + "."], { label: "View player", player: p.id }, p.club === S.clubId ? "good" : "league");
+    post("league", leagueAcct(), "🏆 Player of the Month: " + p.name + " (" + club(p.club).name + ")", { hype: 1.5 });
   }
   function scoutMail(d) {
     var r = rng((S.seed ^ (d * 2654435761)) >>> 0), mine = clubPlayers[S.clubId].slice().sort(function (a, b) { return b.ovr - a.ovr; });
@@ -837,7 +872,146 @@ input[type="search"], select {
     var p = pool[Math.floor(r() * pool.length)];
     mail("Chief scout", "Scout report: " + p.name, ["I've been watching <b>" + esc(p.name) + "</b>, " + p.age + ", " + p.pos + " at " + esc(club(p.club).name) + ".",
       "Overall " + p.ovr + ", valued at " + money(p.value) + ". He'd be an upgrade on what we have in that position."], { label: "View player", player: p.id }, "scout");
+    socialRumour(p);
   }
+  // ------------------------------------------------------------ social feed (FM-style)
+  // Posts from the club, the league, journalists and fans, reacting to what happens. S.social
+  // holds them newest first; S.socialSeen is the newest one the user has looked at.
+  var JOURNOS = [["Matic Zupan", "Pitchside News"], ["Ana Kos", "Sport Daily"], ["Tom Hale", "The Final Whistle"], ["Nina Vidmar", "Football Weekly Wire"], ["Rok Hribar", "Goal Line Report"]];
+  var FAN_TAIL = ["Ultras", "_til_I_die", "Faithful", "Army", "Kop", "Barmy", "1897", "Away_Days", "TerraceTalk", "_Supporter"];
+  function srand() { return rng((S.seed ^ (S.t * 2246822519) ^ (S.social ? S.social.length * 3266489917 : 0)) >>> 0); }
+  function pick(a, r) { return a[Math.floor(r() * a.length)]; }
+  function slug(t) { return t.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z0-9]/g, ""); }
+  function post(kind, who, text, opts) {
+    if (!S.social) S.social = [];
+    var r = srand(), o = opts || {};
+    var base = kind === "club" || kind === "league" ? 400 : kind === "media" ? 150 : 20;
+    S.social.unshift({ id: (S.postSeq = (S.postSeq || 0) + 1), t: S.t, kind: kind, name: who.name, handle: who.handle, cid: who.cid || null, lg: who.lg || null,
+      text: text, likes: Math.round(base * (0.4 + r() * 2.2) * (o.hype || 1)), reposts: Math.round(base * 0.15 * (0.3 + r() * 2)) });
+    if (S.social.length > 300) S.social.length = 300;
+  }
+  function clubAcct(cid) { var c = club(cid); return { name: c.name, handle: "@" + slug(c.name) + (c.league === "premier_league" ? "FC" : ""), cid: cid }; }
+  function leagueAcct() { var L = myLeague(); return { name: L.name, handle: "@" + slug(L.short || L.name), lg: L.id }; }
+  function journo(r) { var j = pick(JOURNOS, r); return { name: j[0], handle: "@" + slug(j[0]) + " · " + j[1] }; }
+  function fan(cid, r) { var c = club(cid); return { name: (c.short || slug(c.name)) + " " + pick(["fan", "supporter", "faithful", "ultra"], r), handle: "@" + slug(c.short || c.name) + pick(FAN_TAIL, r) + Math.floor(r() * 90 + 10), cid: cid, fan: true }; }
+  function surname(id) { return id != null && byId[id] ? byId[id].name.split(" ").slice(-1)[0] : "?"; }
+  function socialResult(res, w) {
+    var r = srand(), hm = res.h === S.clubId, me = S.clubId, opp = hm ? res.a : res.h, gf = hm ? res.hg : res.ag, ga = hm ? res.ag : res.hg;
+    var goals = res.events.filter(function (e) { return e.type === "goal"; });
+    var mine = goals.filter(function (e) { return e.side === (hm ? "h" : "a"); }).map(function (e) { return surname(e.p) + " " + e.min + "'" + (e.pen ? " (P)" : "") + (e.og ? " (og)" : ""); });
+    post("club", clubAcct(me), "FULL TIME | " + club(res.h).name + " " + res.hg + "–" + res.ag + " " + club(res.a).name + (mine.length ? "\n⚽ " + mine.join(", ") : ""), { hype: gf > ga ? 1.6 : 1 });
+    var xi = (hm ? res.xi.h : res.xi.a).filter(function (id) { return res.ratings[id] != null; }).sort(function (a, b) { return res.ratings[b] - res.ratings[a]; });
+    var star = xi[0], flop = xi[xi.length - 1];
+    var winT = ["What a performance! 3 points in the bag 🔥", "Get in!!! Proper team performance today", "That's more like it. Up the " + club(me).short + "!", "Buzzing after that. Season starts here 💪"];
+    var drawT = ["A point is a point I suppose…", "Should have won that one tbh", "Hard-fought draw, we go again", "Frustrating afternoon. Need more up front"];
+    var lossT = ["Not good enough. Simple as that.", "Embarrassing. Something has to change", "Heads up lads, long season ahead", "That was painful to watch 😩"];
+    post("fan", fan(me, r), gf > ga ? pick(winT, r) : gf === ga ? pick(drawT, r) : pick(lossT, r), { hype: gf > ga ? 1.5 : 1 });
+    if (star != null && res.ratings[star] >= 7.2) post("fan", fan(me, r), surname(star) + " was everywhere today. " + res.ratings[star].toFixed(1) + " rating and deserved it 👏");
+    if (flop != null && res.ratings[flop] < 6 && gf <= ga) post("fan", fan(me, r), "Not having a go but " + surname(flop) + " has to be dropped after that.");
+    post("fan", fan(opp, r), ga > gf ? pick(["Lovely stuff, well played lads", "Easy. Next.", (hm ? "Great away day, buzzing" : "Brilliant home win, buzzing")], r) : gf > ga ? pick(["Shocking from us today", "Fair play to " + club(me).name + ", better side", "Back to the drawing board"], r) : "Point each, fair result.");
+    if (res.stats && res.stats.possession) {
+      var i = hm ? 0 : 1, j = 1 - i;
+      post("media", journo(r), club(me).name + " " + gf + "–" + ga + " " + club(opp).name + ": " + res.stats.possession[i] + "% possession, " + res.stats.shots[i] + " shots (" + res.stats.onTarget[i] + " on target), xG " + res.stats.xg[i] + " v " + res.stats.xg[j] + ".");
+    }
+    var form = standings(myLeague().id).find(function (t) { return t.id === me; }).form.slice(-3).join("");
+    if (form === "WWW") post("media", journo(r), club(me).name + " have now won three in a row. Momentum building.");
+    if (form === "LLL") post("fan", fan(me, r), "Three defeats on the bounce. The manager needs to sort this out fast.", { hype: 1.4 });
+  }
+  function socialMatchday(f) {
+    var r = srand(), hm = f.home === S.clubId, opp = hm ? f.away : f.home;
+    post("club", clubAcct(S.clubId), "MATCHDAY 🏟️ " + club(f.home).name + " v " + club(f.away).name + " · 15:00" + (club(f.home).stadium ? " · " + club(f.home).stadium : ""));
+    post("fan", fan(S.clubId, r), pick(["Matchday! Let's get after " + club(opp).short + " today 💪", "Feeling good about this one. 2-0 us.", "COME ON " + club(S.clubId).name.toUpperCase() + "!", "Nervous for this one ngl"], r));
+  }
+  function socialRoundup(rw) {
+    var r = srand(), tb = standings(myLeague().id), top = tb[0];
+    post("league", leagueAcct(), "Matchweek " + (rw + 1) + " is done. " + club(top.id).name + " lead the way on " + top.pts + " points.");
+    var ts = leagueScorers(myLeague().id, 1)[0];
+    if (ts && r() < 0.6) post("media", journo(r), ts.p.name + " (" + club(ts.p.club).name + ") leads the scoring charts with " + ts.g + ". Bargain of the season?");
+  }
+  function socialRumour(p) {
+    var r = srand();
+    if (r() < 0.45) post("media", journo(r), "Hearing " + club(S.clubId).name + " have been watching " + p.name + " (" + club(p.club).name + "). One to keep an eye on 👀");
+  }
+
+  // ------------------------------------------------------------ press conferences
+  // Before (the day before, 11:00) and after each of the user's matches. A few questions, each
+  // with answers of different tones; answers move squad morale and the fans' mood, and the
+  // press and fans react on social media. Not attending sends the assistant (no effect).
+  function moraleWord(v) { return v >= 75 ? "Superb" : v >= 60 ? "Good" : v >= 42 ? "Okay" : v >= 28 ? "Low" : "Very low"; }
+  function bump(k, n) { S[k] = Math.max(5, Math.min(95, (S[k] == null ? 55 : S[k]) + n)); }
+  function pressMail(kind, f, res) {
+    if (S.press && !S.press.done) S.press.done = "skipped";
+    var opp = f.home === S.clubId ? f.away : f.home;
+    S.press = { id: (S.pressSeq = (S.pressSeq || 0) + 1), kind: kind, week: f.week, opp: opp, res: res ? { hg: res.hg, ag: res.ag, h: res.h, a: res.a, w: f.week } : null, done: false };
+    mail("Media department", (kind === "pre" ? "Pre-match press conference: " : "Post-match press conference: ") + club(opp).name,
+      [kind === "pre" ? "The press are waiting to hear from you ahead of the match against <b>" + esc(club(opp).name) + "</b>." : "The press want your thoughts on the game against <b>" + esc(club(opp).name) + "</b>.",
+       "If you don't attend, your assistant will take it."], { label: "Attend press conference", press: S.press.id }, "press");
+  }
+  function pressQuestions(P) {
+    var r = rng((S.seed ^ (P.id * 40503)) >>> 0), opp = club(P.opp).name, me = club(S.clubId).name, qs = [];
+    var tb = standings(myLeague().id), pos = tb.findIndex(function (t) { return t.id === S.clubId; }) + 1, opos = tb.findIndex(function (t) { return t.id === P.opp; }) + 1;
+    var myForm = (tb[pos - 1] || { form: [] }).form.slice(-3).join("");
+    var top = clubPlayers[S.clubId].filter(function (p) { return S.pstats[p.id] && S.pstats[p.id].goals; }).sort(function (a, b) { return S.pstats[b.id].goals - S.pstats[a.id].goals; })[0];
+    function A(text, tone, mor, fans, quote) { return { text: text, tone: tone, mor: mor, fans: fans, quote: quote || text }; }
+    if (P.kind === "pre") {
+      qs.push({ q: "How do you see the game against " + opp + "?", a: [
+        A("We respect them, but we're going there to win.", "Confident", 3, 2), A("It'll be a tough game. We have to be at our best.", "Calm", 1, 0),
+        A("Honestly, we should be beating teams like this.", "Arrogant", 4, 3, "We should be beating teams like " + opp + "."), A("I'd rather not make predictions.", "Evasive", -1, -1)] });
+      if (S.week > 0 && opos > 0) qs.push({ q: opp + " are " + opos + ordinalTxt(opos) + " in the table. Does that change your approach?", a: [
+        A("No. We focus on ourselves.", "Calm", 2, 0), A("The table doesn't lie, they're there for a reason.", "Cautious", 0, -1),
+        A("Their position flatters them, we'll show that on the pitch.", "Aggressive", 3, 3, "Their position flatters them.")] });
+      if (myForm === "LLL" || myForm.slice(-2) === "LL") qs.push({ q: "Three defeats recently. Is the pressure getting to the squad?", a: [
+        A("Not at all. I back these players completely.", "Supportive", 5, 1, "I back these players completely."), A("We know it isn't good enough. Things must improve.", "Demanding", -2, 2),
+        A("Pressure comes with the job. We'll turn it around.", "Calm", 2, 1)] });
+      else if (myForm === "WWW") qs.push({ q: "Three wins in a row. Can anyone stop you?", a: [
+        A("We're flying, and we want more.", "Confident", 3, 3), A("Let's keep our feet on the ground.", "Cautious", 1, 0), A("Write us off at your peril.", "Passionate", 4, 4)] });
+      if (top) qs.push({ q: top.name + " has " + S.pstats[top.id].goals + " goals already. How important is he?", a: [
+        A("He's been brilliant, but it's a team effort.", "Calm", 2, 1), A("He's one of the best in the league.", "Praise", 4, 2, top.name + " is one of the best in the league."),
+        A("He can do even better. I demand more.", "Demanding", -1, 0)] });
+      qs.push({ q: "How is the squad looking ahead of the game?", a: [
+        A("Everyone is fit and hungry. We're ready.", "Confident", 3, 1), A("We'll make a few decisions in training tomorrow.", "Calm", 1, 0),
+        A("Some players need to show me more.", "Demanding", -2, 1, "Some players need to show me more.")] });
+      if (P.week === 0) qs.push({ q: "First league game of the season. How has pre-season gone?", a: [
+        A("Really well. The players have worked hard.", "Praise", 3, 1), A("Fine, but the real test starts now.", "Calm", 1, 0), A("We're not where I want us to be yet.", "Cautious", -1, -1)] });
+      qs.push({ q: "What's the target for the season?", a: [
+        A("To " + targetText(Math.max(1, (S.target || pos) - 1), myLeague().clubs.length) + ".", "Ambitious", 2, 3, "Our target is to " + targetText(Math.max(1, (S.target || pos) - 1), myLeague().clubs.length) + "."),
+        A("One game at a time.", "Calm", 1, 0), A("We'll see where we are at Christmas.", "Evasive", 0, -1)] });
+    } else {
+      var R = P.res, hm = R.h === S.clubId, gf = hm ? R.hg : R.ag, ga = hm ? R.ag : R.hg, sc = gf + "–" + ga;
+      if (gf > ga) qs.push({ q: "A " + sc + " win. Are you happy?", a: [
+        A("Delighted. The players were outstanding.", "Praise", 4, 2), A("Pleased, but there's lots to improve.", "Demanding", 0, 1), A("That's the standard I expect.", "Confident", 2, 2)] });
+      else if (gf === ga) qs.push({ q: "A " + sc + " draw. Two points dropped?", a: [
+        A("We'll take the point and move on.", "Calm", 1, 0), A("Yes. We should have won that.", "Demanding", -2, 2), A("It's a fair result against a good side.", "Cautious", 0, -1)] });
+      else qs.push({ q: "A " + sc + " defeat. What went wrong?", a: [
+        A("I take full responsibility.", "Supportive", 3, 1, "I take full responsibility for that defeat."), A("Some players let themselves down today.", "Critical", -4, 2, "Some players let themselves down."),
+        A("The referee had a big say in that.", "Aggressive", 1, 3, "The referee had a big say in that game.")] });
+      var lastRes = (S.results[myLeague().id][R.w] || []).find(function (x) { return x.h === R.h; });
+      var star = lastRes ? (hm ? lastRes.xi.h : lastRes.xi.a).slice().sort(function (a, b) { return (lastRes.ratings[b] || 0) - (lastRes.ratings[a] || 0); })[0] : null;
+      if (star != null && byId[star]) qs.push({ q: byId[star].name + " was impressive today. Your thoughts?", a: [
+        A("He was excellent. Exactly what we need.", "Praise", 3, 1), A("He did his job, as I expect from everyone.", "Calm", 1, 0), A("Let's not get carried away.", "Cautious", -1, 0)] });
+      qs.push({ q: "What does this result mean for your season?", a: [
+        A("We're heading in the right direction.", "Confident", 2, 1), A("It's one game. We move on.", "Calm", 1, 0), A("We need to be much better than this.", "Demanding", -1, 1)] });
+    }
+    // three or four questions, the first always kept
+    var first = qs.shift();
+    qs.sort(function () { return r() - 0.5; });
+    return [first].concat(qs.slice(0, 3)).map(function (q) { var j = pick(JOURNOS, r); return { q: q.q, a: q.a, who: j[0], outlet: j[1] }; });
+  }
+  function pressFinish(P, answers) {
+    var mor = 0, fans = 0, r = srand();
+    answers.forEach(function (a) { mor += a.mor; fans += a.fans; });
+    bump("morale", mor); bump("fanMood", fans);
+    P.done = "attended"; P.effect = { mor: mor, fans: fans };
+    var q = answers.slice().sort(function (a, b) { return Math.abs(b.mor) + Math.abs(b.fans) - Math.abs(a.mor) - Math.abs(a.fans); })[0];
+    if (q) {
+      post("media", journo(r), club(S.clubId).name + " boss: “" + q.quote + "”", { hype: 1.3 });
+      post("fan", fan(S.clubId, r), q.fans >= 2 ? pick(["Love this from the gaffer 🙌", "That's what we want to hear!", "Manager gets it. Behind him 100%"], r) : q.fans < 0 ? pick(["Bit of a non-answer that", "Come on, give us something", "Not convinced tbh"], r) : pick(["Fair enough", "Sensible from the boss", "No complaints with that"], r));
+    }
+    save();
+  }
+  // a result moves morale and the fans' mood
+  function moodAfter(gf, ga) { bump("morale", gf > ga ? 6 : gf === ga ? 1 : -6); bump("fanMood", gf > ga ? 5 : gf === ga ? 0 : -6); }
+
   var advancing = null;
   function updateClock() {
     var c = document.getElementById("clock");
@@ -877,7 +1051,8 @@ input[type="search"], select {
     training: '<path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12"/>',
     news: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
     inbox: '<path d="M4 13 6.5 5h11L20 13v6H4z"/><path d="M4 13h5l1.2 2.4h3.6L15 13h5"/>',
-    calendar: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'
+    calendar: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+    social: '<path d="M5 5h14v10H10l-4 4v-4H5z"/><path d="M9 9h6M9 12h4"/>'
   };
   function icon(n) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[n] + "</svg>"; }
 
@@ -903,7 +1078,7 @@ input[type="search"], select {
     if (ui.title) return renderTitle();
     if (!S) return renderNewGame();
     ensureCal();
-    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar }[ui.screen] || viewHome)() + "</main>";
+    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
   }
@@ -927,12 +1102,14 @@ input[type="search"], select {
     return '<div class="home-grid">' + hero +
       '<section class="panel pos-card"><div class="label">League position</div><div class="big">' + (me.p ? ordinal(pos) : "–") + '</div><div class="muted">' + esc(myLeague().name) + " · " + me.pts + " pts</div>" +
       '<hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="label">Last 5</div><div class="form">' +
-      form.map(function (x) { return '<span class="dot ' + x + '">' + (x || "") + "</span>"; }).join("") + '</div><button class="btn ghost" data-go="table" style="justify-self:center">Full table</button></section></div>' +
+      form.map(function (x) { return '<span class="dot ' + x + '">' + (x || "") + "</span>"; }).join("") + '</div>' +
+      '<div class="mood-row"><span>Morale <b>' + moraleWord(S.morale == null ? 55 : S.morale) + '</b></span><span>Fans <b>' + moraleWord(S.fanMood == null ? 55 : S.fanMood) + "</b></span></div>" +
+      '<button class="btn ghost" data-go="table" style="justify-self:center">Full table</button></section></div>' +
       '<div class="tiles">' +
       tile("squad", "Squad", clubPlayers[S.clubId].length + " players") + tile("tactics", "Tactics", lineupOf(S.clubId).formation) +
       tile("transfers", "Transfers", "Scout players") + tile("training", "Training", "Coming next") + "</div>" +
       '<div class="tiles">' + tile("inbox", "Inbox", unread() ? unread() + " unread" : "Up to date", "inbox") + tile("calendar", "Calendar", dayLabel(today(), true), "calendar") +
-      tile("tactics", "League Table", myLeague().short, "table") + tile("squad", "Stats", "Leaders", "stats") + "</div>" +
+      tile("social", "Social", socialNew() ? socialNew() + " new" : "Feed", "social") + tile("tactics", "League Table", myLeague().short, "table") + "</div>" +
       (latest ? '<section class="panel news" data-msg="' + latest.id + '">' + icon("inbox").replace("<svg", '<svg style="width:22px;height:22px;stroke:var(--fg);fill:none;stroke-width:2;flex:none"') +
         '<div style="min-width:0"><div class="k">' + esc(latest.from) + " · " + esc(dayLabel(Math.floor(latest.t / 24), true)) + '</div><div class="t">' + esc(latest.subject) + '</div></div><span style="margin-left:auto;font-size:1.3rem">›</span></section>' : "");
   }
@@ -1136,6 +1313,44 @@ input[type="search"], select {
     return screenHead("Inbox", unread() ? '<button class="btn ghost" data-act="readall">Mark all read</button>' : "") +
       '<div class="inbox' + (cur ? " open" : "") + '"><div class="panel msg-list">' + items + "</div>" + (detail || '<div class="panel msg-detail empty muted">Select a message</div>') + "</div>";
   }
+  // ---- social feed
+  var SOC_FILTERS = [["all", "All"], ["club", "Club"], ["fan", "Fans"], ["media", "Media"], ["league", "League"]];
+  function ago(t) { var h = S.t - t; return h < 1 ? "now" : h < 24 ? h + "h" : Math.floor(h / 24) + "d"; }
+  function avatar(pst) {
+    if (pst.lg) return '<span class="sc-av">' + leagueLogo(pst.lg, 26) + "</span>";
+    if (pst.kind === "club" && pst.cid) return '<span class="sc-av">' + badge(pst.cid, 30) + "</span>";
+    var c = pst.cid ? club(pst.cid).colors : null, ini = pst.name.split(" ").map(function (x) { return x[0]; }).join("").slice(0, 2).toUpperCase();
+    return '<span class="sc-av ini" style="background:' + (c ? c.secondary : "#3a4a52") + ";color:" + (c ? c.primary : "#fff") + '">' + esc(ini) + "</span>";
+  }
+  function viewSocial() {
+    var f = ui.socFilter || "all", list = (S.social || []).filter(function (x) { return f === "all" || x.kind === f; });
+    var html = screenHead("Social", '<div class="tabs">' + SOC_FILTERS.map(function (x) { return '<button class="chip-btn" data-soc="' + x[0] + '" aria-pressed="' + (f === x[0]) + '">' + x[1] + "</button>"; }).join("") + "</div>") +
+      '<div class="feed">' + (list.map(function (x) {
+        return '<article class="panel sc-post' + (x.id > (S.socialSeen || 0) ? " new" : "") + '">' + avatar(x) + '<div class="sc-body"><div class="sc-head"><b>' + esc(x.name) + "</b>" +
+          (x.kind === "club" || x.kind === "league" ? '<span class="sc-tick" title="Official">✓</span>' : "") + '<span class="sc-h">' + esc(x.handle) + " · " + ago(x.t) + "</span></div>" +
+          '<div class="sc-text">' + esc(x.text).replace(/\n/g, "<br>") + '</div><div class="sc-meta"><span>↻ ' + x.reposts + "</span><span>♥ " + x.likes + "</span></div></div></article>";
+      }).join("") || '<p class="muted">Nothing here yet.</p>') + "</div>";
+    S.socialSeen = S.social && S.social.length ? S.social[0].id : 0;
+    save();
+    return html;
+  }
+  function socialNew() { return (S.social || []).filter(function (x) { return x.id > (S.socialSeen || 0); }).length; }
+  // ---- press conference (layout to be restyled)
+  function viewPress() {
+    var P = S.press, st = ui.pressState;
+    if (!P || !st || st.id !== P.id) return screenHead("Press conference", "") + '<p class="muted">No press conference right now.</p>';
+    var head = screenHead((P.kind === "pre" ? "Pre-match" : "Post-match") + " press conference", '<span class="muted">' + esc(club(P.opp).name) + "</span>");
+    if (st.i >= st.qs.length) {
+      var e = P.effect || { mor: 0, fans: 0 };
+      function arrow(n) { return n > 0 ? '<b style="color:var(--win)">▲ up</b>' : n < 0 ? '<b style="color:var(--loss)">▼ down</b>' : "<b>unchanged</b>"; }
+      return head + '<section class="panel press-card"><h3>That\'s all, thank you.</h3><p>Squad morale ' + arrow(e.mor) + " · now " + moraleWord(S.morale) + "</p><p>Fans' mood " + arrow(e.fans) + " · now " + moraleWord(S.fanMood) + "</p>" +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-go="inbox">Back to inbox</button><button class="btn" data-go="social">See the reaction</button></div></section>';
+    }
+    var q = st.qs[st.i];
+    return head + '<section class="panel press-card"><div class="press-prog">Question ' + (st.i + 1) + " of " + st.qs.length + '</div>' +
+      '<div class="press-q"><span class="sc-av ini" style="background:#3a4a52;color:#fff">' + esc(q.who.split(" ").map(function (x) { return x[0]; }).join("")) + '</span><div><div class="label">' + esc(q.who) + " · " + esc(q.outlet) + '</div><p>' + esc(q.q) + "</p></div></div>" +
+      '<div class="press-ans">' + q.a.map(function (a, i) { return '<button class="btn press-a" data-pans="' + i + '"><span class="pa-tone">' + esc(a.tone) + "</span>" + esc(a.text) + "</button>"; }).join("") + "</div></section>";
+  }
   // ---- calendar: one month at a time, July to June
   function viewCalendar() {
     var mi = ui.calMonth != null ? ui.calMonth : (function () { var dd = dayDate(today()); return (dd.getUTCFullYear() - new Date(CAL0).getUTCFullYear()) * 12 + dd.getUTCMonth() - 6; })();
@@ -1238,7 +1453,7 @@ input[type="search"], select {
   }
   function closeModal() { var m = document.getElementById("modal"); if (m) m.remove(); }
   function openDrawer() {
-    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["squad", "Squad"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
+    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["social", "Social" + (socialNew() ? " (" + socialNew() + ")" : "")], ["squad", "Squad"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
     var d = el('<div id="drawer"><div class="drawer-bg" data-act="closedrawer"></div><nav class="drawer" aria-label="Main menu"><div class="label" style="padding:4px 12px 10px">' + esc(club(S.clubId).name) + "</div>" +
       items.map(function (x) { return '<button data-go="' + x[0] + '" aria-current="' + (ui.screen === x[0]) + '">' + x[1] + "</button>"; }).join("") +
       '<button data-act="settings" style="margin-top:12px">Settings</button>' +
@@ -1479,7 +1694,7 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
-    var t = ev.target.closest("[data-msg],[data-mact],[data-calm],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
+    var t = ev.target.closest("[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
     if (!t) return;
     if (t.hasAttribute("data-pickleague")) { ui.pickLeague = t.getAttribute("data-pickleague"); ui.pick = D.leagues.find(function (l) { return l.id === ui.pickLeague; }).clubs[0]; return renderNewGame(); }
     if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return updateNewGamePick(); }
@@ -1494,8 +1709,20 @@ input[type="search"], select {
       if (ma.go) { ui.screen = ma.go; return render(); }
       if (ma.player != null) { ui.prev = "inbox"; ui.player = ma.player; ui.screen = "player"; return render(); }
       if (ma.report) { var rk = ma.report.split(":"), rr = (S.results[rk[0]][+rk[1]] || []).find(function (x) { return x.h === rk[2]; }); if (rr) { ui.report = rr; ui.screen = "report"; } return render(); }
+      if (ma.press) {
+        if (!S.press || S.press.id !== ma.press || S.press.done) return modal('<h2>Press conference</h2><p class="muted" style="margin:0">' + (S.press && S.press.id === ma.press && S.press.done === "attended" ? "You've already spoken to the press." : "That press conference has passed; your assistant took it.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+        ui.pressState = { id: S.press.id, qs: pressQuestions(S.press), i: 0, ans: [] }; ui.screen = "press"; return render();
+      }
       if (ma.act === "play") { if (matchDayToday()) { ui.screen = "prematch"; return render(); } return; }
       return;
+    }
+    if (t.hasAttribute("data-soc")) { ui.socFilter = t.getAttribute("data-soc"); return render(); }
+    if (t.hasAttribute("data-pans")) {
+      var ps = ui.pressState, qq = ps && ps.qs[ps.i];
+      if (!qq) return;
+      ps.ans.push(qq.a[+t.getAttribute("data-pans")]); ps.i++;
+      if (ps.i >= ps.qs.length) pressFinish(S.press, ps.ans);
+      return render();
     }
     if (t.hasAttribute("data-calm")) { ui.calMonth = Math.max(0, Math.min(11, ui.calMonth + +t.getAttribute("data-calm"))); return render(); }
     var go = t.getAttribute("data-go"), act = t.getAttribute("data-act");
