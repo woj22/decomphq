@@ -3602,7 +3602,9 @@ input[type="search"], select {
     applyAll();
     ui.title = true;  // always open on the start screen
     render();
+    try { if (window.DLSManager && window.DLSManager.loaded) window.DLSManager.loaded(); } catch (e) {}
   }).catch(function (e) {
+    try { if (window.DLSManager && window.DLSManager.loaded) window.DLSManager.loaded(); } catch (e2) {}
     app.innerHTML = '<div class="panel" style="padding:18px">Could not load the squad data (' + esc(e.message) + "). Reload to try again.</div>";
   });
 })();

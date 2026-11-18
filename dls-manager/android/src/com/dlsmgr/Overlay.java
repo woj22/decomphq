@@ -61,6 +61,11 @@ public final class Overlay {
         }
         applyClub(context);
         activity = (Activity) context;
+        try {
+            Loader.show(activity);  // the AM27 loading screen, over DLS's own splash
+        } catch (Throwable t) {
+            lastError = String.valueOf(t);
+        }
         final View decor = activity.getWindow().getDecorView();
         decor.post(new Runnable() {
             @Override
@@ -132,6 +137,7 @@ public final class Overlay {
         pb.setVisibility(View.GONE);
         decor.addView(pb, plp);
         pauseBtn = pb;
+        Loader.top();
     }
 
     static void show() {
@@ -141,6 +147,7 @@ public final class Overlay {
         web.setVisibility(View.VISIBLE);
         web.bringToFront();
         reopen.setVisibility(View.GONE);
+        Loader.top();
         frontEnd(false);
         web.evaluateJavascript("window.dlsOnShow && window.dlsOnShow()", null);
     }
@@ -1148,7 +1155,20 @@ public final class Overlay {
         }
     }
 
+    static final class LoadedTask implements Runnable {
+        @Override
+        public void run() {
+            Loader.done();
+        }
+    }
+
     public static final class Bridge {
+        /** The menus have drawn their first screen: the loading screen can go. */
+        @JavascriptInterface
+        public void loaded() {
+            activity.runOnUiThread(new LoadedTask());
+        }
+
         @JavascriptInterface
         public void hide() {
             activity.runOnUiThread(new HideTask());
