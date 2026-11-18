@@ -176,6 +176,14 @@ h3 { font-size: .95rem; }
 .face-wait { width: 88px; height: 88px; display: grid; place-items: center; color: var(--muted); border: 1px dashed var(--line); }
 .nm-face { display: inline-flex; align-items: center; gap: 8px; }
 .nm-face .face { border-radius: 6px; }
+.rel-pill { display: inline-block; font-size: .74rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rc); color: var(--rc); white-space: nowrap; }
+.rel-bar { position: relative; width: 140px; height: 8px; border-radius: 4px; background: var(--panel-2); }
+.rel-bar::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--muted); }
+.rel-bar i { position: absolute; top: 0; bottom: 0; border-radius: 4px; }
+.rel-log { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: .88rem; }
+.own-ans { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
+.own-ans textarea { font: inherit; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; resize: vertical; min-height: 44px; }
+.modal input#aiKey, .modal input#aiModel { font: inherit; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; }
 /* finances */
 .chip-link { appearance: none; background: none; border: 0; color: inherit; font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
 .fin-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
@@ -949,6 +957,7 @@ input[type="search"], select {
     }
     // training: development every Monday morning, a report on the 15th of each month
     if (h === 8 && dayDate(d).getUTCDay() === 1) weeklyDevelopment();
+    respondEvents(d, h);
     if (S.fin) { financeEvents(d, h); decideOffers(d, h); incomingBids(d, h); boardDecide(d, h); aiMarket(d, h); transferRoundup(d, h); if (h === 1) { expireOffers(d); endLoans(d); } }
     if (h === 7 && dayDate(d).getUTCDate() === 1 && d > 30) reassessPotential();
     if (h === 10 && dayDate(d).getUTCDate() === 15 && d > 30) trainingMail();
@@ -1713,6 +1722,175 @@ input[type="search"], select {
       mail("The board", (give ? "Request approved: " : "Request declined: ") + (x.kind === "transfer" ? "transfer funds" : "wage budget"), [text, "Board confidence: " + conf + "%."], { label: "Board", go: "board" }, give ? "good" : "bad");
     });
   }
+  // ------------------------------------------------------------ relationships
+  // -100 .. 100 with every other manager ("m:<club>") and each of the user's players
+  // ("p:<id>"), on a seven-step scale; press comments, their replies and results move them.
+  var REL_STEPS = [[-60, "Very poor", "#e66767"], [-30, "Poor", "#d9805a"], [-10, "Fairly poor", "#c9a227"], [10, "Neutral", "#9aa5a2"], [30, "Fairly good", "#8fbf5a"], [60, "Good", "#5fbf6a"], [101, "Very good", "#3ddc84"]];
+  function relLabel(v) { for (var i = 0; i < REL_STEPS.length; i++) if (v < REL_STEPS[i][0]) return REL_STEPS[i]; return REL_STEPS[6]; }
+  function coachOf(cid) { return D.clubs[cid] && D.clubs[cid].manager ? D.clubs[cid].manager : club(cid).name + " head coach"; }
+  function ensureRel() {
+    if (S.rel) return;
+    S.rel = {}; S.relLog = [];
+    var r = rng((S.seed ^ 0x7e1a) >>> 0);
+    Object.keys(D.clubs).forEach(function (c) { if (c !== S.clubId) S.rel["m:" + c] = Math.round((r() - 0.5) * 16) + (rivals(c, S.clubId) ? -15 : 0); });
+    clubPlayers[S.clubId].forEach(function (p) { S.rel["p:" + p.id] = 10 + Math.round(r() * 15); });
+  }
+  function relOf(key) { ensureRel(); return S.rel[key] == null ? 0 : S.rel[key]; }
+  function relAdd(key, d, why) {
+    ensureRel();
+    var v = Math.max(-100, Math.min(100, relOf(key) + d));
+    var before = relLabel(relOf(key))[1];
+    S.rel[key] = v;
+    S.relLog.unshift({ t: S.t, key: key, d: d, why: why || "" });
+    if (S.relLog.length > 120) S.relLog.length = 120;
+    return before !== relLabel(v)[1];
+  }
+  function relPill(v) { var L = relLabel(v); return '<span class="rel-pill" style="--rc:' + L[2] + '">' + L[1] + "</span>"; }
+  // names an AI or a template mentions -> relationship keys
+  function targetKey(t) {
+    if (!t || !t.name) return null;
+    var n = fold(t.name);
+    if (t.type === "player") {
+      var p = D.players.find(function (q) { return fold(q.name) === n; }) || D.players.find(function (q) { return fold(q.name).split(" ").slice(-1)[0] === n.split(" ").slice(-1)[0] && q.club === S.clubId; });
+      return p ? "p:" + p.id : null;
+    }
+    var cid = Object.keys(D.clubs).find(function (c) { return c !== S.clubId && (fold(coachOf(c)) === n || fold(coachOf(c)).split(" ").slice(-1)[0] === n.split(" ").slice(-1)[0] || fold(club(c).name) === n); });
+    return cid ? "m:" + cid : null;
+  }
+  function fold(t) { return (t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); }
+
+  // ------------------------------------------------------------ AI (OpenAI, through the app)
+  var aiSeq = 0, aiWait = {};
+  function aiOn() { return S && S.aiOff !== true && window.DLSManager && window.DLSManager.aiStatus && !!window.DLSManager.aiStatus(); }
+  function aiAsk(system, user, maxTokens, cb) {
+    var id = ++aiSeq;
+    aiWait[id] = cb;
+    try { window.DLSManager.aiChat(id, JSON.stringify([{ role: "system", content: system }, { role: "user", content: user }]), maxTokens || 900); }
+    catch (e) { delete aiWait[id]; cb(null, String(e)); }
+  }
+  window.dlsAi = function (id, ok, text) {
+    var cb = aiWait[id]; delete aiWait[id];
+    if (!cb) return;
+    if (!ok) return cb(null, text);
+    try { cb(JSON.parse(text), null); } catch (e) { cb(null, "bad reply"); }
+  };
+  // what the AI needs to know about the club and the moment
+  function aiContext(P) {
+    var L = myLeague(), tb = standings(L.id), pos = tb.findIndex(function (t) { return t.id === S.clubId; }) + 1;
+    var me = tb[pos - 1] || { form: [], pts: 0 }, sq = clubPlayers[S.clubId].slice().sort(function (a, b) { return b.ovr - a.ovr; });
+    var scorers = sq.filter(function (p) { return S.pstats[p.id] && S.pstats[p.id].goals; }).sort(function (a, b) { return S.pstats[b.id].goals - S.pstats[a.id].goals; }).slice(0, 3);
+    var ctx = {
+      manager: mgrName0(), club: club(S.clubId).name, city: club(S.clubId).city, league: L.name, season: seasonLabel(), date: dayLabel(today()),
+      leaguePosition: S.week ? pos + " of " + L.clubs.length : "season not started", points: me.pts, form: me.form.slice(-5).join("") || "none yet",
+      boardTarget: targetText(S.target || pos, L.clubs.length), squadMorale: moraleWord(S.morale == null ? 55 : S.morale), fans: moraleWord(S.fanMood == null ? 55 : S.fanMood),
+      keyPlayers: sq.slice(0, 5).map(function (p) { return p.name + " (" + p.pos + ", " + p.age + ")"; }),
+      topScorers: scorers.map(function (p) { return p.name + " " + S.pstats[p.id].goals; }),
+      recentQuotes: (S.quotes || []).slice(0, 3)
+    };
+    if (P && P.opp) {
+      var ot = tb.findIndex(function (t) { return t.id === P.opp; }) + 1;
+      ctx.opponent = { club: club(P.opp).name, manager: coachOf(P.opp), relationshipWithTheirManager: relLabel(relOf("m:" + P.opp))[1], position: ot || null, rivals: rivals(P.opp, S.clubId) };
+    }
+    if (P && P.res) ctx.result = club(P.res.h).name + " " + P.res.hg + "-" + P.res.ag + " " + club(P.res.a).name;
+    var rel = Object.keys(S.rel || {}).filter(function (k) { return k[0] === "m" && Math.abs(S.rel[k]) >= 30; }).slice(0, 6).map(function (k) { return coachOf(k.slice(2)) + " (" + club(k.slice(2)).name + "): " + relLabel(S.rel[k])[1]; });
+    if (rel.length) ctx.notableRelationships = rel;
+    return ctx;
+  }
+  function mgrName0() { return (S.manager && S.manager.name) || "the manager"; }
+  var AI_SYS = "You write the press side of a realistic football management game (like Football Manager). British English, natural football-press voice, no emojis. Reply with a single JSON object only.";
+  // questions with four answer options each (effects and who an answer talks about)
+  function aiPressQuestions(P, done) {
+    var n = P.kind === "window" ? 3 : 4, kinds = { pre: "pre-match", post: "post-match", intro: "unveiling (first day as manager)", window: "transfer-window briefing with local reporters" };
+    var user = "Context: " + JSON.stringify(aiContext(P)) + "\n\nWrite " + n + " questions for a " + kinds[P.kind] + " press conference, each from a different journalist (realistic names; outlets can be national or local to " + club(S.clubId).city + "). Make them specific to the context (opponent and its manager, results, form, players, targets, rumours, recent quotes). " +
+      "Each question has 4 answer options for the manager in clearly different tones (e.g. Confident, Calm, Cautious, Aggressive, Evasive, Praise, Critical, Supportive, Passionate, Demanding, Respectful). For each option give: morale (-5..5, effect on the squad), fans (-5..5) and targets: the managers, players or clubs the answer talks about, each {\"type\":\"manager\"|\"player\"|\"club\",\"name\":..., \"sentiment\":-2..2}. " +
+      'Format: {"questions":[{"journalist":"","outlet":"","question":"","answers":[{"text":"","tone":"","morale":0,"fans":0,"targets":[]}]}]}';
+    aiAsk(AI_SYS, user, 2200, function (j, err) {
+      if (!j || !j.questions || !j.questions.length) return done(null, err);
+      done(j.questions.slice(0, n).map(function (q) {
+        return { q: q.question, who: q.journalist || "Reporter", outlet: q.outlet || "", a: (q.answers || []).slice(0, 4).map(function (a) {
+          return { text: a.text, tone: a.tone || "", mor: clampN(a.morale, 5), fans: clampN(a.fans, 5), quote: a.text, targets: a.targets || [] };
+        }) };
+      }).filter(function (q) { return q.q && q.a.length; }));
+    });
+  }
+  function clampN(v, m) { v = +v || 0; return Math.max(-m, Math.min(m, Math.round(v))); }
+  // the user's own words: judged by the AI
+  function aiJudge(P, q, text, done) {
+    var user = "Context: " + JSON.stringify(aiContext(P)) + "\n\nQuestion from " + q.who + ": " + q.q + "\nThe manager answered: \"" + text + "\"\n\n" +
+      "Judge the answer as the press, squad and fans would. Give: tone (one word), morale (-5..5), fans (-5..5), quote (the headline-worthy part, max 20 words, from the answer), targets (managers/players/clubs it talks about, {\"type\",\"name\",\"sentiment\":-2..2}), reaction (one short line: how the room took it). " +
+      'Format: {"tone":"","morale":0,"fans":0,"quote":"","targets":[],"reaction":""}';
+    aiAsk(AI_SYS, user, 500, function (j) {
+      if (!j) return done({ text: text, tone: "Own words", mor: 0, fans: 0, quote: text.slice(0, 120), targets: [] });
+      done({ text: text, tone: j.tone || "Own words", mor: clampN(j.morale, 5), fans: clampN(j.fans, 5), quote: j.quote || text.slice(0, 120), targets: j.targets || [], reaction: j.reaction || "" });
+    });
+  }
+  // another manager's reply to what was said about him (queued for the next day)
+  function managerReply(item) {
+    var cid = item.cid, me = mgrName0(), rel = relLabel(relOf("m:" + cid))[1];
+    function publish(text, sentiment) {
+      relAdd("m:" + cid, Math.round(sentiment * 6), coachOf(cid) + " replied");
+      mail("Media department", coachOf(cid) + " responds", ["Asked about your comments (“" + esc(item.quote) + "”), <b>" + esc(coachOf(cid)) + "</b> (" + esc(club(cid).name) + ") said:", "“" + esc(text) + "”",
+        "Your relationship: " + relLabel(relOf("m:" + cid))[1] + "."], { label: "Relationships", go: "relationships" }, sentiment < 0 ? "bad" : "info");
+      post("media", journo(srand()), coachOf(cid) + " on " + club(S.clubId).name + "'s boss: “" + text + "”", { hype: 1.6 });
+      save();
+    }
+    if (aiOn()) {
+      var user = "You are " + coachOf(cid) + ", manager of " + club(cid).name + " (" + club(cid).league.replace(/_/g, " ") + "). " + me + ", manager of " + club(S.clubId).name + ", said this in a press conference: \"" + item.quote + "\" (it was " + (item.sentiment < 0 ? "critical of" : "positive about") + " you or your team). Your relationship with them so far: " + rel + ". " +
+        "Reply as you would to journalists, in character, 1-3 sentences. Also give sentiment towards them (-2..2). Format: {\"reply\":\"\",\"sentiment\":0}";
+      aiAsk(AI_SYS, user, 250, function (j) { if (j && j.reply) publish(j.reply, clampN(j.sentiment, 2)); else publish(templateReply(item), item.sentiment); });
+    } else publish(templateReply(item), item.sentiment);
+  }
+  function templateReply(item) {
+    var r = srand();
+    return item.sentiment < 0 ? pick(["I don't comment on other managers. Maybe he should focus on his own team.", "We'll do our talking on the pitch.", "Everyone is entitled to an opinion. Ours will come at the weekend.", "I'm surprised. I've always respected him, but that was unnecessary."], r)
+      : pick(["Kind words. I have a lot of respect for him and his work.", "That's very generous. It's a good relationship between our clubs.", "Thank you. He's doing an excellent job there too."], r);
+  }
+  // effects of what was said: relationships, replies to come
+  function applyTargets(a) {
+    (a.targets || []).forEach(function (t) {
+      var key = targetKey(t), sv = clampN(t.sentiment, 2);
+      if (!key || !sv) return;
+      relAdd(key, sv * 8, "Press conference: “" + (a.quote || a.text).slice(0, 80) + "”");
+      if (key[0] === "m" && Math.abs(sv) >= 1) (S.respQ = S.respQ || []).push({ cid: key.slice(2), quote: (a.quote || a.text).slice(0, 160), sentiment: sv, due: today() + 1 });
+    });
+  }
+  function respondEvents(d, h) {
+    if (h !== 12 || !S.respQ || !S.respQ.length) return 0;
+    var due = S.respQ.filter(function (x) { return x.due <= d; });
+    S.respQ = S.respQ.filter(function (x) { return x.due > d; });
+    due.slice(0, 2).forEach(managerReply);
+    return 0;
+  }
+  function aiSettings() {
+    if (!window.DLSManager || !window.DLSManager.aiStatus) return "";
+    var st = window.DLSManager.aiStatus();
+    return '<hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="label">AI press conferences</div>' +
+      '<p class="muted" style="margin:0">' + (st ? "On, using " + esc(st) + (S.aiOff ? " (paused)" : "") + ". The key is kept in the app only, never in your save." : "Add an OpenAI API key to have journalists and other managers written by AI.") + "</p>" +
+      '<input id="aiKey" type="password" autocomplete="off" placeholder="' + (st ? "Replace key (sk-…)" : "OpenAI API key (sk-…)") + '">' +
+      '<input id="aiModel" placeholder="Model" value="' + esc(st || "gpt-4o-mini") + '">' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="aisave">Save</button>' + (st ? '<button class="btn" data-act="aioff">' + (S.aiOff ? "Turn on" : "Pause AI") + '</button><button class="btn ghost" data-act="aiclear">Remove key</button>' : "") + "</div>";
+  }
+  // ---- relationships screen
+  function viewRelationships() {
+    ensureRel();
+    var tab = ui.relTab || "managers", rows;
+    if (tab === "managers") {
+      rows = Object.keys(D.clubs).filter(function (c) { return c !== S.clubId; }).sort(function (a, b) { return (club(a).league === myLeague().id ? 0 : 1) - (club(b).league === myLeague().id ? 0 : 1) || Math.abs(relOf("m:" + b)) - Math.abs(relOf("m:" + a)); }).map(function (c) {
+        var v = relOf("m:" + c);
+        return '<tr><td><span class="club-cell">' + badge(c, 20) + "<b>" + esc(coachOf(c)) + '</b></span></td><td class="muted">' + esc(club(c).name) + (rivals(c, S.clubId) ? " · rival" : "") + "</td><td>" + relPill(v) + '</td><td><div class="rel-bar"><i style="left:' + (50 + Math.min(0, v) / 2) + "%;width:" + Math.abs(v) / 2 + "%;background:" + relLabel(v)[2] + '"></i></div></td></tr>';
+      }).join("");
+    } else {
+      rows = clubPlayers[S.clubId].slice().sort(function (a, b) { return relOf("p:" + b.id) - relOf("p:" + a.id); }).map(function (p) {
+        var v = relOf("p:" + p.id);
+        return '<tr><td><button class="link" data-player="' + p.id + '">' + esc(p.name) + '</button></td><td class="muted">' + p.pos + "</td><td>" + relPill(v) + '</td><td><div class="rel-bar"><i style="left:' + (50 + Math.min(0, v) / 2) + "%;width:" + Math.abs(v) / 2 + "%;background:" + relLabel(v)[2] + '"></i></div></td></tr>';
+      }).join("");
+    }
+    var log = (S.relLog || []).slice(0, 8).map(function (x) { var nm = x.key[0] === "m" ? coachOf(x.key.slice(2)) : byId[+x.key.slice(2)] ? byId[+x.key.slice(2)].name : "?"; return "<li>" + esc(dayLabel(Math.floor(x.t / 24), true)) + " · <b>" + esc(nm) + "</b> " + (x.d > 0 ? "▲" : "▼") + " " + esc(x.why) + "</li>"; }).join("");
+    return screenHead("Relationships", '<div class="tabs"><button class="chip-btn" data-reltab="managers" aria-pressed="' + (tab === "managers") + '">Managers</button><button class="chip-btn" data-reltab="players" aria-pressed="' + (tab === "players") + '">Squad</button></div>') +
+      '<div class="table-wrap"><table><tbody>' + rows + "</tbody></table></div>" +
+      (log ? '<section class="panel fin-card"><h3 style="margin:0">Recently</h3><ul class="rel-log">' + log + "</ul></section>" : "") +
+      '<p class="muted" style="margin:0">What you say in press conferences about other managers and your players changes how they feel about you; managers answer back in the media.</p>';
+  }
   // ------------------------------------------------------------ social feed (FM-style)
   // Posts from the club, the league, journalists and fans, reacting to what happens. S.social
   // holds them newest first; S.socialSeen is the newest one the user has looked at.
@@ -1844,6 +2022,21 @@ input[type="search"], select {
     var first = qs.shift();
     qs.sort(function () { return r() - 0.5; });
     var local = localPress(), seen = {};
+    // who each standard answer talks about (for relationships): the opponent's manager for
+    // aggressive / respectful answers, a named player for praise or criticism, the squad for blame
+    var squad = clubPlayers[S.clubId];
+    qs.forEach(function (q) {
+      var named = squad.find(function (p) { return q.q.indexOf(p.name) >= 0; });
+      q.a.forEach(function (a) {
+        if (a.targets) return;
+        a.targets = [];
+        if (P.opp && /Arrogant|Aggressive/.test(a.tone)) a.targets.push({ type: "manager", name: coachOf(P.opp), sentiment: -1 });
+        if (P.opp && /respect/i.test(a.text)) a.targets.push({ type: "manager", name: coachOf(P.opp), sentiment: 1 });
+        if (named && /Praise|Supportive/.test(a.tone)) a.targets.push({ type: "player", name: named.name, sentiment: 2 });
+        if (named && /Demanding|Critical/.test(a.tone)) a.targets.push({ type: "player", name: named.name, sentiment: -1 });
+        if (/let themselves down|show me they belong/i.test(a.text)) a.squadHit = -4;
+      });
+    });
     return [first].concat(qs.slice(0, P.kind === "window" ? 2 : 3)).map(function (q) {
       var j;
       for (var k = 0; k < 8; k++) { j = P.kind === "window" && r() < 0.6 ? local[Math.floor(r() * local.length)] : pick(JOURNOS, r); if (!seen[j[0]]) break; }
@@ -1896,7 +2089,12 @@ input[type="search"], select {
   }
   function pressFinish(P, answers) {
     var mor = 0, fans = 0, r = srand();
-    answers.forEach(function (a) { mor += a.mor; fans += a.fans; });
+    answers.forEach(function (a) {
+      mor += a.mor; fans += a.fans; applyTargets(a);
+      if (a.squadHit) clubPlayers[S.clubId].forEach(function (p) { relAdd("p:" + p.id, a.squadHit, "Criticised the players in public"); });
+    });
+    var best = answers.slice().sort(function (a, b) { return Math.abs(b.mor) + Math.abs(b.fans) - Math.abs(a.mor) - Math.abs(a.fans); })[0];
+    if (best) { S.quotes = [best.quote || best.text].concat(S.quotes || []).slice(0, 6); }
     bump("morale", mor); bump("fanMood", fans);
     P.done = "attended"; P.effect = { mor: mor, fans: fans };
     var q = answers.slice().sort(function (a, b) { return Math.abs(b.mor) + Math.abs(b.fans) - Math.abs(a.mor) - Math.abs(a.fans); })[0];
@@ -1977,7 +2175,7 @@ input[type="search"], select {
     initLoans();
     ensureEuro();
     if (ui.rosterPending) syncRosters();
-    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts, europe: viewEurope, history: viewHistory }[ui.screen] || viewHome)() + "</main>";
+    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts, europe: viewEurope, history: viewHistory, relationships: viewRelationships }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
   }
@@ -2360,7 +2558,7 @@ input[type="search"], select {
   function viewPress() {
     var P = S.press, st = ui.pressState, m = mgr();
     if (!P || !st || st.id !== P.id) return screenHead("Press conference", "") + '<p class="muted">No press conference right now.</p>';
-    var done = st.i >= st.qs.length, q = done ? null : st.qs[st.i], opp = P.opp ? club(P.opp) : null;
+    var done = !st.loading && st.i >= st.qs.length, q = done || st.loading ? null : st.qs[st.i], opp = P.opp ? club(P.opp) : null;
     var KIND = { pre: "Pre-match press conference", post: "Post-match press conference", intro: "Unveiling press conference", window: "Transfer window briefing" };
     var nf = nextFixture();
     var info = P.kind === "pre" ? ["Next match", "vs " + esc(opp.name)] : P.kind === "post" ? ["Result", esc(club(P.res.h).name) + " " + P.res.hg + "–" + P.res.ag + " " + esc(club(P.res.a).name)] :
@@ -2373,6 +2571,11 @@ input[type="search"], select {
     var stage = '<div class="stage">' + pressBackdrop() + '<div class="spot"></div><div class="mgr-wrap' + (talking ? " talking" : "") + '">' + managerSVG(m) + "</div>" + deskSVG() +
       (talking ? '<div class="caption">“' + esc(st.talk) + '”</div>' : "") + "</div>";
     var qbox, resp;
+    if (st.loading) {
+      qbox = '<div class="qbox"><span class="q-mic">' + micIcon() + '</span><div><div class="q-who">Press officer</div><p>The journalists are taking their seats…</p></div></div>';
+      resp = '<section class="panel resp"><div class="resp-h">Your response</div><p class="muted" style="margin:0">Preparing questions…</p></section>';
+      return '<div class="press">' + side + '<div class="press-main">' + stage + qbox + "</div>" + resp + "</div>";
+    }
     if (done) {
       var e = P.effect || { mor: 0, fans: 0 };
       function arrow(n) { return n > 0 ? '<b style="color:var(--win)">▲</b>' : n < 0 ? '<b style="color:var(--loss)">▼</b>' : "<b>–</b>"; }
@@ -2383,7 +2586,8 @@ input[type="search"], select {
       qbox = '<div class="qbox"><span class="q-mic">' + micIcon() + '</span><div><div class="q-who">Press · ' + esc(q.who) + ", " + esc(q.outlet) + "</div><p>" + esc(q.q) + '</p></div><span class="q-n">' + (st.i + 1) + "/" + st.qs.length + "</span></div>";
       resp = '<section class="panel resp"><div class="resp-h">Your response</div><div class="resp-grid">' + q.a.map(function (a, i) {
         return '<button class="resp-btn" data-pans="' + i + '"' + (talking ? " disabled" : "") + '><span>' + esc(a.text) + '</span><span class="resp-tone">' + esc(a.tone) + "</span></button>";
-      }).join("") + "</div></section>";
+      }).join("") + "</div>" + (st.ai ? '<div class="own-ans"><textarea id="ownAns" rows="2" maxlength="400" placeholder="Or say it in your own words…"' + (talking ? " disabled" : "") + '></textarea><button class="btn primary" data-act="pressown"' + (talking ? " disabled" : "") + ">Answer</button></div>" : "") +
+        (st.err ? '<p class="muted" style="margin:0;font-size:.8rem">AI unavailable (' + esc(String(st.err).slice(0, 90)) + "), using standard questions.</p>" : "") + "</section>";
     }
     return '<div class="press">' + side + '<div class="press-main">' + stage + qbox + "</div>" + resp + "</div>";
   }
@@ -2717,7 +2921,7 @@ input[type="search"], select {
   }
   function closeModal() { var m = document.getElementById("modal"); if (m) m.remove(); }
   function openDrawer() {
-    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["social", "Social" + (socialNew() ? " (" + socialNew() + ")" : "")], ["manager", "Manager"], ["squad", "Squad"], ["finances", "Finances"], ["board", "Board"], ["contracts", "Contracts"], ["europe", "Europe"], ["history", "History"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
+    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["social", "Social" + (socialNew() ? " (" + socialNew() + ")" : "")], ["manager", "Manager"], ["relationships", "Relationships"], ["squad", "Squad"], ["finances", "Finances"], ["board", "Board"], ["contracts", "Contracts"], ["europe", "Europe"], ["history", "History"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
     var d = el('<div id="drawer"><div class="drawer-bg" data-act="closedrawer"></div><nav class="drawer" aria-label="Main menu"><div class="label" style="padding:4px 12px 10px">' + esc(club(S.clubId).name) + "</div>" +
       items.map(function (x) { return '<button data-go="' + x[0] + '" aria-current="' + (ui.screen === x[0]) + '">' + x[1] + "</button>"; }).join("") +
       '<button data-act="settings" style="margin-top:12px">Settings</button>' +
@@ -2958,7 +3162,7 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
-    var t = ev.target.closest("[data-eutab],[data-breq],[data-deal],[data-pact],[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
+    var t = ev.target.closest("[data-reltab],[data-eutab],[data-breq],[data-deal],[data-pact],[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
     if (!t) return;
     if (t.hasAttribute("data-pickleague")) { ui.pickLeague = t.getAttribute("data-pickleague"); ui.pick = D.leagues.find(function (l) { return l.id === ui.pickLeague; }).clubs[0]; return renderNewGame(); }
     if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return updateNewGamePick(); }
@@ -2976,6 +3180,17 @@ input[type="search"], select {
       if (ma.offer) { ui.screen = "deals"; render(); var oo = (S.offers || []).find(function (x) { return x.id === ma.offer; }); if (oo && ((oo.dir === "in" && (oo.status === "accepted" || oo.status === "counter")) || (oo.dir === "out" && oo.status === "open"))) dealModal(oo.id); return; }
       if (ma.press) {
         if (!S.press || S.press.id !== ma.press || S.press.done) return modal('<h2>Press conference</h2><p class="muted" style="margin:0">' + (S.press && S.press.id === ma.press && S.press.done === "attended" ? "You've already spoken to the press." : "That press conference has passed; your assistant took it.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+        var P0 = S.press;
+        if (aiOn()) {
+          ui.pressState = { id: P0.id, qs: [], i: 0, ans: [], loading: true, ai: true }; ui.screen = "press"; render();
+          aiPressQuestions(P0, function (qs, err) {
+            var st0 = ui.pressState; if (!st0 || st0.id !== P0.id) return;
+            st0.loading = false;
+            if (qs && qs.length) st0.qs = qs; else { st0.qs = pressQuestions(P0); st0.ai = false; st0.err = err; }
+            if (ui.screen === "press") render();
+          });
+          return;
+        }
         ui.pressState = { id: S.press.id, qs: pressQuestions(S.press), i: 0, ans: [] }; ui.screen = "press"; return render();
       }
       if (ma.act === "play") { if (matchDayToday()) { ui.screen = "prematch"; return render(); } return; }
@@ -2989,6 +3204,7 @@ input[type="search"], select {
     if (t.hasAttribute("data-pact")) return playerAction(t.getAttribute("data-pact").split(":"));
     if (t.hasAttribute("data-tfocus")) { (S.training = S.training || { focus: "balanced", intensity: 1 }).focus = t.getAttribute("data-tfocus"); save(); return render(); }
     if (t.hasAttribute("data-tint")) { (S.training = S.training || { focus: "balanced", intensity: 1 }).intensity = +t.getAttribute("data-tint"); save(); return render(); }
+    if (t.hasAttribute("data-reltab")) { ui.relTab = t.getAttribute("data-reltab"); return render(); }
     if (t.hasAttribute("data-eutab")) { ui.euTab = t.getAttribute("data-eutab"); return render(); }
     if (t.hasAttribute("data-soc")) { ui.socFilter = t.getAttribute("data-soc"); return render(); }
     if (t.hasAttribute("data-pans")) {
@@ -3080,6 +3296,28 @@ input[type="search"], select {
       var rp = byId[+t.getAttribute("data-pid")], costR = releaseCost(rp);
       book("out", "Severance", costR); movePlayer(rp, "free"); closeModal(); save(); ui.screen = "contracts"; return render();
     }
+    if (act === "pressown") {
+      var psO = ui.pressState, qO = psO && psO.qs[psO.i], txt = ((document.getElementById("ownAns") || {}).value || "").trim();
+      if (!qO || !txt || psO.talk != null) return;
+      psO.talk = txt; render();
+      aiJudge(S.press, qO, txt, function (ans) {
+        psO.ans.push(ans);
+        setTimeout(function () {
+          psO.talk = null; psO.i++;
+          if (psO.i >= psO.qs.length) pressFinish(S.press, psO.ans);
+          if (ui.screen === "press") render();
+        }, 600);
+      });
+      return;
+    }
+    if (act === "aisave") {
+      var k = (document.getElementById("aiKey") || {}).value || "", md = (document.getElementById("aiModel") || {}).value || "";
+      if (window.DLSManager && window.DLSManager.setAiKey) window.DLSManager.setAiKey(k, md);
+      S.aiOff = false; save(); closeModal();
+      return modal('<h2>AI</h2><p class="muted" style="margin:0">' + (window.DLSManager && window.DLSManager.aiStatus && window.DLSManager.aiStatus() ? "Saved. Press conferences and managers' replies now use " + esc(window.DLSManager.aiStatus()) + "." : "No key saved.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+    }
+    if (act === "aioff") { S.aiOff = !S.aiOff; save(); closeModal(); return; }
+    if (act === "aiclear") { if (window.DLSManager && window.DLSManager.clearAiKey) window.DLSManager.clearAiKey(); closeModal(); return; }
     if (act === "msgback") { ui.msg = null; return render(); }
     if (act === "readall") { S.inbox.forEach(function (m) { m.read = true; }); save(); return render(); }
     if (act === "closedrawer") return closeDrawer();
@@ -3141,7 +3379,7 @@ input[type="search"], select {
       var cur = S.difficulty || "hard";
       return modal('<h2>Settings</h2><label class="label" for="diffsel">Match difficulty</label><select id="diffsel">' +
         [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"], ["veryhard", "Very hard"], ["elite", "Elite (DLS's hardest)"]].map(function (d) { return '<option value="' + d[0] + '"' + (d[0] === cur ? " selected" : "") + ">" + d[1] + "</option>"; }).join("") +
-        '</select><p class="muted" style="margin:0">Assists are off in matches. Your career is saved on this device automatically.</p><button class="btn" data-act="askreset">Start a new career…</button><button class="btn ghost" data-act="closemodal">Close</button>');
+        '</select><p class="muted" style="margin:0">Assists are off in matches. Your career is saved on this device automatically.</p>' + aiSettings() + '<button class="btn" data-act="askreset">Start a new career…</button><button class="btn ghost" data-act="closemodal">Close</button>');
     }
     if (act === "askreset") { closeModal(); return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">This deletes the current season, results and stats.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="reset">Delete and start over</button><button class="btn ghost" data-act="closemodal">Keep playing</button></div>'); }
     if (act === "reset") { closeModal(); S = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) {} ui.screen = "home"; return render(); }

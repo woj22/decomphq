@@ -709,6 +709,68 @@ public final class Overlay {
         }
     }
 
+    /** One OpenAI chat request (JSON reply), answered through window.dlsAi. */
+    static final class AiCall implements Runnable {
+        private final int id;
+        private final String messages;
+        private final int maxTokens;
+        private final String key;
+        private final String model;
+
+        AiCall(int id, String messages, int maxTokens, String key, String model) {
+            this.id = id;
+            this.messages = messages;
+            this.maxTokens = maxTokens;
+            this.key = key;
+            this.model = model;
+        }
+
+        @Override
+        public void run() {
+            boolean ok = false;
+            String text;
+            try {
+                if (key.length() == 0) {
+                    throw new Exception("no API key set");
+                }
+                JSONObject body = new JSONObject();
+                body.put("model", model);
+                body.put("messages", new org.json.JSONArray(messages));
+                body.put("temperature", 0.8);
+                body.put("max_tokens", maxTokens > 0 ? maxTokens : 900);
+                JSONObject fmt = new JSONObject();
+                fmt.put("type", "json_object");
+                body.put("response_format", fmt);
+                java.net.HttpURLConnection c = (java.net.HttpURLConnection) new java.net.URL("https://api.openai.com/v1/chat/completions").openConnection();
+                c.setRequestMethod("POST");
+                c.setConnectTimeout(15000);
+                c.setReadTimeout(60000);
+                c.setDoOutput(true);
+                c.setRequestProperty("Content-Type", "application/json");
+                c.setRequestProperty("Authorization", "Bearer " + key);
+                java.io.OutputStream os = c.getOutputStream();
+                os.write(body.toString().getBytes("UTF-8"));
+                os.close();
+                int code = c.getResponseCode();
+                String reply = readText(code < 400 ? c.getInputStream() : c.getErrorStream());
+                if (code >= 400) {
+                    String msg = reply;
+                    try {
+                        msg = new JSONObject(reply).getJSONObject("error").getString("message");
+                    } catch (Throwable t2) {
+                        // keep the raw reply
+                    }
+                    throw new Exception("OpenAI " + code + ": " + msg);
+                }
+                text = new JSONObject(reply).getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+                ok = true;
+            } catch (Throwable t) {
+                text = String.valueOf(t.getMessage());
+            }
+            activity.runOnUiThread(new JsTask("window.dlsAi && window.dlsAi(" + id + "," + ok + "," + JSONObject.quote(text) + ")"));
+        }
+    }
+
     static volatile boolean matchShown;
     static volatile String lastStats = "[]";
 
@@ -1288,6 +1350,44 @@ public final class Overlay {
                 // none
             }
             return b.append(']').toString();
+        }
+
+        // ---- AI (OpenAI): the key lives in the app's private preferences only - never in the
+        // career save (so never in an exported save), never handed back to the menus.
+        private android.content.SharedPreferences aiPrefs() {
+            return activity.getSharedPreferences("dlsmgr_ai", Context.MODE_PRIVATE);
+        }
+
+        @JavascriptInterface
+        public void setAiKey(String key, String model) {
+            android.content.SharedPreferences.Editor e = aiPrefs().edit();
+            if (key != null && key.trim().length() > 0) {
+                e.putString("key", key.trim());
+            }
+            if (model != null && model.trim().length() > 0) {
+                e.putString("model", model.trim());
+            }
+            e.apply();
+        }
+
+        @JavascriptInterface
+        public void clearAiKey() {
+            aiPrefs().edit().remove("key").apply();
+        }
+
+        /** "" when no key is set, otherwise the model name (the key itself is never returned). */
+        @JavascriptInterface
+        public String aiStatus() {
+            android.content.SharedPreferences p = aiPrefs();
+            return p.getString("key", "").length() > 0 ? p.getString("model", "gpt-4o-mini") : "";
+        }
+
+        /** Chat completion in the background; the answer comes back as window.dlsAi(id, ok, text). */
+        @JavascriptInterface
+        public void aiChat(final int id, final String messagesJson, final int maxTokens) {
+            final String key = aiPrefs().getString("key", "");
+            final String model = aiPrefs().getString("model", "gpt-4o-mini");
+            new Thread(new AiCall(id, messagesJson, maxTokens, key, model)).start();
         }
 
         /** The match's stats as recorded by DLS (libdlsmgr stats), taken at full time. */
