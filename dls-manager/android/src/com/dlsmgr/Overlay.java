@@ -678,21 +678,35 @@ public final class Overlay {
             return;  // DLS's intro check is only true for an instant at load; timed below instead
         }
         if (code == 1) {
-            // the match is on screen: our intro (teams, then both line-ups) over the build-up
             matchShown = true;
-            int seq = ++introSeq;
-            View v = activity.getWindow().getDecorView();
+            introDone = false;
             activity.runOnUiThread(new MatchTask());
-            v.postDelayed(new IntroStep(seq, 1), 900);
-            v.postDelayed(new IntroStep(seq, 2), 4900);
-            v.postDelayed(new IntroStep(seq, 3), 10900);
+            if (!Native.ready) {
+                // no cutscene events without the library: time the intro from the match appearing
+                startIntro(900);
+            }
+        } else if ((code & 0xff) == 11) {
+            // cutscene started / ended (libdlsmgr): our intro runs during the build-up cutscene
+            // and slides away as soon as it ends, so skipping the cutscene skips it too
+            boolean active = ((code >> 16) & 1) != 0;
+            if (active && matchShown && !introDone) {
+                startIntro(250);
+            } else if (!active && introRunning) {
+                activity.getWindow().getDecorView().post(new IntroStep(introSeq, 3));
+            }
+        } else if (code == 12) {
+            // replay wipe: the league's logo flashes instead of DLS's
+            int seq = ++flashSeq;
+            activity.runOnUiThread(new OverlayJsTask("window.dlsReplayFlash && window.dlsReplayFlash()", true, true));
+            activity.getWindow().getDecorView().postDelayed(new FlashEnd(seq), 1500);
         } else if (code == 2) {
             introSeq++;
             activity.runOnUiThread(new ShowTask());
         } else if ((code & 0xff) == 9) {
-            // DLS opened its pause / half-time screen: ours is drawn instead (actions go back to
-            // DLS's own buttons through Native.pauseAction)
+            // DLS opened its pause / half-time screen: ours is drawn instead (DLS's is hidden;
+            // the choices run DLS's own resume / team / quit code through Native.pauseAction)
             introSeq++;
+            introRunning = false;
             activity.runOnUiThread(new OverlayJsTask("window.dlsPause && window.dlsPause(" + ((code >> 8) & 0xff) + ","
                     + ((code >> 16) & 0xff) + "," + ((code >> 24) & 0xff) + ")", true, false));
         } else if (code == 10) {
@@ -711,6 +725,35 @@ public final class Overlay {
         @Override
         public boolean dispatchTouchEvent(android.view.MotionEvent ev) {
             return !touchThrough && super.dispatchTouchEvent(ev);
+        }
+    }
+
+    static volatile boolean introDone;
+    static volatile boolean introRunning;
+    static volatile int flashSeq;
+
+    static void startIntro(long delay) {
+        introDone = true;
+        introRunning = true;
+        int seq = ++introSeq;
+        View v = activity.getWindow().getDecorView();
+        v.postDelayed(new IntroStep(seq, 1), delay);
+        v.postDelayed(new IntroStep(seq, 2), delay + 4000);
+        v.postDelayed(new IntroStep(seq, 3), delay + 10000);
+    }
+
+    static final class FlashEnd implements Runnable {
+        private final int seq;
+
+        FlashEnd(int seq) {
+            this.seq = seq;
+        }
+
+        @Override
+        public void run() {
+            if (seq == flashSeq && !introRunning) {
+                new OverlayJsTask("window.dlsIntroEnd && window.dlsIntroEnd()", false, true).run();
+            }
         }
     }
 
@@ -738,11 +781,14 @@ public final class Overlay {
             } else if (step == 2) {
                 new OverlayJsTask("window.dlsLineups && window.dlsLineups()", true, true).run();
             } else if (step == 3) {
+                introSeq++;  // later steps of this intro are dropped
                 if (web != null) {
+                    final int done = introSeq;
                     web.evaluateJavascript("window.dlsIntroOut && window.dlsIntroOut()", null);
-                    web.postDelayed(new IntroStep(seq, 4), 550);
+                    web.postDelayed(new IntroStep(done, 4), 550);
                 }
             } else {
+                introRunning = false;
                 new OverlayJsTask("window.dlsIntroEnd && window.dlsIntroEnd()", false, true).run();
             }
         }
@@ -920,7 +966,7 @@ public final class Overlay {
                 // 0x5A5E2000|b = next byte), into lib+0x7c3f40 (home) and +0x7c3f84 (away).
                 byte[] home = sheetBytes(sh.optJSONObject("home"));
                 byte[] away = sheetBytes(sh.optJSONObject("away"));
-                nativeRequest(0x5A5E0100 | Math.max(1, Math.min(4, sh.optInt("difficulty", 3))));
+                nativeRequest(0x5A5E0100 | Math.max(1, Math.min(5, sh.optInt("difficulty", 3))));
                 nativeRequest(0x5A5E3000);
                 for (byte b : home) {
                     nativeRequest(0x5A5E2000 | (b & 0xff));

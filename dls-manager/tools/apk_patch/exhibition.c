@@ -69,6 +69,7 @@ void FUN_0016ac60(int);
 void FUN_001693e8(void);
 int FUN_00257820(void);
 int FUN_0025775c(void);
+int FUN_0025d5e4(void);
 extern int WEATHER;   /* DAT_005cd804: 0 clear, 1 rain, 2 snow */
 extern int TIMEOFDAY; /* DAT_005cc8dc: <2 day, 2 night */
 void FUN_0016a134(void);
@@ -174,7 +175,7 @@ int exhibition_start2(int home, int away, void *homeSheet, void *awaySheet)
        Ours is set from the menus' setting (PAGE+0xf0f: 1 easy .. 4 very hard, x100),
        hard (300) if none was sent. The saves so far had 0, the easiest. */
     int dlv = PAGE[0xf0f];
-    *(short *)(prof + 0x6100) = (short)((dlv >= 1 && dlv <= 4 ? dlv : 3) * 100);
+    *(short *)(prof + 0x6100) = (short)((dlv >= 1 && dlv <= 5 ? dlv : 3) * 100);
     FUN_002a25f8(prof + 0x6100);
     FUN_001d8354(1);
     FUN_000a4a00(0, userHome ? 0 : 1);
@@ -384,6 +385,11 @@ void *FUN_00123a68(void);
 
 void render_screens_gate(void)
 {
+    void (*ext)(void) = *(void (**)(void))(PAGE + 0xff0);  /* libdlsmgr's dlsmgr_render */
+    if (ext) {
+        ext();
+        return;
+    }
     u8 *mgr = FUN_00123a68();
     int n = *(int *)(mgr + 0x48);
     for (int i = 0; i < n && i < 24; i++) {
@@ -421,6 +427,18 @@ int lineup_gate(void)
     if (on != PAGE[0xf06]) {
         PAGE[0xf06] = (u8)on;
         java_event(on ? 7 : 8);
+    }
+    return 0;
+}
+
+/* HUD overlay 8: DLS's "Dream League Soccer" replay wipe (HUD_Replay_Logo.png, check
+   FUN_0025d5e4, call at 0x2623fc). Never shown; the menus flash the league logo instead. */
+int replay_logo_gate(void)
+{
+    int on = FUN_0025d5e4() & 1;
+    if (on != PAGE[0xf07]) {
+        PAGE[0xf07] = (u8)on;
+        java_event(on ? 12 : 13);
     }
     return 0;
 }

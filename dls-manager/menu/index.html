@@ -39,7 +39,9 @@ body {
 }
 /* team intro over the match cutscene (transparent page) */
 html.intro, html.intro body { background: transparent !important; }
-.pause-wrap { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(6,9,8,.88); }
+.pause-wrap { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(6,9,8,.72); animation: fade .25s both; }
+.flash-wrap { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; animation: flash 1.4s ease-in-out both; }
+@keyframes flash { 0% { opacity: 0; transform: scale(.7); } 25% { opacity: 1; transform: scale(1); } 75% { opacity: 1; transform: scale(1.04); } 100% { opacity: 0; transform: scale(1.15); } }
 .pause-card { width: min(560px, 92vw); display: grid; gap: 18px; background: var(--panel); border-radius: 18px; padding: 22px; border: 1px solid var(--line); }
 .pause-btns { display: grid; gap: 10px; }
 .pause-btns .btn { justify-content: center; padding: 14px; font-size: 1rem; }
@@ -621,7 +623,7 @@ input[type="search"], select {
   }
 
   // AI difficulty levels sent at kick-off (DLS profile +0x6100 = level x 100)
-  var DIFFS = { easy: 1, normal: 2, hard: 3, veryhard: 4 };
+  var DIFFS = { easy: 1, normal: 2, hard: 3, veryhard: 4, elite: 5 };
   document.addEventListener("change", function (ev) {
     if (ev.target && ev.target.id === "diffsel" && S) { S.difficulty = ev.target.value; save(); }
   });
@@ -891,6 +893,13 @@ input[type="search"], select {
     if (v === "back") return window.dlsPause.apply(null, (document.querySelector(".pause-card .score").textContent.split(" – ").map(Number)));
     window.DLSManager.pauseAction(+v);
   });
+  // replays: the league's logo flashes where DLS showed its own logo wipe
+  window.dlsReplayFlash = function () {
+    var lg = S ? club(S.clubId).league : null;
+    document.documentElement.classList.add("intro");
+    app.innerHTML = "";
+    showAnimated('<div class="flash-wrap">' + (LEAGUE_LOGOS[lg] ? leagueLogo(lg, 120) : '<b style="font-size:2rem">' + esc(myLeague().name) + "</b>") + "</div>");
+  };
   window.dlsIntroEnd = function () {
     document.documentElement.classList.remove("intro");
     render();
@@ -977,7 +986,7 @@ input[type="search"], select {
     if (act === "settings") {
       var cur = S.difficulty || "hard";
       return modal('<h2>Settings</h2><label class="label" for="diffsel">Match difficulty</label><select id="diffsel">' +
-        [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"], ["veryhard", "Very hard"]].map(function (d) { return '<option value="' + d[0] + '"' + (d[0] === cur ? " selected" : "") + ">" + d[1] + "</option>"; }).join("") +
+        [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"], ["veryhard", "Very hard"], ["elite", "Elite (DLS's hardest)"]].map(function (d) { return '<option value="' + d[0] + '"' + (d[0] === cur ? " selected" : "") + ">" + d[1] + "</option>"; }).join("") +
         '</select><p class="muted" style="margin:0">Assists are off in matches. Your career is saved on this device automatically.</p><button class="btn" data-act="askreset">Start a new career…</button><button class="btn ghost" data-act="closemodal">Close</button>');
     }
     if (act === "askreset") { closeModal(); return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">This deletes the current season, results and stats.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="reset">Delete and start over</button><button class="btn ghost" data-act="closemodal">Keep playing</button></div>'); }

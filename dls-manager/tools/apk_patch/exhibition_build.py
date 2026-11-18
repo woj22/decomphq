@@ -25,7 +25,7 @@ SYMS = {
 FUNCS = ["002a25f8", "001d8354", "000a4a00", "001d8b34", "0027dc84", "0027eabc", "0027eac4", "00283470",
          "002b5760", "000b35c8", "001d72a0", "001d69f4", "001d6ba8", "00273a9c", "002b70e8", "002b70dc",
          "0027e3fc", "0027e304", "002b6fb0", "00348f2c", "000b5d70", "000acf28", "00227cb8", "001d83ec",
-         "001d8ef8", "001d8384", "001d6ed8", "00169f44", "001d728c", "001d72ec", "001d73c4", "0022a548", "0016ac60", "001dc0b8", "001dcdc4", "001d95e0", "001dbd50", "001db894", "000ae0f0", "001dc1d8", "0034da64", "0034db84", "000a45f0", "001693e8", "0016a134", "0027d3d0", "001ed0e4", "002b2318", "0026357c", "0016acb4", "001d8908", "001d8928", "00123a68", "00257820", "0025775c"]
+         "001d8ef8", "001d8384", "001d6ed8", "00169f44", "001d728c", "001d72ec", "001d73c4", "0022a548", "0016ac60", "001dc0b8", "001dcdc4", "001d95e0", "001dbd50", "001db894", "000ae0f0", "001dc1d8", "0034da64", "0034db84", "000a45f0", "001693e8", "0016a134", "0027d3d0", "001ed0e4", "002b2318", "0026357c", "0016acb4", "001d8908", "001d8928", "00123a68", "00257820", "0025775c", "0025d5e4"]
 HOOK_S = """
 .text
 .global exhibition_hook
@@ -77,6 +77,7 @@ match_screen_hook:
     b FUN_0013f9d8
 """
 SHEETFN = 0x1dc6bc        # FUN_001dc6bc: stp x28, x27, [sp, #-0x60]!
+REPLAYLOGO = 0x2623fc     # FUN_002620f8: bl FUN_0025d5e4 (show the replay logo wipe?)
 LINEUP = 0x262480         # FUN_002620f8: bl FUN_0025775c (show the Starting XI graphic?)
 INTRO = 0x2624ac          # FUN_002620f8: bl FUN_00257820 (show the team-intro card?)
 RENDER = 0x1692a8         # FUN_001691d4: bl FUN_001693e8 (draw the screen stack)
@@ -129,6 +130,9 @@ def main():
     old = struct.unpack_from("<I", lib, SHEETFN)[0]
     assert old == 0xa9ba6ffc, hex(old)
     words[SHEETFN] = (old, 0x14000000 | (((sym["sheet_guard"] - SHEETFN) >> 2) & 0x3ffffff))
+    old = struct.unpack_from("<I", lib, REPLAYLOGO)[0]
+    assert old == 0x97ffec7a, hex(old)
+    words[REPLAYLOGO] = (old, 0x94000000 | (((sym["replay_logo_gate"] - REPLAYLOGO) >> 2) & 0x3ffffff))
     old = struct.unpack_from("<I", lib, LINEUP)[0]
     assert old == 0x97ffd4b7, hex(old)
     words[LINEUP] = (old, 0x94000000 | (((sym["lineup_gate"] - LINEUP) >> 2) & 0x3ffffff))
