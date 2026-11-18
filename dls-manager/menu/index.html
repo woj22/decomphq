@@ -335,7 +335,12 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .resp-btn:disabled { opacity: .5; }
 .title-screen { position: fixed; inset: 0; background: var(--bg) url("bg/title.jpg") 62% 30% / cover no-repeat; }
 .title-menu { position: absolute; top: 0; bottom: 0; left: 0; width: clamp(260px, 32vw, 400px); display: flex; flex-direction: column; gap: 18px; padding: max(28px, env(safe-area-inset-top)) 22px 22px max(22px, env(safe-area-inset-left));
-  background: linear-gradient(90deg, rgba(var(--shade-rgb),.94) 0%, rgba(var(--shade-rgb),.86) 78%, rgba(var(--shade-rgb),0) 100%); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); box-sizing: border-box; overflow-y: auto; }
+  box-sizing: border-box; overflow-y: auto; }
+/* the shade behind the menu: dark and blurred at the left, fading out over the picture */
+.tm-shade { position: absolute; top: 0; bottom: 0; left: 0; width: calc(clamp(260px, 32vw, 400px) + 220px); pointer-events: none;
+  background: linear-gradient(90deg, rgba(var(--shade-rgb),.93) 0%, rgba(var(--shade-rgb),.86) 52%, rgba(var(--shade-rgb),.45) 75%, rgba(var(--shade-rgb),0) 100%);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 55%, rgba(0,0,0,.6) 75%, transparent 100%); mask-image: linear-gradient(90deg, #000 0%, #000 55%, rgba(0,0,0,.6) 75%, transparent 100%); }
 .tm-name { font-size: 28px; line-height: 1.05; font-weight: 800; letter-spacing: -.02em; color: #fff; margin-bottom: 4px; }
 .tm-season { color: var(--accent); font-weight: 600; font-size: .9rem; }
 .tm-items { display: flex; flex-direction: column; gap: 2px; flex: 1; justify-content: center; }
@@ -344,7 +349,7 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .tm-btn small { display: block; color: rgba(255,255,255,.62); font-size: .8rem; margin-top: 1px; }
 .tm-btn:hover, .tm-btn:focus-visible { background: rgba(255,255,255,.07); border-left-color: var(--accent); outline: none; }
 .tm-load { background: rgba(var(--accent-rgb),.14); border-left-color: var(--accent); }
-@media (max-width: 560px) { .title-menu { width: 100%; background: linear-gradient(90deg, rgba(var(--shade-rgb),.92), rgba(var(--shade-rgb),.55)); } }
+@media (max-width: 560px) { .title-menu { width: 100%; } .tm-shade { width: 100%; -webkit-mask-image: none; mask-image: none; background: linear-gradient(90deg, rgba(var(--shade-rgb),.92), rgba(var(--shade-rgb),.55)); } }
 .storm { align-self: flex-start; color: var(--loss); border-color: rgba(226,85,85,.4); }
 .resp-tone { flex: none; font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
 .resp-sum { display: flex; gap: 20px; flex-wrap: wrap; font-weight: 600; }
@@ -422,6 +427,8 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
     linear-gradient(180deg, #283034 0%, #1a2024 45%, #183322 72%, #1e4a2c 100%);
   padding: 14px 18px; display: grid; gap: 10px; min-width: 0;
 }
+html[data-theme="ucl"] .match-hero { background: radial-gradient(120% 70% at 50% -10%, rgba(255,255,255,.14), transparent 60%), linear-gradient(180deg, #18205a 0%, #101848 45%, #1d1c66 72%, #33237f 100%); }
+html[data-theme="sm"] .match-hero { background: radial-gradient(120% 70% at 50% -10%, rgba(255,255,255,.14), transparent 60%), linear-gradient(180deg, #15303f 0%, #0e2232 45%, #12405e 72%, #1b5c86 100%); }
 .match-hero::after { content: ""; position: absolute; inset: 64% 0 0 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 40px, transparent 40px 80px); pointer-events: none; }
 .match-hero > * { position: relative; z-index: 1; }
 .eyebrow { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
@@ -3057,7 +3064,7 @@ input[type="search"], select {
   function renderTitle() {
     var saved = S && D.clubs[S.clubId] ? S : null;
     var inGame = !!(window.DLSManager && window.DLSManager.exportSave);
-    app.innerHTML = '<main class="title-screen" style="background:' + titleBg() + ' no-repeat, var(--bg)"><nav class="title-menu" aria-label="Start menu">' +
+    app.innerHTML = '<main class="title-screen" style="background:' + titleBg() + ' no-repeat, var(--bg)"><div class="tm-shade"></div><nav class="title-menu" aria-label="Start menu">' +
       '<div class="tm-head"><img class="tm-crest" src="bg/crest_sm.png" alt=""><div class="tm-name">Assistant Manager 27</div><div class="tm-season">Season ' + esc(seasonLabel()) + "</div></div>" +
       '<div class="tm-items">' +
       (saved ? '<button class="tm-btn tm-load" data-act="loadcareer">' + badge(saved.clubId, 38) +
