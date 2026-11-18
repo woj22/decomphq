@@ -1032,6 +1032,10 @@ input[type="search"], select {
       d.f += grow * (0.6 + r() * 0.8);
       d.g += fall * (0.6 + r() * 0.8);
       var changed = false;
+      // a season's gain is capped at 6 overall points, unless the player is rated under 74 or
+      // having a really good season (7.3+ average over 5+ matches): then up to 10
+      var cap = p.baseOvr < 74 || (st && st.apps >= 5 && avg >= 7.3) ? 10 : 6;
+      if (d.f >= 1 && (d.o >= potOf(p) || d.o - p.baseOvr >= cap)) d.f = 0;
       if (d.f >= 1 && d.o < potOf(p)) {
         d.f -= 1;
         var focus = mine ? (FOCUS[T.focus] || FOCUS.balanced).attrs : FOCUS.balanced.attrs, ind = mine && S.indiv && INDIV[S.indiv[p.id]];
@@ -1550,7 +1554,7 @@ input[type="search"], select {
       '</div><p class="muted" style="margin:6px 0 0">' + FOCUS[T.focus].note + '</p></div><div><div class="label">Intensity</div><div class="tabs">' + INTENSITY.map(function (x, i) {
         return '<button class="chip-btn" data-tint="' + i + '" aria-pressed="' + (T.intensity === i) + '">' + x[0] + "</button>"; }).join("") +
       '</div><p class="muted" style="margin:6px 0 0">' + ["Slower progress; easier on older legs.", "The usual week.", "Faster progress for young players; veterans decline a little faster."][T.intensity] + "</p></div></section>" +
-      '<p class="muted" style="margin:0">Players develop every Monday: young players with room to grow (potential) improve fastest, and good match ratings and minutes speed it up; from 31 pace and stamina start to fade. Potential is reviewed monthly: strong performances raise it, and it only drops for players of 27+ still 10 or more below it. Pick an individual focus to steer a player.</p>' +
+      '<p class="muted" style="margin:0">Players develop every Monday: young players with room to grow (potential) improve fastest, and good match ratings and minutes speed it up; from 31 pace and stamina start to fade. Nobody gains more than 6 a season unless rated under 74 or having a really good season (then up to 10). Potential is reviewed monthly: strong performances raise it, and it only drops for players of 27+ still 10 or more below it. Pick an individual focus to steer a player.</p>' +
       '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Pos</th><th class="num">Age</th><th class="num">OVR</th><th class="num">+/−</th><th class="num">POT</th><th>Growth</th><th>Individual focus</th></tr></thead><tbody>' +
       ps.map(function (p) {
         var dlt = p.ovr - p.baseOvr, pot = potOf(p);
