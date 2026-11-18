@@ -168,6 +168,9 @@ h3 { font-size: .95rem; }
 .md-back { display: none; justify-self: start; }
 .msg-detail h3 { margin: 4px 0 0; font-size: 1.2rem; }
 .msg-detail p { margin: 0; line-height: 1.5; max-width: 65ch; }
+.zone-key { display: flex; gap: 14px; flex-wrap: wrap; font-size: .82rem; color: var(--muted); }
+.zone-key span { display: flex; align-items: center; gap: 6px; }
+.zone-key i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 /* finances */
 .chip-link { appearance: none; background: none; border: 0; color: inherit; font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
 .fin-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
@@ -496,7 +499,7 @@ input[type="search"], select {
   function ordinal(n) { var s = ["th", "st", "nd", "rd"], v = n % 100; return n + "<sup>" + (s[(v - 20) % 10] || s[v] || s[0]) + "</sup>"; }
   function ovrColor(o) { var t = Math.max(0, Math.min(1, (o - 45) / 45)); return "hsl(" + (10 + t * 120) + ",62%," + (48 + t * 6) + "%)"; }
   function group(pos) { return pos === "GK" ? "GK" : ["CB", "LB", "RB"].indexOf(pos) >= 0 ? "DF" : ["DM", "CM", "AM", "LM", "RM"].indexOf(pos) >= 0 ? "MF" : "FW"; }
-  function dateOf(week) { var d = new Date(D.startDate + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + 7 * week); return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }); }
+  function dateOf(week) { return dayDate(weekDay(week)).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }); }
   function rng(seed) { var a = seed >>> 0; return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   function poisson(lam, r) { var L = Math.exp(-lam), k = 0, p = 1; do { k++; p *= r(); } while (p > L); return k - 1; }
   function pickW(items, weights, r) { var s = 0, i; for (i = 0; i < weights.length; i++) s += weights[i]; var x = r() * s; for (i = 0; i < items.length; i++) { x -= weights[i]; if (x <= 0) return items[i]; } return items[items.length - 1]; }
@@ -812,9 +815,15 @@ input[type="search"], select {
   // clock forward a few hours at a time and stops when a message lands in the inbox or a
   // match day comes round; other matches are played as their dates pass.
   var CAL0 = 0, DAY0 = 0, CAL_DAYS = 365, KICKOFF_H = 15, DAY_MS = 864e5;
-  function calInit() {   // once the season data has loaded
-    CAL0 = Date.UTC(+D.startDate.slice(0, 4), 6, 1);
-    DAY0 = Math.round((Date.parse(D.startDate + "T00:00:00Z") - CAL0) / DAY_MS);   // first matchweek
+  // the current season's calendar: 1 July of its first year; the league starts on the first
+  // Saturday from 14 August (15 August 2026 in the data's first season)
+  function seasonYear() { return +D.startDate.slice(0, 4) + (S && S.year ? S.year : 0); }
+  function seasonLabel(y) { y = y == null ? seasonYear() : y; return y + "/" + String((y + 1) % 100).padStart(2, "0"); }
+  function calInit() {
+    var y = seasonYear();
+    CAL0 = Date.UTC(y, 6, 1);
+    var first = Date.UTC(y, 7, 14), dow = new Date(first).getUTCDay();
+    DAY0 = Math.round((first + ((6 - dow + 7) % 7) * DAY_MS - CAL0) / DAY_MS);
   }
   function weekDay(w) { return DAY0 + 7 * w; }
   function dayDate(d) { return new Date(CAL0 + d * DAY_MS); }
@@ -873,7 +882,7 @@ input[type="search"], select {
   function welcomeMail() {
     var L = myLeague(), pred = predicted(L.id), pos = pred.indexOf(S.clubId) + 1, c = club(S.clubId);
     S.target = pos;
-    mail("The board", "Welcome to " + c.name, ["Welcome to " + esc(c.name) + ". The board is delighted to have you in charge for the " + esc(D.season) + " season.",
+    mail("The board", "Welcome to " + c.name, ["Welcome to " + esc(c.name) + ". The board is delighted to have you in charge for the " + esc(seasonLabel()) + " season.",
       "Looking at the squad, we expect you to <b>" + targetText(pos, L.clubs.length) + "</b> in the " + esc(L.name) + " (we see the squad as the " + pos + ordinalTxt(pos) + " strongest of " + L.clubs.length + ").",
       "Pre-season starts today. Your first league match is on " + dayLabel(weekDay(0)) + "."], { label: "View squad", go: "squad" }, "board");
     var f = myFixtureOn(weekDay(0));
@@ -881,17 +890,18 @@ input[type="search"], select {
     mail("Assistant manager", "Pre-season plans", ["I've set the team up in a " + esc(lineupOf(S.clubId).formation) + " for now. Have a look at the tactics and pick the XI you trust.",
       opp ? "We open the league season against <b>" + esc(opp) + "</b> on " + dayLabel(weekDay(0)) + "." : ""].filter(Boolean), { label: "Tactics", go: "tactics" });
     mail("Media department", "Your public image", ["Before you face the press, set up how you look and what you're called. You can change it any time under Manager in the menu."], { label: "Set up your manager", go: "manager" });
-    post("club", clubAcct(S.clubId), "👋 Welcome to our new manager! A new era begins at " + c.name + ". " + D.season + " starts now.", { hype: 1.5 });
+    post("club", clubAcct(S.clubId), "👋 Welcome to our new manager! A new era begins at " + c.name + ". " + seasonLabel() + " starts now.", { hype: 1.5 });
     post("fan", fan(S.clubId, rng(S.seed)), "New manager in. Let's see what they can do 🤞");
   }
   // messages and fixtures due at the start of hour h of day d; returns how many messages arrived
   function hourEvents(d, h) {
+    if (d === CAL_DAYS - 1 && h === 12) { rollSeason(); return 1; }
     var before = S.msgSeq, L = myLeague(), c = club(S.clubId), w = weekOfDay(d);
     // other matches: each matchweek is played at 17:00 on its day (the user's together with it)
     if (h === 17 && w >= 0 && S.week === w && !myFixtureOn(d)) playWeek();
     if (d === 2 && h === 10) {
       var fs = []; for (var k = 0; k < 3; k++) { var f = myFixtureOn(weekDay(k)); if (f) fs.push(dayLabel(weekDay(k)) + ": " + esc(club(f.home).name) + " v " + esc(club(f.away).name)); }
-      mail(L.name, "Fixtures released", ["The " + esc(L.name) + " fixtures for " + esc(D.season) + " are out. Your first matches:", fs.join("<br>")], { label: "Open calendar", go: "calendar" }, "league");
+      mail(L.name, "Fixtures released", ["The " + esc(L.name) + " fixtures for " + esc(seasonLabel()) + " are out. Your first matches:", fs.join("<br>")], { label: "Open calendar", go: "calendar" }, "league");
     }
     if (d === DAY0 - 4 && h === 10) {
       var pred = predicted(L.id);
@@ -937,6 +947,12 @@ input[type="search"], select {
     if (S.fin) { financeEvents(d, h); decideOffers(d, h); incomingBids(d, h); boardDecide(d, h); aiMarket(d, h); transferRoundup(d, h); if (h === 1) { expireOffers(d); endLoans(d); } }
     if (h === 7 && dayDate(d).getUTCDate() === 1 && d > 30) reassessPotential();
     if (h === 10 && dayDate(d).getUTCDate() === 15 && d > 30) trainingMail();
+    // contracts running out this summer: reminders on 1 January and 1 April
+    if (h === 10 && (mo === 0 || mo === 3) && dt.getUTCDate() === 1) {
+      var exp = clubPlayers[S.clubId].filter(function (p) { return !(S.loans && S.loans[p.id]) && Date.parse(contractOf(p).end) <= Date.UTC(seasonYear() + 1, 5, 30); });
+      if (exp.length) mail("Director of football", "Contracts expiring this summer", ["These players' contracts end on 30 June and they will leave on a free unless they sign new ones:",
+        exp.map(function (p) { return esc(p.name) + " (" + p.pos + ", " + p.ovr + ")"; }).join(", ") + "."], { label: "Contracts", go: "contracts" }, "match");
+    }
     // first of the month: board review and player of the month
     if (d > 0 && dayDate(d).getUTCDate() === 1 && h === 10) {
       var played = (S.results[L.id] || []).filter(Boolean).length;
@@ -1073,8 +1089,8 @@ input[type="search"], select {
       var changed = false;
       // a season's gain is capped at 6 overall points, unless the player is rated under 74 or
       // having a really good season (7.3+ average over 5+ matches): then up to 10
-      var cap = p.baseOvr < 74 || (st && st.apps >= 5 && avg >= 7.3) ? 10 : 6;
-      if (d.f >= 1 && (d.o >= potOf(p) || d.o - p.baseOvr >= cap)) d.f = 0;
+      var so = seasonStartOvr(p), cap = so < 74 || (st && st.apps >= 5 && avg >= 7.3) ? 10 : 6;
+      if (d.f >= 1 && (d.o >= potOf(p) || d.o - so >= cap)) d.f = 0;
       if (d.f >= 1 && d.o < potOf(p)) {
         d.f -= 1;
         var focus = mine ? (FOCUS[T.focus] || FOCUS.balanced).attrs : FOCUS.balanced.attrs, ind = mine && S.indiv && INDIV[S.indiv[p.id]];
@@ -1090,7 +1106,7 @@ input[type="search"], select {
     });
   }
   function trainingMail() {
-    var ps = clubPlayers[S.clubId].map(function (p) { return { p: p, d: p.ovr - p.baseOvr }; });
+    var ps = clubPlayers[S.clubId].map(function (p) { return { p: p, d: p.ovr - seasonStartOvr(p) }; });
     var up = ps.filter(function (x) { return x.d > 0; }).sort(function (a, b) { return b.d - a.d; }).slice(0, 4);
     var down = ps.filter(function (x) { return x.d < 0; }).sort(function (a, b) { return a.d - b.d; }).slice(0, 3);
     var T = S.training || { focus: "balanced", intensity: 1 };
@@ -1101,6 +1117,237 @@ input[type="search"], select {
     S.potLog = [];
   }
 
+  // ------------------------------------------------------------ seasons
+  // On 30 June the season rolls over: the year is archived (tables, champions, the user's
+  // record), Europe's season is settled into the UEFA coefficients, Slovenian clubs go up and
+  // down (PrvaLiga 10th down and 2. SNL champions up; 9th v 2nd in a two-legged play-off;
+  // there is no league below 2. SNL or below the Premier League and LaLiga in the game, so
+  // those stay as they are), players age, some retire, expired contracts end (other clubs keep
+  // most of their players), and a new fixture list, budgets and targets start on 1 July.
+  function applyAll() { calInit(); applyLeagues(); applyAges(); applyDev(); applyMoves(); applyValues(); }
+  function applyLeagues() {
+    Object.keys(D.clubs).forEach(function (cid) { var c = D.clubs[cid]; if (c.league0 == null) c.league0 = c.league; c.league = S && S.leagueOf && S.leagueOf[cid] || c.league0; });
+    D.leagues.forEach(function (l) { l.clubs = Object.keys(D.clubs).filter(function (c) { return D.clubs[c].league === l.id; }); });
+  }
+  function applyAges() {
+    D.players.forEach(function (p) { if (p.age0 == null) p.age0 = p.age; p.age = p.age0 + (S && S.year ? S.year : 0); });
+  }
+  function seasonStartOvr(p) { return S && S.ovrStart && S.ovrStart[p.id] != null ? S.ovrStart[p.id] : p.baseOvr; }
+  // player value follows the rating (about 16% a point) and drops from 30
+  function applyValues() {
+    D.players.forEach(function (p) {
+      if (p.value0 == null) p.value0 = p.value || 50000;
+      var v = p.value0 * Math.pow(1.16, p.ovr - p.baseOvr) * (p.age >= 30 ? Math.pow(0.86, p.age - Math.max(29, p.age0)) : 1);
+      p.value = Math.max(25000, Math.round(v / 5000) * 5000);
+    });
+  }
+  // ---- UEFA coefficients and European places
+  function countryOf(lid) { return D.coeff.leagueCountry[lid]; }
+  function coeffState() {
+    if (!S.coeff) S.coeff = { seasons: D.coeff.seasons.slice(), countries: JSON.parse(JSON.stringify(D.coeff.countries)), clubs: JSON.parse(JSON.stringify(D.coeff.clubs)) };
+    return S.coeff;
+  }
+  function countryTotal(c) { return coeffState().countries[c].reduce(function (t, v) { return t + v; }, 0); }
+  function countryRanking() { var C = coeffState().countries; return Object.keys(C).sort(function (a, b) { return countryTotal(b) - countryTotal(a); }); }
+  function clubPoints(cid) { var v = coeffState().clubs[cid]; return v ? v.reduce(function (t, x) { return t + x; }, 0) : 0; }
+  function clubCoeff(cid) { var c = countryOf(club(cid).league); return Math.max(clubPoints(cid), c ? countryTotal(c) * 0.2 : 0); }
+  // places in next season's competitions for the country's top league, by its ranking
+  function euroPlaces(country) {
+    var r = countryRanking().indexOf(country) + 1;
+    if (r <= 4) return { ucl: 4, uel: 2, uecl: 1, rank: r };
+    if (r === 5) return { ucl: 3, uel: 2, uecl: 1, rank: r };
+    if (r === 6) return { ucl: 2, uel: 2, uecl: 1, rank: r };
+    if (r <= 15) return { ucl: 1, uel: 1, uecl: 2, rank: r, qual: true };
+    return { ucl: 1, uel: 0, uecl: 3, rank: r, qual: true };
+  }
+  function topLeagueOf(country) { return D.leagues.find(function (l) { return countryOf(l.id) === country && (l.id === "premier_league" || l.id === "la_liga" || l.id === "prvaliga"); }); }
+  // which competition each league position leads to
+  function zoneOf(lid, i, n) {
+    var lg = D.leagues.find(function (l) { return l.id === lid; }), c = countryOf(lid);
+    if (topLeagueOf(c) && topLeagueOf(c).id === lid) {
+      var P = euroPlaces(c);
+      if (i < P.ucl) return "ucl";
+      if (i < P.ucl + P.uel) return "uel";
+      if (i < P.ucl + P.uel + P.uecl) return "uecl";
+    }
+    if (lid === "prvaliga") { if (i === n - 1) return "down"; if (i === n - 2) return "playoff"; }
+    if (lid === "slovenia_2snl") { if (i === 0) return "up"; if (i === 1) return "playoff"; }
+    return "";
+  }
+  var ZONES = { ucl: ["Champions League", "#3987e5"], uel: ["Europa League", "#d95926"], uecl: ["Conference League", "#199e70"], up: ["Promotion", "#4cc86a"], down: ["Relegation", "#e66767"], playoff: ["Play-off", "#c98500"] };
+  // the season's European entrants (decided at the end of the previous season; the first
+  // season uses squad strength and coefficient)
+  function ensureEuro() {
+    if (S.euro) return;
+    S.euro = {};
+    ["England", "Spain", "Slovenia"].forEach(function (c) {
+      var lg = topLeagueOf(c), P = euroPlaces(c);
+      var order = lg.clubs.slice().sort(function (a, b) { return (squadStrength(b) + clubPoints(b) / 20) - (squadStrength(a) + clubPoints(a) / 20); });
+      order.forEach(function (cid, i) { var z = zoneOf(lg.id, i, order.length); if (z === "ucl" || z === "uel" || z === "uecl") S.euro[cid] = z; });
+    });
+  }
+  // a European season settled abstractly: the stage each entrant reaches, its coefficient points
+  // and prize money (UCL / UEL / UECL), from squad strength against the competition's level
+  var STAGES = ["Qualifying", "League phase", "Knockout play-off", "Round of 16", "Quarter-final", "Semi-final", "Final", "Winners"];
+  var COMP = { ucl: { name: "Champions League", bench: 81, pts: [2, 12, 17, 22, 27, 33, 38, 42], money: [0.5, 19, 21, 25, 31, 39, 50, 65] },
+               uel: { name: "Europa League", bench: 76, pts: [1.5, 9, 12, 15, 18, 22, 25, 28], money: [0.3, 4.5, 5, 6.5, 8, 10, 13, 17] },
+               uecl: { name: "Conference League", bench: 71, pts: [1.5, 6, 8, 10, 12.5, 15, 17, 19], money: [0.2, 3.2, 3.5, 4.3, 5.2, 6.4, 8, 11] } };
+  function settleEurope(r) {
+    var C = coeffState(), res = [], byCountry = {};
+    Object.keys(S.euro || {}).forEach(function (cid) {
+      var comp = S.euro[cid], K = COMP[comp], str = xiAvg(cid), country = countryOf(club(cid).league), P = euroPlaces(country);
+      var stage;
+      // clubs from lower-ranked countries start in the qualifying rounds
+      if (P.qual && (comp === "ucl" || country === "Slovenia") && r() > 1 / (1 + Math.exp(-(str - (K.bench - (comp === "ucl" ? 6 : 9))) / 3))) stage = 0;
+      else stage = Math.max(1, Math.min(7, Math.round(2 + (str - K.bench) / 3 + (r() - 0.5) * 2.4)));
+      var pts = K.pts[stage] + (stage >= 1 ? r() * 2 : r() * 2.5);
+      res.push({ cid: cid, comp: comp, stage: stage, pts: Math.round(pts * 100) / 100 });
+      (byCountry[country] = byCountry[country] || []).push(pts);
+      if (cid === S.clubId && S.fin) book("in", "European prize money", Math.round(K.money[stage] * 1e6 * (lgFin(cid).tier >= 4 ? 1 : 0.6)));
+    });
+    // country points: its clubs' points over the number of clubs it entered; others vary around their average
+    Object.keys(C.countries).forEach(function (c) {
+      var arr = C.countries[c], avg = arr.reduce(function (t, v) { return t + v; }, 0) / arr.length;
+      // (UEFA: the points of the country's clubs divided by the number of clubs it entered)
+      var v = byCountry[c] ? byCountry[c].reduce(function (t, x) { return t + x; }, 0) / byCountry[c].length : avg * (0.75 + r() * 0.5);
+      arr.shift(); arr.push(Math.round(v * 1000) / 1000);
+    });
+    Object.keys(D.clubs).forEach(function (cid) {
+      var x = res.find(function (q) { return q.cid === cid; }), arr = C.clubs[cid] || (C.clubs[cid] = [0, 0, 0, 0, 0]);
+      arr.shift(); arr.push(x ? x.pts : 0);
+    });
+    C.seasons.shift(); C.seasons.push(seasonLabel());
+    return res;
+  }
+  // two-legged play-off (PrvaLiga 9th v 2. SNL 2nd)
+  function playoff(a, b, r) {
+    var g1 = simMatch(b, a, (S.seed ^ 0x51ed) >>> 0), g2 = simMatch(a, b, (S.seed ^ 0x2bad) >>> 0);
+    var ga = g1.ag + g2.hg, gb = g1.hg + g2.ag;
+    return { winner: ga > gb ? a : gb > ga ? b : (r() < 0.5 ? a : b), score: ga + "–" + gb + " on aggregate" };
+  }
+  function rollSeason() {
+    var r = rng((S.seed ^ (S.year + 1) * 0x9e3779b1) >>> 0), y = seasonYear(), me = S.clubId;
+    S.lastSquad = clubPlayers[me].map(function (p) { return p.id; });
+    // 1. archive
+    var H = { year: y, label: seasonLabel(), champions: {}, tables: {}, me: { league: myLeague().id, pos: myPos() } };
+    D.leagues.forEach(function (lg) { var t = standings(lg.id); H.champions[lg.id] = t[0].id; H.tables[lg.id] = t.map(function (x) { return [x.id, x.pts, x.gf - x.ga]; }); });
+    var mine = standings(myLeague().id).find(function (t) { return t.id === me; });
+    H.me.pts = mine.pts; H.me.w = mine.w; H.me.d = mine.d; H.me.l = mine.l;
+    var scorers = leagueScorers(myLeague().id, 1); H.topScorer = scorers[0] ? [scorers[0].p.name, scorers[0].g] : null;
+    // 2. Europe
+    H.europe = settleEurope(r).map(function (x) { return [x.cid, x.comp, x.stage]; });
+    // 3. promotion and relegation in Slovenia
+    var moves = [], prva = standings("prvaliga").map(function (t) { return t.id; }), snl = standings("slovenia_2snl").map(function (t) { return t.id; });
+    var down = [prva[prva.length - 1]], up = [snl[0]], po = playoff(prva[prva.length - 2], snl[1], r);
+    if (po.winner === snl[1]) { down.push(prva[prva.length - 2]); up.push(snl[1]); }
+    H.playoff = [prva[prva.length - 2], snl[1], po.winner, po.score];
+    S.leagueOf = S.leagueOf || {};
+    down.forEach(function (c) { S.leagueOf[c] = "slovenia_2snl"; moves.push([c, "down"]); });
+    up.forEach(function (c) { S.leagueOf[c] = "prvaliga"; moves.push([c, "up"]); });
+    H.moves = moves;
+    applyLeagues();
+    // 4. careers: stats, retirements, contracts
+    S.career = S.career || {};
+    Object.keys(S.pstats).forEach(function (id) { var c = S.career[id] || (S.career[id] = { apps: 0, goals: 0, assists: 0, seasons: 0 }), x = S.pstats[id]; c.apps += x.apps; c.goals += x.goals; c.assists += x.assists; c.seasons++; });
+    var retired = [], left = [];
+    D.players.forEach(function (p) {
+      if (p.club === "retired") return;
+      var age = p.age, pr = age >= 38 ? 0.95 : age >= 36 ? 0.55 : age >= 34 ? 0.25 : age >= 33 && p.ovr < 65 ? 0.15 : 0;
+      if (r() < pr) { retired.push(p); S.moves = S.moves || {}; S.moves[p.id] = "retired"; if (S.loans) delete S.loans[p.id]; return; }
+      if (p.club === "free") return;
+      if (Date.parse(contractOf(p).end) <= Date.UTC(y + 1, 5, 30)) {
+        if (p.club !== me && r() < (squadRank(p) <= 18 ? 0.85 : 0.5)) (S.contracts = S.contracts || {})[p.id] = { end: (y + 2 + Math.floor(r() * 3)) + "-06-30", wage: Math.max(contractOf(p).wage, estWage(p)) };
+        else { left.push(p); S.moves = S.moves || {}; S.moves[p.id] = "free"; }
+      }
+    });
+    S.loans = {};
+    // 5. the new season
+    S.history = S.history || [];
+    S.history.push(H);
+    S.year = (S.year || 0) + 1;
+    calInit(); applyAges(); applyMoves(); applyValues();
+    S.ovrStart = {}; D.players.forEach(function (p) { S.ovrStart[p.id] = p.ovr; });
+    var nr = rng((S.seed ^ S.year * 7919) >>> 0);
+    D.leagues.forEach(function (lg) {
+      var ids = lg.clubs.slice().sort(function () { return nr() - 0.5; }), base = roundRobin(ids), rounds = [];
+      for (var c = 0; c < lg.cycles; c++) base.forEach(function (g) { rounds.push(g.map(function (m) { return c % 2 ? [m[1], m[0]] : [m[0], m[1]]; })); });
+      S.schedule[lg.id] = rounds; S.results[lg.id] = [];
+    });
+    S.week = 0; S.pstats = {}; S.offers = []; S.press = null; S.unveiled = true;
+    S.transfers = []; S.potLog = [];
+    S.inbox = S.inbox.slice(0, 60); S.social = (S.social || []).slice(0, 80);
+    if (S.lineups[me]) S.lineups[me].xi = autoXI(me, S.lineups[me].formation);
+    // European places for the new season, from the final tables
+    S.euro = {};
+    ["England", "Spain", "Slovenia"].forEach(function (c) {
+      var lg = topLeagueOf(c), t = H.tables[lg.id] ? H.tables[lg.id].map(function (x) { return x[0]; }).filter(function (cid) { return D.clubs[cid].league === lg.id; }) : [];
+      t.forEach(function (cid, i) { var z = zoneOf(lg.id, i, t.length); if (z === "ucl" || z === "uel" || z === "uecl") S.euro[cid] = z; });
+    });
+    // finances: this league's income, and a new budget from the board
+    var F = S.fin;
+    if (F) {
+      var oldRev = F.rev, W = wageBill(me) * 52, f = lgFin(me);
+      F.rev = Math.round(Math.max(W / 0.66, oldRev * (moves.some(function (m) { return m[0] === me; }) ? (moves.find(function (m) { return m[0] === me; })[1] === "up" ? 2.4 : 0.45) : 1.03)));
+      F.tb = Math.round(Math.max(0, Math.min(F.bal * 0.45, F.tb + F.rev * 0.05)));
+      F.wb = Math.round(Math.max(wageBill(me) * 1.08, F.wb));
+      F.hist = []; F.req = {}; F.reqCount = 0;
+      F.hist.push([0, Math.round(F.bal)]);
+    }
+    S.ai = S.ai || {};
+    Object.keys(D.clubs).forEach(function (cid) { if (cid !== me) S.ai[cid] = aiBal(cid) + Math.round(squadValue(cid) * (lgFin(cid).tier >= 4 ? 0.08 : 0.05)); });
+    var L = myLeague(), pred = predicted(L.id);
+    S.target = pred.indexOf(me) + 1;
+    S.t = 9;
+    // 6. news
+    var mm = moves.find(function (m) { return m[0] === me; });
+    mail("The board", "Season " + H.label + " review", ["We finished <b>" + H.me.pos + ordinalTxt(H.me.pos) + "</b> in the " + esc(D.leagues.find(function (l) { return l.id === H.me.league; }).name) + " with " + H.me.pts + " points.",
+      mm ? (mm[1] === "up" ? "<b>Promotion!</b> We play in the " + esc(L.name) + " this season." : "We have been <b>relegated</b> and play in the " + esc(L.name) + " this season.") : "",
+      S.euro[me] ? "We're in the <b>" + COMP[S.euro[me]].name + "</b> this season." : "",
+      "For " + seasonLabel() + " we expect you to <b>" + targetText(S.target, L.clubs.length) + "</b>. Transfer budget: " + fmtM(F ? F.tb : 0) + "."].filter(Boolean), { label: "Board", go: "board" }, "board");
+    var mineLeft = left.filter(function (p) { return wasMine(p, me); });
+    if (mineLeft.length) mail("Director of football", "Contracts expired", ["These players have left as free agents: " + mineLeft.map(function (p) { return esc(p.name); }).join(", ") + "."], { label: "Contracts", go: "contracts" }, "bad");
+    var notable = retired.filter(function (p) { return p.baseOvr >= 80 || wasMine(p, me); }).slice(0, 8);
+    if (notable.length) mail("Transfer news", "Retirements", ["Retiring this summer: " + notable.map(function (p) { return esc(p.name) + " (" + p.age + ")"; }).join(", ") + "."], null, "league");
+    var eu = H.europe.filter(function (x) { return x[2] >= 6; }).map(function (x) { return esc(club(x[0]).name) + " — " + COMP[x[1]].name + " " + (x[2] === 7 ? "winners" : "finalists"); });
+    mail("UEFA", "European season " + H.label, [eu.length ? eu.join("<br>") : "No finalists from our leagues.", "Country ranking: " + countryRanking().slice(0, 6).map(function (c, i) { return (i + 1) + ". " + c; }).join(", ") + ". Slovenia " + (countryRanking().indexOf("Slovenia") + 1) + "th."], { label: "Europe", go: "europe" }, "league");
+    post("league", leagueAcct(), "🏆 " + club(H.champions[H.me.league]).name + " are the " + D.leagues.find(function (l) { return l.id === H.me.league; }).name + " champions of " + H.label + "!", { hype: 3 });
+    S.lastLeft = left.map(function (p) { return p.id; });
+    save();
+  }
+  function wasMine(p, me) { return (S.lastSquad || []).indexOf(p.id) >= 0; }
+  // ---- history and Europe screens
+  function viewHistory() {
+    var hs = (S.history || []).slice().reverse();
+    return screenHead("History", "") + (hs.length ? '<div class="table-wrap"><table><thead><tr><th>Season</th><th>League</th><th class="num">Pos</th><th class="num">Pts</th><th>Champions</th><th>Top scorer</th><th>Europe</th></tr></thead><tbody>' + hs.map(function (h) {
+      var lg = D.leagues.find(function (l) { return l.id === h.me.league; }), eu = (h.europe || []).find(function (x) { return x[0] === S.clubId; });
+      return "<tr><td><b>" + h.label + "</b></td><td>" + esc(lg ? lg.name : "") + '</td><td class="num">' + h.me.pos + '</td><td class="num">' + h.me.pts + '</td><td><span class="club-cell">' + badge(h.champions[h.me.league], 18) + esc(club(h.champions[h.me.league]).name) + "</span></td><td>" + (h.topScorer ? esc(h.topScorer[0]) + " (" + h.topScorer[1] + ")" : "–") + "</td><td>" + (eu ? COMP[eu[1]].name + ": " + STAGES[eu[2]] : "–") + "</td></tr>";
+    }).join("") + "</tbody></table></div>" : '<p class="muted">Your first season is under way. Finished seasons appear here.</p>');
+  }
+  function viewEurope() {
+    var C = coeffState(), rank = countryRanking(), tab = ui.euTab || "countries";
+    var head = screenHead("Europe", '<div class="tabs"><button class="chip-btn" data-eutab="countries" aria-pressed="' + (tab === "countries") + '">Country ranking</button><button class="chip-btn" data-eutab="clubs" aria-pressed="' + (tab === "clubs") + '">Club coefficients</button><button class="chip-btn" data-eutab="season" aria-pressed="' + (tab === "season") + '">This season</button></div>');
+    var note = '<p class="muted" style="margin:0">UEFA coefficients (' + esc(D.coeff.source) + "), updated with each season's European results. The ranking decides how many European places each league gets.</p>";
+    if (tab === "countries") {
+      return head + note + '<div class="table-wrap"><table><thead><tr><th>#</th><th>Country</th>' + C.seasons.map(function (x) { return '<th class="num">' + x + "</th>"; }).join("") + '<th class="num">Total</th><th>Places</th></tr></thead><tbody>' + rank.map(function (c, i) {
+        var mine = c === "England" || c === "Spain" || c === "Slovenia", P = euroPlaces(c);
+        return '<tr class="' + (mine ? "me" : "") + '"><td>' + (i + 1) + "</td><td>" + (mine ? "<b>" + esc(c) + "</b>" : esc(c)) + "</td>" + C.countries[c].map(function (v) { return '<td class="num">' + v.toFixed(3) + "</td>"; }).join("") + '<td class="num"><b>' + countryTotal(c).toFixed(3) + "</b></td><td>" + (mine ? P.ucl + " UCL" + (P.qual ? " (qual.)" : "") + (P.uel ? ", " + P.uel + " UEL" : "") + ", " + P.uecl + " UECL" : "") + "</td></tr>";
+      }).join("") + "</tbody></table></div>";
+    }
+    if (tab === "clubs") {
+      var cl = Object.keys(D.clubs).filter(function (c) { return club(c).league !== "slovenia_2snl" || clubPoints(c) > 0; }).sort(function (a, b) { return clubCoeff(b) - clubCoeff(a); });
+      return head + note + '<div class="table-wrap"><table><thead><tr><th>#</th><th>Club</th>' + C.seasons.map(function (x) { return '<th class="num">' + x + "</th>"; }).join("") + '<th class="num">Points</th><th class="num">Coefficient</th></tr></thead><tbody>' + cl.map(function (c, i) {
+        var v = C.clubs[c] || [0, 0, 0, 0, 0];
+        return '<tr class="' + (c === S.clubId ? "me" : "") + '"><td>' + (i + 1) + '</td><td><span class="club-cell">' + badge(c, 18) + esc(club(c).name) + "</span></td>" + v.map(function (x) { return '<td class="num">' + (x ? x.toFixed(2) : "–") + "</td>"; }).join("") + '<td class="num">' + clubPoints(c).toFixed(2) + '</td><td class="num"><b>' + clubCoeff(c).toFixed(3) + "</b></td></tr>";
+      }).join("") + '</tbody></table></div><p class="muted" style="margin:0">A club\'s coefficient is its points over five seasons, or 20% of its country\'s coefficient if that is higher.</p>';
+    }
+    ensureEuro();
+    var last = (S.history || []).length ? S.history[S.history.length - 1].europe : null;
+    return head + ["ucl", "uel", "uecl"].map(function (k) {
+      var cs = Object.keys(S.euro).filter(function (c) { return S.euro[c] === k; });
+      return '<section class="panel fin-card"><h3 style="margin:0">' + COMP[k].name + " " + seasonLabel() + '</h3>' + (cs.length ? cs.map(function (c) { return '<div class="club-cell">' + badge(c, 20) + esc(club(c).name) + ' <span class="muted">(' + esc(D.leagues.find(function (l) { return l.id === club(c).league; }).name) + ")</span></div>"; }).join("") : '<p class="muted" style="margin:0">None of our clubs.</p>') + "</section>";
+    }).join("") + (last ? '<section class="panel fin-card"><h3 style="margin:0">Last season</h3>' + last.map(function (x) { return "<div>" + esc(club(x[0]).name) + " — " + COMP[x[1]].name + ": " + STAGES[x[2]] + "</div>"; }).join("") + "</section>" : "") +
+      '<p class="muted" style="margin:0">European ties aren\'t played as matches yet: each club\'s run is settled from its squad strength at the end of the season, with prize money and coefficient points.</p>';
+  }
   // ------------------------------------------------------------ finances, contracts, transfers, board
   // Money is tracked for the user's club (S.fin): weekly wages, monthly TV and sponsorship,
   // gate receipts at home matches, transfer fees and prize money; the balance is recorded
@@ -1341,6 +1588,17 @@ input[type="search"], select {
   function aiMarket(d, h) {
     if (h !== 14 || !windowOpen(d)) return;
     var r = rng((S.seed ^ (d * 2654435761) ^ 0x5bd1e995) >>> 0), x0 = r(), deals = x0 < 0.1 ? 2 : x0 < 0.52 ? 1 : 0;
+    // short squads (after expiries and retirements) top up with free agents of their level
+    Object.keys(D.clubs).forEach(function (c) {
+      if (c === S.clubId || (clubPlayers[c] || []).length >= 19 || r() > 0.35) return;
+      var avg = xiAvg(c), fa = D.players.filter(function (p) { return p.club === "free" && p.age <= 33 && p.ovr >= avg - 9 && p.ovr <= avg + 2; });
+      if (!fa.length) return;
+      var p = fa.sort(function (a, b) { return b.ovr - a.ovr; })[Math.floor(r() * Math.min(4, fa.length))];
+      (S.contracts = S.contracts || {})[p.id] = { end: (seasonYear() + 1 + Math.floor(r() * 2)) + "-06-30", wage: estWage(p, c) };
+      (S.transfers = S.transfers || []).push({ d: d, pid: p.id, from: "free", to: c, fee: 0 });
+      (S.signed = S.signed || {})[p.id] = d;
+      movePlayer(p, c);
+    });
     var clubs = Object.keys(D.clubs).filter(function (c) { return c !== S.clubId; }), tops = {};
     function topOf(lid) { return tops[lid] != null ? tops[lid] : (tops[lid] = leagueTop(lid)); }
     for (var k = 0; k < deals; k++) {
@@ -1635,13 +1893,11 @@ input[type="search"], select {
   function advance() {
     if (advancing || !S) return;
     if (matchDayToday()) { S.t = Math.max(S.t, today() * 24 + 14); save(); ui.screen = "prematch"; return render(); }
-    if (S.t >= CAL_DAYS * 24 - 1) return;
     var btn = document.querySelector('[data-act="continue"]');
     if (btn) { btn.disabled = true; btn.textContent = "Processing…"; }
     advancing = setInterval(function () {
       var stop = false, got = 0;
       for (var i = 0; i < 3 && !stop; i++) {
-        if (S.t >= CAL_DAYS * 24 - 1) { stop = true; break; }
         if (matchDayToday() && S.t + 1 >= today() * 24 + KICKOFF_H) { stop = true; break; }   // our match first
         S.t++;
         got += hourEvents(today(), S.t % 24);
@@ -1677,13 +1933,13 @@ input[type="search"], select {
     var stars = (clubPlayers[S.clubId].slice().sort(function (a, b) { return b.ovr - a.ovr; }).slice(0, 15).reduce(function (s, p) { return s + p.ovr; }, 0) / 15).toFixed(0);
     return '<header class="panel topbar">' +
       '<button class="icon-btn" data-act="drawer" aria-label="Menu">' + icon("menu") + "</button>" +
-      '<div class="club-id">' + badge(S.clubId, 30) + '<div><div class="nm">' + esc(c.name) + '</div><div class="lg">' + leagueLogo(lg.id, 12) + esc(lg.name) + " · " + D.season + "</div></div></div>" +
+      '<div class="club-id">' + badge(S.clubId, 30) + '<div><div class="nm">' + esc(c.name) + '</div><div class="lg">' + leagueLogo(lg.id, 12) + esc(lg.name) + " · " + seasonLabel() + "</div></div></div>" +
       '<div class="grow"></div><div class="chips">' +
       '<button class="hide-sm chip-link" data-go="finances" title="Transfer budget (finances)"><span class="coin"></span>' + money(S.fin ? S.fin.tb : 0) + "</button>" +
       '<span class="hide-sm" title="Squad strength (top 15 average)">★ ' + stars + "</span>" +
       '<button class="icon-btn inbox-btn" data-go="inbox" aria-label="Inbox, ' + unread() + ' unread">' + icon("inbox") + (unread() ? '<span class="badge-n">' + unread() + "</span>" : "") + "</button>" +
       '<span id="clock" class="clock"><b>' + esc(dayLabel(today(), true)) + "</b> " + hourLabel(S.t) + "</span>" +
-      '<button class="btn primary cont" data-act="continue"' + (S.t >= CAL_DAYS * 24 - 1 ? " disabled" : "") + ">" + (matchDayToday() ? "Match day ›" : "Continue ›") + "</button>" +
+      '<button class="btn primary cont" data-act="continue">' + (matchDayToday() ? "Match day ›" : "Continue ›") + "</button>" +
       '<button class="icon-btn gear-btn" data-act="settings" aria-label="Settings">' + icon("gear") + "</button></div></header>";
   }
   function screenHead(title, extra) {
@@ -1694,8 +1950,9 @@ input[type="search"], select {
     if (!S) return renderNewGame();
     ensureCal();
     ensureFin();
+    ensureEuro();
     if (ui.rosterPending) syncRosters();
-    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts }[ui.screen] || viewHome)() + "</main>";
+    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts, europe: viewEurope, history: viewHistory }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
   }
@@ -1883,10 +2140,11 @@ input[type="search"], select {
       (LEAGUE_LOGOS[lid] ? '<div style="display:flex;align-items:center;gap:12px;margin:2px 0 8px">' + leagueLogo(lid, 40) + '<h3 style="margin:0">' + esc(lg.name) + "</h3></div>" : "") +
       '<div class="table-wrap"><table><thead><tr><th>#</th><th>Club</th><th class="num">P</th><th class="num">W</th><th class="num">D</th><th class="num">L</th><th class="num">GF</th><th class="num">GA</th><th class="num">GD</th><th class="num">Pts</th><th>Form</th></tr></thead><tbody>' +
       t.map(function (r, i) {
-        var cls = (r.id === S.clubId ? "me " : "") + (i < (n > 10 ? 4 : 1) ? "zone-top" : i >= n - (n > 10 ? 3 : 1) ? "zone-bottom" : "");
-        return '<tr class="' + cls + '"><td>' + (i + 1) + '</td><td><span class="club-cell">' + badge(r.id, 20) + "<b>" + esc(club(r.id).name) + '</b></span></td><td class="num">' + r.p + '</td><td class="num">' + r.w + '</td><td class="num">' + r.d + '</td><td class="num">' + r.l + '</td><td class="num">' + r.gf + '</td><td class="num">' + r.ga + '</td><td class="num">' + (r.gf - r.ga) + '</td><td class="num"><b>' + r.pts + "</b></td><td>" +
+        var z = zoneOf(lid, i, n), zc = ZONES[z];
+        return '<tr class="' + (r.id === S.clubId ? "me" : "") + '"><td style="box-shadow:inset 3px 0 0 ' + (zc ? zc[1] : "transparent") + '">' + (i + 1) + '</td><td><span class="club-cell">' + badge(r.id, 20) + "<b>" + esc(club(r.id).name) + '</b></span></td><td class="num">' + r.p + '</td><td class="num">' + r.w + '</td><td class="num">' + r.d + '</td><td class="num">' + r.l + '</td><td class="num">' + r.gf + '</td><td class="num">' + r.ga + '</td><td class="num">' + (r.gf - r.ga) + '</td><td class="num"><b>' + r.pts + "</b></td><td>" +
           r.form.slice(-5).map(function (x) { return '<span class="dot ' + x + '" style="display:inline-grid;width:16px;height:16px;font-size:.6rem;margin-right:2px">' + x + "</span>"; }).join("") + "</td></tr>";
-      }).join("") + '</tbody></table></div><p class="muted" style="margin:0">' + esc(lg.name) + " · " + S.schedule[lid].length + " matchweeks · green bar: top places, red bar: relegation places</p>";
+      }).join("") + '</tbody></table></div><p class="muted" style="margin:0">' + esc(lg.name) + " · " + S.schedule[lid].length + " matchweeks</p>" + '<div class="zone-key">' + Object.keys(ZONES).filter(function (k) { return t.some(function (r, i) { return zoneOf(lid, i, n) === k; }); }).map(function (k) { return '<span><i style="background:' + ZONES[k][1] + '"></i>' + ZONES[k][0] + "</span>"; }).join("") + "</div>" +
+      (lid === "premier_league" || lid === "la_liga" ? '<p class="muted" style="margin:0">The leagues below aren\'t in the game, so nobody is relegated from or promoted to this league.</p>' : lid === "slovenia_2snl" ? '<p class="muted" style="margin:0">3. SNL isn\'t in the game, so nobody goes down from 2. SNL.</p>' : "");
   }
   function viewStats() {
     var lid = ui.statsLeague || myLeague().id, lg = D.leagues.find(function (l) { return l.id === lid; });
@@ -1930,7 +2188,7 @@ input[type="search"], select {
       '<p class="muted" style="margin:0">Players develop every Monday: young players with room to grow (potential) improve fastest, and good match ratings and minutes speed it up; from 31 pace and stamina start to fade. Nobody gains more than 6 a season unless rated under 74 or having a really good season (then up to 10). Potential is reviewed monthly: strong performances raise it, and it only drops for players of 27+ still 10 or more below it. Pick an individual focus to steer a player.</p>' +
       '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Pos</th><th class="num">Age</th><th class="num">OVR</th><th class="num">+/−</th><th class="num">POT</th><th>Growth</th><th>Individual focus</th></tr></thead><tbody>' +
       ps.map(function (p) {
-        var dlt = p.ovr - p.baseOvr, pot = potOf(p);
+        var dlt = p.ovr - seasonStartOvr(p), pot = potOf(p);
         return '<tr><td><button class="link" data-player="' + p.id + '">' + esc(p.name) + '</button></td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + '</span></td><td class="num">' + p.age +
           '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num" style="color:' + (dlt > 0 ? "var(--win)" : dlt < 0 ? "var(--loss)" : "var(--muted)") + '">' + (dlt > 0 ? "+" : "") + (dlt || "–") +
           '</td><td class="num"><b>' + pot + '</b></td><td><div class="grow-bar"><i style="width:' + Math.round(p.ovr / Math.max(pot, 1) * 100) + '%"></i></div></td>' +
@@ -2361,7 +2619,7 @@ input[type="search"], select {
     var lid = ui.pickLeague || "slovenia_2snl";
     var pick = ui.pick || "fuzinar";
     var lg = D.leagues.find(function (l) { return l.id === lid; });
-    app.innerHTML = '<header class="panel topbar"><div class="club-id"><div><div class="nm">DLS Manager</div><div class="lg">New career · ' + D.season + '</div></div></div><button class="btn ghost" data-act="totitle">Back</button></header>' +
+    app.innerHTML = '<header class="panel topbar"><div class="club-id"><div><div class="nm">DLS Manager</div><div class="lg">New career · ' + seasonLabel() + '</div></div></div><button class="btn ghost" data-act="totitle">Back</button></header>' +
       '<main class="screen" style="display:grid;gap:12px"><div class="screen-head"><h2>Choose your club</h2><div class="tabs">' +
       D.leagues.map(function (l) { return '<button class="chip-btn" data-pickleague="' + l.id + '" aria-pressed="' + (l.id === lid) + '">' + leagueLogo(l.id, 14) + esc(l.name) + "</button>"; }).join("") + "</div></div>" +
       '<div class="club-grid">' + lg.clubs.map(function (cid) {
@@ -2391,7 +2649,7 @@ input[type="search"], select {
     var inGame = !!(window.DLSManager && window.DLSManager.exportSave);
     app.innerHTML = '<main class="screen" style="min-height:100vh;display:grid;place-items:center">' +
       '<section class="panel" style="width:min(460px,100%);padding:28px;display:grid;gap:14px">' +
-      '<div><div style="font-size:30px;font-weight:800;letter-spacing:-.02em">DLS Manager</div><div class="muted">Season ' + esc(D.season) + "</div></div>" +
+      '<div><div style="font-size:30px;font-weight:800;letter-spacing:-.02em">DLS Manager</div><div class="muted">Season ' + esc(seasonLabel()) + "</div></div>" +
       (saved ? '<button class="btn primary" data-act="loadcareer" style="display:flex;gap:12px;align-items:center;justify-content:flex-start;text-align:left">' + badge(saved.clubId, 34) +
         '<span><b>Load career</b><br><span style="font-weight:500;opacity:.85">' + esc(club(saved.clubId).name) + " · matchweek " + (saved.week + 1) + "</span></span></button>" : "") +
       '<button class="btn' + (saved ? "" : " primary") + '" data-act="newcareer">New career</button>' +
@@ -2405,7 +2663,7 @@ input[type="search"], select {
   }
   function closeModal() { var m = document.getElementById("modal"); if (m) m.remove(); }
   function openDrawer() {
-    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["social", "Social" + (socialNew() ? " (" + socialNew() + ")" : "")], ["manager", "Manager"], ["squad", "Squad"], ["finances", "Finances"], ["board", "Board"], ["contracts", "Contracts"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
+    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["social", "Social" + (socialNew() ? " (" + socialNew() + ")" : "")], ["manager", "Manager"], ["squad", "Squad"], ["finances", "Finances"], ["board", "Board"], ["contracts", "Contracts"], ["europe", "Europe"], ["history", "History"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
     var d = el('<div id="drawer"><div class="drawer-bg" data-act="closedrawer"></div><nav class="drawer" aria-label="Main menu"><div class="label" style="padding:4px 12px 10px">' + esc(club(S.clubId).name) + "</div>" +
       items.map(function (x) { return '<button data-go="' + x[0] + '" aria-current="' + (ui.screen === x[0]) + '">' + x[1] + "</button>"; }).join("") +
       '<button data-act="settings" style="margin-top:12px">Settings</button>' +
@@ -2646,7 +2904,7 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
-    var t = ev.target.closest("[data-breq],[data-deal],[data-pact],[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
+    var t = ev.target.closest("[data-eutab],[data-breq],[data-deal],[data-pact],[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
     if (!t) return;
     if (t.hasAttribute("data-pickleague")) { ui.pickLeague = t.getAttribute("data-pickleague"); ui.pick = D.leagues.find(function (l) { return l.id === ui.pickLeague; }).clubs[0]; return renderNewGame(); }
     if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return updateNewGamePick(); }
@@ -2677,6 +2935,7 @@ input[type="search"], select {
     if (t.hasAttribute("data-pact")) return playerAction(t.getAttribute("data-pact").split(":"));
     if (t.hasAttribute("data-tfocus")) { (S.training = S.training || { focus: "balanced", intensity: 1 }).focus = t.getAttribute("data-tfocus"); save(); return render(); }
     if (t.hasAttribute("data-tint")) { (S.training = S.training || { focus: "balanced", intensity: 1 }).intensity = +t.getAttribute("data-tint"); save(); return render(); }
+    if (t.hasAttribute("data-eutab")) { ui.euTab = t.getAttribute("data-eutab"); return render(); }
     if (t.hasAttribute("data-soc")) { ui.socFilter = t.getAttribute("data-soc"); return render(); }
     if (t.hasAttribute("data-pans")) {
       var ps = ui.pressState, qq = ps && ps.qs[ps.i];
@@ -2809,7 +3068,7 @@ input[type="search"], select {
       }
       closeModal(); ui.title = false; S = null; return render();
     }
-    if (act === "totitle") { S = load(); if (S && !D.clubs[S.clubId]) S = null; applyDev(); applyMoves(); ui.title = true; return render(); }
+    if (act === "totitle") { S = load(); if (S && !D.clubs[S.clubId]) S = null; applyAll(); ui.title = true; return render(); }
     if (act === "saveresult") {
       closeModal();
       var mineR = playWeek({ hg: +t.getAttribute("data-hg"), ag: +t.getAttribute("data-ag") });
@@ -2829,7 +3088,7 @@ input[type="search"], select {
     if (act === "askreset") { closeModal(); return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">This deletes the current season, results and stats.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="reset">Delete and start over</button><button class="btn ghost" data-act="closemodal">Keep playing</button></div>'); }
     if (act === "reset") { closeModal(); S = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) {} ui.screen = "home"; return render(); }
     if (act === "start") {
-      S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); applyDev(); applyMoves(); lineupOf(S.clubId); save(); ui.screen = "home"; ui.title = false;
+      S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); applyAll(); lineupOf(S.clubId); save(); ui.screen = "home"; ui.title = false;
       // inside the game: make the Dream FC this club (the game restarts to apply it)
       if (window.DLSManager && window.DLSManager.becomeClub && window.DLSManager.currentClub() !== S.clubId) {
         window.DLSManager.becomeClub(S.clubId);
@@ -2876,8 +3135,7 @@ input[type="search"], select {
     D.players.forEach(function (p) { byId[p.id] = p; (clubPlayers[p.club] = clubPlayers[p.club] || []).push(p); });
     S = load();
     if (S && !D.clubs[S.clubId]) S = null;
-    applyDev();
-    applyMoves();
+    applyAll();
     ui.title = true;  // always open on the start screen
     render();
   }).catch(function (e) {
