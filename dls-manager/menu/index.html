@@ -146,6 +146,63 @@ h3 { font-size: .95rem; }
 .chips { display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: .9rem; white-space: nowrap; }
 .coin { width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f5d77a, #c9952a); display: inline-block; vertical-align: -2px; margin-right: 5px; }
 .week-tag { color: var(--muted); font-weight: 600; }
+.clock { font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.clock b { color: var(--fg); }
+.cont { padding: 8px 14px; }
+.inbox-btn { position: relative; }
+.inbox-btn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.badge-n { position: absolute; top: -2px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--loss); color: #fff; font-size: .7rem; font-weight: 800; display: grid; place-items: center; }
+/* inbox */
+.inbox { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 12px; align-items: start; }
+.msg-list { display: grid; max-height: 70vh; overflow-y: auto; padding: 4px; }
+.msg-item { appearance: none; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; display: grid; grid-template-columns: 4px 1fr auto; grid-template-areas: "c f d" "c s s"; column-gap: 10px; row-gap: 2px; padding: 10px; border-radius: 10px; cursor: pointer; }
+.msg-item i { grid-area: c; border-radius: 2px; }
+.msg-item .mi-from { grid-area: f; font-size: .75rem; color: var(--muted); font-weight: 700; }
+.msg-item .mi-date { grid-area: d; font-size: .72rem; color: var(--muted); }
+.msg-item .mi-sub { grid-area: s; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.msg-item.unread .mi-sub { font-weight: 800; }
+.msg-item.unread .mi-from::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: 1px; }
+.msg-item.sel, .msg-item:hover { background: var(--panel-2); }
+.msg-detail { padding: 18px; display: grid; gap: 10px; align-content: start; min-height: 200px; }
+.msg-detail.empty { place-items: center; }
+.md-back { display: none; justify-self: start; }
+.msg-detail h3 { margin: 4px 0 0; font-size: 1.2rem; }
+.msg-detail p { margin: 0; line-height: 1.5; max-width: 65ch; }
+/* calendar */
+.cal-nav { display: flex; align-items: center; gap: 8px; }
+.cal-nav b { min-width: 9em; text-align: center; }
+.cal { padding: 10px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.cal-wd { font-size: .72rem; color: var(--muted); font-weight: 700; text-align: center; padding-bottom: 2px; }
+.cal-cell { position: relative; min-height: 74px; border-radius: 10px; background: var(--panel-2); padding: 6px; display: grid; align-content: start; justify-items: center; gap: 3px; }
+.cal-cell.pad { background: transparent; }
+.cal-cell.past { opacity: .62; }
+.cal-cell.today { outline: 2px solid var(--accent); opacity: 1; }
+.cal-cell.played { cursor: pointer; }
+.cal-cell.fx { background: linear-gradient(180deg, var(--panel-2), rgba(76,200,106,.12)); }
+.cal-d { justify-self: start; font-size: .75rem; font-weight: 700; color: var(--muted); }
+.cal-fx { display: flex; align-items: center; gap: 4px; }
+.cal-ha { font-size: .68rem; font-weight: 800; color: var(--muted); }
+.cal-res { font-size: .78rem; font-weight: 800; padding: 1px 6px; border-radius: 6px; color: #0b0e0d; }
+.cal-res.W { background: var(--win); } .cal-res.D { background: var(--draw); } .cal-res.L { background: var(--loss); }
+.cal-ko { font-size: .72rem; color: var(--muted); font-weight: 700; }
+.cal-other { font-size: .62rem; color: var(--muted); }
+.cal-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; border-radius: 50%; background: #4f8ff7; }
+@media (max-width: 700px) {
+  .inbox { grid-template-columns: 1fr; }
+  .inbox.open .msg-list { display: none; }
+  .inbox:not(.open) .msg-detail { display: none; }
+  .md-back { display: inline-flex; }
+}
+@media (max-width: 480px) {
+  .club-id > div { display: none; }
+  .chips { gap: 8px; }
+  .cont { padding: 7px 10px; }
+  .gear-btn { display: none; }
+  .clock { font-size: .8rem; }
+  .cal-cell { min-height: 54px; padding: 4px; }
+  .cal-other { display: none; }
+}
 
 /* drawer */
 .drawer-bg { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 20; }
@@ -589,6 +646,16 @@ input[type="search"], select {
       S.news.unshift({ week: w + 1, text: "After matchweek " + (w + 1) + ", " + club(S.clubId).name + " sit " + pos + ordinalTxt(pos) + " in the " + myLeague().name + "." });
     }
     S.news = S.news.slice(0, 30);
+    if (S.t != null) {
+      S.t = Math.max(S.t, weekDay(w) * 24 + 17);
+      if (mine) {
+        var gl = mine.events.filter(function (e) { return e.type === "goal"; }).map(function (e) { return esc(e.p != null && byId[e.p] ? byId[e.p].name : "Unknown") + " " + e.min + "'" + (e.pen ? " (P)" : "") + (e.og ? " (og)" : ""); });
+        var hm = mine.h === S.clubId, gF = hm ? mine.hg : mine.ag, gA = hm ? mine.ag : mine.hg;
+        mail("Assistant manager", "Result: " + club(mine.h).name + " " + mine.hg + "–" + mine.ag + " " + club(mine.a).name,
+          [gF > gA ? "A good win, boss." : gF === gA ? "A point from that one." : "Not our day.", gl.length ? "Goals: " + gl.join(", ") + "." : "No goals."],
+          { label: "Match report", report: myLeague().id + ":" + w + ":" + mine.h }, gF > gA ? "good" : gF < gA ? "bad" : "match").read = true;
+      }
+    }
     save();
     return mine;
   }
@@ -610,6 +677,195 @@ input[type="search"], select {
     });
   }
 
+  // ------------------------------------------------------------ calendar & inbox (FM-style)
+  // The season is a 365-day calendar from 1 July. S.t = hours since then. Continue moves the
+  // clock forward a few hours at a time and stops when a message lands in the inbox or a
+  // match day comes round; other matches are played as their dates pass.
+  var CAL0 = 0, DAY0 = 0, CAL_DAYS = 365, KICKOFF_H = 15, DAY_MS = 864e5;
+  function calInit() {   // once the season data has loaded
+    CAL0 = Date.UTC(+D.startDate.slice(0, 4), 6, 1);
+    DAY0 = Math.round((Date.parse(D.startDate + "T00:00:00Z") - CAL0) / DAY_MS);   // first matchweek
+  }
+  function weekDay(w) { return DAY0 + 7 * w; }
+  function dayDate(d) { return new Date(CAL0 + d * DAY_MS); }
+  function dayLabel(d, short) {
+    return dayDate(d).toLocaleDateString("en-GB", short ? { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" } : { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  }
+  function hourLabel(t) { var h = t % 24; return (h < 10 ? "0" : "") + h + ":00"; }
+  function today() { return Math.floor(S.t / 24); }
+  function maxRounds() { return Math.max.apply(null, D.leagues.map(function (l) { return S.schedule[l.id].length; })); }
+  function weekOfDay(d) { var w = (d - DAY0) / 7; return w >= 0 && w === Math.floor(w) && w < maxRounds() ? w : -1; }
+  function myFixtureOn(d) {
+    var w = weekOfDay(d), r = w >= 0 ? S.schedule[myLeague().id][w] : null;
+    var g = r ? r.find(function (m) { return m[0] === S.clubId || m[1] === S.clubId; }) : null;
+    return g ? { home: g[0], away: g[1], week: w } : null;
+  }
+  // the user's match today, not yet played
+  function matchDayToday() { var f = nextFixture(); return f && weekDay(f.week) === today() ? f : null; }
+  function unread() { return (S.inbox || []).filter(function (m) { return !m.read; }).length; }
+  function mail(from, subject, body, action, kind) {
+    var m = { id: ++S.msgSeq, t: S.t, from: from, subject: subject, body: body, action: action || null, kind: kind || "info", read: false };
+    S.inbox.unshift(m);
+    if (S.inbox.length > 250) S.inbox.length = 250;
+    return m;
+  }
+  function squadStrength(cid) { return clubPlayers[cid].slice().sort(function (a, b) { return b.ovr - a.ovr; }).slice(0, 15).reduce(function (t, p) { return t + p.ovr; }, 0) / 15; }
+  function predicted(lid) {
+    var lg = D.leagues.find(function (l) { return l.id === lid; });
+    return lg.clubs.slice().sort(function (a, b) { return squadStrength(b) - squadStrength(a); });
+  }
+  function targetText(pos, n) {
+    if (pos === 1) return "win the league";
+    if (pos <= 3) return "finish in the top three";
+    if (pos <= Math.ceil(n / 2)) return "finish in the top half";
+    if (pos <= n - 3) return "stay well clear of the relegation places";
+    return "avoid relegation";
+  }
+  function myPos() { return standings(myLeague().id).findIndex(function (t) { return t.id === S.clubId; }) + 1; }
+  function leagueScorers(lid, n) {
+    var lg = D.leagues.find(function (l) { return l.id === lid; }), out = [];
+    lg.clubs.forEach(function (c) { clubPlayers[c].forEach(function (p) { var st = S.pstats[p.id]; if (st && st.goals) out.push({ p: p, g: st.goals }); }); });
+    return out.sort(function (a, b) { return b.g - a.g; }).slice(0, n || 3);
+  }
+  function formOf(cid) { var t = standings(leagueOf(cid).id).find(function (x) { return x.id === cid; }); return t ? t.form.slice(-5).join("") || "–" : "–"; }
+  function ensureCal() {
+    if (S.t != null) return;
+    S.inbox = []; S.msgSeq = 0;
+    if (S.week > 0) {
+      S.t = weekDay(S.week - 1) * 24 + 18;
+      mail("Assistant manager", "Calendar and inbox", ["The club now runs on a day-by-day calendar. Press <b>Continue</b> to move time on; it stops whenever something arrives here or a match day comes round.",
+        "The calendar shows the whole season, with every fixture and result."], { label: "Open calendar", go: "calendar" });
+    } else {
+      S.t = 9;
+      welcomeMail();
+    }
+  }
+  function welcomeMail() {
+    var L = myLeague(), pred = predicted(L.id), pos = pred.indexOf(S.clubId) + 1, c = club(S.clubId);
+    S.target = pos;
+    mail("The board", "Welcome to " + c.name, ["Welcome to " + esc(c.name) + ". The board is delighted to have you in charge for the " + esc(D.season) + " season.",
+      "Looking at the squad, we expect you to <b>" + targetText(pos, L.clubs.length) + "</b> in the " + esc(L.name) + " (we see the squad as the " + pos + ordinalTxt(pos) + " strongest of " + L.clubs.length + ").",
+      "Pre-season starts today. Your first league match is on " + dayLabel(weekDay(0)) + "."], { label: "View squad", go: "squad" }, "board");
+    var f = myFixtureOn(weekDay(0));
+    var opp = f ? club(f.home === S.clubId ? f.away : f.home).name : null;
+    mail("Assistant manager", "Pre-season plans", ["I've set the team up in a " + esc(lineupOf(S.clubId).formation) + " for now. Have a look at the tactics and pick the XI you trust.",
+      opp ? "We open the league season against <b>" + esc(opp) + "</b> on " + dayLabel(weekDay(0)) + "." : ""].filter(Boolean), { label: "Tactics", go: "tactics" });
+  }
+  // messages and fixtures due at the start of hour h of day d; returns how many messages arrived
+  function hourEvents(d, h) {
+    var before = S.msgSeq, L = myLeague(), c = club(S.clubId), w = weekOfDay(d);
+    // other matches: each matchweek is played at 17:00 on its day (the user's together with it)
+    if (h === 17 && w >= 0 && S.week === w && !myFixtureOn(d)) playWeek();
+    if (d === 2 && h === 10) {
+      var fs = []; for (var k = 0; k < 3; k++) { var f = myFixtureOn(weekDay(k)); if (f) fs.push(dayLabel(weekDay(k)) + ": " + esc(club(f.home).name) + " v " + esc(club(f.away).name)); }
+      mail(L.name, "Fixtures released", ["The " + esc(L.name) + " fixtures for " + esc(D.season) + " are out. Your first matches:", fs.join("<br>")], { label: "Open calendar", go: "calendar" }, "league");
+    }
+    if (d === DAY0 - 4 && h === 10) {
+      var pred = predicted(L.id);
+      mail(L.name, "Season preview", ["Pundits' favourites for the title: <b>" + pred.slice(0, 3).map(function (x) { return esc(club(x).name); }).join("</b>, <b>") + "</b>.",
+        esc(c.name) + " are tipped to finish " + (pred.indexOf(S.clubId) + 1) + ordinalTxt(pred.indexOf(S.clubId) + 1) + "."], { label: "League table", go: "table" }, "league");
+    }
+    // preview two days before our match
+    var pf = myFixtureOn(d + 2);
+    if (pf && h === 10) {
+      var opp = pf.home === S.clubId ? pf.away : pf.home, tb = standings(L.id), op = tb.findIndex(function (t) { return t.id === opp; }) + 1;
+      var best = clubPlayers[opp].slice().sort(function (a, b) { return b.ovr - a.ovr; })[0];
+      var sc = clubPlayers[opp].filter(function (p) { return S.pstats[p.id] && S.pstats[p.id].goals; }).sort(function (a, b) { return S.pstats[b.id].goals - S.pstats[a.id].goals; })[0];
+      mail("Assistant manager", "Preview: " + club(opp).name + (pf.home === S.clubId ? " (H)" : " (A)"), [
+        "We face <b>" + esc(club(opp).name) + "</b> " + (pf.home === S.clubId ? "at home" : "away") + " on " + dayLabel(d + 2) + ".",
+        S.week > 0 ? "They're " + op + ordinalTxt(op) + " in the table, form " + formOf(opp) + "." : "It's the first match of the season.",
+        "They usually play a " + esc(lineupOf(opp).formation) + ". Their key man is <b>" + esc(best.name) + "</b> (" + best.pos + ", " + best.ovr + ")" + (sc ? ", and <b>" + esc(sc.name) + "</b> has " + S.pstats[sc.id].goals + " goals" : "") + "."],
+        { label: "Tactics", go: "tactics" });
+    }
+    var mf = myFixtureOn(d);
+    if (mf && h === 9 && S.week === mf.week) {
+      var hc = club(mf.home);
+      mail("Assistant manager", "Match day: " + hc.name + " v " + club(mf.away).name, ["Kick-off at 15:00" + (hc.stadium ? " at " + esc(hc.stadium) : "") + ". The squad is ready, boss."],
+        { label: "Go to match", act: "play" }, "match");
+    }
+    // Monday round-up after a matchweek
+    var rw = weekOfDay(d - 2);
+    if (rw >= 0 && h === 10 && S.week > rw && rw < S.schedule[L.id].length) {
+      var tb2 = standings(L.id), me = tb2.findIndex(function (t) { return t.id === S.clubId; }) + 1, ts = leagueScorers(L.id, 1)[0];
+      mail(L.name, "Matchweek " + (rw + 1) + " round-up", ["Top of the table: " + tb2.slice(0, 3).map(function (t, i) { return (i + 1) + ". " + esc(club(t.id).name) + " " + t.pts + " pts"; }).join(" · ") + ".",
+        esc(c.name) + " are " + me + ordinalTxt(me) + " with " + tb2[me - 1].pts + " points.",
+        ts ? "Top scorer: <b>" + esc(ts.p.name) + "</b> (" + esc(club(ts.p.club).name) + "), " + ts.g + " goals." : ""].filter(Boolean), { label: "League table", go: "table" }, "league");
+    }
+    // first of the month: board review and player of the month
+    if (d > 0 && dayDate(d).getUTCDate() === 1 && h === 10) {
+      var played = (S.results[L.id] || []).filter(Boolean).length;
+      if (played > 0 && S.week <= S.schedule[L.id].length) {
+        var pos = myPos(), tgt = S.target || pos, mood = pos <= tgt ? "We're pleased with how things are going." : pos <= tgt + 3 ? "We're satisfied, but we'd like to see a push up the table." : "We're concerned about our league position.";
+        mail("The board", "Monthly review", ["You're " + pos + ordinalTxt(pos) + " in the " + esc(L.name) + "; our target is to " + targetText(tgt, L.clubs.length) + ".", mood], { label: "League table", go: "table" }, "board");
+        potmMail(d);
+      }
+    }
+    // scouting reports every few weeks during the season
+    if (d >= 9 && d % 19 === 9 && h === 14) scoutMail(d);
+    // end of season
+    var last = weekDay(S.schedule[L.id].length - 1);
+    if (d === last + 3 && h === 10) {
+      var fp = myPos(), tg = S.target || fp;
+      mail("The board", "Season review", ["The season is over: " + esc(c.name) + " finished <b>" + fp + ordinalTxt(fp) + "</b> in the " + esc(L.name) + ".",
+        fp <= tg ? "You met the board's expectations. Well done." : fp <= tg + 3 ? "Slightly below what we hoped for, but there is a base to build on." : "That fell well short of our expectations."], { label: "Final table", go: "table" }, "board");
+    }
+    return S.msgSeq - before;
+  }
+  function potmMail(d) {
+    var L = myLeague(), m0 = dayDate(d - 1), mon = m0.getUTCMonth(), yr = m0.getUTCFullYear(), agg = {};
+    (S.results[L.id] || []).forEach(function (round, w) {
+      if (!round) return;
+      var dd = dayDate(weekDay(w)); if (dd.getUTCMonth() !== mon || dd.getUTCFullYear() !== yr) return;
+      round.forEach(function (res) {
+        Object.keys(res.ratings || {}).forEach(function (pid) { var a = agg[pid] || (agg[pid] = { n: 0, r: 0, g: 0 }); a.n++; a.r += res.ratings[pid]; });
+        res.events.forEach(function (e) { if (e.type === "goal" && !e.og && e.p != null && agg[e.p]) agg[e.p].g++; });
+      });
+    });
+    var best = null, bs = -1;
+    Object.keys(agg).forEach(function (pid) { var a = agg[pid]; if (a.n < 2) return; var sc = a.r / a.n + a.g * 0.15; if (sc > bs) { bs = sc; best = pid; } });
+    if (!best) return;
+    var p = byId[best], a = agg[best];
+    mail(L.name, "Player of the month: " + p.name, ["<b>" + esc(p.name) + "</b> (" + esc(club(p.club).name) + ") is the " + esc(L.name) + " player of the month for " + m0.toLocaleDateString("en-GB", { month: "long", timeZone: "UTC" }) + ".",
+      a.n + " appearances, average rating " + (a.r / a.n).toFixed(2) + (a.g ? ", " + a.g + " goal" + (a.g > 1 ? "s" : "") : "") + "."], { label: "View player", player: p.id }, p.club === S.clubId ? "good" : "league");
+  }
+  function scoutMail(d) {
+    var r = rng((S.seed ^ (d * 2654435761)) >>> 0), mine = clubPlayers[S.clubId].slice().sort(function (a, b) { return b.ovr - a.ovr; });
+    var bar = mine[Math.min(10, mine.length - 1)].ovr, budget = Math.max(150000, mine.reduce(function (t, p) { return t + p.value; }, 0) * 0.12) * 1.5;
+    var pool = [];
+    Object.keys(clubPlayers).forEach(function (cid) { if (cid !== S.clubId) clubPlayers[cid].forEach(function (p) { if (p.ovr > bar && p.age <= 29 && p.value <= budget) pool.push(p); }); });
+    if (!pool.length) return;
+    var p = pool[Math.floor(r() * pool.length)];
+    mail("Chief scout", "Scout report: " + p.name, ["I've been watching <b>" + esc(p.name) + "</b>, " + p.age + ", " + p.pos + " at " + esc(club(p.club).name) + ".",
+      "Overall " + p.ovr + ", valued at " + money(p.value) + ". He'd be an upgrade on what we have in that position."], { label: "View player", player: p.id }, "scout");
+  }
+  var advancing = null;
+  function updateClock() {
+    var c = document.getElementById("clock");
+    if (c) c.innerHTML = '<b>' + esc(dayLabel(today(), true)) + "</b> " + hourLabel(S.t);
+  }
+  function advance() {
+    if (advancing || !S) return;
+    if (matchDayToday()) { S.t = Math.max(S.t, today() * 24 + 14); save(); ui.screen = "prematch"; return render(); }
+    if (S.t >= CAL_DAYS * 24 - 1) return;
+    var btn = document.querySelector('[data-act="continue"]');
+    if (btn) { btn.disabled = true; btn.textContent = "Processing…"; }
+    advancing = setInterval(function () {
+      var stop = false, got = 0;
+      for (var i = 0; i < 3 && !stop; i++) {
+        if (S.t >= CAL_DAYS * 24 - 1) { stop = true; break; }
+        if (matchDayToday() && S.t + 1 >= today() * 24 + KICKOFF_H) { stop = true; break; }   // our match first
+        S.t++;
+        got += hourEvents(today(), S.t % 24);
+        if (got) stop = true;
+      }
+      updateClock();
+      if (!stop) return;
+      clearInterval(advancing); advancing = null; save();
+      if (got) { ui.screen = "inbox"; ui.msg = S.inbox[0].id; S.inbox[0].read = true; save(); }
+      render();
+    }, 30);
+  }
+
   // ------------------------------------------------------------ rendering
   var ICONS = {
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
@@ -619,7 +875,9 @@ input[type="search"], select {
     tactics: '<path d="M5 5l4 4M9 5 5 9"/><path d="M15 15l4 4M19 15l-4 4"/><circle cx="17" cy="7" r="2"/><path d="M7 17c3 0 4-3 6-6"/>',
     transfers: '<path d="M4 8h14l-3-3M20 16H6l3 3"/>',
     training: '<path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12"/>',
-    news: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>'
+    news: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+    inbox: '<path d="M4 13 6.5 5h11L20 13v6H4z"/><path d="M4 13h5l1.2 2.4h3.6L15 13h5"/>',
+    calendar: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'
   };
   function icon(n) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[n] + "</svg>"; }
 
@@ -631,10 +889,12 @@ input[type="search"], select {
       '<button class="icon-btn" data-act="drawer" aria-label="Menu">' + icon("menu") + "</button>" +
       '<div class="club-id">' + badge(S.clubId, 30) + '<div><div class="nm">' + esc(c.name) + '</div><div class="lg">' + leagueLogo(lg.id, 12) + esc(lg.name) + " · " + D.season + "</div></div></div>" +
       '<div class="grow"></div><div class="chips">' +
-      '<span class="week-tag hide-sm">' + (seasonOver() ? "Season over" : "Week " + (S.week + 1)) + "</span>" +
-      '<span title="Transfer budget"><span class="coin"></span>' + money(Math.max(150000, value * 0.12)) + "</span>" +
+      '<span class="hide-sm" title="Transfer budget"><span class="coin"></span>' + money(Math.max(150000, value * 0.12)) + "</span>" +
       '<span class="hide-sm" title="Squad strength (top 15 average)">★ ' + stars + "</span>" +
-      '<button class="icon-btn" data-act="settings" aria-label="Settings">' + icon("gear") + "</button></div></header>";
+      '<button class="icon-btn inbox-btn" data-go="inbox" aria-label="Inbox, ' + unread() + ' unread">' + icon("inbox") + (unread() ? '<span class="badge-n">' + unread() + "</span>" : "") + "</button>" +
+      '<span id="clock" class="clock"><b>' + esc(dayLabel(today(), true)) + "</b> " + hourLabel(S.t) + "</span>" +
+      '<button class="btn primary cont" data-act="continue"' + (S.t >= CAL_DAYS * 24 - 1 ? " disabled" : "") + ">" + (matchDayToday() ? "Match day ›" : "Continue ›") + "</button>" +
+      '<button class="icon-btn gear-btn" data-act="settings" aria-label="Settings">' + icon("gear") + "</button></div></header>";
   }
   function screenHead(title, extra) {
     return '<div class="screen-head"><button class="btn ghost" data-go="home">' + '<span style="display:inline-grid;width:18px">' + icon("back") + "</span>Home</button><h2>" + esc(title) + "</h2>" + (extra || "") + "</div>";
@@ -642,7 +902,8 @@ input[type="search"], select {
   function render() {
     if (ui.title) return renderTitle();
     if (!S) return renderNewGame();
-    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff }[ui.screen] || viewHome)() + "</main>";
+    ensureCal();
+    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
   }
@@ -651,16 +912,18 @@ input[type="search"], select {
     var f = nextFixture(), tbl = standings(myLeague().id), pos = tbl.findIndex(function (t) { return t.id === S.clubId; }) + 1, me = tbl[pos - 1];
     var hero;
     if (f) {
-      hero = '<section class="match-hero"><div><div class="eyebrow">Next Match</div><div class="muted" style="color:#dfe6e4">' + dateOf(f.week) + " · " + esc(myLeague().name) + " · Matchweek " + (f.week + 1) + "</div></div>" +
+      var dn = weekDay(f.week) - today(), md = dn === 0;
+      hero = '<section class="match-hero"><div><div class="eyebrow">' + (md ? "Match Day" : "Next Match") + '</div><div class="muted" style="color:#dfe6e4">' + dateOf(f.week) + (md ? " · 15:00" : " · in " + dn + " day" + (dn === 1 ? "" : "s")) + " · " + esc(myLeague().name) + " · Matchweek " + (f.week + 1) + "</div></div>" +
         '<div class="versus"><div class="side">' + badge(f.home, 64) + esc(club(f.home).name) + '<span class="tag">Home</span></div><div class="vs">VS</div>' +
         '<div class="side">' + badge(f.away, 64) + esc(club(f.away).name) + '<span class="tag">Away</span></div></div>' +
-        '<div class="hero-actions"><button class="btn" data-act="play">▶ Play Match</button><button class="btn primary" data-act="sim">Quick Sim</button></div></section>';
+        (md ? '<div class="hero-actions"><button class="btn" data-act="play">▶ Play Match</button><button class="btn primary" data-act="sim">Quick Sim</button></div>' :
+          '<div class="hero-actions"><button class="btn" data-go="tactics">Tactics</button><button class="btn primary" data-act="continue">Continue ›</button></div>') + "</section>";
     } else {
       hero = '<section class="match-hero"><div class="eyebrow">Season complete</div><div class="versus"><div class="side" style="grid-column:1/-1">' + badge(S.clubId, 64) +
         "Finished " + pos + ordinalTxt(pos) + " with " + me.pts + ' points</div></div><div class="hero-actions"><button class="btn" data-go="table">Final table</button></div></section>';
     }
     var form = me.form.slice(-5); while (form.length < 5) form.unshift("");
-    var latest = S.news[0];
+    var latest = S.inbox && S.inbox[0];
     return '<div class="home-grid">' + hero +
       '<section class="panel pos-card"><div class="label">League position</div><div class="big">' + (me.p ? ordinal(pos) : "–") + '</div><div class="muted">' + esc(myLeague().name) + " · " + me.pts + " pts</div>" +
       '<hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="label">Last 5</div><div class="form">' +
@@ -668,10 +931,10 @@ input[type="search"], select {
       '<div class="tiles">' +
       tile("squad", "Squad", clubPlayers[S.clubId].length + " players") + tile("tactics", "Tactics", lineupOf(S.clubId).formation) +
       tile("transfers", "Transfers", "Scout players") + tile("training", "Training", "Coming next") + "</div>" +
-      '<div class="tiles">' + tile("news", "Fixtures", "Matchweek " + Math.min(S.week + 1, S.schedule[myLeague().id].length), "fixtures") + tile("tactics", "League Table", myLeague().short, "table") +
-      tile("squad", "Stats", "Leaders", "stats") + tile("transfers", "All Leagues", "4 leagues", "table") + "</div>" +
-      (latest ? '<section class="panel news" data-go="fixtures">' + icon("news").replace("<svg", '<svg style="width:22px;height:22px;stroke:var(--fg);fill:none;stroke-width:2;flex:none"') +
-        '<div style="min-width:0"><div class="k">Latest News</div><div class="t">' + esc(latest.text) + '</div></div><span style="margin-left:auto;font-size:1.3rem">›</span></section>' : "");
+      '<div class="tiles">' + tile("inbox", "Inbox", unread() ? unread() + " unread" : "Up to date", "inbox") + tile("calendar", "Calendar", dayLabel(today(), true), "calendar") +
+      tile("tactics", "League Table", myLeague().short, "table") + tile("squad", "Stats", "Leaders", "stats") + "</div>" +
+      (latest ? '<section class="panel news" data-msg="' + latest.id + '">' + icon("inbox").replace("<svg", '<svg style="width:22px;height:22px;stroke:var(--fg);fill:none;stroke-width:2;flex:none"') +
+        '<div style="min-width:0"><div class="k">' + esc(latest.from) + " · " + esc(dayLabel(Math.floor(latest.t / 24), true)) + '</div><div class="t">' + esc(latest.subject) + '</div></div><span style="margin-left:auto;font-size:1.3rem">›</span></section>' : "");
   }
   function tile(ic, name, sub, go) { return '<button class="tile" data-go="' + (go || name.toLowerCase()) + '">' + icon(ic) + "<span>" + esc(name) + '</span><span class="sub">' + esc(sub) + "</span></button>"; }
 
@@ -858,6 +1121,47 @@ input[type="search"], select {
     return screenHead("Training", "") + '<section class="panel" style="padding:16px;display:grid;gap:8px"><h3>Training arrives in the next update</h3>' +
       '<p class="muted" style="margin:0;max-width:65ch">Planned: weekly focus (attacking, defending, fitness, set pieces), individual player plans that raise attributes over the season, and youth development. Player development in the DLS match engine is already unlimited in your modded APK.</p></section>';
   }
+  // ---- inbox: messages on the left, the open one on the right (one column on phones)
+  var KIND_COL = { board: "#c9a227", league: "#4f8ff7", match: "var(--accent)", good: "var(--win)", bad: "var(--loss)", scout: "#b07cf0", info: "var(--muted)" };
+  function viewInbox() {
+    var list = S.inbox || [], cur = list.find(function (m) { return m.id === ui.msg; }) || null;
+    var items = list.map(function (m) {
+      return '<button class="msg-item' + (m.read ? "" : " unread") + (cur && cur.id === m.id ? " sel" : "") + '" data-msg="' + m.id + '"><i style="background:' + (KIND_COL[m.kind] || KIND_COL.info) + '"></i>' +
+        '<span class="mi-from">' + esc(m.from) + '</span><span class="mi-date">' + esc(dayLabel(Math.floor(m.t / 24), true)) + '</span><span class="mi-sub">' + esc(m.subject) + "</span></button>";
+    }).join("") || '<p class="muted" style="margin:12px">No messages yet.</p>';
+    var a = cur && cur.action;
+    var detail = cur ? '<article class="panel msg-detail"><button class="btn ghost md-back" data-act="msgback">‹ Messages</button><div class="md-head"><div class="label">' + esc(cur.from) + " · " + esc(dayLabel(Math.floor(cur.t / 24))) + " " + hourLabel(cur.t) + "</div><h3>" + esc(cur.subject) + "</h3></div>" +
+      cur.body.map(function (b) { return "<p>" + b + "</p>"; }).join("") +
+      (a ? '<div><button class="btn primary" data-mact="' + cur.id + '">' + esc(a.label) + "</button></div>" : "") + "</article>" : "";
+    return screenHead("Inbox", unread() ? '<button class="btn ghost" data-act="readall">Mark all read</button>' : "") +
+      '<div class="inbox' + (cur ? " open" : "") + '"><div class="panel msg-list">' + items + "</div>" + (detail || '<div class="panel msg-detail empty muted">Select a message</div>') + "</div>";
+  }
+  // ---- calendar: one month at a time, July to June
+  function viewCalendar() {
+    var mi = ui.calMonth != null ? ui.calMonth : (function () { var dd = dayDate(today()); return (dd.getUTCFullYear() - new Date(CAL0).getUTCFullYear()) * 12 + dd.getUTCMonth() - 6; })();
+    ui.calMonth = mi;
+    var first = new Date(Date.UTC(new Date(CAL0).getUTCFullYear(), 6 + mi, 1)), d0 = Math.round((first - CAL0) / DAY_MS);
+    var dim = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate(), lead = (first.getUTCDay() + 6) % 7;
+    var L = myLeague(), cells = [];
+    for (var k = 0; k < lead; k++) cells.push('<div class="cal-cell pad"></div>');
+    for (var i = 0; i < dim; i++) {
+      var d = d0 + i, f = myFixtureOn(d), w = weekOfDay(d), res = null, inner = "";
+      if (f) {
+        res = S.results[L.id] && S.results[L.id][f.week] ? S.results[L.id][f.week].find(function (x) { return x.h === f.home; }) : null;
+        var hm = f.home === S.clubId, opp = hm ? f.away : f.home;
+        var out = res ? ((hm ? res.hg - res.ag : res.ag - res.hg) > 0 ? "W" : res.hg === res.ag ? "D" : "L") : "";
+        inner = '<div class="cal-fx">' + badge(opp, 22) + '<span class="cal-ha">' + (hm ? "H" : "A") + "</span></div>" + (res ? '<span class="cal-res ' + out + '">' + res.hg + "–" + res.ag + "</span>" : '<span class="cal-ko">15:00</span>');
+      } else if (w >= 0) inner = '<span class="cal-other">Matchweek</span>';
+      var nmsg = (S.inbox || []).filter(function (m) { return Math.floor(m.t / 24) === d && m.kind !== "match"; }).length;
+      cells.push('<div class="cal-cell' + (d === today() ? " today" : d < today() ? " past" : "") + (f ? " fx" : "") + (res ? " played" : "") + '"' + (res ? ' data-report="' + L.id + ":" + f.week + ":" + f.home + '" tabindex="0"' : "") + ">" +
+        '<span class="cal-d">' + (i + 1) + "</span>" + inner + (nmsg ? '<i class="cal-dot" title="' + nmsg + ' message(s)"></i>' : "") + "</div>");
+    }
+    var title = first.toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" });
+    return screenHead("Calendar", '<div class="cal-nav"><button class="btn ghost" data-calm="-1"' + (mi <= 0 ? " disabled" : "") + ' aria-label="Previous month">‹</button><b>' + esc(title) +
+      '</b><button class="btn ghost" data-calm="1"' + (mi >= 11 ? " disabled" : "") + ' aria-label="Next month">›</button></div>') +
+      '<section class="panel cal"><div class="cal-grid">' + ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(function (x) { return '<div class="cal-wd">' + x + "</div>"; }).join("") + cells.join("") + "</div></section>" +
+      '<p class="muted" style="margin:0">Today: ' + esc(dayLabel(today())) + " " + hourLabel(S.t) + ". Tap a result to open its report.</p>";
+  }
   function viewReport() {
     var r = ui.report;
     var mine = r.h === S.clubId || r.a === S.clubId;
@@ -934,10 +1238,11 @@ input[type="search"], select {
   }
   function closeModal() { var m = document.getElementById("modal"); if (m) m.remove(); }
   function openDrawer() {
-    var items = [["home", "Home"], ["squad", "Squad"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
+    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["squad", "Squad"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
     var d = el('<div id="drawer"><div class="drawer-bg" data-act="closedrawer"></div><nav class="drawer" aria-label="Main menu"><div class="label" style="padding:4px 12px 10px">' + esc(club(S.clubId).name) + "</div>" +
       items.map(function (x) { return '<button data-go="' + x[0] + '" aria-current="' + (ui.screen === x[0]) + '">' + x[1] + "</button>"; }).join("") +
-      (window.DLSManager && window.DLSManager.exportSave ? '<button data-act="exportsave" style="margin-top:12px;opacity:.8">Export save</button>' : "") +
+      '<button data-act="settings" style="margin-top:12px">Settings</button>' +
+      (window.DLSManager && window.DLSManager.exportSave ? '<button data-act="exportsave" style="opacity:.8">Export save</button>' : "") +
       "</nav></div>");
     document.body.appendChild(d);
   }
@@ -1174,11 +1479,28 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
-    var t = ev.target.closest("[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
+    var t = ev.target.closest("[data-msg],[data-mact],[data-calm],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
     if (!t) return;
     if (t.hasAttribute("data-pickleague")) { ui.pickLeague = t.getAttribute("data-pickleague"); ui.pick = D.leagues.find(function (l) { return l.id === ui.pickLeague; }).clubs[0]; return renderNewGame(); }
     if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return updateNewGamePick(); }
+    if (t.hasAttribute("data-msg")) {
+      var mm = S.inbox.find(function (m) { return m.id === +t.getAttribute("data-msg"); });
+      if (mm) { mm.read = true; ui.msg = mm.id; save(); }
+      ui.screen = "inbox"; return render();
+    }
+    if (t.hasAttribute("data-mact")) {
+      var ma = (S.inbox.find(function (m) { return m.id === +t.getAttribute("data-mact"); }) || {}).action;
+      if (!ma) return;
+      if (ma.go) { ui.screen = ma.go; return render(); }
+      if (ma.player != null) { ui.prev = "inbox"; ui.player = ma.player; ui.screen = "player"; return render(); }
+      if (ma.report) { var rk = ma.report.split(":"), rr = (S.results[rk[0]][+rk[1]] || []).find(function (x) { return x.h === rk[2]; }); if (rr) { ui.report = rr; ui.screen = "report"; } return render(); }
+      if (ma.act === "play") { if (matchDayToday()) { ui.screen = "prematch"; return render(); } return; }
+      return;
+    }
+    if (t.hasAttribute("data-calm")) { ui.calMonth = Math.max(0, Math.min(11, ui.calMonth + +t.getAttribute("data-calm"))); return render(); }
     var go = t.getAttribute("data-go"), act = t.getAttribute("data-act");
+    if (go === "inbox" && ui.screen !== "inbox") ui.msg = null;
+    if (go === "calendar") ui.calMonth = null;
     if (go) { closeDrawer(); ui.screen = go; ui.sel = null; return render(); }
     if (t.hasAttribute("data-back-player")) { ui.screen = ui.prev || "squad"; return render(); }
     if (t.hasAttribute("data-player")) { ui.prev = ui.screen === "player" ? ui.prev : ui.screen; ui.player = +t.getAttribute("data-player"); ui.screen = "player"; return render(); }
@@ -1190,15 +1512,19 @@ input[type="search"], select {
     }
     if (t.hasAttribute("data-slot") || t.hasAttribute("data-bench")) return tacticsTap(t);
     if (act === "drawer") return openDrawer();
+    if (act === "continue") return advance();
+    if (act === "msgback") { ui.msg = null; return render(); }
+    if (act === "readall") { S.inbox.forEach(function (m) { m.read = true; }); save(); return render(); }
     if (act === "closedrawer") return closeDrawer();
     if (act === "exportsave") { closeDrawer(); if (window.DLSManager && window.DLSManager.exportSave) window.DLSManager.exportSave(); return; }
     if (act === "sim") {
+      if (!matchDayToday()) return;
       var mine = playWeek();
       if (mine) { ui.report = mine; ui.screen = "report"; } else ui.screen = "home";
       return render();
     }
     if (act === "play") {
-      if (!nextFixture()) return;
+      if (!matchDayToday()) return;
       ui.screen = "prematch"; return render();
     }
     if (act === "kickoff") {
@@ -1244,6 +1570,7 @@ input[type="search"], select {
     }
     if (act === "autopick") { var L = lineupOf(S.clubId); L.xi = autoXI(S.clubId, L.formation); ui.sel = null; save(); return render(); }
     if (act === "settings") {
+      closeDrawer();
       var cur = S.difficulty || "hard";
       return modal('<h2>Settings</h2><label class="label" for="diffsel">Match difficulty</label><select id="diffsel">' +
         [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"], ["veryhard", "Very hard"], ["elite", "Elite (DLS's hardest)"]].map(function (d) { return '<option value="' + d[0] + '"' + (d[0] === cur ? " selected" : "") + ">" + d[1] + "</option>"; }).join("") +
@@ -1294,6 +1621,7 @@ input[type="search"], select {
     : fetch("data.json").then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
   loadData.then(function (data) {
     D = data;
+    calInit();
     D.players.forEach(function (p) { byId[p.id] = p; (clubPlayers[p.club] = clubPlayers[p.club] || []).push(p); });
     S = load();
     if (S && !D.clubs[S.clubId]) S = null;
