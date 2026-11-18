@@ -171,6 +171,7 @@ h3 { font-size: .95rem; }
 .zone-key { display: flex; gap: 14px; flex-wrap: wrap; font-size: .82rem; color: var(--muted); }
 .zone-key span { display: flex; align-items: center; gap: 6px; }
 .zone-key i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.loan-tag { font-size: .68rem; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: var(--panel-2); border: 1px solid var(--line); color: var(--muted); vertical-align: 1px; }
 /* finances */
 .chip-link { appearance: none; background: none; border: 0; color: inherit; font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
 .fin-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
@@ -1260,6 +1261,8 @@ input[type="search"], select {
         else { left.push(p); S.moves = S.moves || {}; S.moves[p.id] = "free"; }
       }
     });
+    var back = [];
+    Object.keys(S.loans || {}).forEach(function (id) { var l = S.loans[id]; if (l.from.indexOf("abroad:") === 0) { S.moves = S.moves || {}; S.moves[id] = "abroad"; back.push(byId[id]); } });
     S.loans = {};
     // 5. the new season
     S.history = S.history || [];
@@ -1306,6 +1309,8 @@ input[type="search"], select {
       "For " + seasonLabel() + " we expect you to <b>" + targetText(S.target, L.clubs.length) + "</b>. Transfer budget: " + fmtM(F ? F.tb : 0) + "."].filter(Boolean), { label: "Board", go: "board" }, "board");
     var mineLeft = left.filter(function (p) { return wasMine(p, me); });
     if (mineLeft.length) mail("Director of football", "Contracts expired", ["These players have left as free agents: " + mineLeft.map(function (p) { return esc(p.name); }).join(", ") + "."], { label: "Contracts", go: "contracts" }, "bad");
+    var myBack = back.filter(function (p) { return wasMine(p, me); });
+    if (myBack.length) mail("Director of football", "Loans over", ["These loan players have returned to their clubs: " + myBack.map(function (p) { return esc(p.name); }).join(", ") + "."], null, "match");
     var notable = retired.filter(function (p) { return p.baseOvr >= 80 || wasMine(p, me); }).slice(0, 8);
     if (notable.length) mail("Transfer news", "Retirements", ["Retiring this summer: " + notable.map(function (p) { return esc(p.name) + " (" + p.age + ")"; }).join(", ") + "."], null, "league");
     var eu = H.europe.filter(function (x) { return x[2] >= 6; }).map(function (x) { return esc(club(x[0]).name) + " — " + COMP[x[1]].name + " " + (x[2] === 7 ? "winners" : "finalists"); });
@@ -1441,12 +1446,27 @@ input[type="search"], select {
   function applyMoves() {
     D.players.forEach(function (p) { if (p.club0 == null) p.club0 = p.club; var l = S && S.loans && S.loans[p.id]; p.club = l ? l.to : S && S.moves && S.moves[p.id] ? S.moves[p.id] : p.club0; });
     Object.keys(clubPlayers).forEach(function (k) { clubPlayers[k] = []; });
-    D.players.forEach(function (p) { if (p.club !== "free") (clubPlayers[p.club] = clubPlayers[p.club] || []).push(p); });
+    D.players.forEach(function (p) { if (p.club !== "free" && !gone(p)) (clubPlayers[p.club] = clubPlayers[p.club] || []).push(p); });
     if (S && S.lineups && S.lineups[S.clubId]) {
       var L = S.lineups[S.clubId];
       if (L.xi.some(function (id) { return !byId[id] || byId[id].club !== S.clubId; })) L.xi = autoXI(S.clubId, L.formation);
     }
     if (S) syncRosters();
+  }
+  // players out of the game: retired, or gone back to a club abroad after a loan
+  function gone(p) { return p.club === "retired" || p.club === "abroad"; }
+  function loanFromName(l) { return l.from.indexOf("abroad:") === 0 ? l.from.slice(7) : club(l.from).name; }
+  // the loans running when the career starts (from the roster: loanFrom / loanFromName)
+  function initLoans() {
+    if (S.loansInit) return;
+    S.loansInit = true; S.loans = S.loans || {}; S.moves = S.moves || {};
+    D.players.forEach(function (p) {
+      var to = p.club0 || p.club;
+      if (p.loanFrom) { S.moves[p.id] = p.loanFrom; S.loans[p.id] = { from: p.loanFrom, to: to, pct: 100, until: CAL_DAYS - 1 }; }
+      else if (p.loanFromName) S.loans[p.id] = { from: "abroad:" + p.loanFromName, to: to, pct: 100, until: CAL_DAYS - 1 };
+    });
+    applyMoves();
+    save();
   }
   function movePlayer(p, to) {
     if (!S.moves) S.moves = {};
@@ -1571,7 +1591,7 @@ input[type="search"], select {
   function syncRosters() {
     if (!window.DLSManager || !window.DLSManager.setRosters || !S) return;
     var changed = {};
-    D.players.forEach(function (p) { if (p.club !== p.club0) { if (p.club0 && p.club0 !== "free") changed[p.club0] = 1; if (p.club !== "free") changed[p.club] = 1; } });
+    D.players.forEach(function (p) { if (p.club !== p.club0) { if (p.club0 && p.club0 !== "free") changed[p.club0] = 1; if (p.club !== "free" && !gone(p)) changed[p.club] = 1; } });
     var out = {}, n = 0;
     Object.keys(changed).forEach(function (cid) {
       var ids = (clubPlayers[cid] || []).filter(function (p) { return p.dls; }).sort(function (a, b) { return b.ovr - a.ovr; }).slice(0, 32).map(function (p) { return p.dls; });
@@ -1611,7 +1631,7 @@ input[type="search"], select {
       var need = Object.keys(groups).map(function (g) { return [g, lineAvg(g) - (g === "GK" ? 2 : 0) + r() * 3]; }).sort(function (a, b) { return a[1] - b[1]; })[0][0];
       var budget = aiBal(buyer) * 0.6;
       var pool = D.players.filter(function (p) {
-        if (p.club === buyer || p.club === S.clubId || group(p.pos) !== need) return false;
+        if (p.club === buyer || p.club === S.clubId || gone(p) || group(p.pos) !== need) return false;
         if (p.club !== "free" && rivals(p.club, buyer)) return false;
         if (S.loans && S.loans[p.id]) return false;
         if (S.signed && S.signed[p.id] != null && d - S.signed[p.id] < 120) return false;
@@ -1950,6 +1970,7 @@ input[type="search"], select {
     if (!S) return renderNewGame();
     ensureCal();
     ensureFin();
+    initLoans();
     ensureEuro();
     if (ui.rosterPending) syncRosters();
     var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts, europe: viewEurope, history: viewHistory }[ui.screen] || viewHome)() + "</main>";
@@ -1998,7 +2019,7 @@ input[type="search"], select {
       '<div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Pos</th><th class="num">Age</th><th>Nation</th><th class="num">OVR</th><th class="num">POT</th><th class="num">Apps</th><th class="num">Gls</th><th class="num">Ast</th><th class="num">Avg</th><th class="num">Value</th><th>Contract</th></tr></thead><tbody>' +
       ps.map(function (p) {
         var s = seasonLine(p.id);
-        return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td>' + (p.shirt || "–") + "</td><td><b>" + esc(p.name) + "</b>" + (xi.indexOf(p.id) >= 0 ? ' <span class="muted" title="In starting XI">●</span>' : "") + '</td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span>" + (p.alt && p.alt.length ? ' <span class="muted" style="font-size:.75rem">' + p.alt.join(" ") + "</span>" : "") + '</td><td class="num">' + p.age + "</td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + potOf(p) + '</td><td class="num">' + s.apps + '</td><td class="num">' + s.goals + '</td><td class="num">' + s.assists + '</td><td class="num">' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</td><td class="num">' + money(p.value) + "</td><td>" + esc(p.contract || "–") + "</td></tr>";
+        return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td>' + (p.shirt || "–") + "</td><td><b>" + esc(p.name) + "</b>" + (xi.indexOf(p.id) >= 0 ? ' <span class="muted" title="In starting XI">●</span>' : "") + (S.loans && S.loans[p.id] ? ' <span class="loan-tag" title="On loan from ' + esc(loanFromName(S.loans[p.id])) + '">Loan</span>' : "") + '</td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span>" + (p.alt && p.alt.length ? ' <span class="muted" style="font-size:.75rem">' + p.alt.join(" ") + "</span>" : "") + '</td><td class="num">' + p.age + "</td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + potOf(p) + '</td><td class="num">' + s.apps + '</td><td class="num">' + s.goals + '</td><td class="num">' + s.assists + '</td><td class="num">' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</td><td class="num">' + money(p.value) + "</td><td>" + esc(p.contract || "–") + "</td></tr>";
       }).join("") + "</tbody></table></div>";
   }
   // DLS19's own stats (players.dat order: speed, acceleration, stamina, strength, tackling,
@@ -2163,7 +2184,7 @@ input[type="search"], select {
   function viewTransfers() {
     var f = ui.filter, q = f.q.toLowerCase();
     var list = D.players.filter(function (p) {
-      return p.club !== S.clubId && (!q || p.name.toLowerCase().indexOf(q) >= 0) && (!f.pos || group(p.pos) === f.pos) && (!f.league || (f.league === "free" ? p.club === "free" : p.club !== "free" && club(p.club).league === f.league));
+      return p.club !== S.clubId && !gone(p) && (!q || p.name.toLowerCase().indexOf(q) >= 0) && (!f.pos || group(p.pos) === f.pos) && (!f.league || (f.league === "free" ? p.club === "free" : p.club !== "free" && club(p.club).league === f.league));
     }).sort(function (a, b) { return b.ovr - a.ovr; }).slice(0, 80);
     return screenHead("Transfers", '<div class="tabs"><button class="chip-btn" aria-pressed="true" data-go="transfers">Search</button><button class="chip-btn" data-go="deals">Deals</button><button class="chip-btn" data-go="contracts">Contracts</button></div>') +
       '<div class="note">' + (windowOpen() ? "The transfer window is open." : "The transfer window is closed (July–August and January).") + " Budget " + fmtM(S.fin.tb) + ". Open a player to make an offer or ask for a loan.</div>" +
@@ -2489,7 +2510,7 @@ input[type="search"], select {
       '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Pos</th><th class="num">Age</th><th class="num">OVR</th><th class="num">Wage /wk</th><th>Expires</th><th>Status</th><th></th></tr></thead><tbody>' + ps.map(function (p) {
         var c = contractOf(p), yl = yearsLeft(p), l = S.loans && S.loans[p.id], tl = S.tlist && S.tlist[p.id];
         return '<tr><td><button class="link" data-player="' + p.id + '">' + esc(p.name) + '</button></td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + '</span></td><td class="num">' + p.age + '</td><td class="num">' + p.ovr +
-          '</td><td class="num">' + fmtM(c.wage) + "</td><td" + (yl < 1 ? ' style="color:var(--loss);font-weight:700"' : "") + ">" + c.end.split("-").reverse().join("/") + "</td><td>" + (l ? "On loan from " + esc(club(l.from).name) : tl === "transfer" ? "Transfer listed" : tl === "loan" ? "Loan listed" : "") +
+          '</td><td class="num">' + fmtM(c.wage) + "</td><td" + (yl < 1 ? ' style="color:var(--loss);font-weight:700"' : "") + ">" + c.end.split("-").reverse().join("/") + "</td><td>" + (l ? "On loan from " + esc(loanFromName(l)) : tl === "transfer" ? "Transfer listed" : tl === "loan" ? "Loan listed" : "") +
           "</td><td>" + (l ? "" : '<button class="btn ghost" data-player="' + p.id + '">Manage</button>') + "</td></tr>";
       }).join("") + "</tbody></table></div>";
   }
@@ -2546,7 +2567,7 @@ input[type="search"], select {
     if (!S.fin) return "";
     var mine = p.club === S.clubId, l = S.loans && S.loans[p.id], c = contractOf(p);
     if (mine) {
-      if (l) return '<section class="panel pa"><div><b>On loan</b> from ' + esc(club(l.from).name) + " until the end of the season (" + l.pct + "% of wages).</div></section>";
+      if (l) return '<section class="panel pa"><div><b>On loan</b> from ' + esc(loanFromName(l)) + " until the end of the season (" + l.pct + "% of wages).</div></section>";
       var tl = S.tlist && S.tlist[p.id];
       return '<section class="panel pa"><div><div class="label">Contract</div><b>' + fmtM(c.wage) + "/wk</b> until " + c.end.split("-").reverse().join("/") + "</div>" +
         '<div class="pa-btns"><button class="btn primary" data-pact="renew:' + p.id + '">Offer new contract</button>' +
@@ -2554,6 +2575,7 @@ input[type="search"], select {
         '<button class="btn" data-pact="list:' + p.id + ':loan">' + (tl === "loan" ? "Remove from loan list" : "Loan list") + "</button>" +
         '<button class="btn ghost" data-pact="release:' + p.id + '">Release</button></div></section>';
     }
+    if (l) return '<section class="panel pa"><div><b>On loan</b> at ' + esc(club(p.club).name) + " from " + esc(loanFromName(l)) + " until the end of the season. He can't be signed until he returns.</div></section>";
     var open = (S.offers || []).some(function (o) { return o.pid === p.id && o.dir === "in" && (o.status === "pending" || o.status === "accepted" || o.status === "counter"); });
     var free = p.club === "free";
     return '<section class="panel pa"><div class="pa-facts"><div><div class="label">' + (free ? "Free agent" : "Asking price") + "</div><b>" + (free ? "No fee" : fmtM(askingPrice(p))) + '</b></div><div><div class="label">Wage</div><b>' + fmtM(c.wage) + '/wk</b></div><div><div class="label">Contract</div><b>' + (free ? "–" : c.end.slice(0, 4)) + "</b></div>" +
