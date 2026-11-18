@@ -489,11 +489,14 @@ input[type="search"], select {
     st.events.forEach(function (e) {
       if (e.type === 1 || e.type === 2) {
         // own goal: the player is on the conceding side
-        var g = { min: Math.max(1, e.min), side: e.type === 1 ? e.side : (e.side === "h" ? "a" : "h"), type: "goal", p: pid(e.side, e.id), a: null, og: e.type === 2 };
+        // extra: low byte = the goal entry's penalty flag (DLS shows "P" on its own screen)
+        var g = { min: Math.max(1, e.min), side: e.type === 1 ? e.side : (e.side === "h" ? "a" : "h"), type: "goal", p: pid(e.side, e.id), a: null, og: e.type === 2, pen: e.type === 1 && (e.extra & 0xff) !== 0 };
         goals.push(g); events.push(g);
       } else if (e.type === 3) {
         var p = pid(e.side, e.id);
-        var g2 = goals.filter(function (g) { return g.side === e.side && g.a == null && !g.og && g.p !== p && Math.abs(g.min - Math.max(1, e.min)) <= 1; }).pop();
+        // DLS gives the assist the goal's minute: pair with that goal (latest first)
+        var open = goals.filter(function (g) { return g.side === e.side && g.a == null && !g.og && !g.pen && g.p !== p; });
+        var g2 = open.filter(function (g) { return g.min === Math.max(1, e.min); }).pop() || open.filter(function (g) { return Math.abs(g.min - Math.max(1, e.min)) <= 1; }).pop();
         if (g2) g2.a = p;
       } else if (e.type === 4 || e.type === 5) {
         var q = pid(e.side, e.id);
@@ -506,8 +509,10 @@ input[type="search"], select {
     var pt = (T.h[0] + T.a[0]) || 0, poss = pt > 0 ? Math.round(T.h[0] * 100 / pt) : 50;
     var sh = two(2), ot = two(3);
     function saves(side) { return (st.players[side] || []).reduce(function (t, p) { return t + (p.saves | 0); }, 0); }
-    // xG estimated from DLS's shot counts: ~0.07 a shot off target, ~0.28 on target
-    function xg(i) { return +(Math.max(0, sh[i] - ot[i]) * 0.07 + ot[i] * 0.28).toFixed(2); }
+    // xG estimated from DLS's shot counts: ~0.07 a shot off target, ~0.28 on target, and a
+    // scored penalty counts 0.76 instead of an ordinary shot on target
+    var pens = [0, 0]; goals.forEach(function (g) { if (g.pen) pens[g.side === "h" ? 0 : 1]++; });
+    function xg(i) { return +(Math.max(0, sh[i] - ot[i]) * 0.07 + Math.max(0, ot[i] - pens[i]) * 0.28 + pens[i] * 0.76).toFixed(2); }
     function acc(side) { var t = st.team[side]; return t[4] > 0 ? Math.round(t[5] * 100 / t[4]) : 0; }
     var stats = {
       possession: [poss, 100 - poss], shots: sh, onTarget: ot, xg: [xg(0), xg(1)],
@@ -844,7 +849,8 @@ input[type="search"], select {
     function side(s) {
       return r.events.filter(function (e) { return e.side === s && (e.type !== "yc" || r.dls); }).map(function (e) {
         var ic = e.type === "rc" ? "🟥 " : e.type === "yc" ? "🟨 " : "⚽ ";
-        return ic + esc(nm(e.p)) + " " + e.min + "'" + (e.og ? ' <span class="muted">(og)</span>' : "") + (e.a != null ? ' <span class="muted">(' + esc(nm(e.a).split(" ").slice(-1)[0]) + ")</span>" : "");
+        return ic + esc(nm(e.p)) + " " + e.min + "'" + (e.pen ? " P" : "") + (e.og ? ' <span class="muted">(og)</span>' : "") +
+          (e.a != null ? '<br><span class="muted">👟 ' + esc(nm(e.a)) + " " + e.min + "'</span>" : "");
       }).join("<br>");
     }
     var st = r.stats, rows = [["Possession %", "possession"], ["Expected goals", "xg"], ["Shots", "shots"], ["On target", "onTarget"], ["Pass accuracy %", "passAcc"], ["Corners", "corners"], ["Saves", "saves"], ["Fouls", "fouls"]];
