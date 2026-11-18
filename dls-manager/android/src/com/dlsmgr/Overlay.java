@@ -718,7 +718,7 @@ public final class Overlay {
     static volatile int introWeather;
     static volatile int introTime;
 
-    /** One step of our match intro: 1 team bar, 2 line-ups, 3 done (dropped if superseded). */
+    /** One step of our match intro: 1 team bar, 2 line-ups, 3 slide out, 4 done (dropped if superseded). */
     static final class IntroStep implements Runnable {
         private final int seq;
         private final int step;
@@ -737,6 +737,11 @@ public final class Overlay {
                 new OverlayJsTask("window.dlsIntro && window.dlsIntro(" + introWeather + "," + introTime + ")", true, true).run();
             } else if (step == 2) {
                 new OverlayJsTask("window.dlsLineups && window.dlsLineups()", true, true).run();
+            } else if (step == 3) {
+                if (web != null) {
+                    web.evaluateJavascript("window.dlsIntroOut && window.dlsIntroOut()", null);
+                    web.postDelayed(new IntroStep(seq, 4), 550);
+                }
             } else {
                 new OverlayJsTask("window.dlsIntroEnd && window.dlsIntroEnd()", false, true).run();
             }
@@ -821,9 +826,9 @@ public final class Overlay {
             touchThrough = show && passThrough;
             if (show) {
                 web.setBackgroundColor(Color.TRANSPARENT);
-                web.evaluateJavascript(js, null);
                 web.setVisibility(View.VISIBLE);
                 web.bringToFront();
+                web.evaluateJavascript(js, null);
             } else {
                 web.evaluateJavascript(js, null);
                 web.setVisibility(View.GONE);
