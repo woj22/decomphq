@@ -168,6 +168,40 @@ h3 { font-size: .95rem; }
 .md-back { display: none; justify-self: start; }
 .msg-detail h3 { margin: 4px 0 0; font-size: 1.2rem; }
 .msg-detail p { margin: 0; line-height: 1.5; max-width: 65ch; }
+/* finances */
+.chip-link { appearance: none; background: none; border: 0; color: inherit; font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
+.fin-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.fin-tile { padding: 12px 14px; display: grid; gap: 2px; }
+.fin-tile .fv { font-size: 1.45rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.fin-tile .muted { font-size: .8rem; }
+.fin-card { padding: 14px; display: grid; gap: 10px; min-width: 0; align-content: start; }
+.fin-h { display: flex; align-items: baseline; gap: 10px; justify-content: space-between; }
+.fin-h h3 { margin: 0; font-size: 1rem; }
+.fin-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.bd-row { display: grid; grid-template-columns: minmax(90px, 1.1fr) 2fr auto; gap: 10px; align-items: center; font-size: .9rem; }
+.bd-row b { font-variant-numeric: tabular-nums; min-width: 4.5em; text-align: right; }
+.bd-bar { height: 8px; border-radius: 4px; background: var(--panel-2); overflow: hidden; }
+.bd-bar i { display: block; height: 100%; border-radius: 4px; }
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; }
+.ch-grid { stroke: var(--line); stroke-width: 1; }
+.ch-ax { fill: var(--muted); font-size: 11px; font-family: inherit; }
+.ch-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.ch-hit { fill: transparent; }
+.ch-hit:hover { fill: rgba(255,255,255,.04); }
+.ch-tip { position: absolute; top: 34px; min-width: 120px; padding: 8px 10px; border-radius: 8px; background: rgba(0,0,0,.85); border: 1px solid var(--line); display: grid; gap: 3px; font-size: .82rem; pointer-events: none; }
+.ch-tip span { color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.ch-tip i, .ch-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.ch-legend { display: flex; gap: 14px; font-size: .82rem; color: var(--muted); }
+.ch-legend span { display: flex; align-items: center; gap: 6px; }
+.board-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.conf { display: flex; align-items: baseline; gap: 10px; }
+.conf b { font-size: 2.4rem; color: var(--accent); }
+.pa { padding: 14px; display: grid; gap: 10px; }
+.pa-facts { display: flex; gap: 22px; flex-wrap: wrap; }
+.pa-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.modal input[type=number], .modal select, .board-grid input[type=range] { font: inherit; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; }
+@media (max-width: 760px) { .fin-tiles { grid-template-columns: 1fr 1fr; } .fin-two, .board-grid { grid-template-columns: 1fr; } }
 /* training */
 .tr-setup { padding: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .grow-bar { width: 80px; height: 6px; border-radius: 3px; background: var(--panel-2); overflow: hidden; }
@@ -452,7 +486,8 @@ input[type="search"], select {
   // ------------------------------------------------------------ helpers
   function el(html) { var t = document.createElement("template"); t.innerHTML = html.trim(); return t.content; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function club(id) { return D.clubs[id]; }
+  var FREE_AGENT = { name: "Free agent", short: "FA", city: "", stadium: "", league: "prvaliga", colors: { primary: "#4a5452", secondary: "#9aa5a2" } };
+  function club(id) { return D.clubs[id] || FREE_AGENT; }
   // league logo (leagues/<id>.png); leagues without one show nothing
   var LEAGUE_LOGOS = { slovenia_2snl: 1 };
   function leagueLogo(lid, h) { return LEAGUE_LOGOS[lid] ? '<img class="lg-logo" src="leagues/' + lid + '.png" alt="" style="height:' + h + 'px">' : ""; }
@@ -746,6 +781,7 @@ input[type="search"], select {
           [gF > gA ? "A good win, boss." : gF === gA ? "A point from that one." : "Not our day.", gl.length ? "Goals: " + gl.join(", ") + "." : "No goals."],
           { label: "Match report", report: myLeague().id + ":" + w + ":" + mine.h }, gF > gA ? "good" : gF < gA ? "bad" : "match").read = true;
         moodAfter(gF, gA);
+        gateReceipts(mine);
         socialResult(mine, w);
         pressMail("post", { home: mine.h, away: mine.a, week: w }, mine);
       }
@@ -898,6 +934,7 @@ input[type="search"], select {
     }
     // training: development every Monday morning, a report on the 15th of each month
     if (h === 8 && dayDate(d).getUTCDay() === 1) weeklyDevelopment();
+    if (S.fin) { financeEvents(d, h); decideOffers(d, h); incomingBids(d, h); boardDecide(d, h); if (h === 1) { expireOffers(d); endLoans(d); } }
     if (h === 7 && dayDate(d).getUTCDate() === 1 && d > 30) reassessPotential();
     if (h === 10 && dayDate(d).getUTCDate() === 15 && d > 30) trainingMail();
     // first of the month: board review and player of the month
@@ -915,6 +952,7 @@ input[type="search"], select {
     var last = weekDay(S.schedule[L.id].length - 1);
     if (d === last + 3 && h === 10) {
       var fp = myPos(), tg = S.target || fp;
+      if (S.fin) book("in", "Prize money", Math.round(S.fin.rev * 0.08 * (L.clubs.length - fp + 1) / L.clubs.length));
       mail("The board", "Season review", ["The season is over: " + esc(c.name) + " finished <b>" + fp + ordinalTxt(fp) + "</b> in the " + esc(L.name) + ".",
         fp <= tg ? "You met the board's expectations. Well done." : fp <= tg + 3 ? "Slightly below what we hoped for, but there is a base to build on." : "That fell well short of our expectations."], { label: "Final table", go: "table" }, "board");
     }
@@ -1062,6 +1100,242 @@ input[type="search"], select {
     S.potLog = [];
   }
 
+  // ------------------------------------------------------------ finances, contracts, transfers, board
+  // Money is tracked for the user's club (S.fin): weekly wages, monthly TV and sponsorship,
+  // gate receipts at home matches, transfer fees and prize money; the balance is recorded
+  // daily for the graphs. Other clubs' budgets are estimated from their squads.
+  var LG_FIN = {
+    premier_league: { rate: 0.17, min: 520000, tv: 0.55, gate: 0.17, tier: 4 },
+    la_liga: { rate: 0.15, min: 300000, tv: 0.5, gate: 0.18, tier: 4 },
+    prvaliga: { rate: 0.24, min: 24000, tv: 0.3, gate: 0.2, tier: 2 },
+    slovenia_2snl: { rate: 0.2, min: 7000, tv: 0.25, gate: 0.2, tier: 1 }
+  };
+  function lgFin(cid) { return LG_FIN[club(cid).league] || LG_FIN.prvaliga; }
+  function estWage(p, cid) { var f = lgFin(cid || p.club); return Math.round(Math.max(f.min, (p.value || 50000) * f.rate) / 52 / 10) * 10; }
+  function contractOf(p) {
+    var c = S.contracts && S.contracts[p.id];
+    if (c) return c;
+    var end = p.contract && /^\d\d\/\d\d\/\d{4}$/.test(p.contract) ? p.contract.split("/").reverse().join("-") : (+D.startDate.slice(0, 4) + 1 + (p.id % 3)) + "-06-30";
+    return { end: end, wage: estWage(p) };
+  }
+  function yearsLeft(p) { return Math.max(0, (Date.parse(contractOf(p).end) - dayDate(today()).getTime()) / (365.25 * DAY_MS)); }
+  function wageBill(cid) {
+    return clubPlayers[cid].reduce(function (t, p) { var l = S.loans && S.loans[p.id]; return t + contractOf(p).wage * (l && l.to === cid ? l.pct / 100 : 1); }, 0) +
+      Object.keys(S.loans || {}).reduce(function (t, id) { var l = S.loans[id]; return t + (l.from === cid ? contractOf(byId[id]).wage * (1 - l.pct / 100) : 0); }, 0);
+  }
+  function squadValue(cid) { return clubPlayers[cid].reduce(function (t, p) { return t + (p.value || 0); }, 0); }
+  function clubBudget(cid) { return cid === S.clubId ? S.fin.tb : squadValue(cid) * (lgFin(cid).tier >= 4 ? 0.18 : 0.12); }
+  function monthKey(d) { var x = dayDate(d); return x.getUTCFullYear() + "-" + String(x.getUTCMonth() + 1).padStart(2, "0"); }
+  function book(kind, cat, amount) {
+    var F = S.fin, m = F.months[monthKey(today())] || (F.months[monthKey(today())] = { in: {}, out: {} });
+    m[kind][cat] = (m[kind][cat] || 0) + amount;
+    F.bal += kind === "in" ? amount : -amount;
+    if (F.tb > Math.max(0, F.bal)) F.tb = Math.max(0, F.bal);
+  }
+  function ensureFin() {
+    if (S.fin) return;
+    var cid = S.clubId, f = lgFin(cid), W = wageBill(cid) * 52, r = rng(S.seed ^ 77);
+    var R = W / 0.62 * (0.92 + r() * 0.16), bal = R * (0.18 + r() * 0.2);
+    S.fin = { bal: Math.round(bal), tb: Math.round(Math.min(bal * 0.45, squadValue(cid) * 0.12)), wb: Math.round(wageBill(cid) * 1.12),
+      rev: Math.round(R), hist: [], months: {}, req: {}, conf: 60 };
+    S.fin.hist.push([today(), S.fin.bal]);
+    if (dayDate(today()).getUTCDate() === 1 && S.t % 24 > 6) {   // this month's TV and sponsorship (the career starts after 06:00)
+      book("in", "TV rights", Math.round(S.fin.rev * f.tv / 12)); book("in", "Sponsorship", Math.round(S.fin.rev * (1 - f.tv - f.gate) / 12)); book("out", "Running costs", Math.round(S.fin.rev * 0.1 / 12));
+    }
+    save();
+  }
+  // money events in the calendar (called from hourEvents)
+  function financeEvents(d, h) {
+    var F = S.fin, f = lgFin(S.clubId);
+    if (h === 0) { if (!F.hist.length || F.hist[F.hist.length - 1][0] !== d) F.hist.push([d, Math.round(F.bal)]); }
+    if (h === 9 && dayDate(d).getUTCDay() === 1) book("out", "Wages", Math.round(wageBill(S.clubId)));
+    if (h === 6 && dayDate(d).getUTCDate() === 1) {
+      book("in", "TV rights", Math.round(F.rev * f.tv / 12));
+      book("in", "Sponsorship", Math.round(F.rev * (1 - f.tv - f.gate) / 12));
+      book("out", "Running costs", Math.round(F.rev * 0.1 / 12));
+    }
+  }
+  function gateReceipts(res) {
+    if (!S.fin || res.h !== S.clubId) return;
+    var homeGames = S.schedule[myLeague().id].length / 2;
+    book("in", "Gate receipts", Math.round(S.fin.rev * lgFin(S.clubId).gate / homeGames * (0.85 + Math.min(0.3, ((S.fanMood == null ? 55 : S.fanMood) - 40) / 200))));
+  }
+  function windowOpen(d) { var m = dayDate(d == null ? today() : d).getUTCMonth(); return m === 6 || m === 7 || m === 0; }
+  // the club's view of a player: asking price
+  function squadRank(p) { return clubPlayers[p.club].slice().sort(function (a, b) { return b.ovr - a.ovr; }).indexOf(p) + 1; }
+  function askingPrice(p) {
+    var yl = yearsLeft(p), cf = yl >= 3 ? 1.25 : yl >= 2 ? 1.05 : yl >= 1 ? 0.85 : 0.55, key = squadRank(p) <= 5 ? 1.35 : squadRank(p) <= 11 ? 1.1 : 0.9;
+    var listed = S.tlist && S.tlist[p.id] === "transfer" ? 0.85 : 1;
+    return Math.max(10000, Math.round((p.value || 50000) * cf * key * listed / 10000) * 10000);
+  }
+  // would the player move to us? (stature: league tier and how he'd fit in the squad)
+  function interest(p) {
+    var mine = lgFin(S.clubId).tier, his = lgFin(p.club).tier, best = clubPlayers[S.clubId].slice().sort(function (a, b) { return b.ovr - a.ovr; })[0];
+    if (his > mine + 1 && p.ovr > (best ? best.ovr : 60) + 6) return "no";
+    if (his > mine && p.ovr > (best ? best.ovr : 60) + 12) return "no";
+    return "yes";
+  }
+  function wageDemand(p, renewal) {
+    var cur = contractOf(p).wage, here = estWage(p, S.clubId), age = p.age || 25;
+    var base = renewal ? Math.max(cur, here) * (1.05 + Math.max(0, potOf(p) - p.ovr) * 0.01) : Math.max(here, cur * (lgFin(p.club).tier > lgFin(S.clubId).tier ? 1.15 : 1.05));
+    if (renewal && yearsLeft(p) < 1) base *= 1.1;
+    if (age >= 32) base *= 0.9;
+    return Math.round(base / 10) * 10;
+  }
+  function newPid() { return null; }
+  // move a player between clubs (S.moves; "free" = without a club)
+  function applyMoves() {
+    D.players.forEach(function (p) { if (p.club0 == null) p.club0 = p.club; var l = S && S.loans && S.loans[p.id]; p.club = l ? l.to : S && S.moves && S.moves[p.id] ? S.moves[p.id] : p.club0; });
+    Object.keys(clubPlayers).forEach(function (k) { clubPlayers[k] = []; });
+    D.players.forEach(function (p) { if (p.club !== "free") (clubPlayers[p.club] = clubPlayers[p.club] || []).push(p); });
+    if (S && S.lineups && S.lineups[S.clubId]) {
+      var L = S.lineups[S.clubId];
+      if (L.xi.some(function (id) { return !byId[id] || byId[id].club !== S.clubId; })) L.xi = autoXI(S.clubId, L.formation);
+    }
+  }
+  function movePlayer(p, to) {
+    if (!S.moves) S.moves = {};
+    S.moves[p.id] = to;
+    if (S.tlist) delete S.tlist[p.id];
+    applyMoves();
+  }
+  function completeTransfer(o) {
+    var p = byId[o.pid], from = p.club;
+    if (o.fee) book("out", "Transfer fees", o.fee);
+    S.fin.tb = Math.max(0, S.fin.tb - o.fee);
+    (S.contracts = S.contracts || {})[p.id] = { end: (+dayDate(today()).getUTCFullYear() + o.years + (dayDate(today()).getUTCMonth() >= 6 ? 1 : 0)) + "-06-30", wage: o.wage };
+    if (o.kind === "loan") { (S.loans = S.loans || {})[p.id] = { from: from, to: S.clubId, pct: o.pct, until: CAL_DAYS - 1 }; delete S.contracts[p.id]; applyMoves(); }
+    else movePlayer(p, S.clubId);
+    (S.signed = S.signed || {})[p.id] = today();
+    var r = srand();
+    mail("Director of football", (o.kind === "loan" ? "Loan signing: " : "Signing completed: ") + p.name,
+      ["<b>" + esc(p.name) + "</b> has joined from " + esc(from === "free" ? "free agency" : club(from).name) + (o.kind === "loan" ? " on loan until the end of the season (we pay " + o.pct + "% of his wages)." : o.fee ? " for " + money(o.fee) + "." : " on a free transfer."),
+       o.kind === "loan" ? "" : "Contract: " + money(o.wage) + " a week until " + S.contracts[p.id].end.slice(0, 4) + "."].filter(Boolean), { label: "View player", player: p.id }, "good").read = true;
+    post("club", clubAcct(S.clubId), (o.kind === "loan" ? "🤝 " + p.name + " joins on loan from " + (from === "free" ? "—" : club(from).name) + "!" : "✍️ OFFICIAL | " + p.name + " signs" + (o.years ? " until " + S.contracts[p.id].end.slice(0, 4) : "") + "! Welcome to " + club(S.clubId).name + "."), { hype: 2 });
+    post("fan", fan(S.clubId, r), pick(["Get in!! Great signing 🔥", "Didn't see that one coming. Welcome " + p.name.split(" ").slice(-1)[0] + "!", "Hope he's the answer we need", "Big statement from the club 👀"], r));
+  }
+  function sellPlayer(p, buyer, fee, loan) {
+    var r = srand(), name = p.name;
+    if (loan) { (S.loans = S.loans || {})[p.id] = { from: S.clubId, to: buyer, pct: 100, until: CAL_DAYS - 1 }; applyMoves(); }
+    else {
+      book("in", "Player sales", fee);
+      S.fin.tb = Math.min(S.fin.bal, S.fin.tb + Math.round(fee * 0.6));   // the board lets you reinvest 60%
+      movePlayer(p, buyer);
+    }
+    post("club", clubAcct(S.clubId), loan ? name + " joins " + club(buyer).name + " on loan for the rest of the season. Good luck! 👋" : "OFFICIAL | " + name + " has joined " + club(buyer).name + ". Thank you and good luck! 💙");
+    if (!loan) post("fan", fan(S.clubId, r), fee >= (p.value || 0) ? "Decent money for " + name.split(" ").slice(-1)[0] + " to be fair" : "Sold for HOW much?? Robbery");
+  }
+  // offers we make: decided the next day at 10:00
+  function makeOffer(pid, kind, fee, pct) {
+    var p = byId[pid];
+    (S.offers = S.offers || []).push({ id: (S.offerSeq = (S.offerSeq || 0) + 1), pid: pid, kind: kind, fee: fee || 0, pct: pct || 100, dir: "in", status: "pending", due: today() + 1 });
+    save();
+  }
+  function decideOffers(d, h) {
+    if (h !== 10 || !S.offers) return;
+    S.offers.forEach(function (o) {
+      if (o.status !== "pending" || o.due > d || o.dir !== "in") return;
+      var p = byId[o.pid];
+      if (!p || p.club === S.clubId) { o.status = "void"; return; }
+      if (!windowOpen(d)) { o.status = "rejected"; o.why = "The transfer window is closed."; }
+      else if (p.club === "free") { o.status = "accepted"; }
+      else if (o.kind === "loan") {
+        var rank = squadRank(p), need = rank <= 11 ? 999 : rank <= 16 ? 75 : 50;
+        if ((p.age || 25) > 24 && rank <= 16) { o.status = "rejected"; o.why = club(p.club).name + " don't want to loan out an established player."; }
+        else if (o.pct < need) { o.status = "rejected"; o.why = rank <= 11 ? club(p.club).name + " see him as a first-team regular." : club(p.club).name + " want at least " + need + "% of his wages covered."; }
+        else o.status = "accepted";
+      } else {
+        var ask = askingPrice(p);
+        if (o.fee >= ask) o.status = "accepted";
+        else if (o.fee >= ask * 0.78 && !o.countered) { o.status = "counter"; o.counter = ask; }
+        else { o.status = "rejected"; o.why = club(p.club).name + " value him much higher."; }
+      }
+      if (o.status === "accepted" && interest(p) === "no") { o.status = "rejected"; o.why = esc(p.name) + " isn't interested in joining a club of our stature."; }
+      var msg = o.status === "accepted" ? (p.club === "free" ? esc(p.name) + " is willing to talk about a contract." : esc(club(p.club).name) + " have accepted your " + (o.kind === "loan" ? "loan request" : "offer of " + money(o.fee)) + " for <b>" + esc(p.name) + "</b>.") :
+        o.status === "counter" ? esc(club(p.club).name) + " rejected " + money(o.fee) + " for <b>" + esc(p.name) + "</b> but would accept " + money(o.counter) + "." : "Your " + (o.kind === "loan" ? "loan request" : "offer") + " for <b>" + esc(p.name) + "</b> was rejected. " + (o.why || "");
+      mail("Director of football", (o.status === "accepted" ? "Offer accepted: " : o.status === "counter" ? "Counter-offer: " : "Offer rejected: ") + p.name,
+        [msg, o.status === "accepted" ? (o.kind === "loan" ? "Confirm the loan to bring him in." : "Agree personal terms to complete the deal.") : o.status === "counter" ? "You can meet their price or walk away." : ""].filter(Boolean),
+        { label: o.status === "rejected" ? "Transfers" : "Open deal", offer: o.id }, o.status === "rejected" ? "bad" : "good");
+    });
+  }
+  // other clubs bid for our players during the windows
+  function incomingBids(d, h) {
+    if (h !== 15 || !windowOpen(d) || d % 6 !== 2) return;
+    var r = rng((S.seed ^ (d * 97531)) >>> 0), mine = clubPlayers[S.clubId];
+    var listed = mine.filter(function (p) { return S.tlist && S.tlist[p.id]; });
+    var recent = function (p) { return S.signed && S.signed[p.id] != null && d - S.signed[p.id] < 60; };
+    var cand = (listed.length && r() < 0.8 ? listed : mine.filter(function (p) { return p.ovr >= 50 && r() < 0.12; })).filter(function (p) { return !recent(p) && !(S.loans && S.loans[p.id]); });
+    if (!cand.length || r() < (listed.length ? 0.3 : 0.6)) return;
+    var p = cand[Math.floor(r() * cand.length)], loan = S.tlist && S.tlist[p.id] === "loan";
+    var myTier = lgFin(S.clubId).tier;
+    var buyers = Object.keys(D.clubs).filter(function (c) {
+      if (c === S.clubId) return false;
+      var t = lgFin(c).tier, best = clubPlayers[c].slice().sort(function (a, b) { return b.ovr - a.ovr; });
+      var fits = best.length > 13 && p.ovr >= best[Math.min(13, best.length - 1)].ovr - 2 && p.ovr <= best[0].ovr + 3;
+      return fits && (loan ? t <= myTier : t >= myTier) && clubBudget(c) >= (p.value || 0) * 0.8;
+    });
+    if (!buyers.length) return;
+    var b = buyers[Math.floor(r() * buyers.length)], fee = loan ? 0 : Math.round((p.value || 50000) * (0.75 + r() * 0.5) / 5000) * 5000;
+    var o = { id: (S.offerSeq = (S.offerSeq || 0) + 1), pid: p.id, kind: loan ? "loan" : "transfer", fee: fee, club: b, dir: "out", status: "open", due: d + 5 };
+    (S.offers = S.offers || []).push(o);
+    mail("Director of football", (loan ? "Loan offer for " : "Offer for ") + p.name, [esc(club(b).name) + (loan ? " want to take <b>" + esc(p.name) + "</b> on loan for the rest of the season." : " have bid <b>" + money(fee) + "</b> for <b>" + esc(p.name) + "</b> (valued at " + money(p.value) + ")."),
+      "The offer stands for five days."], { label: "Respond", offer: o.id }, "match");
+  }
+  function expireOffers(d) {
+    (S.offers || []).forEach(function (o) {
+      if (o.dir === "out" && o.status === "open" && d > o.due) o.status = "expired";
+      if (o.dir === "in" && (o.status === "accepted" || o.status === "counter") && d > o.due + 7) o.status = "expired";
+    });
+  }
+  // loans end with the season
+  function endLoans(d) {
+    if (d !== CAL_DAYS - 2 || !S.loans) return;
+    Object.keys(S.loans).forEach(function (id) { delete S.loans[id]; });
+    applyMoves();
+  }
+  // ---- the board: confidence, and requests for more money (reluctant, never beyond the balance)
+  function boardConfidence() {
+    var pos = myPos(), tgt = S.target || pos, played = (S.results[myLeague().id] || []).filter(Boolean).length;
+    var c = 60;
+    if (played >= 3) c += (tgt - pos) * 4;
+    c += ((S.fanMood == null ? 55 : S.fanMood) - 55) * 0.3;
+    if (S.fin.bal < 0) c -= 15;
+    var h = S.fin.hist, trend = h.length > 30 ? h[h.length - 1][1] - h[h.length - 31][1] : 0;
+    if (trend < 0) c -= 5;
+    return Math.max(5, Math.min(95, Math.round(c)));
+  }
+  function boardRequest(kind, amount) {
+    var F = S.fin, last = F.req[kind];
+    if (last != null && today() - last < 30) return "The board will only consider another request " + (30 - (today() - last)) + " days from now.";
+    F.req[kind] = today();
+    (S.boardQ = S.boardQ || []).push({ kind: kind, amount: amount, due: today() + 1 });
+    save();
+    return "";
+  }
+  function boardDecide(d, h) {
+    if (h !== 11 || !S.boardQ || !S.boardQ.length) return;
+    var q = S.boardQ.filter(function (x) { return x.due <= d; });
+    S.boardQ = S.boardQ.filter(function (x) { return x.due > d; });
+    q.forEach(function (x) {
+      var F = S.fin, conf = boardConfidence(), r = rng((S.seed ^ (d * 31 + x.amount)) >>> 0);
+      var spare = Math.max(0, F.bal - F.tb - wageBill(S.clubId) * 26);   // they keep six months of wages in reserve
+      var chance = (conf - 35) / 60 - (F.reqCount || 0) * 0.12;
+      F.reqCount = (F.reqCount || 0) + 1;
+      var give = 0, text;
+      if (x.kind === "transfer") {
+        if (r() < chance && spare > 0) give = Math.min(x.amount, Math.round(spare * (0.4 + r() * 0.4) / 5000) * 5000);
+        if (give > 0) { F.tb += give; text = give < x.amount ? "We can't stretch to the full amount, but we've added <b>" + money(give) + "</b> to the transfer budget." : "We've agreed to add <b>" + money(give) + "</b> to the transfer budget. Spend it wisely."; }
+        else text = spare <= 0 ? "There simply isn't the money available. The club's finances come first." : conf < 50 ? "Given the team's results, we aren't prepared to invest more right now." : "We've discussed it and decided to keep the budget as it is for now.";
+      } else {
+        var room = Math.max(0, (F.rev / 52) * 0.75 - wageBill(S.clubId));
+        if (r() < chance && room > 0) give = Math.min(x.amount, Math.round(room * (0.5 + r() * 0.5) / 10) * 10);
+        if (give > 0) { F.wb += give; text = "We've raised the wage budget by <b>" + money(give) + "</b> a week."; }
+        else text = room <= 0 ? "Wages are already as high as our income can support." : "We aren't willing to increase the wage budget at this time.";
+      }
+      bump("morale", 0);
+      mail("The board", (give ? "Request approved: " : "Request declined: ") + (x.kind === "transfer" ? "transfer funds" : "wage budget"), [text, "Board confidence: " + conf + "%."], { label: "Board", go: "board" }, give ? "good" : "bad");
+    });
+  }
   // ------------------------------------------------------------ social feed (FM-style)
   // Posts from the club, the league, journalists and fans, reacting to what happens. S.social
   // holds them newest first; S.socialSeen is the newest one the user has looked at.
@@ -1310,7 +1584,7 @@ input[type="search"], select {
       '<button class="icon-btn" data-act="drawer" aria-label="Menu">' + icon("menu") + "</button>" +
       '<div class="club-id">' + badge(S.clubId, 30) + '<div><div class="nm">' + esc(c.name) + '</div><div class="lg">' + leagueLogo(lg.id, 12) + esc(lg.name) + " · " + D.season + "</div></div></div>" +
       '<div class="grow"></div><div class="chips">' +
-      '<span class="hide-sm" title="Transfer budget"><span class="coin"></span>' + money(Math.max(150000, value * 0.12)) + "</span>" +
+      '<button class="hide-sm chip-link" data-go="finances" title="Transfer budget (finances)"><span class="coin"></span>' + money(S.fin ? S.fin.tb : 0) + "</button>" +
       '<span class="hide-sm" title="Squad strength (top 15 average)">★ ' + stars + "</span>" +
       '<button class="icon-btn inbox-btn" data-go="inbox" aria-label="Inbox, ' + unread() + ' unread">' + icon("inbox") + (unread() ? '<span class="badge-n">' + unread() + "</span>" : "") + "</button>" +
       '<span id="clock" class="clock"><b>' + esc(dayLabel(today(), true)) + "</b> " + hourLabel(S.t) + "</span>" +
@@ -1324,7 +1598,8 @@ input[type="search"], select {
     if (ui.title) return renderTitle();
     if (!S) return renderNewGame();
     ensureCal();
-    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager }[ui.screen] || viewHome)() + "</main>";
+    ensureFin();
+    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
   }
@@ -1353,7 +1628,7 @@ input[type="search"], select {
       '<button class="btn ghost" data-go="table" style="justify-self:center">Full table</button></section></div>' +
       '<div class="tiles">' +
       tile("squad", "Squad", clubPlayers[S.clubId].length + " players") + tile("tactics", "Tactics", lineupOf(S.clubId).formation) +
-      tile("transfers", "Transfers", "Scout players") + tile("training", "Training", FOCUS[(S.training || {}).focus || "balanced"].name) + "</div>" +
+      tile("transfers", "Transfers", (S.fin ? fmtM(S.fin.tb) : "") + (windowOpen() ? " · window open" : "")) + tile("training", "Training", FOCUS[(S.training || {}).focus || "balanced"].name) + "</div>" +
       '<div class="tiles">' + tile("inbox", "Inbox", unread() ? unread() + " unread" : "Up to date", "inbox") + tile("calendar", "Calendar", dayLabel(today(), true), "calendar") +
       tile("social", "Social", socialNew() ? socialNew() + " new" : "Feed", "social") + tile("tactics", "League Table", myLeague().short, "table") + "</div>" +
       (latest ? '<section class="panel news" data-msg="' + latest.id + '">' + icon("inbox").replace("<svg", '<svg style="width:22px;height:22px;stroke:var(--fg);fill:none;stroke-width:2;flex:none"') +
@@ -1394,11 +1669,12 @@ input[type="search"], select {
       fact("Position", p.position + (p.alt && p.alt.length ? " (also " + p.alt.join(", ") + ")" : "")) + fact("Age", p.age + (p.dob ? " (" + p.dob.split("-").reverse().join("/") + ")" : "")) +
       fact("Nationality", p.nat + (p.nat2 ? " / " + p.nat2 : "")) + fact("Height", p.height ? p.height + " cm" : "–") +
       fact("Foot", p.foot ? p.foot[0].toUpperCase() + p.foot.slice(1) : "–") + fact("Value", money(p.value)) +
-      fact("Contract", p.contract || "–") + fact("Shirt", p.shirt || "–") + "</div></section>" +
+      fact("Contract", S && S.fin && p.club !== "free" ? "Until " + contractOf(p).end.split("-").reverse().join("/") : p.contract || "–") + fact("Shirt", p.shirt || "–") + "</div></section>" +
       '<section class="panel attrs">' + names.map(function (n, i) {
         var v = vals[i];
         return '<div class="attr"><span>' + n + "</span><b>" + v + '</b><div class="bar"><i style="width:' + v + "%;background:" + ovrColor(v) + '"></i></div></div>';
       }).join("") + "</section></div>" +
+      playerActions(p) +
       '<section class="panel season-line"><div><span class="label">Apps</span><b>' + s.apps + '</b></div><div><span class="label">Goals</span><b>' + s.goals + '</b></div><div><span class="label">Assists</span><b>' + s.assists + '</b></div><div><span class="label">Avg rating</span><b>' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</b></div><div><span class="label">Clean sheets</span><b>' + s.cs + '</b></div><div><span class="label">Yellow</span><b>' + s.yc + '</b></div><div><span class="label">Red</span><b>' + s.rc + "</b></div></section>";
   }
   function fact(k, v) { return '<div class="fact"><span class="label">' + k + "</span><b>" + esc(v) + "</b></div>"; }
@@ -1431,6 +1707,7 @@ input[type="search"], select {
   var DIFFS = { easy: 1, normal: 2, hard: 3, veryhard: 4, elite: 5 };
   document.addEventListener("change", function (ev) {
     if (ev.target && ev.target.hasAttribute && ev.target.hasAttribute("data-indiv") && S) { (S.indiv = S.indiv || {})[ev.target.getAttribute("data-indiv")] = ev.target.value; save(); return; }
+    if (ev.target && ev.target.id === "badj") { var bv = +ev.target.value, bt = document.getElementById("badjv"); if (bt) bt.textContent = bv > 0 ? fmtM(bv) + " from transfers → +" + fmtM(bv / 104) + "/wk wages" : bv < 0 ? fmtM(-bv / 104) + "/wk wages → +" + fmtM(-bv) + " transfers" : "No change"; return; }
     if (ev.target && ev.target.id === "mgrname" && S) { mgr().name = ev.target.value.trim().slice(0, 28); save(); }
     if (ev.target && ev.target.id === "diffsel" && S) { S.difficulty = ev.target.value; save(); }
   });
@@ -1532,15 +1809,15 @@ input[type="search"], select {
   function viewTransfers() {
     var f = ui.filter, q = f.q.toLowerCase();
     var list = D.players.filter(function (p) {
-      return p.club !== S.clubId && (!q || p.name.toLowerCase().indexOf(q) >= 0) && (!f.pos || group(p.pos) === f.pos) && (!f.league || club(p.club).league === f.league);
+      return p.club !== S.clubId && (!q || p.name.toLowerCase().indexOf(q) >= 0) && (!f.pos || group(p.pos) === f.pos) && (!f.league || (f.league === "free" ? p.club === "free" : p.club !== "free" && club(p.club).league === f.league));
     }).sort(function (a, b) { return b.ovr - a.ovr; }).slice(0, 80);
-    return screenHead("Transfers", "") +
-      '<div class="note">Scouting is open: search every player in the four leagues. Bids, loans and contract talks arrive in the next update.</div>' +
+    return screenHead("Transfers", '<div class="tabs"><button class="chip-btn" aria-pressed="true" data-go="transfers">Search</button><button class="chip-btn" data-go="deals">Deals</button><button class="chip-btn" data-go="contracts">Contracts</button></div>') +
+      '<div class="note">' + (windowOpen() ? "The transfer window is open." : "The transfer window is closed (July–August and January).") + " Budget " + fmtM(S.fin.tb) + ". Open a player to make an offer or ask for a loan.</div>" +
       '<div style="display:flex;gap:8px;flex-wrap:wrap"><input type="search" id="tq" placeholder="Search player" value="' + esc(f.q) + '" aria-label="Search player">' +
       '<select id="tpos" aria-label="Position"><option value="">All positions</option>' + [["GK", "Goalkeepers"], ["DF", "Defenders"], ["MF", "Midfielders"], ["FW", "Forwards"]].map(function (x) { return '<option value="' + x[0] + '"' + (f.pos === x[0] ? " selected" : "") + ">" + x[1] + "</option>"; }).join("") + "</select>" +
-      '<select id="tlg" aria-label="League"><option value="">All leagues</option>' + D.leagues.map(function (l) { return '<option value="' + l.id + '"' + (f.league === l.id ? " selected" : "") + ">" + esc(l.name) + "</option>"; }).join("") + "</select></div>" +
-      '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Pos</th><th class="num">Age</th><th>Club</th><th>Nation</th><th class="num">OVR</th><th class="num">Value</th></tr></thead><tbody>' +
-      list.map(function (p) { return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td><b>' + esc(p.name) + '</b></td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + '</span></td><td class="num">' + p.age + '</td><td><span class="club-cell">' + badge(p.club, 18) + esc(club(p.club).name) + "</span></td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + money(p.value) + "</td></tr>"; }).join("") +
+      '<select id="tlg" aria-label="League"><option value="">All leagues</option>' + D.leagues.map(function (l) { return '<option value="' + l.id + '"' + (f.league === l.id ? " selected" : "") + ">" + esc(l.name) + "</option>"; }).join("") + '<option value="free"' + (f.league === "free" ? " selected" : "") + ">Free agents</option></select></div>" +
+      '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Pos</th><th class="num">Age</th><th>Club</th><th>Nation</th><th class="num">OVR</th><th class="num">POT</th><th class="num">Value</th></tr></thead><tbody>' +
+      list.map(function (p) { return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td><b>' + esc(p.name) + '</b></td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + '</span></td><td class="num">' + p.age + '</td><td><span class="club-cell">' + badge(p.club, 18) + esc(club(p.club).name) + "</span></td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + potOf(p) + '</td><td class="num">' + money(p.value) + "</td></tr>"; }).join("") +
       "</tbody></table></div>" + (list.length === 80 ? '<p class="muted" style="margin:0">Showing the top 80 matches. Narrow the search to see more.</p>' : "");
   }
   function viewTraining() {
@@ -1718,6 +1995,218 @@ input[type="search"], select {
       '<div class="panel mg-form"><label class="mg-group"><span class="label">Name</span><input id="mgrname" maxlength="28" placeholder="Your name" value="' + esc(m.name || "") + '"></label>' +
       ["skin", "hair", "hairCol", "beard", "glasses", "suit", "tie"].map(group).join("") + "</div></div>";
   }
+  // ---- charts (SVG; one hover tooltip per chart)
+  var CHART = {};
+  function fmtM(v) { var a = Math.abs(v); return (v < 0 ? "−" : "") + (a >= 1e6 ? "€" + (a / 1e6).toFixed(a >= 1e7 ? 0 : 1) + "M" : a >= 1e3 ? "€" + Math.round(a / 1e3) + "K" : "€" + Math.round(a)); }
+  function niceMax(v) { if (v <= 0) return 1; var e = Math.pow(10, Math.floor(Math.log10(v))), m = v / e; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * e; }
+  function lineChart(id, pts, color) {
+    var W = 760, H = 240, L = 58, R = 12, T = 12, B = 28;
+    if (pts.length < 2) return '<p class="muted" style="margin:0">The graph fills in as the days pass.</p>';
+    var x0 = pts[0][0], x1 = Math.max(pts[pts.length - 1][0], x0 + 30);
+    var lo = Math.min(0, Math.min.apply(null, pts.map(function (p) { return p[1]; }))), hi = niceMax(Math.max.apply(null, pts.map(function (p) { return p[1]; })) * 1.05);
+    if (lo < 0) lo = -niceMax(-lo);
+    function X(d) { return L + (d - x0) / (x1 - x0) * (W - L - R); }
+    function Y(v) { return T + (hi - v) / (hi - lo) * (H - T - B); }
+    var grid = "", ticks = 4;
+    for (var i = 0; i <= ticks; i++) { var v = lo + (hi - lo) * i / ticks; grid += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" class="ch-grid"/><text x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" class="ch-ax" text-anchor="end">' + fmtM(v) + "</text>"; }
+    var months = "";
+    for (var d = x0; d <= x1; d++) if (dayDate(d).getUTCDate() === 1) months += '<text x="' + X(d) + '" y="' + (H - 8) + '" class="ch-ax" text-anchor="middle">' + dayDate(d).toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" }) + "</text>";
+    var path = pts.map(function (p, i) { return (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1); }).join("");
+    var area = path + "L" + X(pts[pts.length - 1][0]).toFixed(1) + " " + Y(Math.max(lo, 0)) + "L" + X(pts[0][0]).toFixed(1) + " " + Y(Math.max(lo, 0)) + "Z";
+    CHART[id] = { kind: "line", pts: pts, X: X, Y: Y, L: L, R: R, W: W, T: T, H: H, B: B };
+    return '<div class="chart" data-chart="' + id + '"><svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Balance over the season">' + grid + months +
+      '<path d="' + area + '" fill="' + color + '" opacity=".10"/><path d="' + path + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linejoin="round"/>' +
+      '<line class="ch-cross" x1="0" x2="0" y1="' + T + '" y2="' + (H - B) + '" style="display:none"/><circle class="ch-dot" r="4.5" fill="' + color + '" stroke="var(--panel)" stroke-width="2" style="display:none"/></svg><div class="ch-tip" style="display:none"></div></div>';
+  }
+  function barsChart(id, cats, series) {
+    var W = 760, H = 240, L = 58, R = 12, T = 12, B = 28, n = cats.length, k = series.length;
+    var hi = niceMax(Math.max(1, Math.max.apply(null, series.map(function (s) { return Math.max.apply(null, s.vals); }))));
+    function Y(v) { return T + (hi - v) / hi * (H - T - B); }
+    var band = (W - L - R) / Math.max(1, n), bw = Math.min(26, (band - 10) / k), grid = "";
+    for (var i = 0; i <= 4; i++) { var v = hi * i / 4; grid += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" class="ch-grid"/><text x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" class="ch-ax" text-anchor="end">' + fmtM(v) + "</text>"; }
+    var bars = "";
+    cats.forEach(function (c, ci) {
+      var cx = L + band * ci + band / 2;
+      series.forEach(function (s, si) {
+        var v = s.vals[ci], x = cx - (k * bw + (k - 1) * 2) / 2 + si * (bw + 2), y = Y(v), h = Y(0) - y;
+        if (h > 0) bars += '<path d="M' + x + " " + (y + Math.min(4, h)) + "q0 -" + Math.min(4, h) + " " + Math.min(4, bw / 2) + " -" + Math.min(4, h) + "h" + (bw - 2 * Math.min(4, bw / 2)) + "q" + Math.min(4, bw / 2) + " 0 " + Math.min(4, bw / 2) + " " + Math.min(4, h) + "V" + Y(0) + "H" + x + 'Z" fill="' + s.color + '"/>';
+      });
+      bars += '<text x="' + cx + '" y="' + (H - 8) + '" class="ch-ax" text-anchor="middle">' + esc(c) + "</text>";
+      bars += '<rect class="ch-hit" x="' + (L + band * ci) + '" y="' + T + '" width="' + band + '" height="' + (H - T - B) + '" data-i="' + ci + '"/>';
+    });
+    CHART[id] = { kind: "bars", cats: cats, series: series };
+    return '<div class="chart" data-chart="' + id + '"><div class="ch-legend">' + series.map(function (s) { return '<span><i style="background:' + s.color + '"></i>' + esc(s.name) + "</span>"; }).join("") + "</div>" +
+      '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Monthly income and expenditure">' + grid + bars + '</svg><div class="ch-tip" style="display:none"></div></div>';
+  }
+  function chartHover(ev) {
+    var box = ev.target.closest && ev.target.closest(".chart");
+    if (!box) return;
+    var c = CHART[box.getAttribute("data-chart")], svg = box.querySelector("svg"), tip = box.querySelector(".ch-tip");
+    if (!c || !svg) return;
+    var rc = svg.getBoundingClientRect(), sx = (ev.clientX - rc.left) / rc.width * 760;
+    if (c.kind === "line") {
+      var best = c.pts[0];
+      c.pts.forEach(function (p) { if (Math.abs(c.X(p[0]) - sx) < Math.abs(c.X(best[0]) - sx)) best = p; });
+      var cr = svg.querySelector(".ch-cross"), dt = svg.querySelector(".ch-dot");
+      cr.setAttribute("x1", c.X(best[0])); cr.setAttribute("x2", c.X(best[0])); cr.style.display = ""; dt.setAttribute("cx", c.X(best[0])); dt.setAttribute("cy", c.Y(best[1])); dt.style.display = "";
+      tip.innerHTML = "<b>" + fmtM(best[1]) + "</b><span>" + esc(dayLabel(best[0])) + "</span>";
+      tip.style.left = Math.min(rc.width - 130, Math.max(0, c.X(best[0]) / 760 * rc.width - 60)) + "px"; tip.style.display = "";
+    } else {
+      var hit = ev.target.closest(".ch-hit");
+      if (!hit) { tip.style.display = "none"; return; }
+      var i = +hit.getAttribute("data-i");
+      tip.innerHTML = "<b>" + esc(c.cats[i]) + "</b>" + c.series.map(function (s) { return '<span><i style="background:' + s.color + '"></i>' + esc(s.name) + " " + fmtM(s.vals[i]) + "</span>"; }).join("");
+      tip.style.left = Math.min(rc.width - 150, Math.max(0, (ev.clientX - rc.left) - 70)) + "px"; tip.style.display = "";
+    }
+  }
+  document.addEventListener("mousemove", chartHover);
+  document.addEventListener("touchstart", chartHover, { passive: true });
+  document.addEventListener("mouseleave", function () { Array.prototype.forEach.call(document.querySelectorAll(".ch-tip"), function (t) { t.style.display = "none"; }); }, true);
+  // breakdown: horizontal bars with values (one colour)
+  function breakdown(title, obj, color) {
+    var ks = Object.keys(obj).filter(function (k) { return obj[k] > 0; }).sort(function (a, b) { return obj[b] - obj[a]; }), max = ks.length ? obj[ks[0]] : 1, tot = ks.reduce(function (t, k) { return t + obj[k]; }, 0);
+    return '<section class="panel fin-card"><div class="fin-h"><h3>' + esc(title) + '</h3><b>' + fmtM(tot) + "</b></div>" + (ks.map(function (k) {
+      return '<div class="bd-row"><span>' + esc(k) + '</span><div class="bd-bar"><i style="width:' + (obj[k] / max * 100) + "%;background:" + color + '"></i></div><b>' + fmtM(obj[k]) + "</b></div>";
+    }).join("") || '<p class="muted" style="margin:0">Nothing yet.</p>') + "</section>";
+  }
+  var C_IN = "#3987e5", C_OUT = "#d95926";
+  function seasonTotals() {
+    var tin = {}, tout = {};
+    Object.keys(S.fin.months).forEach(function (m) { var x = S.fin.months[m]; Object.keys(x.in).forEach(function (k) { tin[k] = (tin[k] || 0) + x.in[k]; }); Object.keys(x.out).forEach(function (k) { tout[k] = (tout[k] || 0) + x.out[k]; }); });
+    return { tin: tin, tout: tout };
+  }
+  function viewFinances() {
+    var F = S.fin, T = seasonTotals(), sum = function (o) { return Object.keys(o).reduce(function (t, k) { return t + o[k]; }, 0); };
+    var net = sum(T.tin) - sum(T.tout), wb = wageBill(S.clubId);
+    var ms = Object.keys(F.months).sort().slice(-12);
+    var cats = ms.map(function (m) { return new Date(Date.UTC(+m.slice(0, 4), +m.slice(5) - 1, 1)).toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" }); });
+    var top = clubPlayers[S.clubId].slice().sort(function (a, b) { return contractOf(b).wage - contractOf(a).wage; }).slice(0, 8), maxW = top.length ? contractOf(top[0]).wage : 1;
+    return screenHead("Finances", '<button class="btn" data-go="board">Board</button>') +
+      '<div class="fin-tiles">' + finTile("Balance", fmtM(F.bal), F.bal < 0 ? "In debt" : "Cash at the bank") + finTile("Transfer budget", fmtM(F.tb), "Available to spend") +
+      finTile("Wages", fmtM(wb) + "/wk", "Budget " + fmtM(F.wb) + "/wk", wb / Math.max(1, F.wb)) + finTile("Season so far", (net >= 0 ? "+" : "") + fmtM(net), net >= 0 ? "Profit" : "Loss") + "</div>" +
+      '<section class="panel fin-card"><div class="fin-h"><h3>Balance</h3><span class="muted">This season</span></div>' + lineChart("bal", F.hist.concat([[today(), Math.round(F.bal)]]), "#4cc86a") + "</section>" +
+      '<section class="panel fin-card"><div class="fin-h"><h3>Income and expenditure</h3><span class="muted">By month</span></div>' +
+      barsChart("mon", cats, [{ name: "Income", color: C_IN, vals: ms.map(function (m) { return sum(F.months[m].in); }) }, { name: "Expenditure", color: C_OUT, vals: ms.map(function (m) { return sum(F.months[m].out); }) }]) + "</section>" +
+      '<div class="fin-two">' + breakdown("Income this season", T.tin, C_IN) + breakdown("Expenditure this season", T.tout, C_OUT) + "</div>" +
+      '<section class="panel fin-card"><div class="fin-h"><h3>Top earners</h3><span class="muted">Weekly wages</span></div>' + top.map(function (p) {
+        var w = contractOf(p).wage;
+        return '<div class="bd-row"><button class="link" data-player="' + p.id + '">' + esc(p.name) + '</button><div class="bd-bar"><i style="width:' + (w / maxW * 100) + '%;background:' + C_OUT + '"></i></div><b>' + fmtM(w) + "</b></div>";
+      }).join("") + "</section>";
+  }
+  function finTile(k, v, sub, frac) {
+    return '<section class="panel fin-tile"><div class="label">' + k + '</div><div class="fv">' + v + '</div><div class="muted">' + esc(sub) + "</div>" +
+      (frac != null ? '<div class="bd-bar" style="margin-top:6px"><i style="width:' + Math.min(100, frac * 100) + "%;background:" + (frac > 1 ? "var(--loss)" : "var(--accent)") + '"></i></div>' : "") + "</section>";
+  }
+  // ---- board
+  function viewBoard() {
+    var F = S.fin, conf = boardConfidence(), pos = myPos(), tgt = S.target || pos;
+    var mood = conf >= 75 ? "Delighted" : conf >= 60 ? "Pleased" : conf >= 45 ? "Satisfied" : conf >= 30 ? "Concerned" : "Losing patience";
+    var tAmts = [0.03, 0.07, 0.15].map(function (f) { return Math.max(5000, Math.round(F.rev * f / 5000) * 5000); });
+    var wAmts = [0.05, 0.1, 0.2].map(function (f) { return Math.max(50, Math.round(F.wb * f / 10) * 10); });
+    var pend = (S.boardQ || []).map(function (x) { return "<li>" + (x.kind === "transfer" ? "Transfer funds +" + fmtM(x.amount) : "Wage budget +" + fmtM(x.amount) + "/wk") + " — answer tomorrow</li>"; }).join("");
+    return screenHead("Board", '<button class="btn" data-go="finances">Finances</button>') +
+      '<div class="board-grid"><section class="panel fin-card"><div class="label">Board confidence</div><div class="conf"><b>' + conf + '%</b><span>' + mood + '</span></div><div class="bd-bar"><i style="width:' + conf + '%;background:' + (conf >= 45 ? "var(--accent)" : "var(--loss)") + '"></i></div>' +
+      '<p class="muted" style="margin:0">Target: ' + targetText(tgt, myLeague().clubs.length) + ". Currently " + pos + ordinalTxt(pos) + ". Fans: " + moraleWord(S.fanMood == null ? 55 : S.fanMood) + ". Balance " + fmtM(F.bal) + ".</p></section>" +
+      '<section class="panel fin-card"><h3 style="margin:0">Request transfer funds</h3><p class="muted" style="margin:0">The board keep six months of wages in reserve and never give more than the club has. The more you ask, the less willing they are.</p><div class="tabs">' +
+      tAmts.map(function (a) { return '<button class="chip-btn" data-breq="transfer:' + a + '">+' + fmtM(a) + "</button>"; }).join("") + "</div></section>" +
+      '<section class="panel fin-card"><h3 style="margin:0">Request a higher wage budget</h3><p class="muted" style="margin:0">Current budget ' + fmtM(F.wb) + "/wk, wages " + fmtM(wageBill(S.clubId)) + '/wk.</p><div class="tabs">' +
+      wAmts.map(function (a) { return '<button class="chip-btn" data-breq="wage:' + a + '">+' + fmtM(a) + "/wk</button>"; }).join("") + "</div></section>" +
+      '<section class="panel fin-card"><h3 style="margin:0">Budget adjustment</h3><p class="muted" style="margin:0">Move money between the transfer budget and the wage budget (two years of wages per euro moved).</p>' +
+      '<input type="range" id="badj" min="' + (-Math.round(Math.max(0, F.wb - wageBill(S.clubId)) * 104)) + '" max="' + Math.round(F.tb) + '" step="1000" value="0" aria-label="Amount moved from transfer to wage budget">' +
+      '<div class="muted" id="badjv">No change</div><button class="btn" data-act="badj">Apply</button></section>' +
+      (pend ? '<section class="panel fin-card"><h3 style="margin:0">Waiting for an answer</h3><ul style="margin:0;padding-left:18px">' + pend + "</ul></section>" : "") + "</div>";
+  }
+  // ---- deals (offers in and out) and contracts
+  function dealLine(o) {
+    var p = byId[o.pid], st = { pending: "Waiting for a reply", accepted: "Accepted — agree terms", counter: "Counter-offer " + fmtM(o.counter || 0), rejected: "Rejected", done: "Completed", expired: "Expired", void: "Off", open: "Waiting for your answer", refused: "Turned down", withdrawn: "Withdrawn" }[o.status] || o.status;
+    var act = (o.dir === "in" && (o.status === "accepted" || o.status === "counter")) || (o.dir === "out" && o.status === "open");
+    return '<tr><td><button class="link" data-player="' + p.id + '">' + esc(p.name) + '</button></td><td>' + (o.dir === "in" ? "From " + esc(club(p.club0 && o.status === "done" ? p.club0 : p.club).name) : "To " + esc(club(o.club).name)) + "</td><td>" + (o.kind === "loan" ? "Loan" : fmtM(o.fee)) + "</td><td>" + esc(st) + "</td><td>" +
+      (act ? '<button class="btn primary" data-deal="' + o.id + '">' + (o.dir === "in" ? "Continue" : "Respond") + "</button>" : "") + "</td></tr>";
+  }
+  function viewDeals() {
+    var os = (S.offers || []).slice().reverse();
+    return screenHead("Transfers", '<div class="tabs"><button class="chip-btn" data-go="transfers">Search</button><button class="chip-btn" aria-pressed="true" data-go="deals">Deals</button><button class="chip-btn" data-go="contracts">Contracts</button></div>') +
+      '<p class="muted" style="margin:0">' + (windowOpen() ? "The transfer window is open." : "The transfer window is closed (open July–August and January). You can still renew contracts.") + " Transfer budget " + fmtM(S.fin.tb) + ", wages " + fmtM(wageBill(S.clubId)) + " of " + fmtM(S.fin.wb) + "/wk.</p>" +
+      (os.length ? '<div class="table-wrap"><table><thead><tr><th>Player</th><th>Club</th><th>Fee</th><th>Status</th><th></th></tr></thead><tbody>' + os.map(dealLine).join("") + "</tbody></table></div>" : '<p class="muted">No deals yet. Find players under Search and make an offer from their profile.</p>');
+  }
+  function viewContracts() {
+    var ps = clubPlayers[S.clubId].slice().sort(function (a, b) { return Date.parse(contractOf(a).end) - Date.parse(contractOf(b).end); });
+    return screenHead("Contracts", '<div class="tabs"><button class="chip-btn" data-go="transfers">Search</button><button class="chip-btn" data-go="deals">Deals</button><button class="chip-btn" aria-pressed="true" data-go="contracts">Contracts</button></div>') +
+      '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Pos</th><th class="num">Age</th><th class="num">OVR</th><th class="num">Wage /wk</th><th>Expires</th><th>Status</th><th></th></tr></thead><tbody>' + ps.map(function (p) {
+        var c = contractOf(p), yl = yearsLeft(p), l = S.loans && S.loans[p.id], tl = S.tlist && S.tlist[p.id];
+        return '<tr><td><button class="link" data-player="' + p.id + '">' + esc(p.name) + '</button></td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + '</span></td><td class="num">' + p.age + '</td><td class="num">' + p.ovr +
+          '</td><td class="num">' + fmtM(c.wage) + "</td><td" + (yl < 1 ? ' style="color:var(--loss);font-weight:700"' : "") + ">" + c.end.split("-").reverse().join("/") + "</td><td>" + (l ? "On loan from " + esc(club(l.from).name) : tl === "transfer" ? "Transfer listed" : tl === "loan" ? "Loan listed" : "") +
+          "</td><td>" + (l ? "" : '<button class="btn ghost" data-player="' + p.id + '">Manage</button>') + "</td></tr>";
+      }).join("") + "</tbody></table></div>";
+  }
+  function releaseCost(p) { return Math.round(contractOf(p).wage * Math.max(1, yearsLeft(p) * 52) * 0.5 / 100) * 100; }
+  function termsForm(p, renewal, oid, extra) {
+    var dem = wageDemand(p, renewal), maxY = (p.age || 25) >= 33 ? 2 : (p.age || 25) >= 30 ? 3 : 5;
+    return '<p class="muted" style="margin:0">' + esc(p.name) + "'s agent is looking for about <b>" + fmtM(dem) + "/wk</b>. Wages now " + fmtM(wageBill(S.clubId)) + " of " + fmtM(S.fin.wb) + "/wk.</p>" + (extra || "") +
+      '<label class="label" for="termsWage">Weekly wage (€)</label><input id="termsWage" type="number" min="0" step="10" value="' + Math.round(dem * 0.9 / 10) * 10 + '">' +
+      '<label class="label" for="termsYears">Length</label><select id="termsYears">' + [1, 2, 3, 4, 5].filter(function (y) { return y <= maxY; }).map(function (y) { return '<option value="' + y + '"' + (y === Math.min(3, maxY) ? " selected" : "") + ">" + y + " year" + (y > 1 ? "s" : "") + "</option>"; }).join("") + "</select>" +
+      '<p id="termsMsg" class="muted" style="margin:0;color:var(--loss)" role="status"></p>' +
+      '<div style="display:flex;gap:8px"><button class="btn primary" data-act="' + (renewal ? "dorenew" : "doterms") + '"' + (oid ? ' data-oid="' + oid + '"' : ' data-pid="' + p.id + '"') + ">Offer</button><button class=\"btn ghost\" data-act=\"closemodal\">Cancel</button></div>";
+  }
+  function dealModal(id) {
+    var o = (S.offers || []).find(function (x) { return x.id === id; });
+    if (!o) return;
+    var p = byId[o.pid];
+    closeModal();
+    if (o.dir === "out") {
+      return modal("<h2>" + (o.kind === "loan" ? "Loan offer" : "Offer") + " for " + esc(p.name) + '</h2><p class="muted" style="margin:0">' + esc(club(o.club).name) + (o.kind === "loan" ? " would take him on loan and pay his wages." : " offer <b>" + fmtM(o.fee) + "</b> (value " + fmtM(p.value) + "). 60% of a fee goes back into your transfer budget.") + "</p>" +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="dout" data-choice="accept" data-oid="' + o.id + '">Accept</button>' + (o.kind === "loan" ? "" : '<button class="btn" data-act="dout" data-choice="counter" data-oid="' + o.id + '">Ask for ' + fmtM(Math.round(o.fee * 1.25 / 5000) * 5000) + "</button>") +
+        '<button class="btn ghost" data-act="dout" data-choice="reject" data-oid="' + o.id + '">Reject</button></div>');
+    }
+    if (o.status === "counter") { o.fee = o.counter; o.countered = true; o.status = "accepted"; save(); }
+    if (o.kind === "loan") {
+      return modal("<h2>Loan: " + esc(p.name) + '</h2><p class="muted" style="margin:0">' + esc(club(p.club).name) + " agree to loan him until the end of the season. You pay " + o.pct + "% of his " + fmtM(contractOf(p).wage) + "/wk wages.</p>" +
+        '<p id="termsMsg" class="muted" style="margin:0;color:var(--loss)" role="status"></p><div style="display:flex;gap:8px"><button class="btn primary" data-act="doterms" data-oid="' + o.id + '">Confirm loan</button><button class="btn ghost" data-act="closemodal">Not now</button></div>');
+    }
+    return modal("<h2>Personal terms: " + esc(p.name) + "</h2>" + termsForm(p, false, o.id, o.fee ? '<p class="muted" style="margin:0">Agreed fee: <b>' + fmtM(o.fee) + "</b>.</p>" : ""));
+  }
+  function playerAction(a) {
+    var p = byId[+a[1]];
+    if (a[0] === "bid") {
+      if (!windowOpen()) return modal('<h2>Window closed</h2><p class="muted" style="margin:0">Transfers can only be made in July–August and January.</p><button class="btn primary" data-act="closemodal">OK</button>');
+      var ask = askingPrice(p);
+      return modal("<h2>Offer for " + esc(p.name) + '</h2><p class="muted" style="margin:0">' + esc(club(p.club).name) + " value him at around " + fmtM(ask) + ". Your budget: " + fmtM(S.fin.tb) + ".</p>" +
+        '<label class="label" for="offerFee">Fee (€)</label><input id="offerFee" type="number" min="0" step="5000" value="' + Math.min(Math.round(ask * 0.85 / 5000) * 5000, Math.round(S.fin.tb)) + '">' +
+        '<div class="tabs">' + [0.8, 1, 1.15].map(function (f) { var v = Math.round(ask * f / 5000) * 5000; return '<button class="chip-btn" type="button" onclick="document.getElementById(\'offerFee\').value=' + v + '">' + fmtM(v) + "</button>"; }).join("") + "</div>" +
+        '<div style="display:flex;gap:8px"><button class="btn primary" data-act="dobid" data-pid="' + p.id + '">Submit offer</button><button class="btn ghost" data-act="closemodal">Cancel</button></div>');
+    }
+    if (a[0] === "loan") {
+      if (!windowOpen()) return modal('<h2>Window closed</h2><p class="muted" style="margin:0">Loans can only be arranged in July–August and January.</p><button class="btn primary" data-act="closemodal">OK</button>');
+      return modal("<h2>Loan request: " + esc(p.name) + '</h2><p class="muted" style="margin:0">Until the end of the season. Clubs loan out young players who aren\'t in their first team; the more wages you cover, the likelier they agree. His wage: ' + fmtM(contractOf(p).wage) + "/wk.</p>" +
+        '<label class="label" for="loanPct">Wages we pay</label><select id="loanPct"><option value="50">50%</option><option value="75">75%</option><option value="100" selected>100%</option></select>' +
+        '<div style="display:flex;gap:8px"><button class="btn primary" data-act="doloan" data-pid="' + p.id + '">Send request</button><button class="btn ghost" data-act="closemodal">Cancel</button></div>');
+    }
+    if (a[0] === "free") return modal("<h2>Sign " + esc(p.name) + '</h2><p class="muted" style="margin:0">He is a free agent: no fee, just a contract. His agent will reply tomorrow.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="dofree" data-pid="' + p.id + '">Open talks</button><button class="btn ghost" data-act="closemodal">Cancel</button></div>');
+    if (a[0] === "renew") { ui.renewTries = 0; return modal("<h2>New contract: " + esc(p.name) + "</h2>" + termsForm(p, true)); }
+    if (a[0] === "list") { S.tlist = S.tlist || {}; if (S.tlist[p.id] === a[2]) delete S.tlist[p.id]; else S.tlist[p.id] = a[2]; save(); return render(); }
+    if (a[0] === "release") return modal("<h2>Release " + esc(p.name) + '?</h2><p class="muted" style="margin:0">Paying up half of his remaining contract costs <b>' + fmtM(releaseCost(p)) + "</b>. He leaves straight away as a free agent.</p>" +
+      '<div style="display:flex;gap:8px"><button class="btn primary" data-act="dorelease" data-pid="' + p.id + '">Release</button><button class="btn ghost" data-act="closemodal">Cancel</button></div>');
+  }
+  // actions on the player screen
+  function playerActions(p) {
+    if (!S.fin) return "";
+    var mine = p.club === S.clubId, l = S.loans && S.loans[p.id], c = contractOf(p);
+    if (mine) {
+      if (l) return '<section class="panel pa"><div><b>On loan</b> from ' + esc(club(l.from).name) + " until the end of the season (" + l.pct + "% of wages).</div></section>";
+      var tl = S.tlist && S.tlist[p.id];
+      return '<section class="panel pa"><div><div class="label">Contract</div><b>' + fmtM(c.wage) + "/wk</b> until " + c.end.split("-").reverse().join("/") + "</div>" +
+        '<div class="pa-btns"><button class="btn primary" data-pact="renew:' + p.id + '">Offer new contract</button>' +
+        '<button class="btn" data-pact="list:' + p.id + ':transfer">' + (tl === "transfer" ? "Remove from transfer list" : "Transfer list") + "</button>" +
+        '<button class="btn" data-pact="list:' + p.id + ':loan">' + (tl === "loan" ? "Remove from loan list" : "Loan list") + "</button>" +
+        '<button class="btn ghost" data-pact="release:' + p.id + '">Release</button></div></section>';
+    }
+    var open = (S.offers || []).some(function (o) { return o.pid === p.id && o.dir === "in" && (o.status === "pending" || o.status === "accepted" || o.status === "counter"); });
+    var free = p.club === "free";
+    return '<section class="panel pa"><div class="pa-facts"><div><div class="label">' + (free ? "Free agent" : "Asking price") + "</div><b>" + (free ? "No fee" : fmtM(askingPrice(p))) + '</b></div><div><div class="label">Wage</div><b>' + fmtM(c.wage) + '/wk</b></div><div><div class="label">Contract</div><b>' + (free ? "–" : c.end.slice(0, 4)) + "</b></div>" +
+      '<div><div class="label">Interest</div><b>' + (interest(p) === "no" ? "Not interested" : "Open to talks") + "</b></div></div>" +
+      (open ? '<div class="muted">You already have a deal in progress for him (see Transfers › Deals).</div>' :
+        '<div class="pa-btns">' + (free ? '<button class="btn primary" data-pact="free:' + p.id + '">Offer contract</button>' : '<button class="btn primary" data-pact="bid:' + p.id + '">Make transfer offer</button><button class="btn" data-pact="loan:' + p.id + '">Request loan</button>') + "</div>") + "</section>";
+  }
   // ---- calendar: one month at a time, July to June
   function viewCalendar() {
     var mi = ui.calMonth != null ? ui.calMonth : (function () { var dd = dayDate(today()); return (dd.getUTCFullYear() - new Date(CAL0).getUTCFullYear()) * 12 + dd.getUTCMonth() - 6; })();
@@ -1820,7 +2309,7 @@ input[type="search"], select {
   }
   function closeModal() { var m = document.getElementById("modal"); if (m) m.remove(); }
   function openDrawer() {
-    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["social", "Social" + (socialNew() ? " (" + socialNew() + ")" : "")], ["manager", "Manager"], ["squad", "Squad"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
+    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["social", "Social" + (socialNew() ? " (" + socialNew() + ")" : "")], ["manager", "Manager"], ["squad", "Squad"], ["finances", "Finances"], ["board", "Board"], ["contracts", "Contracts"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
     var d = el('<div id="drawer"><div class="drawer-bg" data-act="closedrawer"></div><nav class="drawer" aria-label="Main menu"><div class="label" style="padding:4px 12px 10px">' + esc(club(S.clubId).name) + "</div>" +
       items.map(function (x) { return '<button data-go="' + x[0] + '" aria-current="' + (ui.screen === x[0]) + '">' + x[1] + "</button>"; }).join("") +
       '<button data-act="settings" style="margin-top:12px">Settings</button>' +
@@ -2061,7 +2550,7 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
-    var t = ev.target.closest("[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
+    var t = ev.target.closest("[data-breq],[data-deal],[data-pact],[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
     if (!t) return;
     if (t.hasAttribute("data-pickleague")) { ui.pickLeague = t.getAttribute("data-pickleague"); ui.pick = D.leagues.find(function (l) { return l.id === ui.pickLeague; }).clubs[0]; return renderNewGame(); }
     if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return updateNewGamePick(); }
@@ -2076,6 +2565,7 @@ input[type="search"], select {
       if (ma.go) { ui.screen = ma.go; return render(); }
       if (ma.player != null) { ui.prev = "inbox"; ui.player = ma.player; ui.screen = "player"; return render(); }
       if (ma.report) { var rk = ma.report.split(":"), rr = (S.results[rk[0]][+rk[1]] || []).find(function (x) { return x.h === rk[2]; }); if (rr) { ui.report = rr; ui.screen = "report"; } return render(); }
+      if (ma.offer) { ui.screen = "deals"; render(); var oo = (S.offers || []).find(function (x) { return x.id === ma.offer; }); if (oo && ((oo.dir === "in" && (oo.status === "accepted" || oo.status === "counter")) || (oo.dir === "out" && oo.status === "open"))) dealModal(oo.id); return; }
       if (ma.press) {
         if (!S.press || S.press.id !== ma.press || S.press.done) return modal('<h2>Press conference</h2><p class="muted" style="margin:0">' + (S.press && S.press.id === ma.press && S.press.done === "attended" ? "You've already spoken to the press." : "That press conference has passed; your assistant took it.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
         ui.pressState = { id: S.press.id, qs: pressQuestions(S.press), i: 0, ans: [] }; ui.screen = "press"; return render();
@@ -2083,6 +2573,12 @@ input[type="search"], select {
       if (ma.act === "play") { if (matchDayToday()) { ui.screen = "prematch"; return render(); } return; }
       return;
     }
+    if (t.hasAttribute("data-breq")) {
+      var bq = t.getAttribute("data-breq").split(":"), err = boardRequest(bq[0], +bq[1]);
+      return modal('<h2>' + (err ? "Not now" : "Request sent") + '</h2><p class="muted" style="margin:0">' + (err || "The board will discuss it and reply tomorrow.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+    }
+    if (t.hasAttribute("data-deal")) return dealModal(+t.getAttribute("data-deal"));
+    if (t.hasAttribute("data-pact")) return playerAction(t.getAttribute("data-pact").split(":"));
     if (t.hasAttribute("data-tfocus")) { (S.training = S.training || { focus: "balanced", intensity: 1 }).focus = t.getAttribute("data-tfocus"); save(); return render(); }
     if (t.hasAttribute("data-tint")) { (S.training = S.training || { focus: "balanced", intensity: 1 }).intensity = +t.getAttribute("data-tint"); save(); return render(); }
     if (t.hasAttribute("data-soc")) { ui.socFilter = t.getAttribute("data-soc"); return render(); }
@@ -2122,6 +2618,55 @@ input[type="search"], select {
     if (t.hasAttribute("data-slot") || t.hasAttribute("data-bench")) return tacticsTap(t);
     if (act === "drawer") return openDrawer();
     if (act === "continue") return advance();
+    if (act === "badj") {
+      var v = +(document.getElementById("badj") || {}).value || 0, F = S.fin;
+      if (v > 0) { v = Math.min(v, F.tb); F.tb -= v; F.wb += Math.round(v / 104); }
+      else if (v < 0) { var wk = Math.min(-v / 104, Math.max(0, F.wb - wageBill(S.clubId))); F.wb -= Math.round(wk); F.tb = Math.min(F.bal, F.tb + Math.round(wk * 104)); }
+      save(); return render();
+    }
+    if (act === "dobid" || act === "doloan" || act === "dofree") {
+      var bp = byId[+t.getAttribute("data-pid")], fee = act === "dobid" ? Math.round(+(document.getElementById("offerFee") || {}).value || 0) : 0;
+      var pct = act === "doloan" ? +(document.getElementById("loanPct") || {}).value : 100;
+      if (act === "dobid" && (!fee || fee < 0)) return;
+      if (fee > S.fin.tb) { closeModal(); return modal('<h2>Over budget</h2><p class="muted" style="margin:0">Your transfer budget is ' + fmtM(S.fin.tb) + '. Ask the board for more, or offer less.</p><button class="btn primary" data-act="closemodal">OK</button>'); }
+      makeOffer(bp.id, act === "doloan" ? "loan" : act === "dofree" ? "free" : "transfer", fee, pct);
+      closeModal(); return modal('<h2>Offer sent</h2><p class="muted" style="margin:0">' + (act === "dofree" ? esc(bp.name) + "'s agent will get back to you tomorrow." : esc(club(bp.club).name) + " will reply tomorrow. Check your inbox.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+    }
+    if (act === "doterms" || act === "dorenew") {
+      var wage = Math.round(+(document.getElementById("termsWage") || {}).value || 0), yrs = +(document.getElementById("termsYears") || {}).value || 1;
+      var o = act === "doterms" ? S.offers.find(function (x) { return x.id === +t.getAttribute("data-oid"); }) : null;
+      var tp = o ? byId[o.pid] : byId[+t.getAttribute("data-pid")], dem = wageDemand(tp, !o), cur = act === "dorenew" ? contractOf(tp).wage : 0;
+      var cost = o && o.kind === "loan" ? contractOf(tp).wage * o.pct / 100 : wage;
+      var msg = "";
+      if (wageBill(S.clubId) - cur + cost > S.fin.wb) msg = "That would take wages over your budget of " + fmtM(S.fin.wb) + "/wk.";
+      else if (o && o.kind !== "loan" && o.fee > S.fin.tb) msg = "The fee is now above your transfer budget.";
+      else if (!(o && o.kind === "loan") && wage < dem * 0.95) {
+        var tries = o ? (o.tries = (o.tries || 0) + 1) : (ui.renewTries = (ui.renewTries || 0) + 1);
+        if (tries >= 3) { if (o) o.status = "refused"; save(); closeModal(); render(); return modal('<h2>Talks broken down</h2><p class="muted" style="margin:0">' + esc(tp.name) + " has walked away from the negotiations.</p><button class=\"btn primary\" data-act=\"closemodal\">OK</button>"); }
+        msg = esc(tp.name) + "'s agent says that isn't enough. (" + (3 - tries) + " more " + (3 - tries === 1 ? "try" : "tries") + ")";
+      }
+      if (msg) { var mEl = document.getElementById("termsMsg"); if (mEl) mEl.innerHTML = msg; return; }
+      if (o) { o.wage = wage; o.years = yrs; o.status = "done"; completeTransfer(o); }
+      else { (S.contracts = S.contracts || {})[tp.id] = { end: (dayDate(today()).getUTCFullYear() + yrs + (dayDate(today()).getUTCMonth() >= 6 ? 1 : 0)) + "-06-30", wage: wage }; ui.renewTries = 0;
+        post("club", clubAcct(S.clubId), "✍️ " + tp.name + " has signed a new contract until " + S.contracts[tp.id].end.slice(0, 4) + "!"); }
+      save(); closeModal(); render();
+      return modal('<h2>' + (o ? "Done deal" : "Contract signed") + '</h2><p class="muted" style="margin:0">' + esc(tp.name) + (o ? (o.kind === "loan" ? " joins on loan." : " is our player.") : " has agreed a new contract.") + '</p><button class="btn primary" data-act="closemodal">Great</button>');
+    }
+    if (act === "dout") {
+      var oo2 = S.offers.find(function (x) { return x.id === +t.getAttribute("data-oid"); }), ch = t.getAttribute("data-choice"), op = byId[oo2.pid];
+      closeModal();
+      if (ch === "accept") { oo2.status = "done"; sellPlayer(op, oo2.club, oo2.fee, oo2.kind === "loan"); }
+      else if (ch === "counter") {
+        if (srand()() < 0.5) { oo2.fee = Math.round(oo2.fee * 1.25 / 5000) * 5000; oo2.status = "done"; sellPlayer(op, oo2.club, oo2.fee, false); save(); render(); return modal('<h2>Counter accepted</h2><p class="muted" style="margin:0">' + esc(club(oo2.club).name) + " paid " + fmtM(oo2.fee) + " for " + esc(op.name) + '.</p><button class="btn primary" data-act="closemodal">OK</button>'); }
+        oo2.status = "withdrawn"; save(); render();
+        return modal('<h2>Offer withdrawn</h2><p class="muted" style="margin:0">' + esc(club(oo2.club).name) + ' weren\'t willing to pay more and pulled out.</p><button class="btn primary" data-act="closemodal">OK</button>');
+      } else oo2.status = "refused";
+      save(); return render();
+    }
+    if (act === "dorelease") {
+      var rp = byId[+t.getAttribute("data-pid")], costR = releaseCost(rp);
+      book("out", "Severance", costR); movePlayer(rp, "free"); closeModal(); save(); ui.screen = "contracts"; return render();
+    }
     if (act === "msgback") { ui.msg = null; return render(); }
     if (act === "readall") { S.inbox.forEach(function (m) { m.read = true; }); save(); return render(); }
     if (act === "closedrawer") return closeDrawer();
@@ -2168,7 +2713,7 @@ input[type="search"], select {
       }
       closeModal(); ui.title = false; S = null; return render();
     }
-    if (act === "totitle") { S = load(); if (S && !D.clubs[S.clubId]) S = null; applyDev(); ui.title = true; return render(); }
+    if (act === "totitle") { S = load(); if (S && !D.clubs[S.clubId]) S = null; applyDev(); applyMoves(); ui.title = true; return render(); }
     if (act === "saveresult") {
       closeModal();
       var mineR = playWeek({ hg: +t.getAttribute("data-hg"), ag: +t.getAttribute("data-ag") });
@@ -2188,7 +2733,7 @@ input[type="search"], select {
     if (act === "askreset") { closeModal(); return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">This deletes the current season, results and stats.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="reset">Delete and start over</button><button class="btn ghost" data-act="closemodal">Keep playing</button></div>'); }
     if (act === "reset") { closeModal(); S = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) {} ui.screen = "home"; return render(); }
     if (act === "start") {
-      S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); applyDev(); lineupOf(S.clubId); save(); ui.screen = "home"; ui.title = false;
+      S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); applyDev(); applyMoves(); lineupOf(S.clubId); save(); ui.screen = "home"; ui.title = false;
       // inside the game: make the Dream FC this club (the game restarts to apply it)
       if (window.DLSManager && window.DLSManager.becomeClub && window.DLSManager.currentClub() !== S.clubId) {
         window.DLSManager.becomeClub(S.clubId);
@@ -2207,6 +2752,7 @@ input[type="search"], select {
   });
   var typing = null;
   document.addEventListener("input", function (ev) {
+    if (ev.target.id === "badj") { var bv = +ev.target.value, bt = document.getElementById("badjv"); if (bt) bt.textContent = bv > 0 ? fmtM(bv) + " from transfers → +" + fmtM(bv / 104) + "/wk wages" : bv < 0 ? fmtM(-bv / 104) + "/wk wages → +" + fmtM(-bv) + " transfers" : "No change"; }
     if (ev.target.id === "tq") {
       ui.filter.q = ev.target.value; clearTimeout(typing);
       typing = setTimeout(function () { render(); var i = document.getElementById("tq"); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 250);
@@ -2235,6 +2781,7 @@ input[type="search"], select {
     S = load();
     if (S && !D.clubs[S.clubId]) S = null;
     applyDev();
+    applyMoves();
     ui.title = true;  // always open on the start screen
     render();
   }).catch(function (e) {
