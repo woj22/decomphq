@@ -168,6 +168,13 @@ h3 { font-size: .95rem; }
 .md-back { display: none; justify-self: start; }
 .msg-detail h3 { margin: 4px 0 0; font-size: 1.2rem; }
 .msg-detail p { margin: 0; line-height: 1.5; max-width: 65ch; }
+/* training */
+.tr-setup { padding: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grow-bar { width: 80px; height: 6px; border-radius: 3px; background: var(--panel-2); overflow: hidden; }
+.grow-bar i { display: block; height: 100%; background: var(--accent); }
+.ovr.pot { background: transparent; border: 2px solid var(--accent); color: var(--fg); }
+button.link { appearance: none; background: none; border: 0; padding: 0; font: inherit; font-weight: 700; color: inherit; cursor: pointer; text-align: left; }
+@media (max-width: 700px) { .tr-setup { grid-template-columns: 1fr; } }
 /* social */
 .feed { display: grid; gap: 10px; max-width: 720px; }
 .sc-post { display: grid; grid-template-columns: 40px 1fr; gap: 10px; padding: 12px 14px; }
@@ -884,6 +891,9 @@ input[type="search"], select {
         ts ? "Top scorer: <b>" + esc(ts.p.name) + "</b> (" + esc(club(ts.p.club).name) + "), " + ts.g + " goals." : ""].filter(Boolean), { label: "League table", go: "table" }, "league");
       socialRoundup(rw);
     }
+    // training: development every Monday morning, a report on the 15th of each month
+    if (h === 8 && dayDate(d).getUTCDay() === 1) weeklyDevelopment();
+    if (h === 10 && dayDate(d).getUTCDate() === 15 && d > 30) trainingMail();
     // first of the month: board review and player of the month
     if (d > 0 && dayDate(d).getUTCDate() === 1 && h === 10) {
       var played = (S.results[L.id] || []).filter(Boolean).length;
@@ -933,6 +943,91 @@ input[type="search"], select {
       "Overall " + p.ovr + ", valued at " + money(p.value) + ". He'd be an upgrade on what we have in that position."], { label: "View player", player: p.id }, "scout");
     socialRumour(p);
   }
+  // ------------------------------------------------------------ training & development
+  // DLS's overall (FUN_0018dd14): (sum of weight x attribute + 3500) / 1000 with the weights of
+  // the player's position group (libDLS19 0x3df268, database attribute order).
+  var DLS_W = [[5,5,5,5,5,5,5,5,5,5,494,228,228],[66,10,124,10,427,95,9,76,114,48,7,7,7],[7,7,6,114,608,57,6,57,6,114,6,6,6],
+    [10,9,66,66,361,105,7,190,162,6,6,6,6],[7,47,6,6,8,333,190,285,95,8,5,5,5],[57,57,57,9,10,314,38,161,266,10,7,7,7],
+    [48,48,10,28,10,256,390,123,9,57,7,7,7]];
+  var POS_W = { GK: 0, LB: 1, RB: 1, CB: 2, DM: 3, CM: 3, AM: 4, LM: 5, RM: 5, LW: 5, RW: 5, SS: 6, ST: 6 };
+  function dlsOverall(a, pos) { var w = DLS_W[POS_W[pos] || 3]; var t = 3500; for (var i = 0; i < 13; i++) t += w[i] * a[i]; return Math.floor(t / 1000); }
+  var FOCUS = {
+    balanced: { name: "Balanced", attrs: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], note: "Everything a little" },
+    attacking: { name: "Attacking", attrs: [5, 6, 8], note: "Shooting, control, crossing" },
+    defending: { name: "Defending", attrs: [4, 9, 3], note: "Tackling, heading, strength" },
+    technical: { name: "Technical", attrs: [5, 7, 8], note: "Control, passing, crossing" },
+    fitness: { name: "Fitness", attrs: [0, 1, 2, 3], note: "Speed, acceleration, stamina, strength" }
+  };
+  var INDIV = { "": "None", pace: [0, 1], physical: [2, 3], defending: [4, 9], technique: [5, 8], shooting: [6], passing: [7], goalkeeping: [10, 11, 12] };
+  var INDIV_NAME = { "": "None", pace: "Pace", physical: "Physical", defending: "Defending", technique: "Technique", shooting: "Shooting", passing: "Passing", goalkeeping: "Goalkeeping" };
+  var INTENSITY = [["Light", 0.75], ["Normal", 1], ["Intense", 1.25]];
+  function potOf(p) { return p.pot != null ? Math.max(p.pot, p.ovr) : p.ovr; }
+  // the season's development, kept in the save and laid over the static squad data
+  function applyDev() {
+    D.players.forEach(function (p) {
+      if (p.base == null) { p.base = p.attrs.slice(); p.baseOvr = p.ovr; }
+      var d = S && S.dev && S.dev[p.id];
+      p.attrs = d ? d.a.slice() : p.base.slice();
+      p.ovr = d ? d.o : p.baseOvr;
+    });
+  }
+  // Development in overall points per season (spread over ~46 weeks): young players with a big
+  // gap to their potential grow fastest, more with minutes, training intensity and morale; from
+  // 31 players decline. Each whole point raises (or lowers) attributes, chosen by the training
+  // focus and by what matters for the position in DLS's formula, until DLS's overall moves by one.
+  function growthPerSeason(age, gap) {
+    var k = age <= 18 ? 0.45 : age <= 20 ? 0.38 : age <= 23 ? 0.28 : age <= 26 ? 0.18 : age <= 29 ? 0.08 : 0;
+    return Math.max(0, gap) * k;
+  }
+  function stepAttrs(d, p, dir, pool, r) {
+    var w = DLS_W[POS_W[p.pos] || 3], start = dlsOverall(d.a, p.pos);
+    for (var n = 0; n < 60 && dlsOverall(d.a, p.pos) === start; n++) {
+      var tot = 0, ws = pool.map(function (x) { var i = x[0], ok = dir > 0 ? d.a[i] < 99 : d.a[i] > 15; var v = ok ? (w[i] + 15) * x[1] : 0; tot += v; return v; });
+      if (!tot) break;
+      var z = r() * tot, k = 0;
+      while (k < ws.length - 1 && (z -= ws[k]) > 0) k++;
+      d.a[pool[k][0]] += dir;
+    }
+  }
+  function weeklyDevelopment() {
+    if (!S.dev) S.dev = {};
+    var T = S.training || { focus: "balanced", intensity: 1 }, inten = (INTENSITY[T.intensity] || INTENSITY[1])[1];
+    var r = rng((S.seed ^ (today() * 362437)) >>> 0), playedW = Math.max(1, S.week);
+    D.players.forEach(function (p) {
+      var mine = p.club === S.clubId, age = p.age || 25, gk = p.pos === "GK";
+      var st = S.pstats[p.id], play = st ? Math.min(1.3, 0.7 + st.apps / playedW * 0.6) : 0.7;
+      var mood = mine ? 0.9 + ((S.morale == null ? 55 : S.morale) - 55) / 250 : 1;
+      var grow = growthPerSeason(age, potOf(p) - p.ovr) * play * (mine ? inten * mood : 1) / 46;
+      var fall = (age >= 31 ? Math.min(3, (age - 30) * 0.5 + 0.5) : 0) * (mine && T.intensity === 2 ? 1.15 : 1) / 46;
+      if (!grow && !fall && !S.dev[p.id]) return;
+      var d = S.dev[p.id] || { a: p.attrs.slice(), o: p.ovr, f: 0, g: 0 };
+      d.f += grow * (0.6 + r() * 0.8);
+      d.g += fall * (0.6 + r() * 0.8);
+      var changed = false;
+      if (d.f >= 1 && d.o < potOf(p)) {
+        d.f -= 1;
+        var focus = mine ? (FOCUS[T.focus] || FOCUS.balanced).attrs : FOCUS.balanced.attrs, ind = mine && S.indiv && INDIV[S.indiv[p.id]];
+        var pool = (gk ? [10, 11, 12] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).map(function (i) { return [i, (focus.indexOf(i) >= 0 ? 3 : 1) * (ind && ind.indexOf(i) >= 0 ? 4 : 1)]; });
+        stepAttrs(d, p, 1, pool, r); changed = true;
+      }
+      if (d.g >= 1) {
+        d.g -= 1;
+        stepAttrs(d, p, -1, gk ? [[10, 2], [11, 1], [12, 1]] : [[0, 4], [1, 4], [2, 3], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1]], r); changed = true;
+      }
+      if (changed) { d.o = Math.max(1, dlsOverall(d.a, p.pos) + (p.baseOvr - dlsOverall(p.base, p.pos))); p.attrs = d.a.slice(); p.ovr = d.o; }
+      S.dev[p.id] = d;
+    });
+  }
+  function trainingMail() {
+    var ps = clubPlayers[S.clubId].map(function (p) { return { p: p, d: p.ovr - p.baseOvr }; });
+    var up = ps.filter(function (x) { return x.d > 0; }).sort(function (a, b) { return b.d - a.d; }).slice(0, 4);
+    var down = ps.filter(function (x) { return x.d < 0; }).sort(function (a, b) { return a.d - b.d; }).slice(0, 3);
+    var T = S.training || { focus: "balanced", intensity: 1 };
+    mail("Assistant manager", "Training report", ["Team focus: <b>" + FOCUS[T.focus].name + "</b>, " + INTENSITY[T.intensity][0].toLowerCase() + " intensity.",
+      up.length ? "Improving this season: " + up.map(function (x) { return "<b>" + esc(x.p.name) + "</b> (+" + x.d + ", now " + x.p.ovr + ")"; }).join(", ") + "." : "Nobody has made a noticeable step forward yet.",
+      down.length ? "Losing a yard: " + down.map(function (x) { return esc(x.p.name) + " (" + x.d + ")"; }).join(", ") + "." : ""].filter(Boolean), { label: "Training", go: "training" });
+  }
+
   // ------------------------------------------------------------ social feed (FM-style)
   // Posts from the club, the league, journalists and fans, reacting to what happens. S.social
   // holds them newest first; S.socialSeen is the newest one the user has looked at.
@@ -1166,7 +1261,7 @@ input[type="search"], select {
       '<button class="btn ghost" data-go="table" style="justify-self:center">Full table</button></section></div>' +
       '<div class="tiles">' +
       tile("squad", "Squad", clubPlayers[S.clubId].length + " players") + tile("tactics", "Tactics", lineupOf(S.clubId).formation) +
-      tile("transfers", "Transfers", "Scout players") + tile("training", "Training", "Coming next") + "</div>" +
+      tile("transfers", "Transfers", "Scout players") + tile("training", "Training", FOCUS[(S.training || {}).focus || "balanced"].name) + "</div>" +
       '<div class="tiles">' + tile("inbox", "Inbox", unread() ? unread() + " unread" : "Up to date", "inbox") + tile("calendar", "Calendar", dayLabel(today(), true), "calendar") +
       tile("social", "Social", socialNew() ? socialNew() + " new" : "Feed", "social") + tile("tactics", "League Table", myLeague().short, "table") + "</div>" +
       (latest ? '<section class="panel news" data-msg="' + latest.id + '">' + icon("inbox").replace("<svg", '<svg style="width:22px;height:22px;stroke:var(--fg);fill:none;stroke-width:2;flex:none"') +
@@ -1180,10 +1275,10 @@ input[type="search"], select {
     var xi = lineupOf(S.clubId).xi;
     var ps = clubPlayers[S.clubId].slice().sort(function (a, b) { return order[a.pos] - order[b.pos] || b.ovr - a.ovr; });
     return screenHead("Squad", '<span class="muted">' + ps.length + " players · tap a player for details</span>") +
-      '<div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Pos</th><th class="num">Age</th><th>Nation</th><th class="num">OVR</th><th class="num">Apps</th><th class="num">Gls</th><th class="num">Ast</th><th class="num">Avg</th><th class="num">Value</th><th>Contract</th></tr></thead><tbody>' +
+      '<div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Pos</th><th class="num">Age</th><th>Nation</th><th class="num">OVR</th><th class="num">POT</th><th class="num">Apps</th><th class="num">Gls</th><th class="num">Ast</th><th class="num">Avg</th><th class="num">Value</th><th>Contract</th></tr></thead><tbody>' +
       ps.map(function (p) {
         var s = seasonLine(p.id);
-        return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td>' + (p.shirt || "–") + "</td><td><b>" + esc(p.name) + "</b>" + (xi.indexOf(p.id) >= 0 ? ' <span class="muted" title="In starting XI">●</span>' : "") + '</td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + '</span></td><td class="num">' + p.age + "</td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + s.apps + '</td><td class="num">' + s.goals + '</td><td class="num">' + s.assists + '</td><td class="num">' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</td><td class="num">' + money(p.value) + "</td><td>" + esc(p.contract || "–") + "</td></tr>";
+        return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td>' + (p.shirt || "–") + "</td><td><b>" + esc(p.name) + "</b>" + (xi.indexOf(p.id) >= 0 ? ' <span class="muted" title="In starting XI">●</span>' : "") + '</td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + '</span></td><td class="num">' + p.age + "</td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + potOf(p) + '</td><td class="num">' + s.apps + '</td><td class="num">' + s.goals + '</td><td class="num">' + s.assists + '</td><td class="num">' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</td><td class="num">' + money(p.value) + "</td><td>" + esc(p.contract || "–") + "</td></tr>";
       }).join("") + "</tbody></table></div>";
   }
   // DLS19's own stats (players.dat order: speed, acceleration, stamina, strength, tackling,
@@ -1201,7 +1296,8 @@ input[type="search"], select {
     return screenHead(p.name, '<button class="btn ghost" data-back-player>Back</button>') +
       '<div class="profile"><section class="panel profile-head"><div style="display:flex;gap:12px;align-items:center">' + badge(p.club, 44) +
       '<div><div class="shirt">' + (p.shirt || "–") + '</div><div class="muted">' + esc(c.name) + "</div></div>" +
-      '<span class="ovr" style="margin-left:auto;font-size:1.4rem;padding:6px 12px;background:' + ovrColor(p.ovr) + '">' + p.ovr + "</span></div>" +
+      '<div style="margin-left:auto;display:grid;justify-items:center;gap:2px"><span class="ovr" style="font-size:1.4rem;padding:6px 12px;background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span><span class="muted" style="font-size:.75rem">OVR</span></div>' +
+      '<div style="display:grid;justify-items:center;gap:2px"><span class="ovr pot" style="font-size:1.4rem;padding:6px 12px">' + potOf(p) + '</span><span class="muted" style="font-size:.75rem">POT</span></div></div>' +
       '<div class="facts">' +
       fact("Position", p.position) + fact("Age", p.age + (p.dob ? " (" + p.dob.split("-").reverse().join("/") + ")" : "")) +
       fact("Nationality", p.nat + (p.nat2 ? " / " + p.nat2 : "")) + fact("Height", p.height ? p.height + " cm" : "–") +
@@ -1242,6 +1338,7 @@ input[type="search"], select {
   // AI difficulty levels sent at kick-off (DLS profile +0x6100 = level x 100)
   var DIFFS = { easy: 1, normal: 2, hard: 3, veryhard: 4, elite: 5 };
   document.addEventListener("change", function (ev) {
+    if (ev.target && ev.target.hasAttribute && ev.target.hasAttribute("data-indiv") && S) { (S.indiv = S.indiv || {})[ev.target.getAttribute("data-indiv")] = ev.target.value; save(); return; }
     if (ev.target && ev.target.id === "mgrname" && S) { mgr().name = ev.target.value.trim().slice(0, 28); save(); }
     if (ev.target && ev.target.id === "diffsel" && S) { S.difficulty = ev.target.value; save(); }
   });
@@ -1355,9 +1452,28 @@ input[type="search"], select {
       "</tbody></table></div>" + (list.length === 80 ? '<p class="muted" style="margin:0">Showing the top 80 matches. Narrow the search to see more.</p>' : "");
   }
   function viewTraining() {
-    return screenHead("Training", "") + '<section class="panel" style="padding:16px;display:grid;gap:8px"><h3>Training arrives in the next update</h3>' +
-      '<p class="muted" style="margin:0;max-width:65ch">Planned: weekly focus (attacking, defending, fitness, set pieces), individual player plans that raise attributes over the season, and youth development. Player development in the DLS match engine is already unlimited in your modded APK.</p></section>';
+    var T = S.training || (S.training = { focus: "balanced", intensity: 1 });
+    if (!S.indiv) S.indiv = {};
+    var order = { GK: 0, CB: 1, LB: 2, RB: 3, DM: 4, CM: 5, LM: 6, RM: 7, AM: 8, LW: 9, RW: 10, SS: 11, ST: 12 };
+    var ps = clubPlayers[S.clubId].slice().sort(function (a, b) { return order[a.pos] - order[b.pos] || b.ovr - a.ovr; });
+    return screenHead("Training", "") +
+      '<section class="panel tr-setup"><div><div class="label">Team focus</div><div class="tabs">' + Object.keys(FOCUS).map(function (k) {
+        return '<button class="chip-btn" data-tfocus="' + k + '" aria-pressed="' + (T.focus === k) + '">' + FOCUS[k].name + "</button>"; }).join("") +
+      '</div><p class="muted" style="margin:6px 0 0">' + FOCUS[T.focus].note + '</p></div><div><div class="label">Intensity</div><div class="tabs">' + INTENSITY.map(function (x, i) {
+        return '<button class="chip-btn" data-tint="' + i + '" aria-pressed="' + (T.intensity === i) + '">' + x[0] + "</button>"; }).join("") +
+      '</div><p class="muted" style="margin:6px 0 0">' + ["Slower progress; easier on older legs.", "The usual week.", "Faster progress for young players; veterans decline a little faster."][T.intensity] + "</p></div></section>" +
+      '<p class="muted" style="margin:0">Players develop every Monday: young players with room to grow (potential) improve fastest, especially with minutes on the pitch; from 31 pace and stamina start to fade. Pick an individual focus to steer a player.</p>' +
+      '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Pos</th><th class="num">Age</th><th class="num">OVR</th><th class="num">+/−</th><th class="num">POT</th><th>Growth</th><th>Individual focus</th></tr></thead><tbody>' +
+      ps.map(function (p) {
+        var dlt = p.ovr - p.baseOvr, pot = potOf(p);
+        return '<tr><td><button class="link" data-player="' + p.id + '">' + esc(p.name) + '</button></td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + '</span></td><td class="num">' + p.age +
+          '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num" style="color:' + (dlt > 0 ? "var(--win)" : dlt < 0 ? "var(--loss)" : "var(--muted)") + '">' + (dlt > 0 ? "+" : "") + (dlt || "–") +
+          '</td><td class="num"><b>' + pot + '</b></td><td><div class="grow-bar"><i style="width:' + Math.round(p.ovr / Math.max(pot, 1) * 100) + '%"></i></div></td>' +
+          '<td><select data-indiv="' + p.id + '" aria-label="Individual focus for ' + esc(p.name) + '">' + Object.keys(INDIV_NAME).filter(function (k) { return (k === "goalkeeping") === (p.pos === "GK") || k === ""; }).map(function (k) {
+            return '<option value="' + k + '"' + ((S.indiv[p.id] || "") === k ? " selected" : "") + ">" + INDIV_NAME[k] + "</option>"; }).join("") + "</select></td></tr>";
+      }).join("") + "</tbody></table></div>";
   }
+
   // ---- inbox: messages on the left, the open one on the right (one column on phones)
   var KIND_COL = { board: "#c9a227", league: "#4f8ff7", match: "var(--accent)", good: "var(--win)", bad: "var(--loss)", scout: "#b07cf0", info: "var(--muted)" };
   function viewInbox() {
@@ -1850,7 +1966,7 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
-    var t = ev.target.closest("[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
+    var t = ev.target.closest("[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
     if (!t) return;
     if (t.hasAttribute("data-pickleague")) { ui.pickLeague = t.getAttribute("data-pickleague"); ui.pick = D.leagues.find(function (l) { return l.id === ui.pickLeague; }).clubs[0]; return renderNewGame(); }
     if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return updateNewGamePick(); }
@@ -1872,6 +1988,8 @@ input[type="search"], select {
       if (ma.act === "play") { if (matchDayToday()) { ui.screen = "prematch"; return render(); } return; }
       return;
     }
+    if (t.hasAttribute("data-tfocus")) { (S.training = S.training || { focus: "balanced", intensity: 1 }).focus = t.getAttribute("data-tfocus"); save(); return render(); }
+    if (t.hasAttribute("data-tint")) { (S.training = S.training || { focus: "balanced", intensity: 1 }).intensity = +t.getAttribute("data-tint"); save(); return render(); }
     if (t.hasAttribute("data-soc")) { ui.socFilter = t.getAttribute("data-soc"); return render(); }
     if (t.hasAttribute("data-pans")) {
       var ps = ui.pressState, qq = ps && ps.qs[ps.i];
@@ -1955,7 +2073,7 @@ input[type="search"], select {
       }
       closeModal(); ui.title = false; S = null; return render();
     }
-    if (act === "totitle") { S = load(); if (S && !D.clubs[S.clubId]) S = null; ui.title = true; return render(); }
+    if (act === "totitle") { S = load(); if (S && !D.clubs[S.clubId]) S = null; applyDev(); ui.title = true; return render(); }
     if (act === "saveresult") {
       closeModal();
       var mineR = playWeek({ hg: +t.getAttribute("data-hg"), ag: +t.getAttribute("data-ag") });
@@ -1975,7 +2093,7 @@ input[type="search"], select {
     if (act === "askreset") { closeModal(); return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">This deletes the current season, results and stats.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="reset">Delete and start over</button><button class="btn ghost" data-act="closemodal">Keep playing</button></div>'); }
     if (act === "reset") { closeModal(); S = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) {} ui.screen = "home"; return render(); }
     if (act === "start") {
-      S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); lineupOf(S.clubId); save(); ui.screen = "home"; ui.title = false;
+      S = newSeason(ui.pick || "fuzinar", (Date.now() % 2147483647) >>> 0); applyDev(); lineupOf(S.clubId); save(); ui.screen = "home"; ui.title = false;
       // inside the game: make the Dream FC this club (the game restarts to apply it)
       if (window.DLSManager && window.DLSManager.becomeClub && window.DLSManager.currentClub() !== S.clubId) {
         window.DLSManager.becomeClub(S.clubId);
@@ -2021,6 +2139,7 @@ input[type="search"], select {
     D.players.forEach(function (p) { byId[p.id] = p; (clubPlayers[p.club] = clubPlayers[p.club] || []).push(p); });
     S = load();
     if (S && !D.clubs[S.clubId]) S = null;
+    applyDev();
     ui.title = true;  // always open on the start screen
     render();
   }).catch(function (e) {

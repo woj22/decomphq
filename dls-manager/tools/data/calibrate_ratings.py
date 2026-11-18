@@ -43,8 +43,22 @@ def overall(a, w):
     return (sum(x * y for x, y in zip(a, w)) + 3500) // 1000
 
 
-def calibrate(a, w, target, gk):
+def calibrate(a, w, target, gk, keep_physical=False):
+    """keep_physical: real (EA FC) profiles keep speed, acceleration, stamina and strength as
+    they are and move only the technical attributes, unless those can't reach the rating."""
     a = list(a)
+    if keep_physical and not gk:
+        t = list(a)
+        for _ in range(200):
+            o = overall(t, w)
+            if o == target:
+                return t
+            step = 1 if target > o else -1
+            if not any(1 <= t[i] + step <= 99 for i in range(4, 10)):
+                break
+            for i in range(4, 10):
+                if 1 <= t[i] + step <= 99:
+                    t[i] += step
     idx = [10, 11, 12] if gk else list(range(10))
     for _ in range(200):
         o = overall(a, w)
@@ -92,7 +106,7 @@ def main():
         g = pl.get(rec)
         pos = g["pos_primary"]
         wt = w[grp[pos]] if pos < len(grp) else w[0]
-        new = calibrate(p["attrs"], wt, p["ovr"], pos == 0)
+        new = calibrate(p["attrs"], wt, p["ovr"], pos == 0, p.get("attrSource") == "fc")
         if overall(new, wt) != p["ovr"]:
             off += 1
         p["attrs"] = new
