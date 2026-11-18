@@ -98,10 +98,40 @@ static void pause_resume(void)
     FN(0x2a90dc, void (*)(void))();
 }
 
+static int match_in_stack(void)
+{
+    u8 *mgr = screen_mgr();
+    int n = *(int *)(mgr + 0x48);
+    for (int i = 0; i < n && i < 24; i++) {
+        u8 *s = *(u8 **)(mgr + 0x50 + i * 8);
+        if (s && *(int *)(s + 0x134) == 0)
+            return 1;
+    }
+    return 0;
+}
+
 /* called once a frame on the game thread (from the cave's frame hook) */
 void dlsmgr_frame(void)
 {
     frameNo++;
+    /* Kick-off with the previous match's screen still in the stack (it stays under the hub
+       after full time): clear the history first and wait until that screen is destroyed -
+       its clean-up (FUN_0013f954 -> FUN_001d6a1c) frees the team sheets, so it must run
+       before the new match is set up. The cave's kick-off (request 4 at PAGE+0xf00) is held
+       back meanwhile (PAGE+0xf03). */
+    if (PAGE[0xf00] == 4 && match_in_stack()) {
+        PAGE[0xf00] = 0;
+        PAGE[0xf03] = 1;
+        FN(0x16acb4, void (*)(int, void *))(0, 0);
+        FN(0x169f44, void (*)(int, int, int, int, int, int))(5, 0, 0, 0, 1, 0);
+        nlog("kick-off waits for the old match screen%d%d%d\n", 0, 0, 0);
+        return;
+    }
+    if (PAGE[0xf03] && !match_in_stack()) {
+        PAGE[0xf03] = 0;
+        PAGE[0xf00] = 4;     /* the cave kicks off right after this returns */
+        nlog("old match screen gone, kicking off%d%d%d\n", 0, 0, 0);
+    }
     int type = -1;
     u8 *scr = top_screen(&type);
     u8 *mgr = screen_mgr();
@@ -124,9 +154,17 @@ void dlsmgr_frame(void)
     if (scr && type == 0) {
         u8 *m = match_data();
         u32 hg = m[0x9f14] & 31, ag = m[0x9f15] & 31;
-        u32 mn = *(u32 *)(m + 0xa704), sc = *(u32 *)(m + 0xa708);
+        /* clock: M+0xa708 = half length (minutes), M+0xa700 = seconds left in the half,
+           M+0xa704 = match minute (tells the halves apart); confirmed from the logged values */
+        int half = *(int *)(m + 0xa708), left = *(int *)(m + 0xa700), minute = *(int *)(m + 0xa704);
+        if (half <= 0 || half > 90)
+            half = 45;
+        int el = half * 60 - left;
+        if (el < 0) el = 0;
+        int start = minute >= half ? (minute >= 2 * half ? 2 * half : half) : 0;
+        int total = start * 60 + el;
+        u32 mn = (u32)(total / 60), sc = (u32)(total % 60);
         if (mn > 255) mn = 255;
-        if (sc > 63) sc = 63;
         u32 hud = 14 | hg << 8 | ag << 13 | sc << 18 | mn << 24;
         if (hud != lastHud) {
             lastHud = hud;

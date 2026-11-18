@@ -154,12 +154,10 @@ static void exhibition_fulltime(void)
         fclose_plt(f);
     }
     java_event(2);  /* menus up now (score already in the file), before the hub is drawn */
-    /* Back to the hub without touching the season or saving. The screen history is cleared
-       first (FUN_0016acb4(0, 0), as DLS's kick-off does) so the finished match screen is
-       destroyed now: pushed on top of it (v47-v62), it was only destroyed at the next
-       kick-off, after the new match was set up, and its clean-up (FUN_0013f954 ->
-       FUN_001d6a1c) freed the new match's team sheets - the second-match crash. */
-    FUN_0016acb4(0, 0);
+    /* back to the hub, as the league handler does, without touching the season or saving.
+       (v63-v65 cleared the screen history here: that destroyed the match screen while its own
+       update was still running and crashed. The next kick-off now waits for the finished
+       match screen to go first - libdlsmgr, dlsmgr_frame.) */
     FUN_00169f44(5, 0, 0, 0, m[0x9ef4] == 0, 0);
 }
 
