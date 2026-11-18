@@ -86,6 +86,8 @@ static u8 *top_screen(int *type)
 static int pauseOpen;
 static int pendingPause;       /* our pause button was tapped */
 static u32 lastHud = 0xffffffff;
+static int lastAdded = -1;
+static int halfNo, lastLeft;
 static int pendingAction;      /* pause menu choice, 0 = none */
 static int lastTop = -2, lastDepth = -1, lastCut = -1;
 static unsigned frameNo;
@@ -154,17 +156,32 @@ void dlsmgr_frame(void)
     if (scr && type == 0) {
         u8 *m = match_data();
         u32 hg = m[0x9f14] & 31, ag = m[0x9f15] & 31;
-        /* clock: M+0xa708 = half length (minutes), M+0xa700 = seconds left in the half,
-           M+0xa704 = match minute (tells the halves apart); confirmed from the logged values */
+        /* clock, as DLS's: M+0xa700 counts down the half's frames (half length M+0xa708 x 60,
+           30 a second; it shows real playing time, 00:06 six seconds in), M+0xa704 is the
+           match minute (tells the halves apart), M+0xa714 the added minutes, played once
+           M+0xa700 has run out (where DLS widens its clock for the red tab). */
         int half = *(int *)(m + 0xa708), left = *(int *)(m + 0xa700), minute = *(int *)(m + 0xa704);
+        if (halfNo > 3) halfNo = 3;
         if (half <= 0 || half > 90)
             half = 45;
-        int el = half * 60 - left;
-        if (el < 0) el = 0;
-        int start = minute >= half ? (minute >= 2 * half ? 2 * half : half) : 0;
-        int total = start * 60 + el;
-        u32 mn = (u32)(total / 60), sc = (u32)(total % 60);
+        int frames = half * 60;
+        /* which period: counted here, not from the minute (it passes 45 in first-half added
+           time). A new period starts when the frame counter jumps back up to (near) full. */
+        if (minute <= 1 && left > frames - 120)
+            halfNo = 0;                       /* kick-off */
+        else if (left > lastLeft + 300)
+            halfNo++;
+        lastLeft = left;
+        int total = halfNo * frames + (frames - left);
+        if (total < 0) total = 0;
+        u32 secs = (u32)(total / 30);
+        u32 mn = secs / 60, sc = secs % 60;
         if (mn > 255) mn = 255;
+        int added = (*(int *)(m + 0xa714) > 0 && left < 1) ? *(int *)(m + 0xa714) : 0;
+        if (added != lastAdded) {
+            lastAdded = added;
+            event(16 | (added & 0xff) << 8);   /* added-time tab on / off */
+        }
         u32 hud = 14 | hg << 8 | ag << 13 | sc << 18 | mn << 24;
         if (hud != lastHud) {
             lastHud = hud;

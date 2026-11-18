@@ -711,6 +711,8 @@ public final class Overlay {
                 // the build-up cutscene started while the match was still loading
                 startIntro(400);
             }
+        } else if ((code & 0xff) == 16) {
+            activity.runOnUiThread(new JsTask("window.dlsAdded && window.dlsAdded(" + ((code >> 8) & 0xff) + ")"));
         } else if ((code & 0xff) == 14) {
             // scoreboard: home goals, away goals, clock (libdlsmgr, on change)
             activity.runOnUiThread(new JsTask("window.dlsHud && window.dlsHud(" + ((code >> 8) & 31) + "," + ((code >> 13) & 31)

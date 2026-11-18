@@ -50,6 +50,9 @@ html.intro, html.intro body { background: transparent !important; }
 .sb-t { display: flex; align-items: center; gap: 6px; padding: 0 9px; font-size: .85rem; letter-spacing: .04em; }
 .sb-s { display: flex; align-items: center; padding: 0 12px; background: var(--accent); color: #071a0d; font-size: 1rem; font-variant-numeric: tabular-nums; }
 .sb-c { display: flex; align-items: center; padding: 0 10px; border-left: 1px solid rgba(255,255,255,.14); font-variant-numeric: tabular-nums; font-size: .9rem; }
+.sb { position: relative; }
+.sb-add { display: flex; align-items: center; justify-content: center; width: 0; overflow: hidden; background: #2fbf5a; color: #062a12; font-weight: 900; font-size: .85rem; transition: width .45s cubic-bezier(.2,.8,.2,1), padding .45s; }
+.sb-add.on { width: 38px; }
 .lu-wrap { position: fixed; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: center; padding: 4vh 6vw; pointer-events: none; }
 .lu-side { display: grid; gap: 8px; background: rgba(8,12,10,.78); border-radius: 14px; padding: 10px; }
 .intro-wrap { position: fixed; inset: 0; display: grid; align-content: end; padding: 0 0 7vh; pointer-events: none; }
@@ -917,13 +920,19 @@ input[type="search"], select {
     if (!h) { h = document.createElement("div"); h.id = "hud"; document.body.appendChild(h); }
     h.innerHTML = fx ? '<div class="sb"><span class="sb-t">' + badge(fx.home, 22) + '<b>' + esc(club(fx.home).short || "") + '</b></span>' +
       '<span class="sb-s" id="sbs">0 – 0</span><span class="sb-t"><b>' + esc(club(fx.away).short || "") + "</b>" + badge(fx.away, 22) + '</span>' +
-      '<span class="sb-c" id="sbc">00:00</span></div>' : "";
+      '<span class="sb-c" id="sbc">00:00</span><span class="sb-add" id="sba"></span></div>' : "";
     h.style.display = "block";
   };
   window.dlsHud = function (hg, ag, mn, sc) {
     var a = document.getElementById("sbs"), c = document.getElementById("sbc");
     if (a) a.textContent = hg + " – " + ag;
     if (c) c.textContent = (mn < 10 ? "0" : "") + mn + ":" + (sc < 10 ? "0" : "") + sc;
+  };
+  // added time: a green tab slides out of the clock, like DLS's red one
+  window.dlsAdded = function (n) {
+    var a = document.getElementById("sba");
+    if (!a) return;
+    if (n > 0) { a.textContent = "+" + n; a.classList.add("on"); } else a.classList.remove("on");
   };
   window.dlsHudOff = function () {
     window.inMatch = false;
