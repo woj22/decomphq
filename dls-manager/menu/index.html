@@ -183,14 +183,72 @@ h3 { font-size: .95rem; }
 .mood-row { display: flex; justify-content: center; gap: 14px; font-size: .82rem; color: var(--muted); }
 .mood-row b { color: var(--fg); }
 /* press conference */
-.press-card { padding: 18px; display: grid; gap: 14px; max-width: 760px; }
-.press-card h3, .press-card p { margin: 0; }
-.press-prog { font-size: .78rem; color: var(--muted); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-.press-q { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: start; }
-.press-q p { margin: 4px 0 0; font-size: 1.08rem; font-weight: 600; line-height: 1.4; }
-.press-ans { display: grid; gap: 8px; }
-.press-a { justify-content: flex-start; text-align: left; display: grid; gap: 2px; padding: 10px 14px; white-space: normal; }
-.pa-tone { font-size: .7rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .05em; }
+.press { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 12px; }
+.press-side { padding: 16px; display: grid; gap: 8px; align-content: start; justify-items: center; text-align: center; }
+.ps-kind { justify-self: stretch; text-align: left; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.ps-badge { padding: 10px 0 4px; }
+.ps-name { font-weight: 800; font-size: 1.15rem; }
+.ps-edit { padding: 6px 12px; font-size: .8rem; }
+.ps-match { justify-self: stretch; display: flex; gap: 10px; align-items: center; text-align: left; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; font-size: .9rem; }
+.ps-match .muted { font-size: .75rem; }
+.press-main { display: grid; gap: 0; min-width: 0; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); background: var(--panel); }
+.stage { position: relative; height: clamp(170px, 38vh, 330px); overflow: hidden; background: #0d1211; }
+.stage.small { height: 260px; border-radius: 12px; }
+.backdrop { position: absolute; inset: -10px; display: grid; grid-template-columns: repeat(9, 1fr); align-items: center; justify-items: center; gap: 6px 0; filter: grayscale(1) brightness(1.4); opacity: .16; }
+.backdrop svg, .backdrop img { display: block; }
+.spot { position: absolute; inset: 0; background: radial-gradient(60% 75% at 50% 35%, rgba(76,200,106,.16), transparent 60%), linear-gradient(180deg, transparent 50%, rgba(0,0,0,.55)); }
+.mgr-wrap { position: absolute; left: 50%; bottom: 14%; height: 80%; aspect-ratio: 1; transform: translateX(-50%); }
+.mgr-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.desk { position: absolute; left: 0; right: 0; bottom: 0; height: 20%; background: linear-gradient(180deg, #121816, #090c0b); border-top: 3px solid #2a3331; }
+.desk-props { position: absolute; left: 50%; bottom: 20%; transform: translateX(-50%); height: 17%; width: auto; overflow: visible; }
+.mgr-torso { animation: mgrBreathe 4.2s ease-in-out infinite; transform-origin: 120px 240px; }
+.mgr-head { animation: mgrIdle 7s ease-in-out infinite; transform-origin: 120px 140px; }
+.mgr-eyes { animation: mgrBlink 5.5s infinite; transform-origin: 120px 93px; }
+.mgr-mouth-open { opacity: 0; transform-origin: 120px 123px; }
+.talking .mgr-mouth { opacity: 0; }
+.talking .mgr-mouth-open { opacity: 1; animation: mgrTalk .18s ease-in-out infinite alternate; }
+.talking .mgr-head { animation: mgrNod 1.3s ease-in-out infinite; }
+@keyframes mgrBreathe { 50% { transform: translateY(2px) scaleY(.99); } }
+@keyframes mgrIdle { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-2deg); } 65% { transform: rotate(1.5deg) translateY(1px); } }
+@keyframes mgrBlink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+@keyframes mgrTalk { from { transform: scaleY(.35); } to { transform: scaleY(1.1); } }
+@keyframes mgrNod { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-3deg) translateY(1px); } 60% { transform: rotate(2deg); } }
+@keyframes mgrGesture { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-9deg) translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .mgr-torso, .mgr-head, .mgr-eyes, .talking .mgr-mouth-open, .talking .mgr-head { animation: none; } }
+.caption { position: absolute; left: 50%; bottom: 4%; z-index: 2; transform: translateX(-50%); max-width: 80%; padding: 8px 14px; border-radius: 10px; background: rgba(0,0,0,.7); font-weight: 600; text-align: center; animation: capIn .25s both; }
+@keyframes capIn { from { opacity: 0; } to { opacity: 1; } }
+.qbox { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 12px 14px; border-top: 1px solid var(--line); }
+.q-mic { width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--line); display: grid; place-items: center; background: var(--panel-2); }
+.q-mic svg { width: 22px; height: 22px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
+.q-who { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.qbox p { margin: 3px 0 0; font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
+.q-n { color: var(--muted); font-weight: 700; font-size: .85rem; }
+.resp { grid-column: 1 / -1; padding: 12px 14px; display: grid; gap: 10px; }
+.resp-h { font-size: .74rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+.resp-btn { appearance: none; font: inherit; color: var(--fg); text-align: left; display: flex; align-items: center; gap: 10px; justify-content: space-between; padding: 10px 14px; min-height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2); cursor: pointer; }
+.resp-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(76,200,106,.08); }
+.resp-btn:disabled { opacity: .5; }
+.resp-tone { flex: none; font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.resp-sum { display: flex; gap: 20px; flex-wrap: wrap; font-weight: 600; }
+/* manager look */
+.mg { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 12px; align-items: start; }
+.mg-prev { padding: 12px; display: grid; gap: 10px; }
+.mg-form { padding: 14px; display: grid; gap: 12px; }
+.mg-group { display: grid; gap: 6px; }
+.mg-form input { font: inherit; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; min-height: 40px; }
+.mg-form input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.mg-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.mg-opt { appearance: none; font: inherit; font-size: .85rem; font-weight: 600; color: var(--fg); padding: 7px 12px; min-height: 36px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel-2); cursor: pointer; }
+.mg-opt.sw { width: 36px; padding: 0; border-radius: 50%; }
+.mg-opt[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+@media (max-width: 760px), (max-height: 500px) {
+  .press { grid-template-columns: 1fr; }
+  .press-side { display: none; }
+  .stage { height: 44vh; min-height: 150px; }
+  .mg { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) { .resp-grid { grid-template-columns: 1fr; } }
 /* calendar */
 .cal-nav { display: flex; align-items: center; gap: 8px; }
 .cal-nav b { min-width: 9em; text-align: center; }
@@ -778,6 +836,7 @@ input[type="search"], select {
     var opp = f ? club(f.home === S.clubId ? f.away : f.home).name : null;
     mail("Assistant manager", "Pre-season plans", ["I've set the team up in a " + esc(lineupOf(S.clubId).formation) + " for now. Have a look at the tactics and pick the XI you trust.",
       opp ? "We open the league season against <b>" + esc(opp) + "</b> on " + dayLabel(weekDay(0)) + "." : ""].filter(Boolean), { label: "Tactics", go: "tactics" });
+    mail("Media department", "Your public image", ["Before you face the press, set up how you look and what you're called. You can change it any time under Manager in the menu."], { label: "Set up your manager", go: "manager" });
     post("club", clubAcct(S.clubId), "👋 Welcome to our new manager! A new era begins at " + c.name + ". " + D.season + " starts now.", { hype: 1.5 });
     post("fan", fan(S.clubId, rng(S.seed)), "New manager in. Let's see what they can do 🤞");
   }
@@ -1078,7 +1137,7 @@ input[type="search"], select {
     if (ui.title) return renderTitle();
     if (!S) return renderNewGame();
     ensureCal();
-    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress }[ui.screen] || viewHome)() + "</main>";
+    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
   }
@@ -1183,6 +1242,7 @@ input[type="search"], select {
   // AI difficulty levels sent at kick-off (DLS profile +0x6100 = level x 100)
   var DIFFS = { easy: 1, normal: 2, hard: 3, veryhard: 4, elite: 5 };
   document.addEventListener("change", function (ev) {
+    if (ev.target && ev.target.id === "mgrname" && S) { mgr().name = ev.target.value.trim().slice(0, 28); save(); }
     if (ev.target && ev.target.id === "diffsel" && S) { S.difficulty = ev.target.value; save(); }
   });
 
@@ -1335,21 +1395,117 @@ input[type="search"], select {
     return html;
   }
   function socialNew() { return (S.social || []).filter(function (x) { return x.id > (S.socialSeen || 0); }).length; }
-  // ---- press conference (layout to be restyled)
-  function viewPress() {
-    var P = S.press, st = ui.pressState;
-    if (!P || !st || st.id !== P.id) return screenHead("Press conference", "") + '<p class="muted">No press conference right now.</p>';
-    var head = screenHead((P.kind === "pre" ? "Pre-match" : "Post-match") + " press conference", '<span class="muted">' + esc(club(P.opp).name) + "</span>");
-    if (st.i >= st.qs.length) {
-      var e = P.effect || { mor: 0, fans: 0 };
-      function arrow(n) { return n > 0 ? '<b style="color:var(--win)">▲ up</b>' : n < 0 ? '<b style="color:var(--loss)">▼ down</b>' : "<b>unchanged</b>"; }
-      return head + '<section class="panel press-card"><h3>That\'s all, thank you.</h3><p>Squad morale ' + arrow(e.mor) + " · now " + moraleWord(S.morale) + "</p><p>Fans' mood " + arrow(e.fans) + " · now " + moraleWord(S.fanMood) + "</p>" +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-go="inbox">Back to inbox</button><button class="btn" data-go="social">See the reaction</button></div></section>';
+  // ---- the manager: a customisable, animated 2D figure (press conferences, manager screen)
+  var MGR_OPTS = {
+    skin: ["#f1c9a5", "#e0ac85", "#c68a5e", "#a8693f", "#7c4a2a", "#56331d"],
+    hair: ["short", "buzz", "swept", "curly", "long", "bald"],
+    hairCol: ["#1d1a18", "#4a3020", "#7a5230", "#c9a165", "#8f9396", "#e4ded2"],
+    beard: ["none", "stubble", "goatee", "moustache", "full"],
+    glasses: ["none", "round", "square"],
+    suit: ["#1f2a44", "#2b2e33", "#121416", "#5a6068", "#3a2a22", "#1f4a33"],
+    tie: ["#9e1b1b", "#1f3d7a", "#d4af37", "#151515", "#4cc86a", "none"]
+  };
+  var MGR_LABEL = { skin: "Skin tone", hair: "Hair", hairCol: "Hair colour", beard: "Facial hair", glasses: "Glasses", suit: "Suit", tie: "Tie" };
+  function mgr() {
+    if (!S.manager) S.manager = { name: "", skin: 1, hair: "short", hairCol: 0, beard: "stubble", glasses: "none", suit: 0, tie: 0 };
+    return S.manager;
+  }
+  function mgrName() { return (S.manager && S.manager.name) || "The Manager"; }
+  function shade(hex, f) {
+    var n = parseInt(hex.slice(1), 16), r = n >> 16, g = n >> 8 & 255, b = n & 255;
+    function c(x) { return Math.max(0, Math.min(255, Math.round(f < 0 ? x * (1 + f) : x + (255 - x) * f))); }
+    return "#" + ((1 << 24) | (c(r) << 16) | (c(g) << 8) | c(b)).toString(16).slice(1);
+  }
+  function managerSVG(m) {
+    var sk = MGR_OPTS.skin[m.skin] || MGR_OPTS.skin[1], hc = MGR_OPTS.hairCol[m.hairCol] || MGR_OPTS.hairCol[0], su = MGR_OPTS.suit[m.suit] || MGR_OPTS.suit[0], ti = MGR_OPTS.tie[m.tie] || "none";
+    var skD = shade(sk, -0.18), hair = "";
+    switch (m.hair) {
+      case "short": hair = '<path fill="' + hc + '" d="M83 94C80 62 99 47 120 47c22 0 41 15 37 47-5-17-18-26-37-26s-32 9-37 26z"/>'; break;
+      case "buzz": hair = '<path fill="' + hc + '" opacity=".8" d="M85 88c0-24 16-35 35-35s35 11 35 35c-8-12-20-17-35-17s-27 5-35 17z"/>'; break;
+      case "swept": hair = '<path fill="' + hc + '" d="M82 98c-5-38 20-53 44-52 25 2 37 21 32 52-4-16-12-26-26-31-14 9-33 12-50 31z"/>'; break;
+      case "curly": hair = [[86, 80], [94, 64], [106, 54], [120, 50], [134, 54], [146, 64], [154, 80], [100, 60], [140, 60], [120, 58]].map(function (c) { return '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="11" fill="' + hc + '"/>'; }).join(""); break;
+      case "long": hair = '<path fill="' + hc + '" d="M79 126c-9-52 15-80 41-80s51 28 41 80c-4-22-4-38-10-46-12-10-50-10-62 0-6 8-6 24-10 46z"/>'; break;
+      default: hair = '<ellipse cx="110" cy="62" rx="10" ry="5" fill="#fff" opacity=".18"/>';
     }
-    var q = st.qs[st.i];
-    return head + '<section class="panel press-card"><div class="press-prog">Question ' + (st.i + 1) + " of " + st.qs.length + '</div>' +
-      '<div class="press-q"><span class="sc-av ini" style="background:#3a4a52;color:#fff">' + esc(q.who.split(" ").map(function (x) { return x[0]; }).join("")) + '</span><div><div class="label">' + esc(q.who) + " · " + esc(q.outlet) + '</div><p>' + esc(q.q) + "</p></div></div>" +
-      '<div class="press-ans">' + q.a.map(function (a, i) { return '<button class="btn press-a" data-pans="' + i + '"><span class="pa-tone">' + esc(a.tone) + "</span>" + esc(a.text) + "</button>"; }).join("") + "</div></section>";
+    var beard = "";
+    if (m.beard === "stubble") beard = '<path fill="' + hc + '" opacity=".28" d="M86 104c2 26 18 37 34 37s32-11 34-37c-4 18-16 27-34 27s-30-9-34-27z"/>';
+    if (m.beard === "goatee") beard = '<path fill="' + hc + '" d="M108 125q12 18 24 0-6 5-12 5t-12-5zM106 117q14-7 28 0-14-3-28 0z"/>';
+    if (m.beard === "moustache") beard = '<path fill="' + hc + '" d="M104 118q16-10 32 0-16-4-32 0z"/>';
+    if (m.beard === "full") beard = '<path fill="' + hc + '" d="M84 100c0 32 17 48 36 48s36-16 36-48c-3 14-9 22-16 24-6-6-34-6-40 0-7-2-13-10-16-24zM104 117q16-9 32 0-16-3-32 0z"/>';
+    var glasses = m.glasses === "round" ? '<g fill="none" stroke="#1a1a1a" stroke-width="2.4"><circle cx="107" cy="93" r="9"/><circle cx="133" cy="93" r="9"/><path d="M116 93h8M98 92l-10-3M142 92l10-3"/></g>' :
+      m.glasses === "square" ? '<g fill="none" stroke="#1a1a1a" stroke-width="2.4"><rect x="97" y="86" width="19" height="14" rx="3"/><rect x="124" y="86" width="19" height="14" rx="3"/><path d="M116 92h8M97 91l-9-2M143 91l9-2"/></g>' : "";
+    var tie = ti === "none" ? '<path fill="' + shade("#ffffff", -0.12) + '" d="M110 160l10 14 10-14z"/>' :
+      '<path fill="' + shade(ti, -0.2) + '" d="M115 164h10l-2 7h-6z"/><path fill="' + ti + '" d="M117 171h6l4 30-7 9-7-9z"/>';
+    return '<svg class="mgr-svg" viewBox="0 0 240 240" aria-hidden="true">' +
+      '<g class="mgr-torso"><path fill="' + su + '" d="M36 240c0-55 32-80 84-82 52 2 84 27 84 82z"/>' +
+      '<path fill="#f4f4f2" d="M103 158l17 50 17-50z"/>' + tie +
+      '<path fill="' + shade(su, -0.25) + '" d="M103 158l-9 16 24 44-12-48zM137 158l9 16-24 44 12-48z"/>' +
+      '<rect x="107" y="132" width="26" height="30" rx="8" fill="' + skD + '"/></g>' +
+      '<g class="mgr-head"><ellipse cx="83" cy="100" rx="6" ry="10" fill="' + skD + '"/><ellipse cx="157" cy="100" rx="6" ry="10" fill="' + skD + '"/>' +
+      '<ellipse cx="120" cy="96" rx="37" ry="45" fill="' + sk + '"/>' + beard + hair +
+      '<path fill="none" stroke="' + shade(hc, 0.05) + '" stroke-width="3" stroke-linecap="round" d="M99 82q8-5 15 0M126 82q7-5 15 0"/>' +
+      '<g class="mgr-eyes"><ellipse cx="107" cy="93" rx="3.2" ry="3.8" fill="#1b1b1b"/><ellipse cx="133" cy="93" rx="3.2" ry="3.8" fill="#1b1b1b"/></g>' + glasses +
+      '<path fill="none" stroke="' + skD + '" stroke-width="2" stroke-linecap="round" d="M120 97q-5 11 1 13"/>' +
+      '<path class="mgr-mouth" fill="none" stroke="#6b2a2a" stroke-width="2.6" stroke-linecap="round" d="M110 122q10 5 20 0"/>' +
+      '<ellipse class="mgr-mouth-open" cx="120" cy="123" rx="7" ry="4.5" fill="#4a1414"/></g>' +
+      "</svg>";
+  }
+  function deskSVG() {
+    // the desk across the stage, with the microphone and two water bottles standing on it
+    return '<div class="desk"></div><svg class="desk-props" viewBox="0 0 300 60" preserveAspectRatio="xMidYMax meet" aria-hidden="true">' +
+      '<g fill="#26302d"><rect x="70" y="18" width="13" height="42" rx="3"/><rect x="72.5" y="10" width="8" height="10" rx="2"/>' +
+      '<rect x="217" y="18" width="13" height="42" rx="3"/><rect x="219.5" y="10" width="8" height="10" rx="2"/></g>' +
+      '<rect x="147.5" y="28" width="5" height="30" fill="#1a201f"/><rect x="137" y="56" width="26" height="4" rx="2" fill="#1a201f"/>' +
+      '<rect x="143" y="4" width="14" height="26" rx="7" fill="#2c3533"/><path d="M145 11h10M145 17h10M145 23h10" stroke="#151b1a" stroke-width="1.4"/></svg>';
+  }
+  function micIcon() { return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></svg>'; }
+  function pressBackdrop() {
+    var lg = myLeague().id, items = [];
+    for (var i = 0; i < 27; i++) items.push((i + Math.floor(i / 9)) % 2 ? '<span>' + leagueLogo(lg, 40) + "</span>" : '<span>' + badge(S.clubId, 46) + "</span>");
+    return '<div class="backdrop">' + items.join("") + "</div>";
+  }
+  // ---- press conference: the stage with the manager, the journalist's question, the answers
+  function viewPress() {
+    var P = S.press, st = ui.pressState, m = mgr();
+    if (!P || !st || st.id !== P.id) return screenHead("Press conference", "") + '<p class="muted">No press conference right now.</p>';
+    var done = st.i >= st.qs.length, q = done ? null : st.qs[st.i], opp = club(P.opp);
+    var side = '<aside class="panel press-side"><div class="ps-kind">' + (P.kind === "pre" ? "Pre-match" : "Post-match") + " press conference</div>" +
+      '<div class="ps-badge">' + badge(S.clubId, 96) + '</div><div class="ps-name">' + esc(mgrName()) + '</div><div class="muted">Head Coach, ' + esc(club(S.clubId).name) + "</div>" +
+      '<button class="btn ghost ps-edit" data-go="manager">Edit look</button>' +
+      '<div class="ps-match">' + leagueLogo(myLeague().id, 22) + "<div><div class=\"muted\">" + (P.kind === "pre" ? "Next match" : "Result") + " · " + esc(myLeague().name) + "</div><b>" +
+      (P.kind === "pre" ? "vs " + esc(opp.name) : esc(club(P.res.h).name) + " " + P.res.hg + "–" + P.res.ag + " " + esc(club(P.res.a).name)) + "</b></div></div></aside>";
+    var talking = st.talk != null;
+    var stage = '<div class="stage">' + pressBackdrop() + '<div class="spot"></div><div class="mgr-wrap' + (talking ? " talking" : "") + '">' + managerSVG(m) + "</div>" + deskSVG() +
+      (talking ? '<div class="caption">“' + esc(st.talk) + '”</div>' : "") + "</div>";
+    var qbox, resp;
+    if (done) {
+      var e = P.effect || { mor: 0, fans: 0 };
+      function arrow(n) { return n > 0 ? '<b style="color:var(--win)">▲</b>' : n < 0 ? '<b style="color:var(--loss)">▼</b>' : "<b>–</b>"; }
+      qbox = '<div class="qbox"><span class="q-mic">' + micIcon() + '</span><div><div class="q-who">Press officer</div><p>That\'s all for today, thank you.</p></div></div>';
+      resp = '<section class="panel resp"><div class="resp-h">Outcome</div><div class="resp-sum"><span>Squad morale ' + arrow(e.mor) + " " + moraleWord(S.morale) + "</span><span>Fans' mood " + arrow(e.fans) + " " + moraleWord(S.fanMood) + "</span></div>" +
+        '<div class="resp-grid"><button class="resp-btn" data-go="inbox">Back to inbox</button><button class="resp-btn" data-go="social">See the reaction</button></div></section>';
+    } else {
+      qbox = '<div class="qbox"><span class="q-mic">' + micIcon() + '</span><div><div class="q-who">Press · ' + esc(q.who) + ", " + esc(q.outlet) + "</div><p>" + esc(q.q) + '</p></div><span class="q-n">' + (st.i + 1) + "/" + st.qs.length + "</span></div>";
+      resp = '<section class="panel resp"><div class="resp-h">Your response</div><div class="resp-grid">' + q.a.map(function (a, i) {
+        return '<button class="resp-btn" data-pans="' + i + '"' + (talking ? " disabled" : "") + '><span>' + esc(a.text) + '</span><span class="resp-tone">' + esc(a.tone) + "</span></button>";
+      }).join("") + "</div></section>";
+    }
+    return '<div class="press">' + side + '<div class="press-main">' + stage + qbox + "</div>" + resp + "</div>";
+  }
+  // ---- manager look
+  function viewManager() {
+    var m = mgr();
+    function group(k) {
+      var opts = MGR_OPTS[k];
+      return '<div class="mg-group"><div class="label">' + MGR_LABEL[k] + '</div><div class="mg-opts">' + opts.map(function (v, i) {
+        var val = typeof m[k] === "number" ? i : v, on = m[k] === val, isCol = /^#/.test(v);
+        return '<button class="mg-opt' + (isCol ? " sw" : "") + '" data-mgr="' + k + ":" + val + '" aria-pressed="' + on + '"' + (isCol ? ' style="background:' + v + '" aria-label="' + MGR_LABEL[k] + " " + (i + 1) + '"' : "") + ">" + (isCol ? "" : esc(v === "none" ? "None" : v[0].toUpperCase() + v.slice(1))) + "</button>";
+      }).join("") + "</div></div>";
+    }
+    return screenHead("Manager", "") + '<div class="mg"><div class="panel mg-prev"><div class="stage small">' + pressBackdrop() + '<div class="spot"></div><div class="mgr-wrap' + (ui.mgrTalk ? " talking" : "") + '">' + managerSVG(m) + "</div>" + deskSVG() + "</div>" +
+      '<div class="ps-name" style="text-align:center">' + esc(mgrName()) + "</div></div>" +
+      '<div class="panel mg-form"><label class="mg-group"><span class="label">Name</span><input id="mgrname" maxlength="28" placeholder="Your name" value="' + esc(m.name || "") + '"></label>' +
+      ["skin", "hair", "hairCol", "beard", "glasses", "suit", "tie"].map(group).join("") + "</div></div>";
   }
   // ---- calendar: one month at a time, July to June
   function viewCalendar() {
@@ -1453,7 +1609,7 @@ input[type="search"], select {
   }
   function closeModal() { var m = document.getElementById("modal"); if (m) m.remove(); }
   function openDrawer() {
-    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["social", "Social" + (socialNew() ? " (" + socialNew() + ")" : "")], ["squad", "Squad"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
+    var items = [["home", "Home"], ["inbox", "Inbox" + (unread() ? " (" + unread() + ")" : "")], ["calendar", "Calendar"], ["social", "Social" + (socialNew() ? " (" + socialNew() + ")" : "")], ["manager", "Manager"], ["squad", "Squad"], ["tactics", "Tactics"], ["fixtures", "Fixtures"], ["table", "League tables"], ["stats", "Stats"], ["transfers", "Transfers"], ["training", "Training"]];
     var d = el('<div id="drawer"><div class="drawer-bg" data-act="closedrawer"></div><nav class="drawer" aria-label="Main menu"><div class="label" style="padding:4px 12px 10px">' + esc(club(S.clubId).name) + "</div>" +
       items.map(function (x) { return '<button data-go="' + x[0] + '" aria-current="' + (ui.screen === x[0]) + '">' + x[1] + "</button>"; }).join("") +
       '<button data-act="settings" style="margin-top:12px">Settings</button>' +
@@ -1694,7 +1850,7 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
-    var t = ev.target.closest("[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
+    var t = ev.target.closest("[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
     if (!t) return;
     if (t.hasAttribute("data-pickleague")) { ui.pickLeague = t.getAttribute("data-pickleague"); ui.pick = D.leagues.find(function (l) { return l.id === ui.pickLeague; }).clubs[0]; return renderNewGame(); }
     if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return updateNewGamePick(); }
@@ -1719,10 +1875,23 @@ input[type="search"], select {
     if (t.hasAttribute("data-soc")) { ui.socFilter = t.getAttribute("data-soc"); return render(); }
     if (t.hasAttribute("data-pans")) {
       var ps = ui.pressState, qq = ps && ps.qs[ps.i];
-      if (!qq) return;
-      ps.ans.push(qq.a[+t.getAttribute("data-pans")]); ps.i++;
-      if (ps.i >= ps.qs.length) pressFinish(S.press, ps.ans);
-      return render();
+      if (!qq || ps.talk != null) return;
+      var ans = qq.a[+t.getAttribute("data-pans")];
+      ps.ans.push(ans); ps.talk = ans.text;
+      render();
+      setTimeout(function () {   // the manager answers, then the next question
+        ps.talk = null; ps.i++;
+        if (ps.i >= ps.qs.length) pressFinish(S.press, ps.ans);
+        if (ui.screen === "press") render();
+      }, Math.min(3200, 900 + ans.text.length * 32));
+      return;
+    }
+    if (t.hasAttribute("data-mgr")) {
+      var kv = t.getAttribute("data-mgr").split(":"), mm = mgr();
+      mm[kv[0]] = typeof mm[kv[0]] === "number" ? +kv[1] : kv[1];
+      save(); ui.mgrTalk = true; render();
+      clearTimeout(ui.mgrT); ui.mgrT = setTimeout(function () { ui.mgrTalk = false; if (ui.screen === "manager") render(); }, 900);
+      return;
     }
     if (t.hasAttribute("data-calm")) { ui.calMonth = Math.max(0, Math.min(11, ui.calMonth + +t.getAttribute("data-calm"))); return render(); }
     var go = t.getAttribute("data-go"), act = t.getAttribute("data-act");
