@@ -106,7 +106,7 @@ def main():
         g = pl.get(rec)
         pos = g["pos_primary"]
         wt = w[grp[pos]] if pos < len(grp) else w[0]
-        new = calibrate(p["attrs"], wt, p["ovr"], pos == 0, p.get("attrSource") == "fc")
+        new = calibrate(p["attrs"], wt, p["ovr"], pos == 0, p.get("attrSource") in ("fc", "fc27"))
         if overall(new, wt) != p["ovr"]:
             off += 1
         p["attrs"] = new
