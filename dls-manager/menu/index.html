@@ -1138,7 +1138,9 @@ input[type="search"], select {
       if (!title || !fx) return;
       var opp = fx.home === S.clubId ? fx.away : fx.home, cid = a === b ? S.clubId : opp;
       var p = clubPlayers[cid] ? clubPlayers[cid].find(function (q) { return q.dls === id; }) : null;
-      sub = '<span class="nt-sub">' + badge(cid, 18) + esc(p ? p.name : club(cid).name) + "</span>";
+      // goals (and own goals / hat-tricks) name the scorer by surname only
+      var who = p ? (kind >= 3 ? p.name.split(" ").slice(-1)[0] : p.name) : club(cid).name;
+      sub = '<span class="nt-sub">' + badge(cid, 18) + esc(who) + "</span>";
       ic = kind === 0 ? '<i class="nt-card red"></i>' : kind === 1 ? '<i class="nt-card yellow"></i>' : kind === 2 ? '<b class="nt-plus">+</b>' : "⚽";
       if (kind === 3 || kind === 5) { ms = 3400; cls = " nt-big"; }
     }
