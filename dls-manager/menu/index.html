@@ -394,10 +394,10 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .lm-circle { left: 50%; top: 50%; width: 17%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); }
 .lm-box { top: 22%; bottom: 22%; width: 15%; }
 .lm-box.l { left: -2px; } .lm-box.r { right: -2px; }
-.lm-dot { position: absolute; width: 4.4%; aspect-ratio: 1; border-radius: 50%; border: 2px solid #fff; transform: translate(-50%, -50%); transition: left var(--lm-t) ease-in-out, top var(--lm-t) ease-in-out; box-shadow: 0 1px 3px rgba(0,0,0,.5);
+.lm-dot { position: absolute; width: 4.4%; aspect-ratio: 1; border-radius: 50%; border: 2px solid #fff; transform: translate(-50%, -50%); box-shadow: 0 1px 3px rgba(0,0,0,.5); will-change: left, top;
   display: grid; place-items: center; font-style: normal; font-weight: 800; font-size: clamp(6px, 1.25vw, 12px); line-height: 1; z-index: 1; }
 .lm-dot.on { box-shadow: 0 0 0 3px rgba(255,211,77,.85), 0 1px 3px rgba(0,0,0,.5); z-index: 2; }
-.lm-carry { position: absolute; transform: translate(-50%, -235%); font-size: clamp(8px, 1.3vw, 12px); font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000, 0 0 4px #000; white-space: nowrap; pointer-events: none; transition: left var(--lm-t) ease-in-out, top var(--lm-t) ease-in-out, opacity .2s; z-index: 3; }
+.lm-carry { position: absolute; transform: translate(-50%, -235%); font-size: clamp(8px, 1.3vw, 12px); font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000, 0 0 4px #000; white-space: nowrap; pointer-events: none; transition: opacity .2s; z-index: 4; }
 .lm-six { top: 37%; bottom: 37%; width: 5.2%; } .lm-six.l { left: -2px; } .lm-six.r { right: -2px; }
 .lm-spot { width: 0.7%; aspect-ratio: 1; border-radius: 50%; background: rgba(255,255,255,.5); border: 0 !important; transform: translate(-50%, -50%); top: 50%; }
 .lm-spot.c { left: 50%; } .lm-spot.l { left: 10.5%; } .lm-spot.r { left: 89.5%; }
@@ -412,7 +412,8 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .lm.pv .lm-feed { display: none; }
 .lm.pv .lm-pwrap { place-items: center; height: 100%; container-type: size; }
 .lm.pv .lm-pitch { width: min(100cqw, calc(100cqh * 105 / 68)); max-height: none; }
-.lm-ball { position: absolute; width: 2.2%; aspect-ratio: 1; border-radius: 50%; background: #fff; transform: translate(-50%, -50%); transition: left var(--lm-t) ease-out, top var(--lm-t) ease-out; box-shadow: 0 0 6px rgba(255,255,255,.8); z-index: 2; }
+.lm-ball { position: absolute; width: 1.8%; aspect-ratio: 1; border-radius: 50%; background: #fff; transform: translate(-50%, -50%); box-shadow: 0 0 5px rgba(255,255,255,.8), 0 0 0 1px rgba(0,0,0,.35); z-index: 3; will-change: left, top, transform; }
+.lm-shadow { position: absolute; width: 1.6%; aspect-ratio: 1.6; border-radius: 50%; background: rgba(0,0,0,.45); transform: translate(-50%, -30%); opacity: 0; z-index: 1; }
 .lm-feed { overflow-y: auto; display: flex; flex-direction: column; gap: 2px; background: #0f151a; border-radius: 8px; padding: 6px; box-shadow: inset 0 0 0 1px #1c2730; }
 .lm-ev { display: grid; grid-template-columns: 44px 1fr; gap: 6px; padding: 4px 6px; border-radius: 5px; font-size: .82rem; color: #b9c7d1; line-height: 1.3; }
 .lm-ev .lm-m { color: #6f8494; font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -2722,13 +2723,17 @@ input[type="search"], select {
     return ps.length ? pickW(ps, ws, LM.r) : null;
   }
   function lmFeed(kind, text, side) {
+    if (LM.defer && lm2d() && !LM.quiet) { (LM.pend = LM.pend || []).push({ kind: kind, text: text, side: side, min: lmClock() }); return; }
+    lmFeedNow(kind, text, side);
+  }
+  function lmFeedNow(kind, text, side, min) {
     if (!LM.quiet) {
       if (kind === "goal") (side === (LM.me === LM.h ? "h" : "a") ? Sfx.roar : Sfx.groan)();
       else if (kind === "whistle") Sfx.whistle(/Full-time/.test(text) ? 3 : /Half-time/.test(text) ? 2 : 1);
     }
-    LM.feed.unshift({ min: lmClock(), kind: kind, text: text, side: side || null });
+    LM.feed.unshift({ min: min || lmClock(), kind: kind, text: text, side: side || null });
     if (LM.feed.length > 160) LM.feed.length = 160;
-    if (kind !== "info") LM.headline = { min: lmClock(), kind: kind, text: text, side: side || null };
+    if (kind !== "info") LM.headline = { min: min || lmClock(), kind: kind, text: text, side: side || null };
   }
   function evMin() { return LM.half === 1 ? Math.min(45, LM.min) : Math.min(90, LM.min); }
   function pk(a) { return a[Math.floor(lmRand() * a.length)]; }
@@ -2743,6 +2748,7 @@ input[type="search"], select {
     LM.h = lmSide(fx.home, fx.home === S.clubId, true);
     LM.a = lmSide(fx.away, fx.away === S.clubId, false);
     LM.me = LM.h.mine ? LM.h : LM.a;
+    lmInit2d();
     LM.opp = lmOther(LM.me);
     LM.opp.boost = (lmRand() - 0.5) * 0.04;
     lmFeed("whistle", "Welcome to " + (club(fx.home).stadium || club(fx.home).name) + " for " + club(fx.home).name + " against " + club(fx.away).name + ".");
@@ -2830,7 +2836,7 @@ input[type="search"], select {
     var k = LM.talk.kind;
     LM.talk = null;
     if (k === "pre") { LM.phase = "play"; LM.paused = false; lmFeed("whistle", "Kick-off! " + club(LM.fx.home).name + " get us under way."); lmRun(); }
-    else if (k === "ht") { LM.phase = "play"; LM.half = 2; LM.min = 45; LM.paused = false; lmFeed("whistle", "The second half is under way."); lmRun(); }
+    else if (k === "ht") { LM.phase = "play"; LM.half = 2; LM.min = 45; LM.paused = false; if (LM.pl) lmKickoff(1); lmFeed("whistle", "The second half is under way."); lmRun(); }
     else return lmFinish();
     lmPaint();
   }
@@ -2839,24 +2845,30 @@ input[type="search"], select {
   function lmRun() {
     clearTimeout(lmTimer);
     if (!LM || LM.paused || LM.phase !== "play" || LM.panel || LM.talk) return;
-    lmTimer = setTimeout(function () { lmStep(); lmRun(); }, LM_SPEEDS[LM.speed][1] + (LM.hold || 0));
-    LM.hold = 0;
+    if (lm2d()) {
+      if (!LM.raf) { LM.tLast = 0; LM.raf = requestAnimationFrame(lmTick); }
+      if (!LM.inMin) { LM.inMin = true; lmBegin(); }
+      return;
+    }
+    lmEndMinute();
+    lmTimer = setTimeout(function () { lmStep(); lmRun(); }, LM_SPEEDS[LM.speed][1]);
+  }
+  // a 2D minute still playing out is cut short (very fast, skip)
+  function lmEndMinute() {
+    if (!LM.inMin) return;
+    LM.inMin = false; LM.q = []; LM.cur = null; if (LM.bl) LM.bl.fl = null; LM.rec = null; LM.replay = null;
+    var rb = document.getElementById("lmReplay"); if (rb) rb.className = "";
+    lmFlush();
+    lmAfterMinute();
   }
   function lmStep() {
     if (!LM || LM.phase !== "play") return;
     LM.min++;
-    var end = LM.half === 1 ? 45 + LM.stop1 : 90 + LM.stop2;
     lmMinute();
-    if (!LM.quiet) {
-      var ms = LM_SPEEDS[LM.speed][1], frames = lmPlan(), goal = frames.some(function (f) { return f.goal; });
-      lmAnimate(frames, ms * 0.95, false);
-      if (goal && LM.speed < 3) {
-        // a moment to celebrate, then the replay, slower
-        var rp = Math.max(1800, frames.length * 520);
-        LM.hold = 1400 + rp + 400;
-        lmAnimT.push(setTimeout(function () { if (LM) lmAnimate(frames, rp, true); }, ms + 1400));
-      }
-    }
+    lmAfterMinute();
+  }
+  function lmAfterMinute() {
+    var end = LM.half === 1 ? 45 + LM.stop1 : 90 + LM.stop2;
     if (LM.min >= end) {
       if (LM.half === 1) {
         LM.phase = "ht"; LM.paused = true;
@@ -2876,9 +2888,11 @@ input[type="search"], select {
   function lmSkip() {
     if (!LM || LM.phase !== "play") return;
     var guard = 0;
+    lmEndMinute();
     LM.quiet = true;
     while (LM.phase === "play" && guard++ < 200) lmStep();
     LM.quiet = false;
+    if (LM.pl) lmKickoff(LM.half === 1 ? 1 : 0);
   }
 
   // ---- one minute of football
@@ -2959,7 +2973,7 @@ input[type="search"], select {
       if (gkId != null) lmRate(gkId, -0.3);
       lmOn(o).forEach(function (id) { if (group(byId[id].pos) === "DF") lmRate(id, -0.12); });
       LM.events.push({ min: evMin(), side: side, type: "goal", p: shooter, a: assister, pen: kind === "pen" });
-      LM.kickoff = true;
+
       var line = kind === "pen" ? pk(["PENALTY! " + S1 + " sends the keeper the wrong way. GOAL!", S1 + " steps up and buries the penalty!"]) :
         header ? pk(["GOAL! " + (A1 ? A1 + " swings it in and " : "") + S1 + " heads it home!", "GOAL! A towering header from " + S1 + (A1 ? ", from " + A1 + "'s cross" : "") + "!"]) :
         kind === "big" ? pk(["GOAL! " + (A1 ? A1 + " slips it through and " : "") + S1 + " finishes coolly!", "GOAL! " + S1 + " makes no mistake from close range" + (A1 ? " after " + A1 + "'s pass" : "") + "!"]) :
@@ -3116,125 +3130,329 @@ input[type="search"], select {
       '<div class="lm-main"><div class="lm-pwrap"><div class="lm-pitch" id="lmPitch">' + lmPitchHtml() + '</div></div><div class="lm-feed" id="lmFeed"></div><aside class="lm-side" id="lmSide"></aside></div>' +
       '<nav class="lm-bar" id="lmBar"></nav><div id="lmOv"></div></div>';
   }
-  // where a player stands: his formation spot, pushed up and spread with the ball, deeper and
-  // narrower without it, the whole block sliding with the ball
-  function lmBase(sd, i, bx, by, poss) {
-    var sl = FORMATIONS[sd.formation][i], home = sd === LM.h, gk = sl[0] === "GK";
-    var x = 6 + (92 - sl[2]) * (42 / 78), y = sl[1];
-    var mine = (poss === "h") === home;
-    if (!gk) {
-      x += mine ? 12 : -3;
-      y = 50 + (y - 50) * (mine ? 1.12 : 0.86);
-      var bxs = home ? bx : 100 - bx;           // the ball, seen from this side's own goal
-      x += (bxs - 50) * 0.32;
-      y += (by - 50) * 0.18;
-    } else x = Math.min(14, 5 + Math.max(0, (home ? bx : 100 - bx) - 50) * 0.12);
-    if (!home) x = 100 - x;
-    return { x: Math.max(1.5, Math.min(98.5, x)), y: Math.max(3, Math.min(97, y)) };
+  // ---- the 2D match: every player moves for himself (own position, momentum and top speed
+  // from his pace), deciding a few times a second where to be from his role: with the ball,
+  // forwards run in behind, full-backs overlap, the nearest team-mates offer angles; without
+  // it, the nearest presses, the next covers, the rest mark their zone and keep the block
+  // compact. The ball travels: passes to where the receiver is running, lofted crosses,
+  // shots. The engine decides what happens each minute (lmMinute); the 2D view plays it out
+  // as a move and the clock goes on when the move is over. Commentary and score wait for the
+  // moment itself; goals get a celebration and a slow-motion replay of the recorded move.
+  var SPD = [0.6, 1, 1.9];                       // Slow / Normal / Fast (Very fast: no 2D, timer only)
+  function lm2d() { return LM && LM.speed < 3; }
+  function lmDir(k) { return k === 0 ? 1 : -1; }   // home (k = 0) attacks to the right
+  function lmSideK(k) { return k ? LM.a : LM.h; }
+  function lmSlot(k, i) { var sd = lmSideK(k); return FORMATIONS[sd.formation][i]; }
+  function lmHome(k, i) {                         // formation spot, own half, as pitch % (x along, y across)
+    var sl = lmSlot(k, i), x = 6 + (92 - sl[2]) * (40 / 78), y = sl[1];
+    return { x: k ? 100 - x : x, y: y };
   }
-  function lmPositions(fr) {
-    var out = [[], []];
-    [LM.h, LM.a].forEach(function (sd, k) {
-      for (var i = 0; i < FORMATIONS[sd.formation].length; i++) out[k].push(sd.slots[i] == null ? null : lmBase(sd, i, fr.bx, fr.by, fr.poss));
-    });
-    // the one on the ball stands with it; the nearest two defenders close him down
-    if (fr.c) { var cp = out[fr.c[0]][fr.c[1]]; if (cp) { cp.x = fr.bx; cp.y = fr.by; } }
-    var dk = fr.poss === "h" ? 1 : 0, near = [];
-    out[dk].forEach(function (p, i) { if (p && FORMATIONS[(dk ? LM.a : LM.h).formation][i][0] !== "GK") near.push([Math.hypot(p.x - fr.bx, (p.y - fr.by) * 0.65), i]); });
-    near.sort(function (a, b) { return a[0] - b[0]; }).slice(0, 2).forEach(function (n, j) {
-      var p = out[dk][n[1]], f = j === 0 ? 0.62 : 0.32;
-      p.x += (fr.bx - p.x) * f; p.y += (fr.by - p.y) * f;
-    });
-    return out;
-  }
-  // a minute as a short sequence of frames: passes between real players, then the shot
-  function lmPlan() {
-    var r = LM.r, acts = LM.acts || [], frames = [];
-    if (LM.restart) { LM.ball = { x: 50, y: 50 }; LM.restart = false; }
-    if (LM.kickoff) { LM.restart = true; LM.kickoff = false; }
-    function idx(sd, pid) { return sd.slots.indexOf(pid); }
-    function sideOf(x) { return x === "h" ? LM.h : LM.a; }
-    function posOf(k, i, fr) { var sd = k ? LM.a : LM.h; return lmBase(sd, i, fr.bx, fr.by, fr.poss); }
-    function chainFrom(side, n, toward) {
-      var sd = sideOf(side), k = side === "h" ? 0 : 1, slots = FORMATIONS[sd.formation], cur = { bx: LM.ball.x, by: LM.ball.y, poss: side };
-      var order = { GK: 0, DF: 1, MF: 2, FW: 3 }, last = -1;
-      for (var s2 = 0; s2 < n; s2++) {
-        var stage = Math.min(3, 1 + Math.floor((s2 + (toward ? 1 : 0)) * 3 / Math.max(1, n)));
-        var opts = [];
-        sd.slots.forEach(function (pid, i) { if (pid != null && i !== last && Math.abs(order[group(slots[i][0])] - stage) <= 1 && slots[i][0] !== "GK") opts.push(i); });
-        if (!opts.length) break;
-        var i = opts[Math.floor(r() * opts.length)], p = posOf(k, i, cur);
-        cur = { bx: p.x, by: p.y, poss: side, c: [k, i] };
-        frames.push(cur); last = i;
-      }
-      return cur;
-    }
-    var shot = acts.filter(function (a) { return a.t === "shot"; }).pop(), foul = acts.filter(function (a) { return a.t === "foul"; }).pop();
-    if (shot) {
-      var k = shot.side === "h" ? 0 : 1, sd = sideOf(shot.side), gx = shot.side === "h" ? 100 : 0;
-      chainFrom(shot.side, 1 + Math.floor(r() * 2), true);
-      var ai = shot.a != null ? idx(sd, shot.a) : -1, si = idx(sd, shot.p);
-      var sx = shot.side === "h" ? 100 - (shot.kind === "long" ? 26 : shot.kind === "pen" ? 11 : 9 + r() * 9) : (shot.kind === "long" ? 26 : shot.kind === "pen" ? 11 : 9 + r() * 9);
-      var sy = shot.kind === "pen" ? 50 : 32 + r() * 36;
-      if (ai >= 0) {
-        var wide = shot.header ? (r() < 0.5 ? 10 : 90) : 30 + r() * 40;
-        frames.push({ bx: shot.side === "h" ? 100 - (shot.header ? 16 : 22) : (shot.header ? 16 : 22), by: wide, poss: shot.side, c: [k, ai] });
-      }
-      if (si >= 0) frames.push({ bx: sx, by: sy, poss: shot.side, c: [k, si], shot: true });
-      var oi = shot.side === "h" ? LM.a : LM.h, gi = 0;
-      if (shot.out === "goal") frames.push({ bx: shot.side === "h" ? 99.3 : 0.7, by: 45 + r() * 10, poss: shot.side, goal: true });
-      else if (shot.out === "save") frames.push({ bx: shot.side === "h" ? 96 : 4, by: 44 + r() * 12, poss: shot.side === "h" ? "a" : "h", c: oi.slots[gi] != null ? [1 - k, gi] : null });
-      else frames.push({ bx: shot.side === "h" ? 101.5 : -1.5, by: r() < 0.5 ? 38 + r() * 6 : 56 + r() * 6, poss: shot.side });
-    } else {
-      var side = LM.poss || "h", end = chainFrom(side, 2 + Math.floor(r() * 3), false);
-      if (foul) frames.push({ bx: end.bx, by: end.by, poss: foul.side === "h" ? "a" : "h", foul: true });
-      else if (r() < 0.35) {
-        // the move breaks down: a defender nips in
-        var dside = side === "h" ? "a" : "h", dk2 = dside === "h" ? 0 : 1, dsd = sideOf(dside), best = -1, bd = 1e9;
-        dsd.slots.forEach(function (pid, i) { if (pid == null || FORMATIONS[dsd.formation][i][0] === "GK") return; var p = posOf(dk2, i, end); var d = Math.hypot(p.x - end.bx, p.y - end.by); if (d < bd) { bd = d; best = i; } });
-        if (best >= 0) { var bp = posOf(dk2, best, end); frames.push({ bx: (bp.x + end.bx) / 2, by: (bp.y + end.by) / 2, poss: dside, c: [dk2, best] }); }
-      }
-    }
-    if (!frames.length) frames.push({ bx: LM.ball.x, by: LM.ball.y, poss: LM.poss || "h" });
-    return frames;
-  }
-  function lmShow(fr, ms) {
-    var pt = document.getElementById("lmPitch");
-    if (!pt) return;
-    pt.style.setProperty("--lm-t", Math.max(0.08, ms / 1000 * 0.92) + "s");
-    var pos = lmPositions(fr);
-    [LM.h, LM.a].forEach(function (sd, k) {
+  function lmInit2d() {
+    LM.pl = [[], []];
+    [0, 1].forEach(function (k) {
       for (var i = 0; i < 11; i++) {
-        var d = document.getElementById("lmd" + k + "_" + i);
-        if (!d) continue;
-        var p = pos[k][i];
-        if (!p) { d.style.display = "none"; continue; }
-        d.style.display = ""; d.style.left = p.x + "%"; d.style.top = p.y + "%";
-        d.textContent = (byId[sd.slots[i]] || {}).shirt || "";
-        d.classList.toggle("on", !!(fr.c && fr.c[0] === k && fr.c[1] === i));
+        var h = lmHome(k, i), p = { x: h.x, y: h.y, vx: 0, vy: 0, tx: h.x, ty: h.y, ph: Math.random() * 6.28, run: 0, runT: 1 + Math.random() * 3 };
+        if (lmSlot(k, i)[0] !== "GK") p.x = k ? Math.max(52, p.x) : Math.min(48, p.x);
+        LM.pl[k].push(p);
       }
     });
-    var b = document.getElementById("lmBall");
-    if (b) { b.style.left = fr.bx + "%"; b.style.top = fr.by + "%"; }
-    var lab = document.getElementById("lmCarry");
+    LM.bl = { x: 50, y: 50, z: 0, own: null, fl: null };
+    LM.q = []; LM.cur = null; LM.rec = null; LM.replay = null; LM.lastPoss = 0;
+    lmKickoff(0);
+  }
+  function lmKickoff(k) {
+    [0, 1].forEach(function (kk) {
+      LM.pl[kk].forEach(function (p, i) { var h = lmHome(kk, i); p.tx = h.x; p.ty = h.y; if (lmSlot(kk, i)[0] !== "GK") { p.x = kk ? Math.max(51, h.x) : Math.min(49, h.x); p.y = h.y; } p.vx = p.vy = 0; });
+    });
+    // the centre forward (or whoever is most advanced) takes it
+    var best = lmFirst(k, function (i) { return lmSlot(k, i)[0] === "ST"; });
+    if (best < 0) best = lmFirst(k, function (i) { return lmSlot(k, i)[0] !== "GK"; });
+    if (best >= 0) { var p = LM.pl[k][best]; p.x = 50 - lmDir(k) * 1.2; p.y = 50; LM.bl.own = [k, best]; }
+    LM.bl.x = 50; LM.bl.y = 50; LM.bl.z = 0; LM.bl.fl = null; LM.lastPoss = k;
+  }
+  function lmFirst(k, f) { var sd = lmSideK(k); for (var i = 0; i < sd.slots.length; i++) if (sd.slots[i] != null && f(i)) return i; return -1; }
+  function lmLive(k, i) { var sd = lmSideK(k); return i < sd.slots.length && sd.slots[i] != null; }
+  function lmD(a, b) { return Math.hypot(a.x - b.x, (a.y - b.y) * 0.65); }   // pitch is 105 x 68
+  // the defending side's deepest outfield line (for runs in behind and offside)
+  function lmLine(k) {
+    var dk = 1 - k, xs = [];
+    LM.pl[dk].forEach(function (p, i) { if (lmLive(dk, i) && lmSlot(dk, i)[0] !== "GK") xs.push(p.x); });
+    if (!xs.length) return k ? 10 : 90;
+    return k ? Math.max.apply(null, xs) : Math.min.apply(null, xs);   // the last defender
+  }
+  // where each player wants to be, a few times a second
+  function lmTargets(t) {
+    var b = LM.bl, own = b.own, pk2 = own ? own[0] : LM.lastPoss;
+    [0, 1].forEach(function (k) {
+      var dir = lmDir(k), inPoss = k === pk2, line = lmLine(k);
+      var bRel = k ? 100 - b.x : b.x;                         // ball seen from this side's own goal
+      var near = [];
+      LM.pl[k].forEach(function (p, i) { if (lmLive(k, i) && lmSlot(k, i)[0] !== "GK") near.push([lmD(p, b), i]); });
+      near.sort(function (x, y) { return x[0] - y[0]; });
+      LM.pl[k].forEach(function (p, i) {
+        if (!lmLive(k, i)) return;
+        var sl = lmSlot(k, i), role = sl[0], g = group(role), h = lmHome(k, i), x = h.x, y = h.y;
+        if (role === "GK") { p.tx = k ? 96 - Math.max(0, 50 - b.x) * 0.06 : 4 + Math.max(0, b.x - 50) * 0.06; p.ty = 50 + (b.y - 50) * 0.35; return; }
+        // a compact block anchored to the ball: the back line 20-30 behind it (pushing up as
+        // the ball goes forward), the front line 30-45 ahead of the back line
+        var depth = (92 - sl[2]) / 78;                                   // 0 = goalkeeper .. 1 = striker
+        var back = Math.max(inPoss ? 18 : 12, Math.min(inPoss ? 62 : 52, bRel - (inPoss ? 30 : 22)));
+        var span = inPoss ? 46 : 32;
+        var xr = back + depth * span;                                     // from own goal
+        x = k ? 100 - xr : xr;
+        y = 50 + (y - 50) * (inPoss ? 1.15 : 0.8) + (b.y - 50) * (inPoss ? 0.12 : 0.3);
+        if (inPoss) {
+          if (own && own[0] === k && own[1] === i) { x = p.x + dir * 4; y = p.y + (50 - p.y) * 0.05; }        // dribbling on
+          else if (g === "FW" || role === "AM" || role === "LW" || role === "RW") {
+            p.runT -= 0.25; if (p.runT <= 0) { p.run = p.run ? 0 : (Math.random() < 0.55 ? 1 : 0); p.runT = 1.5 + Math.random() * 3; }
+            if (p.run) { x = Math.max(x, line + dir * 3) ; y += (Math.random() - 0.5) * 6; }
+            var lim = line + dir * 1.5;  // stay onside until the run is on
+            if (!p.run) x = dir > 0 ? Math.min(x, lim) : Math.max(x, lim);
+          } else if ((role === "LB" || role === "RB") && Math.abs(b.y - h.y) < 30) x += dir * 10;   // overlap on his side
+          // the nearest two offer a pass
+          if (near[0] && near[0][1] !== i && (near[1] && near[1][1] === i || near[2] && near[2][1] === i)) {
+            var side2 = (i % 2 ? 1 : -1);
+            x = b.x + dir * (6 + (i % 3) * 3); y = b.y + side2 * (12 + (i % 2) * 4);
+          }
+        } else {
+          if (near[0] && near[0][1] === i) { x = b.x - dir * 1.5; y = b.y; }                                  // press the ball
+          else if (near[1] && near[1][1] === i) { x = (b.x + (k ? 96 : 4)) / 2; y = (b.y + 50) / 2; }      // cover
+          else {
+            // mark the nearest opponent in his zone
+            var best = null, bd = 16;
+            LM.pl[1 - k].forEach(function (q, j) { if (lmLive(1 - k, j)) { var d = Math.hypot(q.x - x, (q.y - y) * 0.65); if (d < bd) { bd = d; best = q; } } });
+            if (best) { x = x * 0.55 + (best.x - dir * 2) * 0.45; y = y * 0.55 + best.y * 0.45; }
+          }
+        }
+        x += Math.sin(t * 0.6 + p.ph) * 1.2; y += Math.cos(t * 0.5 + p.ph * 1.7) * 1.5;
+        p.tx = Math.max(2, Math.min(98, x)); p.ty = Math.max(3, Math.min(97, y));
+      });
+    });
+  }
+  function lmMove(dt) {
+    [0, 1].forEach(function (k) {
+      var sd = lmSideK(k);
+      LM.pl[k].forEach(function (p, i) {
+        if (!lmLive(k, i)) return;
+        var pid = sd.slots[i], pace = (byId[pid] && byId[pid].attrs[0]) || 65, cond = sd.cond[pid] || 100;
+        var vmax = (5.5 + pace * 0.075) * (0.75 + 0.25 * cond / 100);
+        var own = LM.bl.own && LM.bl.own[0] === k && LM.bl.own[1] === i;
+        if (own) vmax *= 0.55;
+        var dx = p.tx - p.x, dy = (p.ty - p.y) * 0.65, d = Math.hypot(dx, dy);
+        var want = d < 0.4 ? 0 : Math.min(vmax, d * 2.2), wx = d ? dx / d * want : 0, wy = d ? dy / d * want / 0.65 : 0;
+        var a = Math.min(1, dt * 3.2);
+        p.vx += (wx - p.vx) * a; p.vy += (wy - p.vy) * a;
+        p.x += p.vx * dt; p.y += p.vy * dt;
+      });
+    });
+    // personal space: nobody stands on top of anyone else
+    var all = [];
+    [0, 1].forEach(function (k) { LM.pl[k].forEach(function (p, i) { if (lmLive(k, i)) all.push(p); }); });
+    for (var m = 0; m < all.length; m++) for (var n = m + 1; n < all.length; n++) {
+      var P = all[m], Q = all[n], dx2 = Q.x - P.x, dy2 = (Q.y - P.y) * 0.65, dd = Math.hypot(dx2, dy2);
+      if (dd < 3.4 && dd > 0.001) { var push = (3.4 - dd) * 0.5 * Math.min(1, dt * 8), ux = dx2 / dd, uy = dy2 / dd / 0.65; P.x -= ux * push; P.y -= uy * push; Q.x += ux * push; Q.y += uy * push; }
+      else if (dd <= 0.001) { Q.x += 0.5; }
+    }
+    var b = LM.bl;
+    if (b.own) { var o = LM.pl[b.own[0]][b.own[1]]; b.x = o.x + lmDir(b.own[0]) * 0.9; b.y = o.y + 0.5; b.z = 0; }
+  }
+  // the minute's move, from what the engine decided
+  function lmQueue() {
+    var r = Math.random, acts = LM.acts || [], q = [], shot = null, foul = null;
+    acts.forEach(function (a) { if (a.t === "shot") shot = a; if (a.t === "foul") foul = a; });
+    var side = shot ? (shot.side === "h" ? 0 : 1) : (LM.poss === "a" ? 1 : 0);
+    var own = LM.bl.own, ok = own ? own[0] : LM.lastPoss;
+    if (ok !== side || !own) {
+      // win the ball back: the nearest of the side to the ball gets it
+      var bi = -1, bd = 1e9; LM.pl[side].forEach(function (p, i) { if (lmLive(side, i) && lmSlot(side, i)[0] !== "GK") { var d = lmD(p, LM.bl); if (d < bd) { bd = d; bi = i; } } });
+      if (bi >= 0) q.push({ t: "win", k: side, i: bi });
+    }
+    var npass = shot ? 1 + Math.floor(r() * 2) : 2 + Math.floor(r() * 2);
+    for (var n = 0; n < npass; n++) { q.push({ t: "hold", d: 0.35 + r() * 0.7 }); q.push({ t: "pass", k: side, fwd: shot ? 0.8 : 0.45 }); }
+    if (shot) {
+      var sd = lmSideK(side), ai = shot.a != null ? sd.slots.indexOf(shot.a) : -1, si = sd.slots.indexOf(shot.p);
+      if (ai >= 0) { q.push({ t: "hold", d: 0.3 + r() * 0.4 }); q.push({ t: "pass", k: side, to: ai, wide: shot.header, prep: true }); }
+      if (si >= 0) { q.push({ t: "hold", d: shot.header ? 0.25 : 0.4 }); q.push({ t: "pass", k: side, to: si, cross: shot.header, box: true }); }
+      q.push({ t: "hold", d: shot.header ? 0.05 : 0.35 });
+      q.push({ t: "shot", k: side, out: shot.out, kind: shot.kind });
+    } else {
+      q.push({ t: "hold", d: 0.4 + r() * 0.5 });
+      if (foul) q.push({ t: "foul" });
+      else if (r() < 0.3) q.push({ t: "steal", k: 1 - side });
+    }
+    q.push({ t: "flush" });
+    LM.q = q; LM.cur = null;
+    if (shot) LM.rec = [];
+  }
+  // pick a team-mate to pass to: further forward, in space, within reach
+  function lmPassTarget(k, from, fwd) {
+    var dir = lmDir(k), f = LM.pl[k][from], best = -1, bv = -1e9;
+    LM.pl[k].forEach(function (p, i) {
+      if (i === from || !lmLive(k, i) || lmSlot(k, i)[0] === "GK") return;
+      var d = lmD(p, f); if (d < 6 || d > 42) return;
+      var prog = (p.x - f.x) * dir, space = 99;
+      LM.pl[1 - k].forEach(function (q) { space = Math.min(space, lmD(p, q)); });
+      var v = prog * fwd + Math.min(space, 12) * 0.8 - d * 0.15 + Math.random() * 6;
+      if (v > bv) { bv = v; best = i; }
+    });
+    return best;
+  }
+  function lmStart(a) {
+    var b = LM.bl, r = Math.random;
+    a.t0 = 0;
+    if (a.t === "hold") return;
+    if (a.t === "win" || a.t === "steal") {
+      var k = a.k, i = a.i;
+      if (i == null) { var bd = 1e9; LM.pl[k].forEach(function (p, j) { if (lmLive(k, j) && lmSlot(k, j)[0] !== "GK") { var d = lmD(p, b); if (d < bd) { bd = d; i = j; } } }); }
+      if (i == null || i < 0) { a.done = true; return; }
+      var p = LM.pl[k][i];
+      b.fl = { fx: b.x, fy: b.y, tx: p.x, ty: p.y, t: 0, dur: 0.35, h: 0, to: [k, i] }; b.own = null;
+      return;
+    }
+    if (a.t === "pass") {
+      var own = b.own; if (!own) { a.done = true; return; }
+      var k2 = a.k, from = own[1], to = a.to != null ? a.to : lmPassTarget(k2, from, a.fwd);
+      if (to == null || to < 0 || !lmLive(k2, to)) { a.done = true; return; }
+      var rp = LM.pl[k2][to], dir = lmDir(k2);
+      if (a.prep || a.wide) { rp.tx = a.wide ? (k2 ? 18 : 82) : (k2 ? 26 : 74); rp.ty = a.wide ? (rp.y < 50 ? 10 : 90) : rp.y; }
+      if (a.box) { rp.tx = k2 ? 10 + r() * 6 : 84 + r() * 6; rp.ty = 40 + r() * 20; }
+      var lead = a.box || a.prep ? 0 : 0.6, tx = (a.box || a.prep) ? rp.tx : rp.x + rp.vx * lead, ty = (a.box || a.prep) ? rp.ty : rp.y + rp.vy * lead;
+      var dist = Math.hypot(tx - b.x, (ty - b.y) * 0.65), speed = a.cross ? 30 : 42;
+      b.fl = { fx: b.x, fy: b.y, tx: tx, ty: ty, t: 0, dur: Math.max(0.35, dist / speed), h: a.cross || dist > 30 ? 1 : 0, to: [k2, to] };
+      b.own = null; LM.lastPoss = k2;
+      return;
+    }
+    if (a.t === "shot") {
+      var k3 = a.k, gx = k3 ? 0 : 100, gy;
+      if (a.out === "goal") gy = 45.5 + r() * 9;
+      else if (a.out === "save") gy = 44 + r() * 12;
+      else gy = r() < 0.5 ? 38 + r() * 5 : 57 + r() * 5;
+      var gk = LM.pl[1 - k3][0];
+      if (a.out === "save" && gk) { gk.tx = gk.x; gk.ty = gy; }
+      var tx3 = a.out === "goal" ? (k3 ? -0.8 : 100.8) : a.out === "save" ? (k3 ? 3 : 97) : (k3 ? -2 : 102);
+      var d3 = Math.hypot(tx3 - b.x, (gy - b.y) * 0.65);
+      b.fl = { fx: b.x, fy: b.y, tx: tx3, ty: gy, t: 0, dur: Math.max(0.3, d3 / 70), h: a.kind === "long" ? 0.4 : 0.15, to: a.out === "save" ? [1 - k3, 0] : null, end: a.out };
+      b.own = null;
+      return;
+    }
+    if (a.t === "foul") { a.d = 1.1; Sfx.whistle(1); return; }
+    if (a.t === "wait") return;
+  }
+  function lmFlush() {
+    var pend = LM.pend || []; LM.pend = [];
+    pend.reverse().forEach(function (f) { lmFeedNow(f.kind, f.text, f.side, f.min); });
+    LM.shown = null;
+    lmPaint();
+  }
+  // one frame of the 2D match
+  function lmTick(now) {
+    if (!LM || !document.getElementById("lmPitch")) { LM && (LM.raf = 0); return; }
+    LM.raf = requestAnimationFrame(lmTick);
+    var last = LM.tLast || now; LM.tLast = now;
+    var real = Math.min(0.05, (now - last) / 1000);
+    if (LM.replay) return lmReplayFrame(real);
+    var running = LM.phase === "play" && !LM.paused && !LM.panel && !LM.talk && lm2d();
+    var dt = running ? real * SPD[LM.speed] : real * 0.4;
+    LM.simT = (LM.simT || 0) + dt;
+    if ((LM.tgtT = (LM.tgtT || 0) - dt) <= 0) { lmTargets(LM.simT); LM.tgtT = 0.25; }
+    lmMove(dt);
+    if (running) lmAdvance(dt);
+    if (LM.rec) LM.rec.push(lmSnap());
+    lmDraw();
+  }
+  function lmAdvance(dt) {
+    var b = LM.bl;
+    if (b.fl) {
+      var f = b.fl; f.t += dt;
+      var u = Math.min(1, f.t / f.dur), e = 1 - Math.pow(1 - u, 2);
+      b.x = f.fx + (f.tx - f.fx) * e; b.y = f.fy + (f.ty - f.fy) * e; b.z = f.h * Math.sin(Math.PI * u);
+      if (u >= 1) {
+        b.fl = null; b.z = 0;
+        if (f.to) { b.own = f.to; var rp = LM.pl[f.to[0]][f.to[1]]; if (rp) { rp.x += (b.x - rp.x) * 0.7; rp.y += (b.y - rp.y) * 0.7; } LM.lastPoss = f.to[0]; }
+        if (f.end === "goal") { LM.goalAt = true; lmFlush(); LM.q.unshift({ t: "wait", d: 2.2 }, { t: "replay" }); }
+        else if (f.end) { lmFlush(); if (f.end === "miss") LM.q.unshift({ t: "wait", d: 0.8 }, { t: "gk" }); }
+        if (LM.cur && (LM.cur.t === "pass" || LM.cur.t === "shot" || LM.cur.t === "win" || LM.cur.t === "steal")) LM.cur = null;
+      }
+      return;
+    }
+    if (!LM.cur) {
+      if (!LM.q.length) return lmMinuteDone();
+      LM.cur = LM.q.shift(); lmStart(LM.cur);
+      if (LM.cur.done) LM.cur = null;
+      return;
+    }
+    var a = LM.cur;
+    if (a.t === "hold" || a.t === "foul" || a.t === "wait") { a.t0 += dt; if (a.t0 >= (a.d || 0)) LM.cur = null; return; }
+    if (a.t === "flush") { lmFlush(); LM.cur = null; return; }
+    if (a.t === "gk") { var k = 1 - LM.lastPoss; b.own = [k, 0]; b.x = k ? 95 : 5; b.y = 50; LM.lastPoss = k; LM.cur = null; return; }
+    if (a.t === "replay") {
+      LM.cur = null;
+      var rec = LM.rec || []; LM.rec = null;
+      var scorer = LM.lastPoss;
+      if (rec.length > 10) { LM.replay = { f: rec, i: 0, acc: 0, then: 1 - scorer }; var rb = document.getElementById("lmReplay"); if (rb) rb.className = "on"; }
+      else lmKickoff(1 - scorer);
+      return;
+    }
+    LM.cur = null;
+  }
+  function lmMinuteDone() {
+    LM.goalAt = false; LM.rec = null; LM.inMin = false;
+    lmAfterMinute();
+    if (LM.phase === "play" && !LM.paused && !LM.panel && !LM.talk) { LM.inMin = true; lmBegin(); }
+  }
+  // a new minute: the engine decides, the 2D view plays it out
+  function lmBegin() {
+    if (!LM || LM.phase !== "play") return;
+    LM.shown = { h: LM.h.goals, a: LM.a.goals };
+    LM.defer = true; LM.pend = [];
+    LM.min++;
+    lmMinute();
+    LM.defer = false;
+    lmQueue();
+    lmPaint();
+  }
+  function lmSnap() {
+    return { p: LM.pl.map(function (s) { return s.map(function (p) { return [p.x, p.y]; }); }), b: [LM.bl.x, LM.bl.y, LM.bl.z], c: LM.bl.own ? LM.bl.own.slice() : null };
+  }
+  function lmReplayFrame(real) {
+    var R = LM.replay; R.acc += real * 0.5 * 60;                    // half speed
+    while (R.acc >= 1 && R.i < R.f.length - 1) { R.i++; R.acc -= 1; }
+    var s = R.f[R.i];
+    lmDraw(s);
+    if (R.i >= R.f.length - 1) {
+      LM.replay = null;
+      var rb = document.getElementById("lmReplay"); if (rb) rb.className = "";
+      lmKickoff(R.then);
+      LM.tLast = 0;
+    }
+  }
+  function lmDraw(snap) {
+    var pt = document.getElementById("lmPitch"); if (!pt) return;
+    [0, 1].forEach(function (k) {
+      var sd = lmSideK(k);
+      for (var i = 0; i < 11; i++) {
+        var d = document.getElementById("lmd" + k + "_" + i); if (!d) continue;
+        if (!lmLive(k, i)) { d.style.display = "none"; continue; }
+        var xy = snap ? snap.p[k][i] : [LM.pl[k][i].x, LM.pl[k][i].y];
+        d.style.display = ""; d.style.left = xy[0] + "%"; d.style.top = xy[1] + "%";
+        var num = (byId[sd.slots[i]] || {}).shirt || "";
+        if (d.textContent !== String(num)) d.textContent = num;
+        var c = snap ? snap.c : LM.bl.own;
+        d.classList.toggle("on", !!(c && c[0] === k && c[1] === i));
+      }
+    });
+    var bb = snap ? snap.b : [LM.bl.x, LM.bl.y, LM.bl.z];
+    var be = document.getElementById("lmBall");
+    if (be) { be.style.left = bb[0] + "%"; be.style.top = bb[1] + "%"; be.style.transform = "translate(-50%, " + (-50 - bb[2] * 160) + "%) scale(" + (1 + bb[2] * 0.6) + ")"; }
+    var sh = document.getElementById("lmShadow");
+    if (sh) { sh.style.left = bb[0] + "%"; sh.style.top = bb[1] + "%"; sh.style.opacity = bb[2] > 0.05 ? 0.5 : 0; }
+    var lab = document.getElementById("lmCarry"), c2 = snap ? snap.c : LM.bl.own;
     if (lab) {
-      var sd2 = fr.c ? (fr.c[0] ? LM.a : LM.h) : null, pid = sd2 ? sd2.slots[fr.c[1]] : null;
+      var pid = c2 ? lmSideK(c2[0]).slots[c2[1]] : null, pp = c2 ? (snap ? snap.p[c2[0]][c2[1]] : [LM.pl[c2[0]][c2[1]].x, LM.pl[c2[0]][c2[1]].y]) : null;
       lab.textContent = pid != null ? lmSur(pid) : "";
-      lab.style.left = fr.bx + "%"; lab.style.top = fr.by + "%";
+      if (pp) { lab.style.left = pp[0] + "%"; lab.style.top = pp[1] + "%"; }
       lab.style.opacity = pid != null ? 1 : 0;
     }
-    pt.classList.toggle("goal", !!fr.goal);
-    LM.ball = { x: Math.max(2, Math.min(98, fr.bx)), y: fr.by };
-  }
-  var lmAnimT = [];
-  function lmAnimate(frames, total, replay) {
-    lmAnimT.forEach(clearTimeout); lmAnimT = [];
-    var n = frames.length, step = total / n;
-    if (step < 160) { lmShow(frames[n - 1], 120); return; }
-    frames.forEach(function (fr, i) { lmAnimT.push(setTimeout(function () { if (LM) lmShow(fr, step); }, i * step)); });
-    var rb = document.getElementById("lmReplay");
-    if (rb) rb.className = replay ? "on" : "";
-    if (replay) lmAnimT.push(setTimeout(function () { var x = document.getElementById("lmReplay"); if (x) x.className = ""; }, total + 200));
   }
   function lmPitchHtml() {
     var html = '<div class="lm-lines"><i class="lm-half"></i><i class="lm-circle"></i><i class="lm-spot c"></i><i class="lm-box l"></i><i class="lm-box r"></i><i class="lm-six l"></i><i class="lm-six r"></i><i class="lm-spot l"></i><i class="lm-spot r"></i><i class="lm-goal l"></i><i class="lm-goal r"></i></div>';
@@ -3243,7 +3461,7 @@ input[type="search"], select {
     [LM.h, LM.a].forEach(function (sd, k) {
       for (var i = 0; i < 11; i++) html += '<i class="lm-dot" id="lmd' + k + "_" + i + '" style="background:' + esc(kit[k][0]) + ";border-color:" + esc(kit[k][1]) + ";color:" + ink(kit[k][0]) + '"></i>';
     });
-    return html + '<i class="lm-ball" id="lmBall"></i><span class="lm-carry" id="lmCarry"></span><span id="lmReplay">Replay</span>';
+    return html + '<i class="lm-shadow" id="lmShadow"></i><i class="lm-ball" id="lmBall"></i><span class="lm-carry" id="lmCarry"></span><span id="lmReplay">Replay</span>';
   }
   // shirt colours on the pitch: the away side changes when the two are too alike
   function lmKits() {
@@ -3251,13 +3469,19 @@ input[type="search"], select {
     function dist(x, y) { var a = rgb(x), b = rgb(y); return Math.sqrt(Math.pow(a[0] - b[0], 2) * 0.3 + Math.pow(a[1] - b[1], 2) * 0.59 + Math.pow(a[2] - b[2], 2) * 0.11); }
     var hc = club(LM.h.cid).colors || { primary: "#c33", secondary: "#fff" }, ac = club(LM.a.cid).colors || { primary: "#ddd", secondary: "#222" };
     var home = [hc.primary, hc.secondary || "#fff"], away = [ac.primary, ac.secondary || "#fff"];
-    if (dist(home[0], away[0]) < 90) {
-      away = ac.secondary && dist(home[0], ac.secondary) >= 90 ? [ac.secondary, ac.primary] : dist(home[0], "#f2f2f2") >= 90 ? ["#f2f2f2", ac.primary] : ["#1b1b1b", ac.primary];
+    if (dist(home[0], away[0]) < 90 || dist(home[1], away[0]) < 60) {
+      // change kit: the candidate furthest from both of the home colours
+      var cands = [ac.secondary, "#f2f2f2", "#1d2f5e", "#f3d34a", "#1b1b1b"].filter(Boolean), best = null, bv = -1;
+      cands.forEach(function (c) { var v = Math.min(dist(c, home[0]), dist(c, home[1]) * 1.4); if (v > bv) { bv = v; best = c; } });
+      var dark = dist(best, "#000") < 300;
+      away = [best, dark ? "#ffffff" : "#1b1b1b"];
     }
     return [home, away];
   }
   function lmPaintPitch() {
-    lmShow({ bx: LM.ball.x, by: LM.ball.y, poss: LM.poss || "h" }, 300);
+    if (!LM.pl) return;
+    lmDraw();
+    if (!LM.raf) { LM.tLast = 0; LM.raf = requestAnimationFrame(lmTick); }
   }
   function lmPaint() {
     if (!LM || LM.quiet || !document.getElementById("lm")) return;
@@ -3265,7 +3489,7 @@ input[type="search"], select {
     var cl = function (cid) { return club(cid).colors || { primary: "#444" }; };
     document.getElementById("lmHead").innerHTML =
       '<div class="lm-team h" style="--tc:' + esc(cl(h.cid).primary) + '">' + badge(h.cid, 30) + '<span class="lm-tn">' + esc(club(h.cid).name) + "</span></div>" +
-      '<div class="lm-score"><b>' + h.goals + '</b><span class="lm-clock' + (LM.phase === "play" && !LM.paused ? " live" : "") + '">' + lmClock() + "</span><b>" + a.goals + "</b></div>" +
+      '<div class="lm-score"><b>' + (LM.shown ? LM.shown.h : h.goals) + '</b><span class="lm-clock' + (LM.phase === "play" && !LM.paused ? " live" : "") + '">' + lmClock() + "</span><b>" + (LM.shown ? LM.shown.a : a.goals) + "</b></div>" +
       '<div class="lm-team a" style="--tc:' + esc(cl(a.cid).primary) + '"><span class="lm-tn">' + esc(club(a.cid).name) + "</span>" + badge(a.cid, 30) + "</div>";
     // the pitch view's ticker: the latest line, unless something big happened in the same minute
     var hl = LM.view !== "feed" && LM.feed[0] && !(LM.headline && LM.headline.min === LM.feed[0].min) ? LM.feed[0] : LM.headline;
