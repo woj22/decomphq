@@ -826,6 +826,7 @@ input[type="search"], select {
   // Overlay.show() calls this when the menus come back. If DLS's last match is the fixture we
   // sent (player team = DLS team 258) and it is new, its score is saved to the season.
   window.dlsOnShow = function () {
+    if (window.inMatch) window.dlsHudOff();
     if (!S || !S.pending || !window.DLSManager || !window.DLSManager.lastMatch) return;
     var now = window.DLSManager.lastMatch();
     if (!now || now === S.pending.before) return;

@@ -140,12 +140,24 @@ void dlsmgr_frame(void)
         }
     }
     int isPause = scr && type == 6;
-    if (isPause != pauseOpen) {
+    if (isPause != (pauseOpen != 0)) {
         pauseOpen = isPause;
         if (isPause) {
             u8 *m = match_data();
-            /* 9 | home goals << 8 | away goals << 16 */
-            event(9 | m[0x9f14] << 8 | m[0x9f15] << 16);
+            int st = *(int *)(m + 0x9e3c);
+            nlog("pause screen: 9e34 %d 9e3c %d", *(int *)(m + 0x9e34), st, 0);
+            nlog(" 9e6c %d a704 %d%d\n", *(int *)(m + 0x9e6c), *(int *)(m + 0xa704), 0);
+            if (st == 10) {
+                /* the match is over (the state DLS's pause screen treats specially): skip DLS's
+                   full-time menu and leave the match straight away, so our full-time handler
+                   brings the menus up with the result */
+                pendingAction = 8;
+                pauseOpen = 2;     /* not ours to show */
+                event(15);
+            } else {
+                /* 9 | home goals << 8 | away goals << 16 */
+                event(9 | m[0x9f14] << 8 | m[0x9f15] << 16);
+            }
         } else {
             pendingAction = 0;
             event(10);

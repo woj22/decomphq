@@ -741,6 +741,11 @@ public final class Overlay {
             activity.runOnUiThread(new PauseBtnTask(false));
             activity.runOnUiThread(new OverlayJsTask("window.dlsPause && window.dlsPause(" + ((code >> 8) & 0xff) + ","
                     + ((code >> 16) & 0xff) + "," + ((code >> 24) & 0xff) + ")", true, false));
+        } else if (code == 15) {
+            // full time: DLS's full-time menu is skipped natively; hide our pause button and wait
+            // for the result (event 2)
+            introSeq++;
+            activity.runOnUiThread(new PauseBtnTask(false));
         } else if (code == 10) {
             activity.runOnUiThread(new OverlayJsTask("window.dlsIntroEnd && window.dlsIntroEnd()", false, false));
         }
@@ -992,8 +997,7 @@ public final class Overlay {
             pauseBtn.setVisibility(View.GONE);
         }
         if (web != null) {
-            web.setBackgroundColor(Color.rgb(11, 14, 13));
-            web.evaluateJavascript("window.dlsHudOff && window.dlsHudOff()", null);
+            web.setBackgroundColor(Color.rgb(11, 14, 13));   // dlsOnShow ends the HUD and renders the result
         }
     }
 
