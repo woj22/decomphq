@@ -286,6 +286,20 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .resp-btn { appearance: none; font: inherit; color: var(--fg); text-align: left; display: flex; align-items: center; gap: 10px; justify-content: space-between; padding: 10px 14px; min-height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2); cursor: pointer; }
 .resp-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(76,200,106,.08); }
 .resp-btn:disabled { opacity: .5; }
+.title-screen { position: fixed; inset: 0; background: #0b1110 url("bg/title.jpg") 62% 30% / cover no-repeat; }
+.title-menu { position: absolute; top: 0; bottom: 0; left: 0; width: clamp(260px, 32vw, 400px); display: flex; flex-direction: column; gap: 18px; padding: max(28px, env(safe-area-inset-top)) 22px 22px max(22px, env(safe-area-inset-left));
+  background: linear-gradient(90deg, rgba(8,14,13,.94) 0%, rgba(8,14,13,.86) 78%, rgba(8,14,13,0) 100%); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); box-sizing: border-box; overflow-y: auto; }
+.tm-name { font-size: 30px; font-weight: 800; letter-spacing: -.02em; color: #fff; }
+.tm-season { color: var(--accent); font-weight: 600; font-size: .9rem; }
+.tm-items { display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: center; }
+.tm-btn { appearance: none; font: inherit; color: #fff; text-align: left; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 10px 14px; border: 0; border-left: 3px solid transparent; border-radius: 0 10px 10px 0; background: transparent; cursor: pointer; }
+.tm-btn b { display: block; font-size: 1.08rem; }
+.tm-btn small { display: block; color: rgba(255,255,255,.62); font-size: .8rem; margin-top: 1px; }
+.tm-btn:hover, .tm-btn:focus-visible { background: rgba(255,255,255,.07); border-left-color: var(--accent); outline: none; }
+.tm-load { background: rgba(76,200,106,.14); border-left-color: var(--accent); }
+.tm-foot { color: rgba(255,255,255,.4); font-size: .75rem; }
+@media (max-width: 560px) { .title-menu { width: 100%; background: linear-gradient(90deg, rgba(8,14,13,.92), rgba(8,14,13,.55)); } }
+.storm { align-self: flex-start; color: var(--loss); border-color: rgba(226,85,85,.4); }
 .resp-tone { flex: none; font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
 .resp-sum { display: flex; gap: 20px; flex-wrap: wrap; font-weight: 600; }
 /* manager look */
@@ -958,6 +972,8 @@ input[type="search"], select {
     // training: development every Monday morning, a report on the 15th of each month
     if (h === 8 && dayDate(d).getUTCDay() === 1) weeklyDevelopment();
     respondEvents(d, h);
+    discEvents(d, h);
+    if (h === 0 && S.boardPress && S.bpDay !== d) { S.bpDay = d; S.boardPress = Math.max(0, S.boardPress - 0.25); }
     if (S.fin) { financeEvents(d, h); decideOffers(d, h); incomingBids(d, h); boardDecide(d, h); aiMarket(d, h); transferRoundup(d, h); if (h === 1) { expireOffers(d); endLoans(d); } }
     if (h === 7 && dayDate(d).getUTCDate() === 1 && d > 30) reassessPotential();
     if (h === 10 && dayDate(d).getUTCDate() === 15 && d > 30) trainingMail();
@@ -1688,6 +1704,7 @@ input[type="search"], select {
     if (S.fin.bal < 0) c -= 15;
     var h = S.fin.hist, trend = h.length > 30 ? h[h.length - 1][1] - h[h.length - 31][1] : 0;
     if (trend < 0) c -= 5;
+    c -= S.boardPress || 0;
     return Math.max(5, Math.min(95, Math.round(c)));
   }
   function boardRequest(kind, amount) {
@@ -1798,30 +1815,18 @@ input[type="search"], select {
   }
   function mgrName0() { return (S.manager && S.manager.name) || "the manager"; }
   var AI_SYS = "You write the press side of a realistic football management game (like Football Manager). British English, natural football-press voice, no emojis. Reply with a single JSON object only.";
-  // questions with four answer options each (effects and who an answer talks about)
-  function aiPressQuestions(P, done) {
-    var n = P.kind === "window" ? 3 : 4, kinds = { pre: "pre-match", post: "post-match", intro: "unveiling (first day as manager)", window: "transfer-window briefing with local reporters" };
-    var user = "Context: " + JSON.stringify(aiContext(P)) + "\n\nWrite " + n + " questions for a " + kinds[P.kind] + " press conference, each from a different journalist (realistic names; outlets can be national or local to " + club(S.clubId).city + "). Make them specific to the context (opponent and its manager, results, form, players, targets, rumours, recent quotes). " +
-      "Each question has 4 answer options for the manager in clearly different tones (e.g. Confident, Calm, Cautious, Aggressive, Evasive, Praise, Critical, Supportive, Passionate, Demanding, Respectful). For each option give: morale (-5..5, effect on the squad), fans (-5..5) and targets: the managers, players or clubs the answer talks about, each {\"type\":\"manager\"|\"player\"|\"club\",\"name\":..., \"sentiment\":-2..2}. " +
-      'Format: {"questions":[{"journalist":"","outlet":"","question":"","answers":[{"text":"","tone":"","morale":0,"fans":0,"targets":[]}]}]}';
-    aiAsk(AI_SYS, user, 2200, function (j, err) {
-      if (!j || !j.questions || !j.questions.length) return done(null, err);
-      done(j.questions.slice(0, n).map(function (q) {
-        return { q: q.question, who: q.journalist || "Reporter", outlet: q.outlet || "", a: (q.answers || []).slice(0, 4).map(function (a) {
-          return { text: a.text, tone: a.tone || "", mor: clampN(a.morale, 5), fans: clampN(a.fans, 5), quote: a.text, targets: a.targets || [] };
-        }) };
-      }).filter(function (q) { return q.q && q.a.length; }));
-    });
-  }
   function clampN(v, m) { v = +v || 0; return Math.max(-m, Math.min(m, Math.round(v))); }
   // the user's own words: judged by the AI
   function aiJudge(P, q, text, done) {
     var user = "Context: " + JSON.stringify(aiContext(P)) + "\n\nQuestion from " + q.who + ": " + q.q + "\nThe manager answered: \"" + text + "\"\n\n" +
-      "Judge the answer as the press, squad and fans would. Give: tone (one word), morale (-5..5), fans (-5..5), quote (the headline-worthy part, max 20 words, from the answer), targets (managers/players/clubs it talks about, {\"type\",\"name\",\"sentiment\":-2..2}), reaction (one short line: how the room took it). " +
-      'Format: {"tone":"","morale":0,"fans":0,"quote":"","targets":[],"reaction":""}';
+      "Judge the answer as the press, squad and fans would. Give: tone (one word), morale (-5..5), fans (-5..5; fans of a rival enjoy their manager standing up to the rival), quote (the headline-worthy part, max 20 words, from the answer), targets (managers/players/clubs it talks about, {\"type\",\"name\",\"sentiment\":-2..2}), reaction (one short line: how the room took it), " +
+      "misconduct: would the governing body (" + discBody().name + ") charge a manager for this? type: none, officials (questioning referees' integrity or competence, beyond mild disappointment), abusive (swearing at or insulting someone, threats), discriminatory, or integrity (suggesting games are fixed); severity 0 (fine) to 3 (very serious: a ban). Mild comments on a decision are none. " +
+      'Format: {"tone":"","morale":0,"fans":0,"quote":"","targets":[],"reaction":"","misconduct":{"type":"none","severity":0}}';
     aiAsk(AI_SYS, user, 500, function (j) {
-      if (!j) return done({ text: text, tone: "Own words", mor: 0, fans: 0, quote: text.slice(0, 120), targets: [] });
-      done({ text: text, tone: j.tone || "Own words", mor: clampN(j.morale, 5), fans: clampN(j.fans, 5), quote: j.quote || text.slice(0, 120), targets: j.targets || [], reaction: j.reaction || "" });
+      if (!j) return done({ text: text, tone: "Own words", mor: 0, fans: 0, quote: text.slice(0, 120), targets: [], ai: true });
+      var mc = j.misconduct || {}, sev = clampN(mc.severity, 3);
+      done({ text: text, tone: j.tone || "Own words", mor: clampN(j.morale, 5), fans: clampN(j.fans, 5), quote: j.quote || text.slice(0, 120), targets: j.targets || [], reaction: j.reaction || "", ai: true,
+        charge: sev > 0 && mc.type && mc.type !== "none" ? { type: mc.type, sev: sev } : null });
     });
   }
   // another manager's reply to what was said about him (queued for the next day)
@@ -1829,21 +1834,39 @@ input[type="search"], select {
     var cid = item.cid, me = mgrName0(), rel = relLabel(relOf("m:" + cid))[1];
     function publish(text, sentiment) {
       relAdd("m:" + cid, Math.round(sentiment * 6), coachOf(cid) + " replied");
+      S.lastReply = { cid: cid, text: text, d: today(), sentiment: sentiment };
       mail("Media department", coachOf(cid) + " responds", ["Asked about your comments (“" + esc(item.quote) + "”), <b>" + esc(coachOf(cid)) + "</b> (" + esc(club(cid).name) + ") said:", "“" + esc(text) + "”",
         "Your relationship: " + relLabel(relOf("m:" + cid))[1] + "."], { label: "Relationships", go: "relationships" }, sentiment < 0 ? "bad" : "info");
       post("media", journo(srand()), coachOf(cid) + " on " + club(S.clubId).name + "'s boss: “" + text + "”", { hype: 1.6 });
       save();
     }
-    if (aiOn()) {
+    if (item.ai && aiOn()) {
       var user = "You are " + coachOf(cid) + ", manager of " + club(cid).name + " (" + club(cid).league.replace(/_/g, " ") + "). " + me + ", manager of " + club(S.clubId).name + ", said this in a press conference: \"" + item.quote + "\" (it was " + (item.sentiment < 0 ? "critical of" : "positive about") + " you or your team). Your relationship with them so far: " + rel + ". " +
         "Reply as you would to journalists, in character, 1-3 sentences. Also give sentiment towards them (-2..2). Format: {\"reply\":\"\",\"sentiment\":0}";
       aiAsk(AI_SYS, user, 250, function (j) { if (j && j.reply) publish(j.reply, clampN(j.sentiment, 2)); else publish(templateReply(item), item.sentiment); });
     } else publish(templateReply(item), item.sentiment);
   }
   function templateReply(item) {
-    var r = srand();
-    return item.sentiment < 0 ? pick(["I don't comment on other managers. Maybe he should focus on his own team.", "We'll do our talking on the pitch.", "Everyone is entitled to an opinion. Ours will come at the weekend.", "I'm surprised. I've always respected him, but that was unnecessary."], r)
-      : pick(["Kind words. I have a lot of respect for him and his work.", "That's very generous. It's a good relationship between our clubs.", "Thank you. He's doing an excellent job there too."], r);
+    var r = srand(), rel = relOf("m:" + item.cid), derby = rivals(item.cid, S.clubId);
+    if (item.sentiment <= -2 || (item.sentiment < 0 && rel <= -30)) return pick(["He should worry about his own team. Mine are doing fine.", "That's not how you speak about a colleague. I'll leave it there.", "If he wants to make it personal, that's his problem.",
+      derby ? "It's a derby, I understand the emotions. But he crossed a line." : "I've got more important things to think about than him.", "Maybe he needs the attention. We'll answer on the pitch."], r);
+    if (item.sentiment < 0) return pick(["I don't comment on other managers. Maybe he should focus on his own team.", "We'll do our talking on the pitch.", "Everyone is entitled to an opinion. Ours will come at the weekend.", "I'm surprised. I've always respected him, but that was unnecessary."], r);
+    return pick(["Kind words. I have a lot of respect for him and his work.", "That's very generous. It's a good relationship between our clubs.", "Thank you. He's doing an excellent job there too.", derby ? "Respect in a derby is good to hear. It'll still be a battle." : "It's nice to hear. We'll see on the pitch who's better."], r);
+  }
+  // a player the manager talked about, asked by the press (or on social media)
+  function playerReply(item) {
+    var p = byId[item.pid]; if (!p || p.club !== S.clubId) return;
+    var r = srand(), rel = relOf("p:" + p.id), crit = item.sentiment < 0, d = 0, text;
+    if (crit) {
+      var proud = r() < 0.45 || rel <= -30;
+      text = proud ? pick(["I was surprised to read that. I give everything for this club.", "If the manager has something to say, he can say it to my face.", "I don't agree, but I'll let my football answer.", "It hurt, honestly. I don't think I deserved that."], r)
+        : pick(["The boss is right. I have to be better, and I will be.", "Fair criticism. I know I can do more.", "He demands a lot and that's good for me."], r);
+      d = proud ? -4 : 2;
+    } else { text = pick(["It means a lot when the manager says that. I just want to keep repaying his trust.", "Happy to hear it. It's the team that makes me look good.", "Nice words from the boss, now I want more."], r); d = 2; }
+    relAdd("p:" + p.id, d, crit ? (d < 0 ? "Unhappy with your comments" : "Took your criticism well") : "Pleased with your comments");
+    mail("Media department", p.name + " responds", ["Asked about your comments (“" + esc(item.quote) + "”), <b>" + esc(p.name) + "</b> said:", "“" + esc(text) + "”", "Your relationship: " + relLabel(relOf("p:" + p.id))[1] + "."],
+      { player: p.id }, d < 0 ? "bad" : "info");
+    post("media", journo(r), p.name + " on his manager's comments: “" + text + "”", { hype: 1.2 });
   }
   // effects of what was said: relationships, replies to come
   function applyTargets(a) {
@@ -1851,24 +1874,66 @@ input[type="search"], select {
       var key = targetKey(t), sv = clampN(t.sentiment, 2);
       if (!key || !sv) return;
       relAdd(key, sv * 8, "Press conference: “" + (a.quote || a.text).slice(0, 80) + "”");
-      if (key[0] === "m" && Math.abs(sv) >= 1) (S.respQ = S.respQ || []).push({ cid: key.slice(2), quote: (a.quote || a.text).slice(0, 160), sentiment: sv, due: today() + 1 });
+      var q = (a.quote || a.text).slice(0, 160);
+      if (key[0] === "m") (S.respQ = S.respQ || []).push({ cid: key.slice(2), quote: q, sentiment: sv, ai: !!a.ai, due: today() + 1 });
+      else if (key[0] === "p" && srand()() < (sv < 0 ? 0.6 : 0.3)) (S.respQ = S.respQ || []).push({ pid: +key.slice(2), quote: q, sentiment: sv, due: today() + 1 + Math.floor(srand()() * 2) });
     });
   }
   function respondEvents(d, h) {
     if (h !== 12 || !S.respQ || !S.respQ.length) return 0;
     var due = S.respQ.filter(function (x) { return x.due <= d; });
     S.respQ = S.respQ.filter(function (x) { return x.due > d; });
-    due.slice(0, 2).forEach(managerReply);
+    due.slice(0, 3).forEach(function (x) { if (x.pid != null) playerReply(x); else managerReply(x); });
+    save();
     return 0;
+  }
+  // ---- discipline: comments on referees, abuse; charges and fines from the league's governing body
+  function discBody() {
+    var lid = myLeague().id;
+    if (lid === "premier_league") return { name: "the FA", fines: [0, [10e3, 25e3], [30e3, 70e3], [80e3, 150e3]], ban: [0, 0, 0, 1], scale: 1 };
+    if (lid === "la_liga") return { name: "the RFEF Competition Committee", fines: [0, [600, 1500], [1500, 3500], [3000, 6000]], ban: [0, 0, 1, 2], scale: 0.8 };
+    return { name: "the NZS Disciplinary Committee", fines: [0, [300, 800], [800, 2500], [2500, 5000]], ban: [0, 0, 1, 2], scale: 0.7 };
+  }
+  var CHARGE_WHAT = { officials: "comments about match officials", abusive: "improper and abusive language", discriminatory: "discriminatory language", integrity: "comments questioning the integrity of the competition" };
+  // chance of a charge per severity (whether it is looked into at all)
+  function queueCharge(c, quote) {
+    var B = discBody(), p = [0, 0.3, 0.75, 1][c.sev] * (c.sev >= 3 ? 1 : B.scale);
+    if (c.type === "discriminatory" || c.type === "integrity") p = 1;
+    if (srand()() >= p) return false;
+    (S.discQ = S.discQ || []).push({ type: c.type, sev: c.sev, quote: quote.slice(0, 160), due: today() + 2, step: 0 });
+    return true;
+  }
+  function discEvents(d, h) {
+    if (h !== 15 || !S.discQ || !S.discQ.length) return;
+    var B = discBody(), keep = [];
+    S.discQ.forEach(function (x) {
+      if (x.due > d) return keep.push(x);
+      var what = CHARGE_WHAT[x.type] || "improper conduct";
+      if (x.step === 0) {
+        mail(B.name[0].toUpperCase() + B.name.slice(1), "Misconduct charge", ["You have been charged by " + esc(B.name) + " over " + what + " in your press conference:", "“" + esc(x.quote) + "”", "A hearing will decide the punishment in the next few days."], null, "bad");
+        post("media", journo(srand()), club(S.clubId).name + " boss " + mgrName() + " charged by " + B.name + " over " + what + ".", { hype: 1.5 });
+        x.step = 1; x.due = d + 4; keep.push(x);
+      } else {
+        var r = srand(), f = B.fines[x.sev] || B.fines[1], fine = Math.round((f[0] + r() * (f[1] - f[0])) / 100) * 100, ban = B.ban[x.sev] || 0;
+        if (x.type === "discriminatory") { fine *= 2; ban = Math.max(ban, 2); }
+        book("out", "Fines", fine);
+        S.boardPress = (S.boardPress || 0) + 3 + x.sev * 2;
+        mail(B.name[0].toUpperCase() + B.name.slice(1), "Fined " + fmtM(fine), ["The hearing found the charge over " + what + " proven. You have been fined <b>" + fmtM(fine) + "</b>" + (ban ? " and handed a " + ban + "-match touchline ban" : "") + ".",
+          "The club has paid the fine. The board are not impressed."], { label: "Board", go: "board" }, "bad");
+        post("media", journo(r), mgrName() + " fined " + fmtM(fine) + (ban ? " and banned from the touchline for " + ban + (ban > 1 ? " matches" : " match") : "") + " for " + what + ".", { hype: 1.8 });
+      }
+    });
+    S.discQ = keep;
+    save();
   }
   function aiSettings() {
     if (!window.DLSManager || !window.DLSManager.aiStatus) return "";
     var st = window.DLSManager.aiStatus();
     return '<hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="label">AI press conferences</div>' +
-      '<p class="muted" style="margin:0">' + (st ? "On, using " + esc(st) + (S.aiOff ? " (paused)" : "") + ". The key is kept in the app only, never in your save." : "Add an OpenAI API key to have journalists and other managers written by AI.") + "</p>" +
+      '<p class="muted" style="margin:0">' + (st ? "On, using " + esc(st) + (S && S.aiOff ? " (paused)" : "") + ". Used only when you answer in your own words. The key is kept in the app only, never in your save." : "Add an OpenAI API key to answer press questions in your own words (and have managers reply to them in character).") + "</p>" +
       '<input id="aiKey" type="password" autocomplete="off" placeholder="' + (st ? "Replace key (sk-…)" : "OpenAI API key (sk-…)") + '">' +
       '<input id="aiModel" placeholder="Model" value="' + esc(st || "gpt-4o-mini") + '">' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="aisave">Save</button>' + (st ? '<button class="btn" data-act="aioff">' + (S.aiOff ? "Turn on" : "Pause AI") + '</button><button class="btn ghost" data-act="aiclear">Remove key</button>' : "") + "</div>";
+      '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="aisave">Save</button>' + (st ? '<button class="btn" data-act="aioff">' + (S && S.aiOff ? "Turn on" : "Pause AI") + '</button><button class="btn ghost" data-act="aiclear">Remove key</button>' : "") + "</div>";
   }
   // ---- relationships screen
   function viewRelationships() {
@@ -1978,7 +2043,22 @@ input[type="search"], select {
     var myForm = (tb[pos - 1] || { form: [] }).form.slice(-3).join("");
     var top = clubPlayers[S.clubId].filter(function (p) { return S.pstats[p.id] && S.pstats[p.id].goals; }).sort(function (a, b) { return S.pstats[b.id].goals - S.pstats[a.id].goals; })[0];
     function A(text, tone, mor, fans, quote) { return { text: text, tone: tone, mor: mor, fans: fans, quote: quote || text }; }
+    var pri = [], derby = P.opp && rivals(P.opp, S.clubId), oc = P.opp ? coachOf(P.opp) : "";
+    // the press bring up what another manager said back (FM-style)
+    var LR = S.lastReply;
+    if (LR && today() - LR.d <= 21 && P.kind !== "intro") {
+      pri.push({ q: coachOf(LR.cid) + " responded to your comments, saying: “" + LR.text + "” Anything to say back?", about: LR.cid, a: [
+        A("I respect him. Let's leave it there.", "Respectful", 1, -1, "I respect " + coachOf(LR.cid) + ". Let's leave it there."), A("I've said all I'm going to say.", "Calm", 1, 0),
+        A("He should worry about his own team.", "Aggressive", 2, 2, coachOf(LR.cid) + " should worry about his own team."), A("Ha. No comment.", "Dismissive", 0, 1)] });
+      S.lastReply = null;
+    }
     if (P.kind === "pre") {
+      if (derby) pri.unshift({ q: "It's the derby against " + opp + ". What does this game mean to you and the supporters?", a: [
+        A("Everything. We know what this means to the fans.", "Passionate", 3, 4, "This derby means everything."), A("We respect " + opp + ", but this is our city.", "Confident", 3, 3),
+        A("We'll put them in their place, like always.", "Aggressive", 4, 4, "We'll put " + opp + " in their place."), A("It's three points, like any other game.", "Calm", 1, -2)] });
+      if (P.opp && relOf("m:" + P.opp) <= -30) pri.push({ q: "You and " + oc + " haven't seen eye to eye lately. Will you shake his hand?", a: [
+        A("Of course. Whatever is said, there's respect.", "Respectful", 1, 0), A("We'll see. I'm here for the football.", "Evasive", 0, 0),
+        A("I'm not here to make friends with him.", "Aggressive", 2, 2, "I'm not here to make friends with " + oc + ".")] });
       qs.push({ q: "How do you see the game against " + opp + "?", a: [
         A("We respect them, but we're going there to win.", "Confident", 3, 2), A("It'll be a tough game. We have to be at our best.", "Calm", 1, 0),
         A("Honestly, we should be beating teams like this.", "Arrogant", 4, 3, "We should be beating teams like " + opp + "."), A("I'd rather not make predictions.", "Evasive", -1, -1)] });
@@ -2009,7 +2089,16 @@ input[type="search"], select {
         A("We'll take the point and move on.", "Calm", 1, 0), A("Yes. We should have won that.", "Demanding", -2, 2), A("It's a fair result against a good side.", "Cautious", 0, -1)] });
       else qs.push({ q: "A " + sc + " defeat. What went wrong?", a: [
         A("I take full responsibility.", "Supportive", 3, 1, "I take full responsibility for that defeat."), A("Some players let themselves down today.", "Critical", -4, 2, "Some players let themselves down."),
-        A("The referee had a big say in that.", "Aggressive", 1, 3, "The referee had a big say in that game.")] });
+        A("The referee had a big say in that.", "Furious", 1, 3, "The referee had a big say in that game.")] });
+      // the referee (after a defeat, sometimes after a draw)
+      if (gf < ga || (gf === ga && r() < 0.5)) pri.push({ q: "There were some big decisions today. What did you make of the referee?", a: [
+        A("No complaints. We weren't good enough.", "Calm", 1, -1), A("Some decisions were questionable, but that's football.", "Cautious", 1, 1),
+        A("That was a disgrace. He cost us the game.", "Furious", 2, 4, "The referee was a disgrace. He cost us the game."), A("I'm not going to talk about the referee.", "Evasive", 0, 0)] });
+      if (derby && gf !== ga) pri.push({ q: gf > ga ? "Derby win. What do you say to the " + opp + " fans?" : "Losing the derby hurts. What do you say to your fans?", a: gf > ga ? [
+        A("Enjoy it, our fans deserve this.", "Passionate", 3, 5), A("Respect to " + opp + ". It was a hard game.", "Respectful", 2, 1),
+        A("The city is ours. Get used to it.", "Arrogant", 3, 5, "The city is ours. Get used to it.")] : [
+        A("Sorry. That isn't acceptable and we'll put it right.", "Supportive", 1, 2, "I'm sorry to our fans. We'll put it right."), A("Credit to them. Today they were better.", "Respectful", 0, -3),
+        A("Some players clearly didn't understand what this game means.", "Critical", -4, 3, "Some players didn't understand what this derby means.")] });
       var lastRes = (S.results[myLeague().id][R.w] || []).find(function (x) { return x.h === R.h; });
       var star = lastRes ? (hm ? lastRes.xi.h : lastRes.xi.a).slice().sort(function (a, b) { return (lastRes.ratings[b] || 0) - (lastRes.ratings[a] || 0); })[0] : null;
       if (star != null && byId[star]) qs.push({ q: byId[star].name + " was impressive today. Your thoughts?", a: [
@@ -2021,6 +2110,7 @@ input[type="search"], select {
     // three or four questions (two or three in a transfer-window briefing), the first always kept
     var first = qs.shift();
     qs.sort(function () { return r() - 0.5; });
+    if (pri.length && P.kind !== "intro") { if (derby && P.kind === "pre") { qs.unshift(first); first = pri.shift(); } qs = pri.concat(qs); }
     var local = localPress(), seen = {};
     // who each standard answer talks about (for relationships): the opponent's manager for
     // aggressive / respectful answers, a named player for praise or criticism, the squad for blame
@@ -2028,16 +2118,18 @@ input[type="search"], select {
     qs.forEach(function (q) {
       var named = squad.find(function (p) { return q.q.indexOf(p.name) >= 0; });
       q.a.forEach(function (a) {
+        if (/Furious/.test(a.tone) || (/referee/i.test(a.text) && /disgrace|big say|cost us/i.test(a.text))) a.charge = { type: "officials", sev: /disgrace|cost us/i.test(a.text) ? 2 : 1 };
         if (a.targets) return;
         a.targets = [];
-        if (P.opp && /Arrogant|Aggressive/.test(a.tone)) a.targets.push({ type: "manager", name: coachOf(P.opp), sentiment: -1 });
-        if (P.opp && /respect/i.test(a.text)) a.targets.push({ type: "manager", name: coachOf(P.opp), sentiment: 1 });
+        if (q.about) { a.targets.push({ type: "manager", name: coachOf(q.about), sentiment: /Respectful/.test(a.tone) ? 1 : /Aggressive|Dismissive/.test(a.tone) ? -1 : 0 }); return; }
+        if (P.opp && /Arrogant|Aggressive/.test(a.tone) && !/referee/i.test(a.text)) a.targets.push({ type: "manager", name: coachOf(P.opp), sentiment: derby || /make friends/.test(a.text) ? -2 : -1 });
+        if (P.opp && /respect/i.test(a.text) && !/Arrogant|Aggressive/.test(a.tone)) a.targets.push({ type: "manager", name: coachOf(P.opp), sentiment: 1 });
         if (named && /Praise|Supportive/.test(a.tone)) a.targets.push({ type: "player", name: named.name, sentiment: 2 });
         if (named && /Demanding|Critical/.test(a.tone)) a.targets.push({ type: "player", name: named.name, sentiment: -1 });
         if (/let themselves down|show me they belong/i.test(a.text)) a.squadHit = -4;
       });
     });
-    return [first].concat(qs.slice(0, P.kind === "window" ? 2 : 3)).map(function (q) {
+    return [first].concat(qs.slice(0, P.kind === "window" ? 2 : 3 + (pri.length > 1 ? 1 : 0))).map(function (q) {
       var j;
       for (var k = 0; k < 8; k++) { j = P.kind === "window" && r() < 0.6 ? local[Math.floor(r() * local.length)] : pick(JOURNOS, r); if (!seen[j[0]]) break; }
       seen[j[0]] = 1;
@@ -2087,18 +2179,28 @@ input[type="search"], select {
     }
     return qs;
   }
-  function pressFinish(P, answers) {
-    var mor = 0, fans = 0, r = srand();
+  function pressFinish(P, answers, stormed) {
+    var mor = 0, fans = 0, r = srand(), charged = 0;
     answers.forEach(function (a) {
       mor += a.mor; fans += a.fans; applyTargets(a);
+      if (a.charge && queueCharge(a.charge, a.quote || a.text)) charged++;
       if (a.squadHit) clubPlayers[S.clubId].forEach(function (p) { relAdd("p:" + p.id, a.squadHit, "Criticised the players in public"); });
     });
     var best = answers.slice().sort(function (a, b) { return Math.abs(b.mor) + Math.abs(b.fans) - Math.abs(a.mor) - Math.abs(a.fans); })[0];
     if (best) { S.quotes = [best.quote || best.text].concat(S.quotes || []).slice(0, 6); }
+    if (stormed) {
+      // walking out: the media turn on him, the board frown; fans split (more sympathy after a bad defeat)
+      var lost = P.res && (P.res.h === S.clubId ? P.res.hg < P.res.ag : P.res.ag < P.res.hg);
+      fans += lost ? 1 : -2; mor += lost ? 1 : -1;
+      S.boardPress = (S.boardPress || 0) + 3;
+      post("media", journo(r), "🚨 " + club(S.clubId).name + " boss " + mgrName() + " storms out of his " + (P.kind === "post" ? "post-match" : P.kind === "pre" ? "pre-match" : "") + " press conference after " + answers.length + (answers.length === 1 ? " question." : " questions."), { hype: 2.2 });
+      post("fan", fan(S.clubId, r), lost ? pick(["Can't blame him after that", "Good. Those questions were a joke", "He's as angry as we are"], r) : pick(["Bit embarrassing that", "Not a good look gaffer", "What was that about 😂"], r));
+      mail("Media department", "You walked out of the press conference", ["The papers have made a story of it, and the board have been on the phone.", "Your relationships with the journalists haven't been helped."], null, "bad");
+    }
     bump("morale", mor); bump("fanMood", fans);
-    P.done = "attended"; P.effect = { mor: mor, fans: fans };
+    P.done = "attended"; P.effect = { mor: mor, fans: fans, stormed: !!stormed, charged: charged };
     var q = answers.slice().sort(function (a, b) { return Math.abs(b.mor) + Math.abs(b.fans) - Math.abs(a.mor) - Math.abs(a.fans); })[0];
-    if (q) {
+    if (q && !stormed) {
       post("media", journo(r), club(S.clubId).name + " boss: “" + q.quote + "”", { hype: 1.3 });
       post("fan", fan(S.clubId, r), q.fans >= 2 ? pick(["Love this from the gaffer 🙌", "That's what we want to hear!", "Manager gets it. Behind him 100%"], r) : q.fans < 0 ? pick(["Bit of a non-answer that", "Come on, give us something", "Not convinced tbh"], r) : pick(["Fair enough", "Sensible from the boss", "No complaints with that"], r));
     }
@@ -2579,15 +2681,18 @@ input[type="search"], select {
     if (done) {
       var e = P.effect || { mor: 0, fans: 0 };
       function arrow(n) { return n > 0 ? '<b style="color:var(--win)">▲</b>' : n < 0 ? '<b style="color:var(--loss)">▼</b>' : "<b>–</b>"; }
-      qbox = '<div class="qbox"><span class="q-mic">' + micIcon() + '</span><div><div class="q-who">Press officer</div><p>That\'s all for today, thank you.</p></div></div>';
+      qbox = '<div class="qbox"><span class="q-mic">' + micIcon() + '</span><div><div class="q-who">Press officer</div><p>' + (e.stormed ? "The manager has left the room. That's the end of the press conference." : "That\'s all for today, thank you.") + '</p></div></div>';
+      var lastA = st.ans[st.ans.length - 1];
       resp = '<section class="panel resp"><div class="resp-h">Outcome</div><div class="resp-sum"><span>Squad morale ' + arrow(e.mor) + " " + moraleWord(S.morale) + "</span><span>Fans' mood " + arrow(e.fans) + " " + moraleWord(S.fanMood) + "</span></div>" +
+        (lastA && lastA.reaction ? '<p class="muted" style="margin:0">' + esc(lastA.reaction) + "</p>" : "") +
+        (e.charged ? '<p style="margin:0;color:var(--loss)">Your comments are likely to be looked at by ' + esc(discBody().name) + ".</p>" : "") +
         '<div class="resp-grid"><button class="resp-btn" data-go="inbox">Back to inbox</button><button class="resp-btn" data-go="social">See the reaction</button></div></section>';
     } else {
       qbox = '<div class="qbox"><span class="q-mic">' + micIcon() + '</span><div><div class="q-who">Press · ' + esc(q.who) + ", " + esc(q.outlet) + "</div><p>" + esc(q.q) + '</p></div><span class="q-n">' + (st.i + 1) + "/" + st.qs.length + "</span></div>";
       resp = '<section class="panel resp"><div class="resp-h">Your response</div><div class="resp-grid">' + q.a.map(function (a, i) {
         return '<button class="resp-btn" data-pans="' + i + '"' + (talking ? " disabled" : "") + '><span>' + esc(a.text) + '</span><span class="resp-tone">' + esc(a.tone) + "</span></button>";
-      }).join("") + "</div>" + (st.ai ? '<div class="own-ans"><textarea id="ownAns" rows="2" maxlength="400" placeholder="Or say it in your own words…"' + (talking ? " disabled" : "") + '></textarea><button class="btn primary" data-act="pressown"' + (talking ? " disabled" : "") + ">Answer</button></div>" : "") +
-        (st.err ? '<p class="muted" style="margin:0;font-size:.8rem">AI unavailable (' + esc(String(st.err).slice(0, 90)) + "), using standard questions.</p>" : "") + "</section>";
+      }).join("") + "</div>" + '<button class="btn ghost storm" data-act="pressstorm"' + (talking ? " disabled" : "") + ">Storm out</button>" + (st.ai ? '<div class="own-ans"><textarea id="ownAns" rows="2" maxlength="400" placeholder="Or say it in your own words…"' + (talking ? " disabled" : "") + '></textarea><button class="btn primary" data-act="pressown"' + (talking ? " disabled" : "") + ">Answer</button></div>" : "") +
+        (st.judging ? '<p class="muted" style="margin:0;font-size:.8rem">The room takes it in…</p>' : "") + "</section>";
     }
     return '<div class="press">' + side + '<div class="press-main">' + stage + qbox + "</div>" + resp + "</div>";
   }
@@ -2905,14 +3010,15 @@ input[type="search"], select {
   function renderTitle() {
     var saved = S && D.clubs[S.clubId] ? S : null;
     var inGame = !!(window.DLSManager && window.DLSManager.exportSave);
-    app.innerHTML = '<main class="screen" style="min-height:100vh;display:grid;place-items:center">' +
-      '<section class="panel" style="width:min(460px,100%);padding:28px;display:grid;gap:14px">' +
-      '<div><div style="font-size:30px;font-weight:800;letter-spacing:-.02em">DLS Manager</div><div class="muted">Season ' + esc(seasonLabel()) + "</div></div>" +
-      (saved ? '<button class="btn primary" data-act="loadcareer" style="display:flex;gap:12px;align-items:center;justify-content:flex-start;text-align:left">' + badge(saved.clubId, 34) +
-        '<span><b>Load career</b><br><span style="font-weight:500;opacity:.85">' + esc(club(saved.clubId).name) + " · matchweek " + (saved.week + 1) + "</span></span></button>" : "") +
-      '<button class="btn' + (saved ? "" : " primary") + '" data-act="newcareer">New career</button>' +
-      (inGame ? '<button class="btn ghost" data-act="exportsave">Export save</button>' : "") +
-      "</section></main>";
+    app.innerHTML = '<main class="title-screen"><nav class="title-menu" aria-label="Start menu">' +
+      '<div class="tm-head"><div class="tm-name">DLS Manager</div><div class="tm-season">Season ' + esc(seasonLabel()) + "</div></div>" +
+      '<div class="tm-items">' +
+      (saved ? '<button class="tm-btn tm-load" data-act="loadcareer">' + badge(saved.clubId, 38) +
+        '<span><b>Load game</b><small>' + esc(club(saved.clubId).name) + " · matchweek " + (saved.week + 1) + "</small></span></button>" : "") +
+      '<button class="tm-btn" data-act="newcareer"><span><b>New game</b><small>Choose a club</small></span></button>' +
+      '<button class="tm-btn" data-act="settings"><span><b>Settings</b><small>Difficulty, AI</small></span></button>' +
+      (inGame ? '<button class="tm-btn" data-act="exportsave"><span><b>Export save</b><small>Back up your career</small></span></button>' : "") +
+      "</div><div class=\"tm-foot\">Football Manager-style career for DLS 19</div></nav></main>";
   }
 
   function modal(html) {
@@ -3180,18 +3286,7 @@ input[type="search"], select {
       if (ma.offer) { ui.screen = "deals"; render(); var oo = (S.offers || []).find(function (x) { return x.id === ma.offer; }); if (oo && ((oo.dir === "in" && (oo.status === "accepted" || oo.status === "counter")) || (oo.dir === "out" && oo.status === "open"))) dealModal(oo.id); return; }
       if (ma.press) {
         if (!S.press || S.press.id !== ma.press || S.press.done) return modal('<h2>Press conference</h2><p class="muted" style="margin:0">' + (S.press && S.press.id === ma.press && S.press.done === "attended" ? "You've already spoken to the press." : "That press conference has passed; your assistant took it.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
-        var P0 = S.press;
-        if (aiOn()) {
-          ui.pressState = { id: P0.id, qs: [], i: 0, ans: [], loading: true, ai: true }; ui.screen = "press"; render();
-          aiPressQuestions(P0, function (qs, err) {
-            var st0 = ui.pressState; if (!st0 || st0.id !== P0.id) return;
-            st0.loading = false;
-            if (qs && qs.length) st0.qs = qs; else { st0.qs = pressQuestions(P0); st0.ai = false; st0.err = err; }
-            if (ui.screen === "press") render();
-          });
-          return;
-        }
-        ui.pressState = { id: S.press.id, qs: pressQuestions(S.press), i: 0, ans: [] }; ui.screen = "press"; return render();
+        ui.pressState = { id: S.press.id, qs: pressQuestions(S.press), i: 0, ans: [], ai: aiOn() }; ui.screen = "press"; return render();
       }
       if (ma.act === "play") { if (matchDayToday()) { ui.screen = "prematch"; return render(); } return; }
       return;
@@ -3296,12 +3391,19 @@ input[type="search"], select {
       var rp = byId[+t.getAttribute("data-pid")], costR = releaseCost(rp);
       book("out", "Severance", costR); movePlayer(rp, "free"); closeModal(); save(); ui.screen = "contracts"; return render();
     }
+    if (act === "pressstorm") {
+      var psS = ui.pressState;
+      if (!psS || psS.talk != null || psS.i >= psS.qs.length) return;
+      psS.talk = pick(["I'm not doing this. We're done here.", "No. I'm finished.", "That's enough. Thank you."], srand()); render();
+      setTimeout(function () { psS.talk = null; psS.i = psS.qs.length; pressFinish(S.press, psS.ans, true); if (ui.screen === "press") render(); }, 1400);
+      return;
+    }
     if (act === "pressown") {
       var psO = ui.pressState, qO = psO && psO.qs[psO.i], txt = ((document.getElementById("ownAns") || {}).value || "").trim();
       if (!qO || !txt || psO.talk != null) return;
-      psO.talk = txt; render();
+      psO.talk = txt; psO.judging = true; render();
       aiJudge(S.press, qO, txt, function (ans) {
-        psO.ans.push(ans);
+        psO.ans.push(ans); psO.judging = false;
         setTimeout(function () {
           psO.talk = null; psO.i++;
           if (psO.i >= psO.qs.length) pressFinish(S.press, psO.ans);
@@ -3313,10 +3415,10 @@ input[type="search"], select {
     if (act === "aisave") {
       var k = (document.getElementById("aiKey") || {}).value || "", md = (document.getElementById("aiModel") || {}).value || "";
       if (window.DLSManager && window.DLSManager.setAiKey) window.DLSManager.setAiKey(k, md);
-      S.aiOff = false; save(); closeModal();
-      return modal('<h2>AI</h2><p class="muted" style="margin:0">' + (window.DLSManager && window.DLSManager.aiStatus && window.DLSManager.aiStatus() ? "Saved. Press conferences and managers' replies now use " + esc(window.DLSManager.aiStatus()) + "." : "No key saved.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+      if (S) { S.aiOff = false; save(); } closeModal();
+      return modal('<h2>AI</h2><p class="muted" style="margin:0">' + (window.DLSManager && window.DLSManager.aiStatus && window.DLSManager.aiStatus() ? "Saved. You can now answer in your own words in press conferences (" + esc(window.DLSManager.aiStatus()) + ")." : "No key saved.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
-    if (act === "aioff") { S.aiOff = !S.aiOff; save(); closeModal(); return; }
+    if (act === "aioff") { if (S) { S.aiOff = !S.aiOff; save(); } closeModal(); return; }
     if (act === "aiclear") { if (window.DLSManager && window.DLSManager.clearAiKey) window.DLSManager.clearAiKey(); closeModal(); return; }
     if (act === "msgback") { ui.msg = null; return render(); }
     if (act === "readall") { S.inbox.forEach(function (m) { m.read = true; }); save(); return render(); }
@@ -3376,10 +3478,10 @@ input[type="search"], select {
     if (act === "autopick") { var L = lineupOf(S.clubId); L.xi = autoXI(S.clubId, L.formation); ui.sel = null; save(); return render(); }
     if (act === "settings") {
       closeDrawer();
-      var cur = S.difficulty || "hard";
+      var cur = (S && S.difficulty) || "hard";
       return modal('<h2>Settings</h2><label class="label" for="diffsel">Match difficulty</label><select id="diffsel">' +
         [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"], ["veryhard", "Very hard"], ["elite", "Elite (DLS's hardest)"]].map(function (d) { return '<option value="' + d[0] + '"' + (d[0] === cur ? " selected" : "") + ">" + d[1] + "</option>"; }).join("") +
-        '</select><p class="muted" style="margin:0">Assists are off in matches. Your career is saved on this device automatically.</p>' + aiSettings() + '<button class="btn" data-act="askreset">Start a new career…</button><button class="btn ghost" data-act="closemodal">Close</button>');
+        '</select><p class="muted" style="margin:0">Assists are off in matches. Your career is saved on this device automatically.</p>' + aiSettings() + (S && !ui.title ? '<button class="btn" data-act="askreset">Start a new career…</button>' : "") + '<button class="btn ghost" data-act="closemodal">Close</button>');
     }
     if (act === "askreset") { closeModal(); return modal('<h2>Start a new career?</h2><p class="muted" style="margin:0">This deletes the current season, results and stats.</p><div style="display:flex;gap:8px"><button class="btn primary" data-act="reset">Delete and start over</button><button class="btn ghost" data-act="closemodal">Keep playing</button></div>'); }
     if (act === "reset") { closeModal(); S = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) {} ui.screen = "home"; return render(); }
