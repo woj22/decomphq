@@ -367,6 +367,9 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .np-t b, .np-t span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .np-t span { font-size: .8rem; color: rgba(255,255,255,.7); }
 .np-skip { appearance: none; font: inherit; font-size: .78rem; font-weight: 800; color: #fff; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 8px; padding: 7px 10px; cursor: pointer; flex: none; }
+.skip-ic { width: 1em; height: 1em; fill: currentColor; vertical-align: -0.14em; margin-left: 2px; }
+.np-skip { display: inline-flex; align-items: center; gap: 5px; }
+.lm-b .skip-ic { margin-left: 4px; }
 .np-skip:hover { background: rgba(255,255,255,.2); }
 /* ---- live text match: its own broadcast look, the same in every theme */
 .lm { position: fixed; inset: 0; z-index: 40; display: grid; grid-template-rows: auto auto 1fr auto; background: radial-gradient(120% 80% at 50% -20%, #1b2530 0%, #0b0f13 60%) #0b0f13; color: #e9eef0; font-family: var(--font); letter-spacing: .01em;
@@ -3139,7 +3142,7 @@ input[type="search"], select {
       '<button class="lm-b" data-lm="panel:tactics"' + (playing ? "" : " disabled") + ">Tactics</button>" +
       '<button class="lm-b" data-lm="panel:subs"' + (playing ? "" : " disabled") + ">Subs " + LM.me.subs + "/5</button>" +
       '<button class="lm-b" data-lm="panel:shouts"' + (playing ? "" : " disabled") + ">Shouts" + (LM.me.shout && LM.min < LM.me.shoutTo ? " ●" : "") + "</button>" +
-      '<button class="lm-b" data-lm="skip"' + (playing ? "" : " disabled") + ">" + (LM.half === 1 ? "Skip to HT" : "Skip to FT") + " ⏭</button>";
+      '<button class="lm-b" data-lm="skip"' + (playing ? "" : " disabled") + ">" + (LM.half === 1 ? "Skip to HT" : "Skip to FT") + ' <svg class="skip-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5v11l8.5-5.5z"/><rect x="11.5" y="2.5" width="2" height="11" rx=".5"/></svg></button>';
     document.getElementById("lmOv").innerHTML = LM.talk ? lmTalkHtml() : LM.panel ? lmPanelHtml() : "";
     lmPaintPitch();
   }
@@ -3816,7 +3819,7 @@ input[type="search"], select {
       shown = true;
       var f = files()[last], ti = (window.MUSIC_TITLES || {})[f] || {}, el = document.getElementById("np");
       if (!el) { el = document.createElement("div"); el.id = "np"; document.body.appendChild(el); }
-      el.innerHTML = '<span class="np-ic">♪</span><div class="np-t"><small>Now playing</small><b>' + esc(ti.t || "Song " + (last + 1)) + "</b>" + (ti.a ? "<span>" + esc(ti.a) + "</span>" : "") + '</div><button class="np-skip" data-np="skip" aria-label="Skip song">Skip ⏭</button>';
+      el.innerHTML = '<span class="np-ic">♪</span><div class="np-t"><small>Now playing</small><b>' + esc(ti.t || "Song " + (last + 1)) + "</b>" + (ti.a ? "<span>" + esc(ti.a) + "</span>" : "") + '</div><button class="np-skip" data-np="skip" aria-label="Skip song">Skip <svg class="skip-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5v11l8.5-5.5z"/><rect x="11.5" y="2.5" width="2" height="11" rx=".5"/></svg></button>';
       el.className = ""; void el.offsetWidth; el.className = "in";
       clearTimeout(npT);
       npT = setTimeout(function () { el.className = "out"; }, 10000);
