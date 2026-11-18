@@ -71,7 +71,7 @@ public final class Overlay {
         }
         ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
 
-        WebView w = new WebView(activity);
+        WebView w = new PassWebView(activity);
         WebSettings s = w.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
@@ -534,7 +534,7 @@ public final class Overlay {
         out.close();
     }
 
-    private static void copy(InputStream in, File to) throws java.io.IOException {
+    static void copy(InputStream in, File to) throws java.io.IOException {
         FileOutputStream out = new FileOutputStream(to);
         byte[] buf = new byte[65536];
         int r;
@@ -672,20 +672,74 @@ public final class Overlay {
         } catch (Throwable t) {
             // ignore
         }
-        if (code == 7 || code == 8) {
-            activity.runOnUiThread(new OverlayJsTask(code == 7
-                    ? "window.dlsLineups && window.dlsLineups()" : "window.dlsIntroEnd && window.dlsIntroEnd()", code == 7));
-            return;
+        if ((code & 0xff) == 3) {
+            introWeather = (code >> 8) & 0xff;
+            introTime = (code >> 16) & 0xff;
+            return;  // DLS's intro check is only true for an instant at load; timed below instead
         }
         if (code == 1) {
+            // the match is on screen: our intro (teams, then both line-ups) over the build-up
             matchShown = true;
+            int seq = ++introSeq;
+            View v = activity.getWindow().getDecorView();
             activity.runOnUiThread(new MatchTask());
+            v.postDelayed(new IntroStep(seq, 1), 900);
+            v.postDelayed(new IntroStep(seq, 2), 4900);
+            v.postDelayed(new IntroStep(seq, 3), 10900);
         } else if (code == 2) {
+            introSeq++;
             activity.runOnUiThread(new ShowTask());
-        } else if ((code & 0xff) == 3) {
-            activity.runOnUiThread(new IntroTask((code >> 8) & 0xff, (code >> 16) & 0xff, true));
-        } else if (code == 4) {
-            activity.runOnUiThread(new IntroTask(0, 0, false));
+        } else if ((code & 0xff) == 9) {
+            // DLS opened its pause / half-time screen: ours is drawn instead (actions go back to
+            // DLS's own buttons through Native.pauseAction)
+            introSeq++;
+            activity.runOnUiThread(new OverlayJsTask("window.dlsPause && window.dlsPause(" + ((code >> 8) & 0xff) + ","
+                    + ((code >> 16) & 0xff) + "," + ((code >> 24) & 0xff) + ")", true, false));
+        } else if (code == 10) {
+            activity.runOnUiThread(new OverlayJsTask("window.dlsIntroEnd && window.dlsIntroEnd()", false, false));
+        }
+    }
+
+    /** While our intro plays over the match, touches go through to the game. */
+    static volatile boolean touchThrough;
+
+    static final class PassWebView extends WebView {
+        PassWebView(Context ctx) {
+            super(ctx);
+        }
+
+        @Override
+        public boolean dispatchTouchEvent(android.view.MotionEvent ev) {
+            return !touchThrough && super.dispatchTouchEvent(ev);
+        }
+    }
+
+    static volatile int introSeq;
+    static volatile int introWeather;
+    static volatile int introTime;
+
+    /** One step of our match intro: 1 team bar, 2 line-ups, 3 done (dropped if superseded). */
+    static final class IntroStep implements Runnable {
+        private final int seq;
+        private final int step;
+
+        IntroStep(int seq, int step) {
+            this.seq = seq;
+            this.step = step;
+        }
+
+        @Override
+        public void run() {
+            if (seq != introSeq) {
+                return;
+            }
+            if (step == 1) {
+                new OverlayJsTask("window.dlsIntro && window.dlsIntro(" + introWeather + "," + introTime + ")", true, true).run();
+            } else if (step == 2) {
+                new OverlayJsTask("window.dlsLineups && window.dlsLineups()", true, true).run();
+            } else {
+                new OverlayJsTask("window.dlsIntroEnd && window.dlsIntroEnd()", false, true).run();
+            }
         }
     }
 
@@ -751,10 +805,12 @@ public final class Overlay {
     static final class OverlayJsTask implements Runnable {
         private final String js;
         private final boolean show;
+        private final boolean passThrough;
 
-        OverlayJsTask(String js, boolean show) {
+        OverlayJsTask(String js, boolean show, boolean passThrough) {
             this.js = js;
             this.show = show;
+            this.passThrough = passThrough;
         }
 
         @Override
@@ -762,6 +818,7 @@ public final class Overlay {
             if (web == null) {
                 return;
             }
+            touchThrough = show && passThrough;
             if (show) {
                 web.setBackgroundColor(Color.TRANSPARENT);
                 web.evaluateJavascript(js, null);
@@ -824,6 +881,7 @@ public final class Overlay {
                 // v47: an exhibition (tools/apk_patch/exhibition.c) that kicks off straight away:
                 // opponent first, then 0x5A5E0004 = start it on the next game frame. The menus
                 // come back by themselves at full time (ResultWatch).
+                Native.start(activity);
                 String before = resultSeq();
                 matchShown = false;
                 nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
@@ -865,6 +923,7 @@ public final class Overlay {
                 for (byte b : away) {
                     nativeRequest(0x5A5E2000 | (b & 0xff));
                 }
+                Native.start(activity);
                 String before = resultSeq();
                 matchShown = false;
                 nativeRequest(0x5A5E0000 | (userHome ? 0x4000 : 0x8000) | (tid & 0x3ff));
@@ -887,6 +946,18 @@ public final class Overlay {
          * "home,away,homeGoals,awayGoals,sequence" with DLS team ids (258 = the player's team),
          * or "" before the first one.
          */
+        /** Our pause menu's choice: 8 resume, 7 quit, 1 team management (DLS's own buttons). */
+        @JavascriptInterface
+        public void pauseAction(int id) {
+            try {
+                if (Native.ready) {
+                    Native.pauseAction(id);
+                }
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
+            }
+        }
+
         @JavascriptInterface
         public String lastMatch() {
             return resultLine();

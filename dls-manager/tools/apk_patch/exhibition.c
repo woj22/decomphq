@@ -286,6 +286,10 @@ static void *make_sheet(u8 *sheet, int team, u8 *src)
  */
 void exhibition_poll(void)
 {
+    /* libdlsmgr.so's per-frame function (stored by Native.init), if loaded */
+    void (*ext)(void) = *(void (**)(void))(PAGE + 0xff8);
+    if (ext)
+        ext();
     /* match screen (FUN_0013f9d4, its object recorded by match_screen_hook) finished loading:
        the match is on screen, the menus can step aside */
     if (PAGE[0xf0c] == 1) {

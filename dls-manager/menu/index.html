@@ -39,6 +39,10 @@ body {
 }
 /* team intro over the match cutscene (transparent page) */
 html.intro, html.intro body { background: transparent !important; }
+.pause-wrap { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(6,9,8,.88); }
+.pause-card { width: min(560px, 92vw); display: grid; gap: 18px; background: var(--panel); border-radius: 18px; padding: 22px; border: 1px solid var(--line); }
+.pause-btns { display: grid; gap: 10px; }
+.pause-btns .btn { justify-content: center; padding: 14px; font-size: 1rem; }
 .lu-wrap { position: fixed; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: center; padding: 4vh 6vw; pointer-events: none; animation: fade .5s both; }
 .lu-side { display: grid; gap: 8px; background: rgba(8,12,10,.78); border-radius: 14px; padding: 10px; }
 .intro-wrap { position: fixed; inset: 0; display: grid; align-content: end; padding: 0 0 7vh; pointer-events: none; }
@@ -844,6 +848,30 @@ input[type="search"], select {
     }
     app.innerHTML = '<div class="lu-wrap">' + side(fx.home) + side(fx.away) + "</div>";
   };
+  // Our pause / half-time menu over the match (DLS's pause screen is still there underneath;
+  // the buttons press DLS's own: 8 resume, 1 team management, 7 quit).
+  window.dlsPause = function (hg, ag) {
+    var fx = S && S.pending ? S.pending : null;
+    if (!fx) return;
+    document.documentElement.classList.add("intro");
+    app.innerHTML = '<div class="pause-wrap"><div class="pause-card">' +
+      '<div class="scoreline"><div class="side">' + badge(fx.home, 48) + esc(club(fx.home).name) + '</div><div class="score">' + hg + " – " + ag + '</div><div class="side">' + badge(fx.away, 48) + esc(club(fx.away).name) + "</div></div>" +
+      '<div class="pause-btns"><button class="btn primary" data-pause="8">Resume</button>' +
+      '<button class="btn" data-pause="1">Substitutions &amp; tactics</button>' +
+      '<button class="btn ghost" data-pause="quit">Quit match</button></div></div></div>';
+  };
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-pause]");
+    if (!b || !window.DLSManager || !window.DLSManager.pauseAction) return;
+    var v = b.getAttribute("data-pause");
+    if (v === "quit") {
+      b.parentNode.innerHTML = '<p style="margin:0;text-align:center;font-weight:700">Quit the match? It counts as finished at the current score.</p>' +
+        '<button class="btn primary" data-pause="7">Quit</button><button class="btn" data-pause="back">Back</button>';
+      return;
+    }
+    if (v === "back") return window.dlsPause.apply(null, (document.querySelector(".pause-card .score").textContent.split(" – ").map(Number)));
+    window.DLSManager.pauseAction(+v);
+  });
   window.dlsIntroEnd = function () {
     document.documentElement.classList.remove("intro");
     render();
