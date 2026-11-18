@@ -97,8 +97,12 @@ def main():
             if f.lower().endswith((".m4a", ".mp3", ".ogg")):
                 shutil.copy(os.path.join(a.music, f), os.path.join(a.out, "music", f))
                 songs.append("music/" + f)
-        with open(os.path.join(a.out, "music", "list.js"), "w") as fh:
-            fh.write("window.MUSIC_FILES = " + json.dumps(songs) + ";\n")
+        titles = {}
+        tp = os.path.join(a.music, "titles.json")   # {"01.m4a": {"t": title, "a": artist}}
+        if os.path.exists(tp):
+            titles = {"music/" + k: v for k, v in json.load(open(tp, encoding="utf-8")).items()}
+        with open(os.path.join(a.out, "music", "list.js"), "w", encoding="utf-8") as fh:
+            fh.write("window.MUSIC_FILES = " + json.dumps(songs) + ";\nwindow.MUSIC_TITLES = " + json.dumps(titles, ensure_ascii=False) + ";\n")
     size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(a.out) for f in fs)
     print(f"menu assets: index.html, data.js, {n} badges, {len(faces)} font weights, {len(songs)} songs, {size // 1024} KB -> {a.out}")
 
