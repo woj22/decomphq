@@ -21,11 +21,35 @@
   --win: #4cc86a;
   --draw: #c9a93a;
   --loss: #e0605a;
+  --accent-rgb: 76,200,106;
+  --shade-rgb: 8,14,13;
+  --accent-grad: var(--accent);
+  --page-glow: none;
   --pitch-a: #1d4a2b;
   --pitch-b: #205331;
   --font: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
   --r: 14px;
 }
+/* Champions League theme: midnight navy, electric blue and violet */
+html[data-theme="ucl"] {
+  --bg: #050a26;
+  --panel: #0c1440;
+  --panel-2: #121c52;
+  --line: #26337a;
+  --fg: #eef1ff;
+  --muted: #9aa4d8;
+  --accent: #4f9bff;
+  --accent-dim: #3a4fd0;
+  --accent-ink: #030a2b;
+  --accent-rgb: 79,155,255;
+  --shade-rgb: 5,10,38;
+  --accent-grad: linear-gradient(100deg, #3f7bff 0%, #7a4dff 60%, #b44dff 100%);
+  --page-glow: radial-gradient(80% 60% at 85% -10%, rgba(122,77,255,.28), transparent 60%), radial-gradient(70% 50% at 0% 110%, rgba(63,123,255,.22), transparent 60%);
+  --win: #39d0a0;
+}
+html[data-theme="ucl"] body { background: var(--page-glow), var(--bg); background-attachment: fixed; }
+html[data-theme="ucl"] .btn.primary { background: var(--accent-grad); border-color: transparent; color: #fff; }
+html[data-theme="ucl"] .panel { background-image: linear-gradient(180deg, rgba(122,77,255,.05), transparent 40%); }
 * { box-sizing: border-box; }
 html, body { background: var(--bg); color: var(--fg); margin: 0; }
 * { -webkit-tap-highlight-color: transparent; }
@@ -253,7 +277,7 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .stage.small { height: 260px; border-radius: 12px; }
 .backdrop { position: absolute; inset: -10px; display: grid; grid-template-columns: repeat(9, 1fr); align-items: center; justify-items: center; gap: 6px 0; filter: grayscale(1) brightness(1.4); opacity: .16; }
 .backdrop svg, .backdrop img { display: block; }
-.spot { position: absolute; inset: 0; background: radial-gradient(60% 75% at 50% 35%, rgba(76,200,106,.16), transparent 60%), linear-gradient(180deg, transparent 50%, rgba(0,0,0,.55)); }
+.spot { position: absolute; inset: 0; background: radial-gradient(60% 75% at 50% 35%, rgba(var(--accent-rgb),.16), transparent 60%), linear-gradient(180deg, transparent 50%, rgba(0,0,0,.55)); }
 .mgr-wrap { position: absolute; left: 50%; bottom: 14%; height: 80%; aspect-ratio: 1; transform: translateX(-50%); }
 .mgr-svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .desk { position: absolute; left: 0; right: 0; bottom: 0; height: 20%; background: linear-gradient(180deg, #121816, #090c0b); border-top: 3px solid #2a3331; }
@@ -284,11 +308,11 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .resp-h { font-size: .74rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
 .resp-btn { appearance: none; font: inherit; color: var(--fg); text-align: left; display: flex; align-items: center; gap: 10px; justify-content: space-between; padding: 10px 14px; min-height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2); cursor: pointer; }
-.resp-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(76,200,106,.08); }
+.resp-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(var(--accent-rgb),.08); }
 .resp-btn:disabled { opacity: .5; }
-.title-screen { position: fixed; inset: 0; background: #0b1110 url("bg/title.jpg") 62% 30% / cover no-repeat; }
+.title-screen { position: fixed; inset: 0; background: var(--bg) url("bg/title.jpg") 62% 30% / cover no-repeat; }
 .title-menu { position: absolute; top: 0; bottom: 0; left: 0; width: clamp(260px, 32vw, 400px); display: flex; flex-direction: column; gap: 18px; padding: max(28px, env(safe-area-inset-top)) 22px 22px max(22px, env(safe-area-inset-left));
-  background: linear-gradient(90deg, rgba(8,14,13,.94) 0%, rgba(8,14,13,.86) 78%, rgba(8,14,13,0) 100%); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); box-sizing: border-box; overflow-y: auto; }
+  background: linear-gradient(90deg, rgba(var(--shade-rgb),.94) 0%, rgba(var(--shade-rgb),.86) 78%, rgba(var(--shade-rgb),0) 100%); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); box-sizing: border-box; overflow-y: auto; }
 .tm-name { font-size: 28px; line-height: 1.05; font-weight: 800; letter-spacing: -.02em; color: #fff; margin-bottom: 4px; }
 .tm-season { color: var(--accent); font-weight: 600; font-size: .9rem; }
 .tm-items { display: flex; flex-direction: column; gap: 2px; flex: 1; justify-content: center; }
@@ -296,8 +320,8 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .tm-btn b { display: block; font-size: 1.08rem; }
 .tm-btn small { display: block; color: rgba(255,255,255,.62); font-size: .8rem; margin-top: 1px; }
 .tm-btn:hover, .tm-btn:focus-visible { background: rgba(255,255,255,.07); border-left-color: var(--accent); outline: none; }
-.tm-load { background: rgba(76,200,106,.14); border-left-color: var(--accent); }
-@media (max-width: 560px) { .title-menu { width: 100%; background: linear-gradient(90deg, rgba(8,14,13,.92), rgba(8,14,13,.55)); } }
+.tm-load { background: rgba(var(--accent-rgb),.14); border-left-color: var(--accent); }
+@media (max-width: 560px) { .title-menu { width: 100%; background: linear-gradient(90deg, rgba(var(--shade-rgb),.92), rgba(var(--shade-rgb),.55)); } }
 .storm { align-self: flex-start; color: var(--loss); border-color: rgba(226,85,85,.4); }
 .resp-tone { flex: none; font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
 .resp-sum { display: flex; gap: 20px; flex-wrap: wrap; font-weight: 600; }
@@ -330,7 +354,7 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .cal-cell.past { opacity: .62; }
 .cal-cell.today { outline: 2px solid var(--accent); opacity: 1; }
 .cal-cell.played { cursor: pointer; }
-.cal-cell.fx { background: linear-gradient(180deg, var(--panel-2), rgba(76,200,106,.12)); }
+.cal-cell.fx { background: linear-gradient(180deg, var(--panel-2), rgba(var(--accent-rgb),.12)); }
 .cal-d { justify-self: start; font-size: .75rem; font-weight: 700; color: var(--muted); }
 .cal-fx { display: flex; align-items: center; gap: 4px; }
 .cal-ha { font-size: .68rem; font-weight: 800; color: var(--muted); }
@@ -484,7 +508,7 @@ input[type="search"], select {
 .club-card[aria-pressed="true"] { border-color: var(--accent); background: #13241a; }
 .club-card .meta { font-size: .75rem; color: var(--muted); }
 .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 30; display: grid; place-items: center; padding: 16px; }
-.modal { max-width: 440px; padding: 18px; display: grid; gap: 12px; }
+.modal { max-width: 440px; width: 100%; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; padding: 18px; display: grid; gap: 12px; }
 
 @media (max-width: 760px) {
   .home-grid, .profile, .tactics, .two-col { grid-template-columns: 1fr; }
@@ -2414,6 +2438,7 @@ input[type="search"], select {
     if (ev.target && ev.target.hasAttribute && ev.target.hasAttribute("data-indiv") && S) { (S.indiv = S.indiv || {})[ev.target.getAttribute("data-indiv")] = ev.target.value; save(); return; }
     if (ev.target && ev.target.id === "badj") { var bv = +ev.target.value, bt = document.getElementById("badjv"); if (bt) bt.textContent = bv > 0 ? fmtM(bv) + " from transfers → +" + fmtM(bv / 104) + "/wk wages" : bv < 0 ? fmtM(-bv / 104) + "/wk wages → +" + fmtM(-bv) + " transfers" : "No change"; return; }
     if (ev.target && ev.target.id === "mgrname" && S) { mgr().name = ev.target.value.trim().slice(0, 28); save(); }
+    if (ev.target && ev.target.id === "themesel") { try { localStorage.setItem("dlsmgr-theme", ev.target.value); } catch (e) {} applyTheme(ev.target.value); render(); }
     if (ev.target && ev.target.id === "diffsel" && S) { S.difficulty = ev.target.value; save(); }
   });
 
@@ -2799,7 +2824,7 @@ input[type="search"], select {
     return screenHead("Finances", '<button class="btn" data-go="board">Board</button>') +
       '<div class="fin-tiles">' + finTile("Balance", fmtM(F.bal), F.bal < 0 ? "In debt" : "Cash at the bank") + finTile("Transfer budget", fmtM(F.tb), "Available to spend") +
       finTile("Wages", fmtM(wb) + "/wk", "Budget " + fmtM(F.wb) + "/wk", wb / Math.max(1, F.wb)) + finTile("Season so far", (net >= 0 ? "+" : "") + fmtM(net), net >= 0 ? "Profit" : "Loss") + "</div>" +
-      '<section class="panel fin-card"><div class="fin-h"><h3>Balance</h3><span class="muted">This season</span></div>' + lineChart("bal", F.hist.concat([[today(), Math.round(F.bal)]]), "#4cc86a") + "</section>" +
+      '<section class="panel fin-card"><div class="fin-h"><h3>Balance</h3><span class="muted">This season</span></div>' + lineChart("bal", F.hist.concat([[today(), Math.round(F.bal)]]), cssVar("--accent")) + "</section>" +
       '<section class="panel fin-card"><div class="fin-h"><h3>Income and expenditure</h3><span class="muted">By month</span></div>' +
       barsChart("mon", cats, [{ name: "Income", color: C_IN, vals: ms.map(function (m) { return sum(F.months[m].in); }) }, { name: "Expenditure", color: C_OUT, vals: ms.map(function (m) { return sum(F.months[m].out); }) }]) + "</section>" +
       '<div class="fin-two">' + breakdown("Income this season", T.tin, C_IN) + breakdown("Expenditure this season", T.tout, C_OUT) + "</div>" +
@@ -3020,6 +3045,11 @@ input[type="search"], select {
       "</div></nav></main>";
   }
 
+  function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || "#4cc86a"; }
+  var THEMES = [["classic", "Classic (green)"], ["ucl", "Champions League"]];
+  function themeNow() { try { return localStorage.getItem("dlsmgr-theme") || "classic"; } catch (e) { return "classic"; } }
+  function applyTheme(t) { if (t === "ucl") document.documentElement.setAttribute("data-theme", "ucl"); else document.documentElement.removeAttribute("data-theme"); }
+  applyTheme(themeNow());
   function modal(html) {
     var m = el('<div class="modal-bg" id="modal"><section class="panel modal">' + html + "</section></div>");
     document.body.appendChild(m);
@@ -3478,7 +3508,9 @@ input[type="search"], select {
     if (act === "settings") {
       closeDrawer();
       var cur = (S && S.difficulty) || "hard";
-      return modal('<h2>Settings</h2><label class="label" for="diffsel">Match difficulty</label><select id="diffsel">' +
+      return modal('<h2>Settings</h2><label class="label" for="themesel">Theme</label><select id="themesel">' +
+        THEMES.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === themeNow() ? " selected" : "") + ">" + x[1] + "</option>"; }).join("") + "</select>" +
+        '<label class="label" for="diffsel">Match difficulty</label><select id="diffsel">' +
         [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"], ["veryhard", "Very hard"], ["elite", "Elite (DLS's hardest)"]].map(function (d) { return '<option value="' + d[0] + '"' + (d[0] === cur ? " selected" : "") + ">" + d[1] + "</option>"; }).join("") +
         '</select><p class="muted" style="margin:0">Assists are off in matches. Your career is saved on this device automatically.</p>' + aiSettings() + (S && !ui.title ? '<button class="btn" data-act="askreset">Start a new career…</button>' : "") + '<button class="btn ghost" data-act="closemodal">Close</button>');
     }
