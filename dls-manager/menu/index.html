@@ -47,6 +47,29 @@ html[data-theme="ucl"] {
   --page-glow: radial-gradient(80% 60% at 85% -10%, rgba(122,77,255,.28), transparent 60%), radial-gradient(70% 50% at 0% 110%, rgba(63,123,255,.22), transparent 60%);
   --win: #39d0a0;
 }
+/* San Marino theme: night blue, the national sky blue and white, a touch of gold */
+html[data-theme="sm"] {
+  --bg: #06131e;
+  --panel: #0c1f2e;
+  --panel-2: #11293c;
+  --line: #1f4058;
+  --fg: #f3f9fd;
+  --muted: #92b4c9;
+  --accent: #5ab4e5;
+  --accent-dim: #2f7fae;
+  --accent-ink: #03243a;
+  --accent-rgb: 90,180,229;
+  --shade-rgb: 6,19,30;
+  --gold: #e2b322;
+  --page-glow: radial-gradient(70% 55% at 100% -10%, rgba(90,180,229,.16), transparent 60%);
+}
+html[data-theme="sm"] body { background: var(--page-glow), var(--bg); background-attachment: fixed; }
+html[data-theme="sm"] .btn.primary { background: var(--accent); border-color: #fff; color: var(--accent-ink); box-shadow: inset 0 0 0 1px rgba(255,255,255,.55); }
+html[data-theme="sm"] .tm-season { color: var(--gold); }
+html[data-theme="sm"] .panel { border-top-color: rgba(255,255,255,.14); }
+.tm-crest { display: none; }
+html[data-theme="sm"] .tm-crest { display: block; width: 58px; height: auto; margin-bottom: 10px; }
+@media (max-height: 480px) { html[data-theme="sm"] .tm-crest { width: 36px; margin-bottom: 6px; } .title-menu { gap: 10px; } }
 html[data-theme="ucl"] body { background: var(--page-glow), var(--bg); background-attachment: fixed; }
 html[data-theme="ucl"] .btn.primary { background: var(--accent-grad); border-color: transparent; color: #fff; }
 html[data-theme="ucl"] .panel { background-image: linear-gradient(180deg, rgba(122,77,255,.05), transparent 40%); }
@@ -2438,7 +2461,7 @@ input[type="search"], select {
     if (ev.target && ev.target.hasAttribute && ev.target.hasAttribute("data-indiv") && S) { (S.indiv = S.indiv || {})[ev.target.getAttribute("data-indiv")] = ev.target.value; save(); return; }
     if (ev.target && ev.target.id === "badj") { var bv = +ev.target.value, bt = document.getElementById("badjv"); if (bt) bt.textContent = bv > 0 ? fmtM(bv) + " from transfers → +" + fmtM(bv / 104) + "/wk wages" : bv < 0 ? fmtM(-bv / 104) + "/wk wages → +" + fmtM(-bv) + " transfers" : "No change"; return; }
     if (ev.target && ev.target.id === "mgrname" && S) { mgr().name = ev.target.value.trim().slice(0, 28); save(); }
-    if (ev.target && ev.target.id === "themesel") { try { localStorage.setItem("dlsmgr-theme", ev.target.value); } catch (e) {} applyTheme(ev.target.value); render(); }
+    if (ev.target && ev.target.id === "themesel") { try { localStorage.setItem("dlsmgr-theme", ev.target.value); } catch (e) {} applyTheme(ev.target.value); ui.titleBg = null; render(); }
     if (ev.target && ev.target.id === "diffsel" && S) { S.difficulty = ev.target.value; save(); }
   });
 
@@ -3034,8 +3057,8 @@ input[type="search"], select {
   function renderTitle() {
     var saved = S && D.clubs[S.clubId] ? S : null;
     var inGame = !!(window.DLSManager && window.DLSManager.exportSave);
-    app.innerHTML = '<main class="title-screen"><nav class="title-menu" aria-label="Start menu">' +
-      '<div class="tm-head"><div class="tm-name">Assistant Manager 27</div><div class="tm-season">Season ' + esc(seasonLabel()) + "</div></div>" +
+    app.innerHTML = '<main class="title-screen" style="background:' + titleBg() + ' no-repeat, var(--bg)"><nav class="title-menu" aria-label="Start menu">' +
+      '<div class="tm-head"><img class="tm-crest" src="bg/crest_sm.png" alt=""><div class="tm-name">Assistant Manager 27</div><div class="tm-season">Season ' + esc(seasonLabel()) + "</div></div>" +
       '<div class="tm-items">' +
       (saved ? '<button class="tm-btn tm-load" data-act="loadcareer">' + badge(saved.clubId, 38) +
         '<span><b>Load game</b><small>' + esc(club(saved.clubId).name) + " · matchweek " + (saved.week + 1) + "</small></span></button>" : "") +
@@ -3046,9 +3069,14 @@ input[type="search"], select {
   }
 
   function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || "#4cc86a"; }
-  var THEMES = [["classic", "Classic (green)"], ["ucl", "Champions League"]];
+  var THEMES = [["classic", "Classic (green)"], ["ucl", "Champions League"], ["sm", "San Marino"]];
   function themeNow() { try { return localStorage.getItem("dlsmgr-theme") || "classic"; } catch (e) { return "classic"; } }
-  function applyTheme(t) { if (t === "ucl") document.documentElement.setAttribute("data-theme", "ucl"); else document.documentElement.removeAttribute("data-theme"); }
+  function applyTheme(t) { if (t === "ucl" || t === "sm") document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme"); }
+  // title picture: the theme's own (San Marino: the Guaita on Monte Titano, or the team)
+  function titleBg() {
+    if (themeNow() === "sm") { if (ui.titleBg == null) ui.titleBg = Math.random() < 0.65 ? 0 : 1; return ui.titleBg ? 'url(bg/squad_sm.jpg) 55% 30% / cover' : 'url(bg/title_sm.jpg) 72% 40% / cover'; }
+    return 'url(bg/title.jpg) 62% 30% / cover';
+  }
   applyTheme(themeNow());
   function modal(html) {
     var m = el('<div class="modal-bg" id="modal"><section class="panel modal">' + html + "</section></div>");
