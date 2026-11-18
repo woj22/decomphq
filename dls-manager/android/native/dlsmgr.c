@@ -413,6 +413,41 @@ void dlsmgr_render(void)
     *(int *)(mgr + 0x48) = n;
 }
 
+/* ---- notifications: DLS's banners are replaced by the menus' tile (top right)
+ *
+ * FUN_00261c1c(banner, decision) shows the referee's decisions: 0 offside, 1 half / full time,
+ * 2 advantage, 3 corner, 4 goal kick, 5 throw-in, 6 penalty, 7 free kick. The cave sends it
+ * here instead (PAGE+0xfe8), so DLS's banner never shows: event 18 | decision << 8 |
+ * full time << 16.
+ * FUN_0025b218(panel, kind) shows player news: 0 red card, 1 yellow, 2 injury, 3 goal, 4 own
+ * goal, 5 hat-trick (kinds 0-5 come here via PAGE+0xfe0; 6+ stay DLS's): event 19 | kind << 8 |
+ * side << 12 | user side << 13 | player id << 16, the player found as DLS's panel does. */
+void dlsmgr_ref_note(void *banner, int decision)
+{
+    if (decision < 0 || decision > 15)
+        return;
+    nlog("referee %d (half %d)%d\n", decision, halfNo, 0);
+    event(18 | decision << 8 | (decision == 1 && halfNo >= 1) << 16);
+}
+
+void dlsmgr_player_note(void *panel, int kind)
+{
+    u8 *m = match_data();
+    int side, idx;
+    switch (kind) {
+    case 0: case 1: side = m[0x9f90]; idx = m[0x9f91]; break;
+    case 2: side = 1 - m[0x9f90]; idx = m[0x9f92]; break;
+    case 3: case 5: side = m[0x9ee9]; idx = *(u16 *)(m + 0x9eea); break;
+    case 4: side = 1 - m[0x9ee9]; idx = *(u16 *)(m + 0x9eea); break;
+    default: return;
+    }
+    side &= 1;
+    u8 *pl = *(u8 **)(m + side * 0x1028 + 0x4858);
+    u32 id = (pl && idx >= 0 && idx < 32) ? *(u16 *)(pl + idx * 0xb0) : 0;
+    nlog("player note %d side %d id %d\n", kind, side, (int)id);
+    event(19 | kind << 8 | side << 12 | (m[0x9ab0] & 1) << 13 | (int)(id << 16));
+}
+
 /* ---- JNI: com.dlsmgr.Native */
 
 int JNI_OnLoad(JavaVM_ *javaVm, void *reserved)
@@ -429,6 +464,8 @@ void Java_com_dlsmgr_Native_init(void *env, void *cls, u64 libBase, void *overla
     JFN(env, 17, void (*)(void *))(env);
     *(void **)(PAGE + 0xff0) = (void *)dlsmgr_render;  /* the cave's render gate calls this */
     *(void **)(PAGE + 0xff8) = (void *)dlsmgr_frame;   /* the cave calls this each frame */
+    *(void **)(PAGE + 0xfe8) = (void *)dlsmgr_ref_note;     /* referee decision banner */
+    *(void **)(PAGE + 0xfe0) = (void *)dlsmgr_player_note;  /* goal / card / injury banner */
     nlog("native library ready%d%d%d\n", 0, 0, 0);
 }
 

@@ -44,6 +44,22 @@ html.intro, html.intro body { background: transparent !important; }
 @keyframes flash { 0% { opacity: 0; transform: scale(.7); } 25% { opacity: 1; transform: scale(1); } 75% { opacity: 1; transform: scale(1.04); } 100% { opacity: 0; transform: scale(1.15); } }
 .pause-card { width: min(560px, 92vw); display: grid; gap: 18px; background: var(--panel); border-radius: 18px; padding: 22px; border: 1px solid var(--line); }
 .pause-btns { display: grid; gap: 10px; }
+#note { position: fixed; top: 10px; right: 12px; z-index: 60; pointer-events: none; opacity: 0; }
+#note.on { animation: noteIn .35s cubic-bezier(.2,.9,.3,1.2) both; }
+#note.off { animation: noteOut .3s ease-in both; }
+@keyframes noteIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+@keyframes noteOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(40px); } }
+.nt { display: flex; align-items: center; gap: 10px; min-width: 150px; padding: 8px 14px 8px 10px; border-radius: 12px; background: rgba(0,0,0,.62); color: #fff; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.nt.nt-big { padding: 10px 16px 10px 12px; }
+.nt.nt-big b { font-size: 1.15rem; letter-spacing: .02em; }
+.nt-ic { display: inline-grid; place-items: center; width: 26px; height: 26px; font-size: 1.1rem; }
+.nt-ic svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nt-txt { display: grid; gap: 2px; line-height: 1.15; }
+.nt-txt b { font-size: .98rem; color: #fff; }
+.nt-sub { display: flex; align-items: center; gap: 6px; font-size: .82rem; color: #fff; opacity: .85; letter-spacing: normal; font-weight: 500; }
+.nt-card { display: block; width: 14px; height: 19px; border-radius: 2px; }
+.nt-card.red { background: #e5383b; } .nt-card.yellow { background: #f5c518; }
+.nt-plus { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 4px; background: #e5383b; color: #fff; font-size: 1rem; }
 .subs-card { width: min(860px, 96vw); max-height: 94vh; overflow: auto; gap: 12px; padding: 16px; }
 .subs-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .subs-head h2 { margin: 0; font-size: 1.15rem; flex: 1; }
@@ -849,7 +865,7 @@ input[type="search"], select {
     function side(s) {
       return r.events.filter(function (e) { return e.side === s && (e.type !== "yc" || r.dls); }).map(function (e) {
         var ic = e.type === "rc" ? "🟥 " : e.type === "yc" ? "🟨 " : "⚽ ";
-        return ic + esc(nm(e.p)) + " " + e.min + "'" + (e.pen ? " P" : "") + (e.og ? ' <span class="muted">(og)</span>' : "") +
+        return ic + esc(nm(e.p)) + " " + e.min + "'" + (e.pen ? " (P)" : "") + (e.og ? ' <span class="muted">(og)</span>' : "") +
           (e.a != null ? '<br><span class="muted">👟 ' + esc(nm(e.a)) + " " + e.min + "'</span>" : "");
       }).join("<br>");
     }
@@ -1104,6 +1120,36 @@ input[type="search"], select {
     var a = document.getElementById("sba");
     if (!a) return;
     if (n > 0) { a.textContent = "+" + n; a.classList.add("on"); } else a.classList.remove("on");
+  };
+  // ---- notifications (DLS's banners are switched off natively): a dark translucent tile in
+  // the top right for the referee's decisions and for goals, cards and injuries.
+  var REF_TXT = ["Offside", "Half time", "Advantage", "Corner", "Goal kick", "Throw-in", "Penalty", "Free kick"];
+  var NOTE_TXT = ["Red card", "Yellow card", "Injury", "Goal", "Own goal", "Hat-trick"];
+  var noteTimer = null;
+  window.dlsNotify = function (what, kind, a, b, id) {
+    var fx = S && S.pending ? S.pending : null, title, sub = "", ic, cls = "", ms = 2600;
+    if (what === "ref") {
+      title = kind === 1 && a ? "Full time" : REF_TXT[kind];
+      if (!title) return;
+      ic = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="14" r="5"/><path d="M12 10.5 21 7v4l-6 2"/></svg>';
+      if (kind === 1) { ms = 3200; cls = " nt-big"; }
+    } else {
+      title = NOTE_TXT[kind];
+      if (!title || !fx) return;
+      var opp = fx.home === S.clubId ? fx.away : fx.home, cid = a === b ? S.clubId : opp;
+      var p = clubPlayers[cid] ? clubPlayers[cid].find(function (q) { return q.dls === id; }) : null;
+      sub = '<span class="nt-sub">' + badge(cid, 18) + esc(p ? p.name : club(cid).name) + "</span>";
+      ic = kind === 0 ? '<i class="nt-card red"></i>' : kind === 1 ? '<i class="nt-card yellow"></i>' : kind === 2 ? '<b class="nt-plus">+</b>' : "⚽";
+      if (kind === 3 || kind === 5) { ms = 3400; cls = " nt-big"; }
+    }
+    var el = document.getElementById("note");
+    if (!el) { el = document.createElement("div"); el.id = "note"; el.setAttribute("role", "status"); document.body.appendChild(el); }
+    el.className = "";
+    el.innerHTML = '<div class="nt' + cls + '"><span class="nt-ic">' + ic + '</span><span class="nt-txt"><b>' + esc(title) + "</b>" + sub + "</span></div>";
+    void el.offsetWidth;
+    el.className = "on";
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(function () { el.className = "off"; }, ms);
   };
   window.dlsHudOff = function () {
     window.inMatch = false;

@@ -756,6 +756,13 @@ public final class Overlay {
             int seq = ++flashSeq;
             activity.runOnUiThread(new OverlayJsTask("window.dlsReplayFlash && window.dlsReplayFlash()", true, true));
             activity.getWindow().getDecorView().postDelayed(new FlashEnd(seq), 1500);
+        } else if ((code & 0xff) == 18) {
+            // referee decision (libdlsmgr): our notification tile instead of DLS's banner
+            activity.runOnUiThread(new JsTask("window.dlsNotify && window.dlsNotify('ref'," + ((code >> 8) & 0xff) + "," + ((code >> 16) & 1) + ")"));
+        } else if ((code & 0xff) == 19) {
+            // goal / card / injury: kind, DLS side, user side, player id
+            activity.runOnUiThread(new JsTask("window.dlsNotify && window.dlsNotify('player'," + ((code >> 8) & 15) + ","
+                    + ((code >> 12) & 1) + "," + ((code >> 13) & 1) + "," + ((code >>> 16) & 0xffff) + ")"));
         } else if ((code & 0xff) == 17) {
             activity.runOnUiThread(new JsTask("window.dlsSheetResult && window.dlsSheetResult(" + ((code >> 8) & 0xff) + ")"));
         } else if (code == 2) {
