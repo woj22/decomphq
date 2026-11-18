@@ -156,8 +156,8 @@ void dlsmgr_frame(void)
     if (scr && type == 0) {
         u8 *m = match_data();
         u32 hg = m[0x9f14] & 31, ag = m[0x9f15] & 31;
-        /* clock, as DLS's: M+0xa700 counts down the half's frames (half length M+0xa708 x 60,
-           30 a second; it shows real playing time, 00:06 six seconds in), M+0xa704 is the
+        /* clock, as DLS's: M+0xa700 counts down the half's match seconds (half length M+0xa708
+           x 60; a whole match takes about 6 real minutes), M+0xa704 is the
            match minute (tells the halves apart), M+0xa714 the added minutes, played once
            M+0xa700 has run out (where DLS widens its clock for the red tab). */
         int half = *(int *)(m + 0xa708), left = *(int *)(m + 0xa700), minute = *(int *)(m + 0xa704);
@@ -174,7 +174,7 @@ void dlsmgr_frame(void)
         lastLeft = left;
         int total = halfNo * frames + (frames - left);
         if (total < 0) total = 0;
-        u32 secs = (u32)(total / 30);
+        u32 secs = (u32)total;     /* M+0xa700 counts match seconds (2700 a half) */
         u32 mn = secs / 60, sc = secs % 60;
         if (mn > 255) mn = 255;
         int added = (*(int *)(m + 0xa714) > 0 && left < 1) ? *(int *)(m + 0xa714) : 0;
