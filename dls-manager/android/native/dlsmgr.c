@@ -376,10 +376,16 @@ void dlsmgr_frame(void)
         if (a == 8) {
             pause_resume();
         } else if (a == 7) {
-            /* quit: what the confirmation's "yes" runs (FUN_0014aff8(1)), then back to the
-               match screen, which ends the match */
+            /* quit: mark the match abandoned (what the confirmation's "yes" runs,
+               FUN_0014aff8(1): M[0x9ef4] = 2), then end it at once the way the match screen
+               does at full time (FUN_00262b10 then FUN_0018fe84, which fires our full-time
+               handler: result at the current score, menus up, hub pushed). The match stays
+               paused underneath, so it doesn't play on (no sounds, no DLS end-of-match menu);
+               the next kick-off clears it away. */
             FN(0x14aff8, int (*)(int))(1);
-            pause_resume();
+            FN(0x262b10, void (*)(void))();
+            FN(0x18fe84, void (*)(void))();
+            nlog("quit: match ended at %d-%d%d\n", match_data()[0x9f14], match_data()[0x9f15], 0);
         } else if (a == 1) {
             /* team management (screen 4), as the pause screen's button does */
             u8 *m = match_data();

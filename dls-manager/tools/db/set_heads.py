@@ -10,15 +10,17 @@ the original database):
                            22 long, 21 big curls, 17/51/18 short or shaved (black hair),
                            8 short afro, 37 short with a line, 10 East Asian
 Players who were already in DLS19 (their own record) and players with a real face scan keep
-theirs. For the rest the look comes from the nationality (photo reading was tried and dropped: lighting
-made it unreliable); the hair style is chosen to suit.
+theirs. For the rest the look comes from their photo where there is one (features from
+tools/data/face_features.py: MediaPipe face landmarks + hair / skin segmentation), weighed
+against the nationality for skin tone; otherwise from the nationality alone.
 Each choice is seeded by the player, so rebuilding gives the same faces.
 
 Usage: python3 -I set_heads.py --db <built db dir> --orig <original players.dat>
-           --clubs clubs.json --data menu/data.json --faces face_ids.json --headshots assets/headshots
+           --clubs clubs.json --data menu/data.json --faces face_ids.json --features features.json
 """
 import argparse
 import hashlib
+import math
 import json
 import os
 import random
@@ -105,6 +107,63 @@ def photo_look(path):
     return {"skin": skin, "hair": hair, "beard": beard, "bald": bald}
 
 
+# skin tone from the photo's ITA (individual typology angle), calibrated on players whose DLS
+# look is known (medians: 58, 30, 32, -10, -42), combined with the nationality's prior
+ITA_MEAN = [52, 31, 33, -8, -43]     # (ITA without white balance: tracks DLS's tones best)
+ITA_SD = [22, 20, 20, 20, 22]
+
+
+def skin_from(f, nat):
+    if nat in EAST_ASIA:
+        return 5
+    prior = skin_dist(nat)[:5]
+    best, bs = 1, -1
+    for k in range(5):
+        lik = math.exp(-0.5 * ((f.get("ita0", f["ita"]) - ITA_MEAN[k]) / ITA_SD[k]) ** 2) / ITA_SD[k]
+        sc = lik * (prior[k] + 0.03)
+        if sc > bs:
+            best, bs = k, sc
+    return best
+
+
+def look_from(f, nat, r):
+    skin = skin_from(f, nat)
+    hl, hb = f.get("hairL"), f.get("hairB", 0)
+    if skin >= 3 or skin == 5 or hl is None:
+        hair = 0
+    elif hl < 27 and hb < 5:
+        hair = 0
+    elif hl >= 45 and hb >= 8:
+        hair = 5
+    elif hl >= 36:
+        hair = 1
+    else:
+        hair = 2
+    dc, dl = f.get("darkChin", 0), f.get("darkLip", 0)
+    beard = 7 if dc >= 22 and dl >= 20 else 4 if dc >= 17 and dl >= 15 else 3 if dc >= 13 else 0
+    area, top, low, side = f.get("hairArea", 0), f.get("hairTop", 0), f.get("hairLow", -1), f.get("hairSide", 0)
+    # (thresholds from the spread over all photos: hair height above the forehead 0.52
+    # median / 0.87 at the 97th percentile, beside the face 0.06 at the 90th, below the chin
+    # only for the top few percent)
+    if skin == 5:
+        style = 10
+    elif area < 0.12:
+        style = 51 if skin >= 3 else 1                       # shaved / bald / close crop
+    elif low > 0.05:
+        style = 22                                            # long, below the chin
+    elif skin >= 3:
+        style = 21 if top > 0.85 else 8 if top > 0.7 else wpick(r, [(17, .5), (37, .2), (15, .3)])
+    elif top > 0.85 and side > 0.06:
+        style = 21                                            # big curls
+    elif side > 0.1:
+        style = wpick(r, [(44, .5), (49, .5)])                # over the ears: medium
+    elif top > 0.7:
+        style = wpick(r, [(14, .4), (46, .3), (42, .3)])      # short with volume on top
+    else:
+        style = wpick(r, [(1, .3), (2, .3), (45, .2), (15, .2)])   # short
+    return skin, hair, beard, style
+
+
 def style_for(r, skin, bald, nat):
     if skin == 5:
         return 10
@@ -123,13 +182,14 @@ def main():
     ap.add_argument("--clubs", required=True)
     ap.add_argument("--data", required=True)
     ap.add_argument("--faces", required=True)
-    ap.add_argument("--headshots", required=True)
+    ap.add_argument("--features", required=True)
     a = ap.parse_args()
     faces = set(json.load(open(a.faces)))
     orig = D.Players(D.load(a.orig))
     pl = D.Players(D.load(os.path.join(a.db, "players.dat")))
     clubs = json.load(open(a.clubs, encoding="utf-8"))
     data = json.load(open(a.data, encoding="utf-8"))
+    feats = json.load(open(a.features))
     by_name = {}
     for p in data["players"]:
         by_name.setdefault((p["club"], p["name"].lower()), p)
@@ -147,19 +207,12 @@ def main():
             p = by_name.get((cid, (x["fn"] + " " + x["sn"]).strip().lower())) or by_name.get((cid, x["sn"].lower()))
             natn = p["nat"] if p else ""
             r = random.Random(int(hashlib.sha1(f"{pid}:{x['fn']}{x['sn']}".encode()).hexdigest()[:8], 16))
-            look = None
-            if natn in EAST_ASIA:
-                skin = 5
-            elif look:
-                skin = look["skin"]
-            else:
-                skin = pick(r, skin_dist(natn))
-            if look:
-                hair = 0 if skin >= 3 or skin == 5 else look["hair"]
-                beard = look["beard"]
-                bald = look["bald"]
+            f = feats.get(str(p["id"])) if p else None
+            if f:
+                skin, hair, beard, style = look_from(f, natn, r)
                 photo += 1
             else:
+                skin = 5 if natn in EAST_ASIA else pick(r, skin_dist(natn))
                 if skin >= 2:
                     hair = 0 if skin >= 3 or r.random() < .75 else 2
                 else:
@@ -167,8 +220,8 @@ def main():
                 age = (p or {}).get("age") or 25
                 beard = wpick(r, [(0, .5 if age < 24 else .35), (2, .14), (3, .12), (4, .14), (7, .1 if age < 24 else .2), (5, .04)])
                 bald = r.random() < (0.06 if age < 28 else 0.15)
+                style = style_for(r, skin, bald, natn)
                 nat += 1
-            style = style_for(r, skin, bald, natn)
             pl.set(pl.by_id[pid], unk_76=skin, unk_70=hair, unk_74=beard, unk_72=style)
     D.save_zlib(os.path.join(a.db, "players.dat"), pl.to_bytes())
     print(f"kept their own DLS look: {kept}; set from a photo: {photo}; set from nationality: {nat}")
