@@ -19,6 +19,9 @@ final class Native {
 
     static native void pauseAction(int id);
 
+    /** Our pause button: opens DLS's pause screen (FUN_0018fdf0) on the next game frame. */
+    static native void pause();
+
     /** Load and initialise; safe to call repeatedly (does nothing once ready). */
     static void start(Context ctx) {
         if (ready) {

@@ -69,6 +69,11 @@ sheet_guard:                  // FUN_001dc6bc(team sheet): nothing to do without
     b FUN_001dc6c0
 2:  ret
 
+.global hud_off
+hud_off:                      // HUD panel checks routed here: never shown (ours replace them)
+    mov w0, #0
+    ret
+
 .global match_screen_hook
 match_screen_hook:
     adrp x16, PAGE
@@ -77,6 +82,8 @@ match_screen_hook:
     b FUN_0013f9d8
 """
 SHEETFN = 0x1dc6bc        # FUN_001dc6bc: stp x28, x27, [sp, #-0x60]!
+HUD_OFF = {0x2621b4: 0x97ffddf2,   # panel 1: DLS's pause button (FUN_0025997c)
+           0x262428: 0x97ffefc1}   # panel 9: DLS's scoreboard and clock (FUN_0025e32c)
 REPLAYLOGO = 0x2623fc     # FUN_002620f8: bl FUN_0025d5e4 (show the replay logo wipe?)
 LINEUP = 0x262480         # FUN_002620f8: bl FUN_0025775c (show the Starting XI graphic?)
 INTRO = 0x2624ac          # FUN_002620f8: bl FUN_00257820 (show the team-intro card?)
@@ -130,6 +137,10 @@ def main():
     old = struct.unpack_from("<I", lib, SHEETFN)[0]
     assert old == 0xa9ba6ffc, hex(old)
     words[SHEETFN] = (old, 0x14000000 | (((sym["sheet_guard"] - SHEETFN) >> 2) & 0x3ffffff))
+    for site, want in HUD_OFF.items():
+        old = struct.unpack_from("<I", lib, site)[0]
+        assert old == want, hex(old)
+        words[site] = (old, 0x94000000 | (((sym["hud_off"] - site) >> 2) & 0x3ffffff))
     old = struct.unpack_from("<I", lib, REPLAYLOGO)[0]
     assert old == 0x97ffec7a, hex(old)
     words[REPLAYLOGO] = (old, 0x94000000 | (((sym["replay_logo_gate"] - REPLAYLOGO) >> 2) & 0x3ffffff))

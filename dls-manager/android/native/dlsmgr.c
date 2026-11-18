@@ -84,6 +84,8 @@ static u8 *top_screen(int *type)
 }
 
 static int pauseOpen;
+static int pendingPause;       /* our pause button was tapped */
+static u32 lastHud = 0xffffffff;
 static int pendingAction;      /* pause menu choice, 0 = none */
 static int lastTop = -2, lastDepth = -1, lastCut = -1;
 static unsigned frameNo;
@@ -115,6 +117,27 @@ void dlsmgr_frame(void)
     if (cut != lastCut) {
         lastCut = cut;
         event(11 | (cut & 0xff) << 8 | active << 16);
+    }
+    /* our scoreboard: score and clock while the match screen is on top (event 14 on change).
+       Clock: match minute at M+0xa704 and its seconds at M+0xa708 (to be confirmed by the
+       raw values logged below). */
+    if (scr && type == 0) {
+        u8 *m = match_data();
+        u32 hg = m[0x9f14] & 31, ag = m[0x9f15] & 31;
+        u32 mn = *(u32 *)(m + 0xa704), sc = *(u32 *)(m + 0xa708);
+        if (mn > 255) mn = 255;
+        if (sc > 63) sc = 63;
+        u32 hud = 14 | hg << 8 | ag << 13 | sc << 18 | mn << 24;
+        if (hud != lastHud) {
+            lastHud = hud;
+            event((int)hud);
+        }
+        if (frameNo % 600 == 0)
+            nlog("clock? a700 %d a704 %d a708 %d\n", *(int *)(m + 0xa700), *(int *)(m + 0xa704), *(int *)(m + 0xa708));
+        if (pendingPause) {
+            pendingPause = 0;
+            FN(0x18fdf0, void (*)(long, int))(-1, 0);   /* what DLS's pause button calls */
+        }
     }
     int isPause = scr && type == 6;
     if (isPause != pauseOpen) {
@@ -204,6 +227,11 @@ int Java_com_dlsmgr_Native_probe(void *env, void *cls, u64 start)
         if (p[i] != want[i])
             return 0;
     return 1;
+}
+
+void Java_com_dlsmgr_Native_pause(void *env, void *cls)
+{
+    pendingPause = 1;
 }
 
 void Java_com_dlsmgr_Native_pauseAction(void *env, void *cls, int id)

@@ -46,6 +46,11 @@ import org.json.JSONObject;
 public final class Overlay {
     private static WebView web;
     private static View reopen;
+    /** Our in-match pause button (DLS's is switched off natively). */
+    private static View pauseBtn;
+    /** A match is being played: the menus page stays up as a transparent HUD. */
+    static volatile boolean inMatch;
+    static volatile boolean cutActive;
     private static Activity activity;
 
     private Overlay() {}
@@ -109,6 +114,24 @@ public final class Overlay {
         b.setVisibility(View.GONE);
         decor.addView(b, lp);
         reopen = b;
+
+        TextView pb = new TextView(activity);
+        pb.setText("❚❚");
+        pb.setTextColor(Color.WHITE);
+        pb.setTextSize(13);
+        pb.setGravity(Gravity.CENTER);
+        GradientDrawable pbg = new GradientDrawable();
+        pbg.setColor(Color.argb(215, 11, 14, 13));
+        pbg.setCornerRadius(18);
+        pbg.setStroke(2, Color.argb(120, 255, 255, 255));
+        pb.setBackground(pbg);
+        pb.setOnClickListener(new PauseClick());
+        float dp = activity.getResources().getDisplayMetrics().density;
+        FrameLayout.LayoutParams plp = new FrameLayout.LayoutParams((int) (40 * dp), (int) (34 * dp), Gravity.TOP | Gravity.START);
+        plp.setMargins((int) (14 * dp), (int) (8 * dp), 0, 0);
+        pb.setVisibility(View.GONE);
+        decor.addView(pb, plp);
+        pauseBtn = pb;
     }
 
     static void show() {
@@ -684,11 +707,19 @@ public final class Overlay {
             if (!Native.ready) {
                 // no cutscene events without the library: time the intro from the match appearing
                 startIntro(900);
+            } else if (cutActive) {
+                // the build-up cutscene started while the match was still loading
+                startIntro(400);
             }
+        } else if ((code & 0xff) == 14) {
+            // scoreboard: home goals, away goals, clock (libdlsmgr, on change)
+            activity.runOnUiThread(new JsTask("window.dlsHud && window.dlsHud(" + ((code >> 8) & 31) + "," + ((code >> 13) & 31)
+                    + "," + ((code >> 24) & 0xff) + "," + ((code >> 18) & 63) + ")"));
         } else if ((code & 0xff) == 11) {
             // cutscene started / ended (libdlsmgr): our intro runs during the build-up cutscene
             // and slides away as soon as it ends, so skipping the cutscene skips it too
             boolean active = ((code >> 16) & 1) != 0;
+            cutActive = active;
             if (active && matchShown && !introDone) {
                 startIntro(250);
             } else if (!active && introRunning) {
@@ -707,6 +738,7 @@ public final class Overlay {
             // the choices run DLS's own resume / team / quit code through Native.pauseAction)
             introSeq++;
             introRunning = false;
+            activity.runOnUiThread(new PauseBtnTask(false));
             activity.runOnUiThread(new OverlayJsTask("window.dlsPause && window.dlsPause(" + ((code >> 8) & 0xff) + ","
                     + ((code >> 16) & 0xff) + "," + ((code >> 24) & 0xff) + ")", true, false));
         } else if (code == 10) {
@@ -725,6 +757,36 @@ public final class Overlay {
         @Override
         public boolean dispatchTouchEvent(android.view.MotionEvent ev) {
             return !touchThrough && super.dispatchTouchEvent(ev);
+        }
+    }
+
+    static final class JsTask implements Runnable {
+        private final String js;
+
+        JsTask(String js) {
+            this.js = js;
+        }
+
+        @Override
+        public void run() {
+            if (web != null) {
+                web.evaluateJavascript(js, null);
+            }
+        }
+    }
+
+    static final class PauseBtnTask implements Runnable {
+        private final boolean show;
+
+        PauseBtnTask(boolean show) {
+            this.show = show;
+        }
+
+        @Override
+        public void run() {
+            if (pauseBtn != null) {
+                pauseBtn.setVisibility(show && inMatch ? View.VISIBLE : View.GONE);
+            }
         }
     }
 
@@ -875,6 +937,13 @@ public final class Overlay {
                 web.setVisibility(View.VISIBLE);
                 web.bringToFront();
                 web.evaluateJavascript(js, null);
+            } else if (inMatch) {
+                web.evaluateJavascript(js, null);   // back to the plain HUD
+                touchThrough = true;
+                if (pauseBtn != null) {
+                    pauseBtn.setVisibility(View.VISIBLE);
+                    pauseBtn.bringToFront();
+                }
             } else {
                 web.evaluateJavascript(js, null);
                 web.setVisibility(View.GONE);
@@ -884,19 +953,54 @@ public final class Overlay {
     }
 
     /** During a match nothing of ours is on screen (not even the Manager button). */
+    /** The match is on screen: the menus page becomes our transparent HUD (scoreboard). */
     static final class MatchTask implements Runnable {
         @Override
         public void run() {
             if (web != null) {
-                web.setVisibility(View.GONE);
+                inMatch = true;
+                touchThrough = true;
                 reopen.setVisibility(View.GONE);
+                web.setBackgroundColor(Color.TRANSPARENT);
+                web.setVisibility(View.VISIBLE);
+                web.bringToFront();
+                web.evaluateJavascript("window.dlsHudMode && window.dlsHudMode()", null);
+                pauseBtn.setVisibility(View.VISIBLE);
+                pauseBtn.bringToFront();
             }
+        }
+    }
+
+    static final class PauseClick implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            try {
+                if (Native.ready) {
+                    Native.pause();
+                }
+            } catch (Throwable t) {
+                lastError = String.valueOf(t);
+            }
+        }
+    }
+
+    /** Leave match mode (full time): hide the HUD pieces. */
+    static void endMatchMode() {
+        inMatch = false;
+        touchThrough = false;
+        if (pauseBtn != null) {
+            pauseBtn.setVisibility(View.GONE);
+        }
+        if (web != null) {
+            web.setBackgroundColor(Color.rgb(11, 14, 13));
+            web.evaluateJavascript("window.dlsHudOff && window.dlsHudOff()", null);
         }
     }
 
     static final class ShowTask implements Runnable {
         @Override
         public void run() {
+            endMatchMode();
             Overlay.show();
         }
     }

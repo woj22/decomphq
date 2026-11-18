@@ -45,6 +45,11 @@ html.intro, html.intro body { background: transparent !important; }
 .pause-card { width: min(560px, 92vw); display: grid; gap: 18px; background: var(--panel); border-radius: 18px; padding: 22px; border: 1px solid var(--line); }
 .pause-btns { display: grid; gap: 10px; }
 .pause-btns .btn { justify-content: center; padding: 14px; font-size: 1rem; }
+#hud { display: none; position: fixed; top: 8px; left: 62px; z-index: 50; pointer-events: none; }
+.sb { display: flex; align-items: stretch; height: 34px; border-radius: 10px; overflow: hidden; background: rgba(11,14,13,.86); border: 1px solid rgba(255,255,255,.14); font-weight: 800; color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.35); }
+.sb-t { display: flex; align-items: center; gap: 6px; padding: 0 9px; font-size: .85rem; letter-spacing: .04em; }
+.sb-s { display: flex; align-items: center; padding: 0 12px; background: var(--accent); color: #071a0d; font-size: 1rem; font-variant-numeric: tabular-nums; }
+.sb-c { display: flex; align-items: center; padding: 0 10px; border-left: 1px solid rgba(255,255,255,.14); font-variant-numeric: tabular-nums; font-size: .9rem; }
 .lu-wrap { position: fixed; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: center; padding: 4vh 6vw; pointer-events: none; }
 .lu-side { display: grid; gap: 8px; background: rgba(8,12,10,.78); border-radius: 14px; padding: 10px; }
 .intro-wrap { position: fixed; inset: 0; display: grid; align-content: end; padding: 0 0 7vh; pointer-events: none; }
@@ -900,7 +905,33 @@ input[type="search"], select {
     app.innerHTML = "";
     showAnimated('<div class="flash-wrap">' + (LEAGUE_LOGOS[lg] ? leagueLogo(lg, 120) : '<b style="font-size:2rem">' + esc(myLeague().name) + "</b>") + "</div>");
   };
+  // ---- in-match HUD: our scoreboard (DLS's is switched off natively); Java's pause button
+  // sits to its left. Updated by the game every time the score or clock changes.
+  window.dlsHudMode = function () {
+    var fx = S && S.pending ? S.pending : null;
+    window.inMatch = true;
+    document.documentElement.classList.add("intro");
+    app.innerHTML = "";
+    var h = document.getElementById("hud");
+    if (!h) { h = document.createElement("div"); h.id = "hud"; document.body.appendChild(h); }
+    h.innerHTML = fx ? '<div class="sb"><span class="sb-t">' + badge(fx.home, 22) + '<b>' + esc(club(fx.home).short || "") + '</b></span>' +
+      '<span class="sb-s" id="sbs">0 – 0</span><span class="sb-t"><b>' + esc(club(fx.away).short || "") + "</b>" + badge(fx.away, 22) + '</span>' +
+      '<span class="sb-c" id="sbc">00:00</span></div>' : "";
+    h.style.display = "block";
+  };
+  window.dlsHud = function (hg, ag, mn, sc) {
+    var a = document.getElementById("sbs"), c = document.getElementById("sbc");
+    if (a) a.textContent = hg + " – " + ag;
+    if (c) c.textContent = (mn < 10 ? "0" : "") + mn + ":" + (sc < 10 ? "0" : "") + sc;
+  };
+  window.dlsHudOff = function () {
+    window.inMatch = false;
+    var h = document.getElementById("hud");
+    if (h) h.style.display = "none";
+    document.documentElement.classList.remove("intro");
+  };
   window.dlsIntroEnd = function () {
+    if (window.inMatch) { app.innerHTML = ""; return; }
     document.documentElement.classList.remove("intro");
     render();
   };
