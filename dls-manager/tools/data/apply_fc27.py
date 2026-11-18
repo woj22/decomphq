@@ -6,9 +6,10 @@ Alt 1-3 ("L"/"R" cells are preferred foot, ignored), Rating, Pace, Acceleration,
 Short passing, Ball control, Finishing, Crossing, Heading, Standing tackle, Strength.
 Goalkeeper rows only have pace; their goalkeeping attributes are kept.
 
-The sheet's Pace column equals Acceleration in every row, so top speed is taken from EA's
-sprint speed (ea_full.json) moved by the same amount as acceleration changed, or the
-sheet's value for players EA doesn't have.
+The sheet's Pace column equals Acceleration in every row; the corrected speeds come from a
+second sheet (--speed: Full name, Sprint speed, Acceleration, two tables side by side),
+matched on the exact full name. Players missing from it get EA's sprint speed moved by the
+same amount as their acceleration changed, or the main sheet's value.
 
 Players are matched within their club by name (common name, "Given Surname", or all of our
 name's words in the full name), with the rating as a check; rows that don't match (women's
@@ -16,7 +17,7 @@ teams, other clubs) are listed and skipped. Sets "ovr", "pos"/"position"/"alt" a
 "attrs" (DLS order) and "attrSource" = "fc27". Run sync_positions.py and calibrate_ratings.py
 afterwards.
 
-Usage: python3 -I apply_fc27.py --csv sheet.csv --data menu/data.json --ea ea_full.json
+Usage: python3 -I apply_fc27.py --csv sheet.csv --speed speed.csv --data menu/data.json --ea ea_full.json
 """
 import argparse
 import csv
@@ -34,7 +35,14 @@ def main():
     ap.add_argument("--csv", required=True)
     ap.add_argument("--data", required=True)
     ap.add_argument("--ea", required=True)
+    ap.add_argument("--speed")
     a = ap.parse_args()
+    speeds = {}
+    if a.speed:
+        for r in csv.reader(open(a.speed, encoding="utf-8", errors="replace")):
+            for h in (r[0:3], r[4:7]):
+                if len(h) == 3 and h[0].strip() and h[1].strip().isdigit() and h[2].strip().isdigit():
+                    speeds[AP.fold(AP.fix(h[0].strip()))] = (int(h[1]), int(h[2]))
     rows = []
     for r in csv.reader(open(a.csv, encoding="utf-8", errors="replace")):
         if r and r[0] == "Club":
@@ -48,7 +56,7 @@ def main():
                     full = (gn + " " + sn).strip()
                 pos = [AP.FC[x] for x in h[3:7] if x in AP.FC]
                 num = [int(x) if x.isdigit() else None for x in h[8:18]]
-                rows.append({"club": AP.CLUB.get(h[0], h[0]), "full": full, "common": h[2], "pos": pos, "ovr": int(h[7]), "s": num})
+                rows.append({"club": AP.CLUB.get(h[0], h[0]), "full": full, "raw": AP.fold(h[1]), "common": h[2], "pos": pos, "ovr": int(h[7]), "s": num})
     data = json.load(open(a.data, encoding="utf-8"))
     ea = [e for e in json.load(open(a.ea)) if e.get("s")]
     by_dob, by_name = EA.index(ea)
@@ -59,7 +67,7 @@ def main():
     players = {}
     for p in data["players"]:
         players.setdefault(p["club"], []).append(p)
-    used, done, skipped = set(), 0, []
+    used, done, skipped, sped = set(), 0, [], 0
     for r in sorted(rows, key=lambda r: -r["ovr"]):
         cids = by_club.get(r["club"])
         if not cids:
@@ -88,14 +96,17 @@ def main():
             e = EA.find(p, leagues[p["club"]], by_dob, by_name)
             acc = s[1]
             speed = acc
-            if e and e["s"].get("sprintSpeed") is not None and e["s"].get("acceleration") is not None:
+            if r["raw"] in speeds:
+                speed, acc = speeds[r["raw"]]
+                sped += 1
+            elif e and e["s"].get("sprintSpeed") is not None and e["s"].get("acceleration") is not None:
                 speed = max(1, min(99, e["s"]["sprintSpeed"] + (acc - e["s"]["acceleration"])))
             old = p["attrs"]
             p["attrs"] = [speed, acc, s[2], s[9], s[8], s[4], s[5], s[3], s[6], s[7]] + old[10:13]
             p["attrSource"] = "fc27"
         done += 1
     json.dump(data, open(a.data, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-    print(f"{done} players updated from the sheet, {len(skipped)} rows not matched")
+    print(f"{done} players updated from the sheet ({sped} with sprint speed / acceleration from the speed sheet, of {len(speeds)} there), {len(skipped)} rows not matched")
     for r in skipped[:40]:
         print("  ", r["club"], "|", r["full"], "|", r["common"], r["ovr"])
 
