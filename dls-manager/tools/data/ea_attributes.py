@@ -68,6 +68,50 @@ def potential(p, rnd):
     return min(95, ovr + max(0, round(room * (0.55 + rnd.random() * 0.7))))
 
 
+def index(ea):
+    by_dob, by_name = {}, {}
+    for e in ea:
+        e["dobi"] = ea_dob(e.get("dob") or "")
+        names = {fold((e.get("fn") or "") + " " + (e.get("ln") or "")), fold(e.get("cn") or ""), fold(e.get("ln") or "")}
+        e["names"] = {n for n in names if n}
+        if e["dobi"]:
+            by_dob.setdefault(e["dobi"], []).append(e)
+        for n in e["names"]:
+            by_name.setdefault(n, []).append(e)
+    return by_dob, by_name
+
+
+def find(p, league, by_dob, by_name):
+    """The player's FC entry: same birth date and a matching name, or a unique full-name match in the league."""
+    nm = fold(p["name"])
+    toks = set(nm.split())
+    for e in by_dob.get(p.get("dob") or "", []):
+        if nm in e["names"] or toks & set(" ".join(e["names"]).split()):
+            return e
+    if league in LEAGUE_EA:
+        cands = [e for e in by_name.get(nm, []) if e.get("league") == LEAGUE_EA[league]]
+        if len(cands) == 1:
+            return cands[0]
+    return None
+
+
+EA_POS = {"GK": "GK", "CB": "CB", "LB": "LB", "LWB": "LB", "RB": "RB", "RWB": "RB", "CDM": "DM", "CM": "CM",
+          "CAM": "AM", "LM": "LM", "RM": "RM", "LW": "LW", "RW": "RW", "CF": "SS", "ST": "ST"}
+
+
+def ea_positions(path, data):
+    """Player id -> primary position in FC (menu codes), for players found in the ratings."""
+    ea = [e for e in json.load(open(path)) if e.get("s")]
+    by_dob, by_name = index(ea)
+    leagues = {c: v["league"] for c, v in data["clubs"].items()}
+    out = {}
+    for p in data["players"]:
+        e = find(p, leagues[p["club"]], by_dob, by_name)
+        if e and e.get("pos") in EA_POS:
+            out[p["id"]] = EA_POS[e["pos"]]
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ea", required=True)

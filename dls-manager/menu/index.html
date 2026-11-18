@@ -491,8 +491,9 @@ input[type="search"], select {
     LM: { LW: -2, LB: -5, CM: -5 }, RM: { RW: -2, RB: -5, CM: -5 }, LW: { LM: -2, RW: -4, AM: -5, ST: -6 },
     RW: { RM: -2, LW: -4, AM: -5, ST: -6 }, ST: { SS: -1, AM: -6, LW: -7, RW: -7 }
   };
-  function fit(playerPos, slot) {
-    if (playerPos === slot) return 0;
+  // how well a player suits a slot: 0 in his position or one of his FC alternatives (p.alt)
+  function fit(playerPos, slot, alt) {
+    if (playerPos === slot || (alt && alt.indexOf(slot) >= 0)) return 0;
     if (playerPos === "SS" && slot === "ST") return -1;
     if (slot === "GK" || playerPos === "GK") return -40;
     var n = (NEAR[slot] || {})[playerPos];
@@ -503,7 +504,7 @@ input[type="search"], select {
     var order = slots.map(function (s, i) { return i; }).sort(function (a, b) { return (slots[a][0] === "GK" ? -1 : 0) - (slots[b][0] === "GK" ? -1 : 0); });
     order.forEach(function (i) {
       var best = null, score = -1e9;
-      pool.forEach(function (p) { var v = p.ovr + fit(p.pos, slots[i][0]); if (v > score) { score = v; best = p; } });
+      pool.forEach(function (p) { var v = p.ovr + fit(p.pos, slots[i][0], p.alt); if (v > score) { score = v; best = p; } });
       xi[i] = best.id; pool.splice(pool.indexOf(best), 1);
     });
     return xi;
@@ -564,7 +565,7 @@ input[type="search"], select {
   function strength(cid) {
     var L = lineupOf(cid), slots = FORMATIONS[L.formation], lines = { GK: [], DF: [], MF: [], FW: [] };
     L.xi.forEach(function (pid, i) {
-      var p = byId[pid], slot = slots[i][0], eff = p.ovr + fit(p.pos, slot);
+      var p = byId[pid], slot = slots[i][0], eff = p.ovr + fit(p.pos, slot, p.alt);
       lines[group(slot)].push(eff);
     });
     function avg(a) { return a.length ? a.reduce(function (x, y) { return x + y; }, 0) / a.length : 50; }
@@ -874,6 +875,10 @@ input[type="search"], select {
         { label: "Tactics", go: "tactics" });
     }
     var mf = myFixtureOn(d);
+    if (d === 0 && h === 11 && !S.unveiled) { S.unveiled = true; pressMail("intro"); }
+    // transfer windows (July-August, January): a reporters' briefing every couple of weeks
+    var dt = dayDate(d), mo = dt.getUTCMonth();
+    if ((mo === 6 || mo === 7 || mo === 0) && h === 12 && d > 3 && d % 17 === 6 && !myFixtureOn(d) && !myFixtureOn(d + 1) && !myFixtureOn(d - 1)) pressMail("window");
     var tf = myFixtureOn(d + 1);
     if (tf && h === 11 && S.week === tf.week) pressMail("pre", tf);
     if (mf && h === 9 && S.week === mf.week) {
@@ -893,6 +898,7 @@ input[type="search"], select {
     }
     // training: development every Monday morning, a report on the 15th of each month
     if (h === 8 && dayDate(d).getUTCDay() === 1) weeklyDevelopment();
+    if (h === 7 && dayDate(d).getUTCDate() === 1 && d > 30) reassessPotential();
     if (h === 10 && dayDate(d).getUTCDate() === 15 && d > 30) trainingMail();
     // first of the month: board review and player of the month
     if (d > 0 && dayDate(d).getUTCDate() === 1 && h === 10) {
@@ -961,7 +967,27 @@ input[type="search"], select {
   var INDIV = { "": "None", pace: [0, 1], physical: [2, 3], defending: [4, 9], technique: [5, 8], shooting: [6], passing: [7], goalkeeping: [10, 11, 12] };
   var INDIV_NAME = { "": "None", pace: "Pace", physical: "Physical", defending: "Defending", technique: "Technique", shooting: "Shooting", passing: "Passing", goalkeeping: "Goalkeeping" };
   var INTENSITY = [["Light", 0.75], ["Normal", 1], ["Intense", 1.25]];
-  function potOf(p) { return p.pot != null ? Math.max(p.pot, p.ovr) : p.ovr; }
+  // potential: the data's figure, adjusted during the career by performances (S.potAdj)
+  function potOf(p) { var b = p.pot != null ? p.pot : p.ovr, adj = S && S.potAdj ? S.potAdj[p.id] || 0 : 0; return Math.max(p.ovr, Math.min(95, b + adj)); }
+  function avgRating(pid) { var st = S.pstats[pid]; return st && st.apps ? st.rsum / st.apps : null; }
+  // monthly re-assessment: young players who perform raise their ceiling, players reaching it
+  // while still performing well push it on; it only drops for players of 27+ still 10+ short
+  function reassessPotential() {
+    if (!S.potAdj) S.potAdj = {};
+    if (!S.potLog) S.potLog = [];
+    var r = rng((S.seed ^ (today() * 15485863)) >>> 0);
+    D.players.forEach(function (p) {
+      var st = S.pstats[p.id], age = p.age || 25, pot = potOf(p), gap = pot - p.ovr, avg = avgRating(p.id), ch = 0;
+      if (st && st.apps >= 3 && avg != null) {
+        if (age <= 23 && avg >= 7.3 && r() < 0.7) ch = avg >= 7.7 ? 2 : 1;
+        else if (age <= 28 && gap <= 1 && avg >= 7.0 && r() < 0.5) ch = 1;
+      }
+      if (age >= 27 && gap >= 10) ch = -(avg != null && avg < 6.4 ? 2 : 1);
+      if (!ch) return;
+      S.potAdj[p.id] = (S.potAdj[p.id] || 0) + ch;
+      if (p.club === S.clubId) S.potLog.push({ id: p.id, ch: ch, pot: potOf(p) });
+    });
+  }
   // the season's development, kept in the save and laid over the static squad data
   function applyDev() {
     D.players.forEach(function (p) {
@@ -995,7 +1021,9 @@ input[type="search"], select {
     var r = rng((S.seed ^ (today() * 362437)) >>> 0), playedW = Math.max(1, S.week);
     D.players.forEach(function (p) {
       var mine = p.club === S.clubId, age = p.age || 25, gk = p.pos === "GK";
-      var st = S.pstats[p.id], play = st ? Math.min(1.3, 0.7 + st.apps / playedW * 0.6) : 0.7;
+      // performance: average match rating (6.4, a typical rating, is par) and the share of matches played
+      var st = S.pstats[p.id], avg = avgRating(p.id);
+      var play = st && st.apps ? Math.max(0.35, Math.min(1.9, 1 + (avg - 6.4) * 1.0)) * (0.75 + Math.min(1, st.apps / playedW) * 0.5) : 0.55;
       var mood = mine ? 0.9 + ((S.morale == null ? 55 : S.morale) - 55) / 250 : 1;
       var grow = growthPerSeason(age, potOf(p) - p.ovr) * play * (mine ? inten * mood : 1) / 46;
       var fall = (age >= 31 ? Math.min(3, (age - 30) * 0.5 + 0.5) : 0) * (mine && T.intensity === 2 ? 1.15 : 1) / 46;
@@ -1025,7 +1053,9 @@ input[type="search"], select {
     var T = S.training || { focus: "balanced", intensity: 1 };
     mail("Assistant manager", "Training report", ["Team focus: <b>" + FOCUS[T.focus].name + "</b>, " + INTENSITY[T.intensity][0].toLowerCase() + " intensity.",
       up.length ? "Improving this season: " + up.map(function (x) { return "<b>" + esc(x.p.name) + "</b> (+" + x.d + ", now " + x.p.ovr + ")"; }).join(", ") + "." : "Nobody has made a noticeable step forward yet.",
-      down.length ? "Losing a yard: " + down.map(function (x) { return esc(x.p.name) + " (" + x.d + ")"; }).join(", ") + "." : ""].filter(Boolean), { label: "Training", go: "training" });
+      down.length ? "Losing a yard: " + down.map(function (x) { return esc(x.p.name) + " (" + x.d + ")"; }).join(", ") + "." : "",
+      (S.potLog || []).length ? "Potential: " + S.potLog.map(function (x) { return esc(byId[x.id].name) + (x.ch > 0 ? " up to " : " down to ") + x.pot; }).join(", ") + "." : ""].filter(Boolean), { label: "Training", go: "training" });
+    S.potLog = [];
   }
 
   // ------------------------------------------------------------ social feed (FM-style)
@@ -1093,8 +1123,16 @@ input[type="search"], select {
   // press and fans react on social media. Not attending sends the assistant (no effect).
   function moraleWord(v) { return v >= 75 ? "Superb" : v >= 60 ? "Good" : v >= 42 ? "Okay" : v >= 28 ? "Low" : "Very low"; }
   function bump(k, n) { S[k] = Math.max(5, Math.min(95, (S[k] == null ? 55 : S[k]) + n)); }
+  // kind: "pre" / "post" (around a match), "intro" (unveiling as manager), "window" (transfer window)
   function pressMail(kind, f, res) {
     if (S.press && !S.press.done) S.press.done = "skipped";
+    if (kind === "intro" || kind === "window") {
+      S.press = { id: (S.pressSeq = (S.pressSeq || 0) + 1), kind: kind, done: false };
+      mail("Media department", kind === "intro" ? "Your unveiling press conference" : "Transfer window press briefing",
+        [kind === "intro" ? "The media are gathered to meet the new manager of <b>" + esc(club(S.clubId).name) + "</b>." : "With the transfer window open, a few reporters have asked for a word.",
+         "If you don't attend, your assistant will take it."], { label: "Attend press conference", press: S.press.id }, "press");
+      return;
+    }
     var opp = f.home === S.clubId ? f.away : f.home;
     S.press = { id: (S.pressSeq = (S.pressSeq || 0) + 1), kind: kind, week: f.week, opp: opp, res: res ? { hg: res.hg, ag: res.ag, h: res.h, a: res.a, w: f.week } : null, done: false };
     mail("Media department", (kind === "pre" ? "Pre-match press conference: " : "Post-match press conference: ") + club(opp).name,
@@ -1102,7 +1140,7 @@ input[type="search"], select {
        "If you don't attend, your assistant will take it."], { label: "Attend press conference", press: S.press.id }, "press");
   }
   function pressQuestions(P) {
-    var r = rng((S.seed ^ (P.id * 40503)) >>> 0), opp = club(P.opp).name, me = club(S.clubId).name, qs = [];
+    var r = rng((S.seed ^ (P.id * 40503)) >>> 0), opp = P.opp ? club(P.opp).name : "", me = club(S.clubId).name, qs = [];
     var tb = standings(myLeague().id), pos = tb.findIndex(function (t) { return t.id === S.clubId; }) + 1, opos = tb.findIndex(function (t) { return t.id === P.opp; }) + 1;
     var myForm = (tb[pos - 1] || { form: [] }).form.slice(-3).join("");
     var top = clubPlayers[S.clubId].filter(function (p) { return S.pstats[p.id] && S.pstats[p.id].goals; }).sort(function (a, b) { return S.pstats[b.id].goals - S.pstats[a.id].goals; })[0];
@@ -1130,7 +1168,7 @@ input[type="search"], select {
       qs.push({ q: "What's the target for the season?", a: [
         A("To " + targetText(Math.max(1, (S.target || pos) - 1), myLeague().clubs.length) + ".", "Ambitious", 2, 3, "Our target is to " + targetText(Math.max(1, (S.target || pos) - 1), myLeague().clubs.length) + "."),
         A("One game at a time.", "Calm", 1, 0), A("We'll see where we are at Christmas.", "Evasive", 0, -1)] });
-    } else {
+    } else if (P.kind === "post") {
       var R = P.res, hm = R.h === S.clubId, gf = hm ? R.hg : R.ag, ga = hm ? R.ag : R.hg, sc = gf + "–" + ga;
       if (gf > ga) qs.push({ q: "A " + sc + " win. Are you happy?", a: [
         A("Delighted. The players were outstanding.", "Praise", 4, 2), A("Pleased, but there's lots to improve.", "Demanding", 0, 1), A("That's the standard I expect.", "Confident", 2, 2)] });
@@ -1146,10 +1184,60 @@ input[type="search"], select {
       qs.push({ q: "What does this result mean for your season?", a: [
         A("We're heading in the right direction.", "Confident", 2, 1), A("It's one game. We move on.", "Calm", 1, 0), A("We need to be much better than this.", "Demanding", -1, 1)] });
     }
-    // three or four questions, the first always kept
+    if (P.kind === "intro" || P.kind === "window") qs = specialQuestions(P, A, r, pos, top);
+    // three or four questions (two or three in a transfer-window briefing), the first always kept
     var first = qs.shift();
     qs.sort(function () { return r() - 0.5; });
-    return [first].concat(qs.slice(0, 3)).map(function (q) { var j = pick(JOURNOS, r); return { q: q.q, a: q.a, who: j[0], outlet: j[1] }; });
+    var local = localPress(), seen = {};
+    return [first].concat(qs.slice(0, P.kind === "window" ? 2 : 3)).map(function (q) {
+      var j;
+      for (var k = 0; k < 8; k++) { j = P.kind === "window" && r() < 0.6 ? local[Math.floor(r() * local.length)] : pick(JOURNOS, r); if (!seen[j[0]]) break; }
+      seen[j[0]] = 1;
+      return { q: q.q, a: q.a, who: j[0], outlet: j[1] };
+    });
+  }
+  // reporters from the club's own town (transfer-window briefings)
+  function localPress() {
+    var c = club(S.clubId), town = (c.city || c.name).split(" ")[0];
+    return [["Petra Novak", town + " Herald"], ["Jan Kralj", "Radio " + town], ["Sam Bright", town + " Evening Post"], ["Eva Hrovat", club(S.clubId).short + " Fan TV"]];
+  }
+  function specialQuestions(P, A, r, pos, top) {
+    var c = club(S.clubId), L = myLeague(), n = L.clubs.length, tgt = S.target || pos || Math.ceil(n / 2), qs = [];
+    var star = clubPlayers[S.clubId].slice().sort(function (a, b) { return b.ovr - a.ovr; })[0];
+    var kid = clubPlayers[S.clubId].filter(function (p) { return p.age <= 20; }).sort(function (a, b) { return potOf(b) - potOf(a); })[0];
+    // rumours link the star with a club from a bigger league (or the strongest rival at the top)
+    var order = ["slovenia_2snl", "prvaliga", "premier_league"], li = order.indexOf(L.id);
+    var upper = li >= 0 && li < 2 ? D.leagues.find(function (l) { return l.id === order[li + 1]; }) : D.leagues.find(function (l) { return l.id === (L.id === "premier_league" ? "la_liga" : "premier_league"); });
+    var bigs = predicted(upper.id).slice(0, li === 0 ? 4 : 6), big = bigs[Math.floor(r() * bigs.length)];
+    if (P.kind === "intro") {
+      qs.push({ q: "Welcome to " + c.name + ". Why did you take the job?", a: [
+        A("This club has huge potential, and I want to unlock it.", "Ambitious", 3, 3), A("The history here, and the supporters. It's a special club.", "Passionate", 2, 4),
+        A("I believe in this group of players.", "Supportive", 4, 1), A("It was the right project at the right time.", "Calm", 1, 0)] });
+      qs.push({ q: "The board want you to " + targetText(tgt, n) + ". Is that realistic?", a: [
+        A("Absolutely. And I want more than that.", "Ambitious", 2, 3, "I want more than " + targetText(tgt, n) + "."), A("It's a fair target. We'll work hard for it.", "Calm", 1, 1),
+        A("Let's see where we are after a few months.", "Cautious", 0, -1)] });
+      qs.push({ q: "What kind of football can the fans expect?", a: [
+        A("Front-foot, attacking football. Exciting to watch.", "Passionate", 2, 4, "Front-foot, attacking football."), A("Organised and hard to beat.", "Calm", 2, 1),
+        A("Winning football. That's what matters.", "Confident", 2, 2)] });
+      if (kid) qs.push({ q: "Will young players like " + kid.name + " get a chance?", a: [
+        A("If they're good enough, age doesn't matter.", "Calm", 2, 1), A("He has a big future. He'll play.", "Praise", 3, 2, kid.name + " has a big future here."),
+        A("They'll have to earn it like everyone else.", "Demanding", 0, 0)] });
+      qs.push({ q: "Do you plan to change the squad?", a: [
+        A("I trust this group. They'll get their chance.", "Supportive", 4, 1), A("We'll strengthen where we need to.", "Calm", 1, 1),
+        A("Some players will have to show me they belong here.", "Demanding", -3, 1, "Some players will have to show me they belong here.")] });
+    } else {
+      qs.push({ q: "The window is open. Are you planning any signings?", a: [
+        A("We're looking, but only for the right players.", "Calm", 1, 0), A("Yes, we need to strengthen. The club knows that.", "Demanding", -1, 2),
+        A("I'm happy with what I have.", "Supportive", 3, -1), A("I won't discuss targets.", "Evasive", 0, -1)] });
+      if (star) qs.push({ q: star.name + " has been linked with " + club(big).name + ". Will he still be here when the window shuts?", a: [
+        A("He's not for sale. Simple.", "Confident", 3, 4, star.name + " is not for sale."), A("Every player has a price, but we want to keep him.", "Cautious", -1, -1),
+        A("I don't comment on rumours.", "Evasive", 0, 0)] });
+      qs.push({ q: "Is this squad strong enough to " + targetText(tgt, n) + "?", a: [
+        A("Yes. I believe in these players.", "Supportive", 3, 1), A("A couple of additions would help.", "Cautious", -1, 1), A("We'll prove that on the pitch.", "Confident", 2, 2)] });
+      if (kid) qs.push({ q: "Clubs are watching " + kid.name + ". Could he leave?", a: [
+        A("He's part of our future. He stays.", "Confident", 2, 3), A("We'll do what's best for him and the club.", "Calm", 1, 0)] });
+    }
+    return qs;
   }
   function pressFinish(P, answers) {
     var mor = 0, fans = 0, r = srand();
@@ -1278,7 +1366,7 @@ input[type="search"], select {
       '<div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Pos</th><th class="num">Age</th><th>Nation</th><th class="num">OVR</th><th class="num">POT</th><th class="num">Apps</th><th class="num">Gls</th><th class="num">Ast</th><th class="num">Avg</th><th class="num">Value</th><th>Contract</th></tr></thead><tbody>' +
       ps.map(function (p) {
         var s = seasonLine(p.id);
-        return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td>' + (p.shirt || "–") + "</td><td><b>" + esc(p.name) + "</b>" + (xi.indexOf(p.id) >= 0 ? ' <span class="muted" title="In starting XI">●</span>' : "") + '</td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + '</span></td><td class="num">' + p.age + "</td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + potOf(p) + '</td><td class="num">' + s.apps + '</td><td class="num">' + s.goals + '</td><td class="num">' + s.assists + '</td><td class="num">' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</td><td class="num">' + money(p.value) + "</td><td>" + esc(p.contract || "–") + "</td></tr>";
+        return '<tr class="row" tabindex="0" data-player="' + p.id + '"><td>' + (p.shirt || "–") + "</td><td><b>" + esc(p.name) + "</b>" + (xi.indexOf(p.id) >= 0 ? ' <span class="muted" title="In starting XI">●</span>' : "") + '</td><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span>" + (p.alt && p.alt.length ? ' <span class="muted" style="font-size:.75rem">' + p.alt.join(" ") + "</span>" : "") + '</td><td class="num">' + p.age + "</td><td>" + esc(p.nat) + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + potOf(p) + '</td><td class="num">' + s.apps + '</td><td class="num">' + s.goals + '</td><td class="num">' + s.assists + '</td><td class="num">' + (s.apps ? (s.rsum / s.apps).toFixed(2) : "–") + '</td><td class="num">' + money(p.value) + "</td><td>" + esc(p.contract || "–") + "</td></tr>";
       }).join("") + "</tbody></table></div>";
   }
   // DLS19's own stats (players.dat order: speed, acceleration, stamina, strength, tackling,
@@ -1299,7 +1387,7 @@ input[type="search"], select {
       '<div style="margin-left:auto;display:grid;justify-items:center;gap:2px"><span class="ovr" style="font-size:1.4rem;padding:6px 12px;background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span><span class="muted" style="font-size:.75rem">OVR</span></div>' +
       '<div style="display:grid;justify-items:center;gap:2px"><span class="ovr pot" style="font-size:1.4rem;padding:6px 12px">' + potOf(p) + '</span><span class="muted" style="font-size:.75rem">POT</span></div></div>' +
       '<div class="facts">' +
-      fact("Position", p.position) + fact("Age", p.age + (p.dob ? " (" + p.dob.split("-").reverse().join("/") + ")" : "")) +
+      fact("Position", p.position + (p.alt && p.alt.length ? " (also " + p.alt.join(", ") + ")" : "")) + fact("Age", p.age + (p.dob ? " (" + p.dob.split("-").reverse().join("/") + ")" : "")) +
       fact("Nationality", p.nat + (p.nat2 ? " / " + p.nat2 : "")) + fact("Height", p.height ? p.height + " cm" : "–") +
       fact("Foot", p.foot ? p.foot[0].toUpperCase() + p.foot.slice(1) : "–") + fact("Value", money(p.value)) +
       fact("Contract", p.contract || "–") + fact("Shirt", p.shirt || "–") + "</div></section>" +
@@ -1314,7 +1402,7 @@ input[type="search"], select {
   function viewTactics() {
     var L = lineupOf(S.clubId), slots = FORMATIONS[L.formation];
     var pitch = slots.map(function (s, i) {
-      var p = byId[L.xi[i]], f = fit(p.pos, s[0]), sel = ui.sel && ui.sel.kind === "slot" && ui.sel.i === i;
+      var p = byId[L.xi[i]], f = fit(p.pos, s[0], p.alt), sel = ui.sel && ui.sel.kind === "slot" && ui.sel.i === i;
       return '<button class="slot' + (sel ? " sel" : "") + '" style="left:' + s[1] + "%;top:" + s[2] + '%" data-slot="' + i + '" aria-label="' + esc(s[0] + ": " + p.name) + '">' +
         '<span class="disc" style="background:' + ovrColor(p.ovr + f) + ';color:#071a0d">' + (p.ovr + f) + "</span>" +
         '<span class="nm">' + esc(p.name.split(" ").slice(-1)[0]) + "</span>" + (f < 0 ? '<span class="fit">' + s[0] + " " + f + "</span>" : '<span class="fit" style="color:#cfe">' + s[0] + "</span>") + "</button>";
@@ -1462,7 +1550,7 @@ input[type="search"], select {
       '</div><p class="muted" style="margin:6px 0 0">' + FOCUS[T.focus].note + '</p></div><div><div class="label">Intensity</div><div class="tabs">' + INTENSITY.map(function (x, i) {
         return '<button class="chip-btn" data-tint="' + i + '" aria-pressed="' + (T.intensity === i) + '">' + x[0] + "</button>"; }).join("") +
       '</div><p class="muted" style="margin:6px 0 0">' + ["Slower progress; easier on older legs.", "The usual week.", "Faster progress for young players; veterans decline a little faster."][T.intensity] + "</p></div></section>" +
-      '<p class="muted" style="margin:0">Players develop every Monday: young players with room to grow (potential) improve fastest, especially with minutes on the pitch; from 31 pace and stamina start to fade. Pick an individual focus to steer a player.</p>' +
+      '<p class="muted" style="margin:0">Players develop every Monday: young players with room to grow (potential) improve fastest, and good match ratings and minutes speed it up; from 31 pace and stamina start to fade. Potential is reviewed monthly: strong performances raise it, and it only drops for players of 27+ still 10 or more below it. Pick an individual focus to steer a player.</p>' +
       '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Pos</th><th class="num">Age</th><th class="num">OVR</th><th class="num">+/−</th><th class="num">POT</th><th>Growth</th><th>Individual focus</th></tr></thead><tbody>' +
       ps.map(function (p) {
         var dlt = p.ovr - p.baseOvr, pot = potOf(p);
@@ -1584,12 +1672,15 @@ input[type="search"], select {
   function viewPress() {
     var P = S.press, st = ui.pressState, m = mgr();
     if (!P || !st || st.id !== P.id) return screenHead("Press conference", "") + '<p class="muted">No press conference right now.</p>';
-    var done = st.i >= st.qs.length, q = done ? null : st.qs[st.i], opp = club(P.opp);
-    var side = '<aside class="panel press-side"><div class="ps-kind">' + (P.kind === "pre" ? "Pre-match" : "Post-match") + " press conference</div>" +
+    var done = st.i >= st.qs.length, q = done ? null : st.qs[st.i], opp = P.opp ? club(P.opp) : null;
+    var KIND = { pre: "Pre-match press conference", post: "Post-match press conference", intro: "Unveiling press conference", window: "Transfer window briefing" };
+    var nf = nextFixture();
+    var info = P.kind === "pre" ? ["Next match", "vs " + esc(opp.name)] : P.kind === "post" ? ["Result", esc(club(P.res.h).name) + " " + P.res.hg + "–" + P.res.ag + " " + esc(club(P.res.a).name)] :
+      P.kind === "intro" ? ["New manager", esc(club(S.clubId).name)] : ["Next match", nf ? "vs " + esc(club(nf.home === S.clubId ? nf.away : nf.home).name) : "–"];
+    var side = '<aside class="panel press-side"><div class="ps-kind">' + KIND[P.kind] + "</div>" +
       '<div class="ps-badge">' + badge(S.clubId, 96) + '</div><div class="ps-name">' + esc(mgrName()) + '</div><div class="muted">Head Coach, ' + esc(club(S.clubId).name) + "</div>" +
       '<button class="btn ghost ps-edit" data-go="manager">Edit look</button>' +
-      '<div class="ps-match">' + leagueLogo(myLeague().id, 22) + "<div><div class=\"muted\">" + (P.kind === "pre" ? "Next match" : "Result") + " · " + esc(myLeague().name) + "</div><b>" +
-      (P.kind === "pre" ? "vs " + esc(opp.name) : esc(club(P.res.h).name) + " " + P.res.hg + "–" + P.res.ag + " " + esc(club(P.res.a).name)) + "</b></div></div></aside>";
+      '<div class="ps-match">' + leagueLogo(myLeague().id, 22) + "<div><div class=\"muted\">" + info[0] + " · " + esc(myLeague().name) + "</div><b>" + info[1] + "</b></div></div></aside>";
     var talking = st.talk != null;
     var stage = '<div class="stage">' + pressBackdrop() + '<div class="spot"></div><div class="mgr-wrap' + (talking ? " talking" : "") + '">' + managerSVG(m) + "</div>" + deskSVG() +
       (talking ? '<div class="caption">“' + esc(st.talk) + '”</div>' : "") + "</div>";
