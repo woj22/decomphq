@@ -165,6 +165,7 @@ button { font: inherit; color: inherit; }
 .btn:focus-visible, .tile:focus-visible, .row:focus-visible, .chip-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .btn.primary:hover { filter: brightness(1.08); }
+.btn:disabled { opacity: .45; cursor: default; filter: none; }
 .btn[disabled] { opacity: .45; cursor: not-allowed; }
 .btn.ghost { background: transparent; }
 .btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
@@ -371,6 +372,9 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .np-skip { display: inline-flex; align-items: center; gap: 5px; }
 .lm-b .skip-ic { margin-left: 4px; }
 .np-skip:hover { background: rgba(255,255,255,.2); }
+/* the other online manager's view: positions arrive ~9 times a second, glide between them */
+.lm.rv .lm-dot, .lm.rv .lm-ball, .lm.rv .lm-shadow { transition: left .12s linear, top .12s linear; }
+.btn.cont.ready { background: var(--panel-2); color: var(--fg); border-color: var(--accent); }
 /* ---- live text match: its own broadcast look, the same in every theme */
 .lm { position: fixed; inset: 0; z-index: 40; display: grid; grid-template-rows: auto auto 1fr auto; background: radial-gradient(120% 80% at 50% -20%, #1b2530 0%, #0b0f13 60%) #0b0f13; color: #e9eef0; font-family: var(--font); letter-spacing: .01em;
   padding: max(6px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); gap: 6px; }
@@ -965,19 +969,27 @@ input[type="search"], select {
     if (res.hg === 0) add(res.xi.a[0], "cs", 1);
   }
   function playWeek(forced) {
+    if (S.online) return onlineSubmit(forced);
+    return playRound(forced, null);
+  }
+  // fmap: results decided elsewhere (online managers' matches), by home club
+  function playRound(forced, fmap) {
     var w = S.week, mine = null;
     D.leagues.forEach(function (lg, li) {
       var rounds = S.schedule[lg.id];
       if (w >= rounds.length) return;
       var out = rounds[w].map(function (m, gi) {
         var mineHere = m[0] === S.clubId || m[1] === S.clubId;
-        var res = simMatch(m[0], m[1], (S.seed ^ (w * 7919 + li * 104729 + gi * 31)) >>> 0, mineHere ? forced : null);
+        var res = simMatch(m[0], m[1], (S.seed ^ (w * 7919 + li * 104729 + gi * 31)) >>> 0, fmap && fmap[m[0]] ? fmap[m[0]] : mineHere ? forced : null);
         record(res);
         if (m[0] === S.clubId || m[1] === S.clubId) mine = res;
         return res;
       });
       S.results[lg.id][w] = out;
     });
+    return finishRound(w, mine);
+  }
+  function finishRound(w, mine) {
     S.week = w + 1;
     if (mine) {
       var home = mine.h === S.clubId, gf = home ? mine.hg : mine.ag, ga = home ? mine.ag : mine.hg, opp = club(home ? mine.a : mine.h).name;
@@ -1111,7 +1123,7 @@ input[type="search"], select {
     if (d === CAL_DAYS - 1 && h === 12) { rollSeason(); return 1; }
     var before = S.msgSeq, L = myLeague(), c = club(S.clubId), w = weekOfDay(d);
     // other matches: each matchweek is played at 17:00 on its day (the user's together with it)
-    if (h === 17 && w >= 0 && S.week === w && !myFixtureOn(d)) playWeek();
+    if (h === 17 && w >= 0 && S.week === w && !myFixtureOn(d) && !S.online) playWeek();
     if (d === 2 && h === 10) {
       var fs = []; for (var k = 0; k < 3; k++) { var f = myFixtureOn(weekDay(k)); if (f) fs.push(dayLabel(weekDay(k)) + ": " + esc(club(f.home).name) + " v " + esc(club(f.away).name)); }
       mail(L.name, "Fixtures released", ["The " + esc(L.name) + " fixtures for " + esc(seasonLabel()) + " are out. Your first matches:", fs.join("<br>")], { label: "Open calendar", go: "calendar" }, "league");
@@ -1825,7 +1837,7 @@ input[type="search"], select {
     var r = rng((S.seed ^ (d * 2654435761) ^ 0x5bd1e995) >>> 0), x0 = r(), deals = x0 < 0.1 ? 2 : x0 < 0.52 ? 1 : 0;
     // short squads (after expiries and retirements) top up with free agents of their level
     Object.keys(D.clubs).forEach(function (c) {
-      if (c === S.clubId || (clubPlayers[c] || []).length >= 19 || r() > 0.35) return;
+      if (c === S.clubId || isHuman(c) || (clubPlayers[c] || []).length >= 19 || r() > 0.35) return;
       var avg = xiAvg(c), fa = D.players.filter(function (p) { return p.club === "free" && p.age <= 33 && p.ovr >= avg - 9 && p.ovr <= avg + 2; });
       if (!fa.length) return;
       var p = fa.sort(function (a, b) { return b.ovr - a.ovr; })[Math.floor(r() * Math.min(4, fa.length))];
@@ -1834,7 +1846,7 @@ input[type="search"], select {
       (S.signed = S.signed || {})[p.id] = d;
       movePlayer(p, c);
     });
-    var clubs = Object.keys(D.clubs).filter(function (c) { return c !== S.clubId; }), tops = {};
+    var clubs = Object.keys(D.clubs).filter(function (c) { return c !== S.clubId && !isHuman(c); }), tops = {};
     function topOf(lid) { return tops[lid] != null ? tops[lid] : (tops[lid] = leagueTop(lid)); }
     for (var k = 0; k < deals; k++) {
       var buyer = clubs[Math.floor(r() * clubs.length)], bt = lgFin(buyer).tier, avg = xiAvg(buyer);
@@ -1846,7 +1858,7 @@ input[type="search"], select {
       var need = Object.keys(groups).map(function (g) { return [g, lineAvg(g) - (g === "GK" ? 2 : 0) + r() * 3]; }).sort(function (a, b) { return a[1] - b[1]; })[0][0];
       var budget = aiBal(buyer) * 0.6;
       var pool = D.players.filter(function (p) {
-        if (p.club === buyer || p.club === S.clubId || gone(p) || group(p.pos) !== need) return false;
+        if (p.club === buyer || p.club === S.clubId || isHuman(p.club) || gone(p) || group(p.pos) !== need) return false;
         if (p.club !== "free" && rivals(p.club, buyer)) return false;
         if (S.loans && S.loans[p.id]) return false;
         if (S.signed && S.signed[p.id] != null && d - S.signed[p.id] < 120) return false;
@@ -2402,7 +2414,9 @@ input[type="search"], select {
   }
   function advance() {
     if (advancing || !S) return;
+    if (S.online && S.online.waitW != null) return render();
     if (matchDayToday()) { S.t = Math.max(S.t, today() * 24 + 14); save(); ui.screen = "prematch"; return render(); }
+    if (S.online) return onlineContinue();
     var btn = document.querySelector('[data-act="continue"]');
     if (btn) { btn.disabled = true; btn.textContent = "Processing…"; }
     advancing = setInterval(function () {
@@ -2449,13 +2463,15 @@ input[type="search"], select {
       '<span class="hide-sm" title="Squad strength (top 15 average)">★ ' + stars + "</span>" +
       '<button class="icon-btn inbox-btn" data-go="inbox" aria-label="Inbox, ' + unread() + ' unread">' + icon("inbox") + (unread() ? '<span class="badge-n">' + unread() + "</span>" : "") + "</button>" +
       '<span id="clock" class="clock"><b>' + esc(dayLabel(today(), true)) + "</b> " + hourLabel(S.t) + "</span>" +
-      '<button class="btn primary cont" data-act="continue">' + (matchDayToday() ? "Match day ›" : "Continue ›") + "</button>" +
+      (S.online ? onlineChip() : "") +
+      '<button class="btn primary cont' + (S.online && S.online.readyMe ? " ready" : "") + '" data-act="continue">' + (matchDayToday() ? "Match day ›" : S.online ? esc(continueLabel()) : "Continue ›") + "</button>" +
       '<button class="icon-btn gear-btn" data-act="settings" aria-label="Settings">' + icon("gear") + "</button></div></header>";
   }
   function screenHead(title, extra) {
     return '<div class="screen-head"><button class="btn ghost" data-go="home">' + '<span style="display:inline-grid;width:18px">' + icon("back") + "</span>Home</button><h2>" + esc(title) + "</h2>" + (extra || "") + "</div>";
   }
   function render() {
+    if (ui.online) return renderOnline();
     if (ui.title) return renderTitle();
     if (!S) return renderNewGame();
     ensureCal();
@@ -2463,7 +2479,8 @@ input[type="search"], select {
     initLoans();
     ensureEuro();
     if (ui.rosterPending) syncRosters();
-    if (ui.screen === "live") { if (LM) { app.innerHTML = viewLive(); lmPaint(); return; } ui.screen = "home"; }
+    if (ui.screen === "live") { if (LM && LM.h) { app.innerHTML = viewLive(); lmPaint(); return; } if (!LM) ui.screen = "home"; else { app.innerHTML = '<main class="screen"><p class="muted">Connecting to the match…</p></main>'; return; } }
+    if (S.online && S.online.waitW != null && ui.screen !== "report") { app.innerHTML = topbar() + '<main class="screen" id="screen">' + renderWaitRound() + "</main>"; return; }
     var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts, europe: viewEurope, history: viewHistory, relationships: viewRelationships }[ui.screen] || viewHome)() + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
@@ -2650,10 +2667,449 @@ input[type="search"], select {
         }).join("") + "</div></section>";
     }
     return '<div class="screen-head"><button class="btn ghost" data-go="home"><span style="display:inline-grid;width:18px">' + icon("back") + '</span>Home</button><h2>Match day</h2>' +
-      '<button class="btn" data-go="tactics">Tactics</button>' + (window.DLSManager && window.DLSManager.kickOff ? '<button class="btn" data-act="livematch">Text match</button><button class="btn primary" data-act="kickoff">Play in DLS</button>' : '<button class="btn primary" data-act="livematch">Kick off</button>') + "</div>" +
+      '<button class="btn" data-go="tactics">Tactics</button>' + (h2hOpp() ? '<button class="btn primary" data-act="h2h"' + (NET.h2hWait ? " disabled" : "") + ">" + (NET.h2hWait ? "Waiting for " + esc(humanName(h2hOpp())) + "…" : "Kick off (online)") + "</button>" : window.DLSManager && window.DLSManager.kickOff ? '<button class="btn" data-act="livematch">Text match</button><button class="btn primary" data-act="kickoff">Play in DLS</button>' : '<button class="btn primary" data-act="livematch">Kick off</button>') + "</div>" +
       '<section class="panel score-card"><div class="scoreline"><div class="side">' + badge(fx.home, 56) + esc(club(fx.home).name) + '</div><div class="score">vs</div><div class="side">' + badge(fx.away, 56) + esc(club(fx.away).name) + '</div></div>' +
       '<p class="muted" style="margin:0;text-align:center">' + leagueLogo(myLeague().id, 14) + esc(club(fx.home).stadium || "") + " · " + dateOf(fx.week) + "</p></section>" +
       '<div class="two-col">' + side(fx.home) + side(fx.away) + "</div>";
+  }
+
+  // ------------------------------------------------------------ online multiplayer (FM-style)
+  // One shared career for several managers. The host's device is the authority: everyone
+  // starts from the same seed (same fixtures, same calendar), time moves only when every
+  // manager has pressed Continue (a day at a time), and on match days each manager plays his
+  // own match however he likes (text match, quick sim, DLS in the app); the results go to the
+  // host, who plays the rest of the round and sends every result back, so tables and stats
+  // are the same for everyone. Two human managers meeting play one shared live match: the
+  // host's device runs it and streams it, each side does its own talks, tactics, subs and
+  // shouts. Devices connect directly (WebRTC through PeerJS); the free PeerJS server only
+  // introduces them (the game code is the host's address there).
+  var NET = { peer: null, conns: {}, conn: null, status: "off", lmLast: 0, lmVer: -1, feedId: 0 };
+  function onl() { return S && S.online; }
+  function isHuman(cid) { return !!(S && S.online && S.online.humans.some(function (h) { return h.club === cid; })); }
+  function humanName(cid) { var h = S && S.online ? S.online.humans.find(function (x) { return x.club === cid; }) : null; return h ? h.name : club(cid).name; }
+  function loadPeer(cb) {
+    if (window.Peer) return cb();
+    var s = document.createElement("script");
+    s.src = "https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js";
+    s.onload = cb; s.onerror = function () { onlErr("Could not load the online module (no internet?)."); };
+    document.head.appendChild(s);
+  }
+  function onlErr(msg) { if (ui.online) { ui.online.err = msg; render(); } else modal('<h2>Online</h2><p class="muted" style="margin:0">' + esc(msg) + '</p><button class="btn primary" data-act="closemodal">OK</button>'); }
+  function newCode() { var a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", s = ""; for (var i = 0; i < 6; i++) s += a[Math.floor(Math.random() * a.length)]; return s; }
+  function pid(code) { return "am27-" + String(code).toLowerCase(); }
+  function sendTo(conn, m) { try { if (conn && conn.open) conn.send(m); } catch (e) {} }
+  function broadcast(m) { Object.keys(NET.conns).forEach(function (k) { sendTo(NET.conns[k], m); }); }
+  function toHost(m) { sendTo(NET.conn, m); }
+
+  // ---- host
+  function hostOpen(code, lobby) {
+    loadPeer(function () {
+      if (NET.peer) try { NET.peer.destroy(); } catch (e) {}
+      var peer = new Peer(pid(code));
+      NET.peer = peer; NET.status = "connecting";
+      peer.on("open", function () { NET.status = "host"; render(); });
+      peer.on("error", function (e) {
+        if (e && e.type === "unavailable-id") { NET.status = "retry"; setTimeout(function () { hostOpen(code, lobby); }, 5000); }
+        else { NET.status = "error"; onlErr("Online error: " + (e && e.type || e)); }
+      });
+      peer.on("disconnected", function () { try { peer.reconnect(); } catch (e) {} });
+      peer.on("connection", function (conn) {
+        conn.on("data", function (m) { hostMsg(conn, m); });
+        conn.on("close", function () {
+          Object.keys(NET.conns).forEach(function (k) { if (NET.conns[k] === conn) { delete NET.conns[k]; } });
+          if (S && S.online) render();
+          if (ui.online) render();
+        });
+      });
+    });
+  }
+  function lobbyState() { return { t: "lobby", humans: ui.online.humans, code: ui.online.code }; }
+  function hostMsg(conn, m) {
+    if (!m || typeof m !== "object") return;
+    // in the lobby
+    if (ui.online && ui.online.role === "host") {
+      if (m.t === "hello") { conn.peerName = String(m.name || "Manager").slice(0, 24); sendTo(conn, lobbyState()); return; }
+      if (m.t === "pick") {
+        var c = String(m.club || ""), H = ui.online.humans;
+        if (!D.clubs[c]) return;
+        if (H.some(function (h) { return h.club === c && h.id !== conn.peer; })) return sendTo(conn, { t: "taken", club: c });
+        var me = H.find(function (h) { return h.id === conn.peer; });
+        if (me) { me.club = c; me.name = String(m.name || conn.peerName || "Manager").slice(0, 24); }
+        else H.push({ id: conn.peer, name: String(m.name || conn.peerName || "Manager").slice(0, 24), club: c });
+        NET.conns[c] = conn;
+        broadcast(lobbyState()); render();
+      }
+      return;
+    }
+    if (!onl()) return;
+    var cl = Object.keys(NET.conns).find(function (k) { return NET.conns[k] === conn; });
+    if (m.t === "hello") {
+      // a manager coming back to a running game
+      var h = S.online.humans.find(function (x) { return x.club === m.club; });
+      if (!h) return sendTo(conn, { t: "err", msg: "That club isn't in this game." });
+      NET.conns[h.club] = conn; h.online = true;
+      sendTo(conn, { t: "sync", t2: S.t, week: S.week });
+      hostStatus(); render();
+      return;
+    }
+    if (!cl) return;
+    if (m.t === "ready") { S.online.ready = S.online.ready || {}; S.online.ready[cl] = m.at; hostStatus(); hostCheckGo(); render(); return; }
+    if (m.t === "unready") { if (S.online.ready) delete S.online.ready[cl]; hostStatus(); render(); return; }
+    if (m.t === "result") { hostResult(m.w, m.home, m.res); return; }
+    if (m.t === "lmready") { NET.h2h = NET.h2h || {}; NET.h2h[cl] = m.lineup; hostTryH2H(); return; }
+    if (m.t === "lm" && LM && LM.remote) { lmRemoteAct(String(m.v || "")); return; }
+  }
+  function hostStatus() {
+    var ready = S.online.ready || {}, res = (S.online.results || {})[S.online.waitW != null ? S.online.waitW : S.week] || {};
+    broadcast({ t: "status", ready: Object.keys(ready), online: Object.keys(NET.conns), done: Object.keys(res), hostReady: !!S.online.readyMe, hostWaitW: S.online.waitW });
+  }
+  function onlineUp(cid) { return cid === S.clubId || !!NET.conns[cid]; }
+  function hostCheckGo() {
+    var o = S.online, ready = o.ready || {};
+    if (!o.readyMe) return;
+    var all = o.humans.every(function (h) { return h.club === S.clubId || (ready[h.club] != null && ready[h.club] === S.t); });
+    if (!all) return;
+    var from = S.t, to = S.t + 24;
+    o.ready = {}; o.readyMe = false;
+    broadcast({ t: "go", from: from, to: to });
+    advanceTo(to);
+  }
+  function hostResult(w, home, res) {
+    var o = S.online;
+    o.results = o.results || {};
+    (o.results[w] = o.results[w] || {})[home] = res;
+    save(); hostStatus(); hostCheckRound(w); render();
+  }
+  // every fixture with a human manager in it must be in before the round is played
+  function humanFixtures(w) {
+    var homes = {};
+    D.leagues.forEach(function (lg) {
+      var r = S.schedule[lg.id][w]; if (!r) return;
+      r.forEach(function (m) { if (isHuman(m[0]) || isHuman(m[1])) homes[m[0]] = true; });
+    });
+    return Object.keys(homes);
+  }
+  function hostCheckRound(w) {
+    var o = S.online, got = (o.results || {})[w] || {};
+    if (S.week !== w || o.waitW !== w) return;
+    if (!humanFixtures(w).every(function (h) { return got[h]; })) return;
+    var fmap = {}; Object.keys(got).forEach(function (h) { fmap[h] = { live: got[h] }; });
+    var mine = playRound(null, fmap);
+    var rows = {}; D.leagues.forEach(function (lg) { rows[lg.id] = S.results[lg.id][w]; });
+    broadcast({ t: "round", w: w, rows: rows });
+    delete o.results[w]; o.waitW = null; save();
+    if (mine) { ui.report = mine; ui.screen = "report"; } else ui.screen = "home";
+    render();
+  }
+
+  // ---- client
+  function clientOpen(code, hello) {
+    loadPeer(function () {
+      if (NET.peer) try { NET.peer.destroy(); } catch (e) {}
+      var peer = new Peer();
+      NET.peer = peer; NET.status = "connecting";
+      peer.on("open", function () {
+        var conn = peer.connect(pid(code), { reliable: true });
+        NET.conn = conn;
+        conn.on("open", function () { NET.status = "client"; sendTo(conn, hello); render(); });
+        conn.on("data", clientMsg);
+        conn.on("close", function () { NET.status = "lost"; render(); setTimeout(function () { if (NET.status === "lost") clientOpen(code, hello); }, 4000); });
+      });
+      peer.on("error", function (e) {
+        if (e && e.type === "peer-unavailable") { NET.status = "lost"; if (ui.online && !S) onlErr("No game with code " + code + " is open right now."); else { render(); setTimeout(function () { if (NET.status === "lost") clientOpen(code, hello); }, 5000); } }
+        else { NET.status = "error"; onlErr("Online error: " + (e && e.type || e)); }
+      });
+    });
+  }
+  function clientMsg(m) {
+    if (!m || typeof m !== "object") return;
+    if (m.t === "lobby" && ui.online) { ui.online.humans = m.humans || []; ui.online.code = m.code; if (ui.online.step === "connecting") ui.online.step = "pick"; render(); return; }
+    if (m.t === "taken" && ui.online) { ui.online.err = club(m.club).name + " is taken."; render(); return; }
+    if (m.t === "start" && ui.online) {
+      var meH = (m.humans || []).find(function (h) { return h.id === NET.peer.id; });
+      if (!meH) return;
+      startOnlineCareer(meH.club, m.seed, { code: ui.online.code, role: "client", name: meH.name, humans: m.humans.map(function (h) { return { name: h.name, club: h.club }; }) });
+      return;
+    }
+    if (!onl()) return;
+    if (m.t === "sync") { if (m.t2 !== S.t) { NET.outOfStep = { host: m.t2, me: S.t }; } render(); return; }
+    if (m.t === "status") { NET.st = m; render(); return; }
+    if (m.t === "go") { S.online.readyMe = false; advanceTo(m.to); return; }
+    if (m.t === "round") { clientRound(m.w, m.rows); return; }
+    if (m.t === "drop") { S.online.humans = S.online.humans.filter(function (h) { return h.club !== m.club; }); save(); render(); return; }
+    if (m.t === "lmstart") { lmMirrorStart(m); return; }
+    if (m.t === "lms") { lmMirror(m); return; }
+    if (m.t === "lmend") { var w = m.w; LM = null; S.online.waitW = w; save(); ui.screen = "home"; render(); return; }
+    if (m.t === "err") { onlErr(m.msg); return; }
+  }
+  function clientRound(w, rows) {
+    if (S.week !== w) { NET.outOfStep = { host: w, me: S.week }; }
+    var mine = null;
+    D.leagues.forEach(function (lg) {
+      var rs = rows[lg.id]; if (!rs) return;
+      S.results[lg.id][w] = rs;
+      rs.forEach(function (res) { record(res); if (res.h === S.clubId || res.a === S.clubId) mine = res; });
+    });
+    finishRound(w, mine);
+    S.online.waitW = null; save();
+    if (mine) { ui.report = mine; ui.screen = "report"; } else ui.screen = "home";
+    render();
+  }
+
+  // ---- Continue: a day at a time, once every manager is ready
+  function onlineContinue() {
+    var o = S.online;
+    if (o.waitW != null) return render();
+    o.readyMe = !o.readyMe;
+    if (o.role === "client") toHost(o.readyMe ? { t: "ready", at: S.t } : { t: "unready" });
+    else { hostStatus(); hostCheckGo(); }
+    save(); render();
+  }
+  function advanceTo(to) {
+    var btn = document.querySelector('[data-act="continue"]');
+    if (btn) { btn.disabled = true; btn.textContent = "Processing…"; }
+    var got = 0;
+    advancing = setInterval(function () {
+      var stop = false;
+      for (var i = 0; i < 4 && !stop; i++) {
+        if (matchDayToday() && S.t + 1 >= today() * 24 + KICKOFF_H) { stop = true; break; }
+        if (S.t >= to) { stop = true; break; }
+        S.t++;
+        got += hourEvents(today(), S.t % 24);
+      }
+      updateClock();
+      if (!stop) return;
+      clearInterval(advancing); advancing = null; save();
+      if (got && S.inbox[0]) { ui.screen = "inbox"; ui.msg = S.inbox[0].id; S.inbox[0].read = true; save(); }
+      else if (matchDayToday()) ui.screen = "home";
+      render();
+    }, 30);
+  }
+  function continueLabel() {
+    var o = S.online;
+    if (o.waitW != null) return "Waiting for matches…";
+    if (!o.readyMe) return "Continue ›";
+    var ready = o.role === "host" ? Object.keys(o.ready || {}) : (NET.st ? NET.st.ready.concat(NET.st.hostReady ? [humanHost()] : []) : []);
+    var waiting = o.humans.filter(function (h) { return h.club !== S.clubId && ready.indexOf(h.club) < 0; }).map(function (h) { return h.name; });
+    return waiting.length ? "Waiting for " + waiting.join(", ") : "Ready ✓";
+  }
+  function humanHost() { return S.online.humans[0] ? S.online.humans[0].club : ""; }
+
+  // ---- match day: my result to the host (the round comes back from the host)
+  function onlineSubmit(forced) {
+    var fx = nextFixture();
+    if (!fx) return null;
+    var w = fx.week, li = D.leagues.indexOf(myLeague());
+    var res = forced && forced.live ? forced.live : simMatch(fx.home, fx.away, (S.seed ^ (w * 7919 + li * 104729 + 7)) >>> 0, forced);
+    S.online.waitW = w; save();
+    if (S.online.role === "host") hostResult(w, fx.home, res);
+    else toHost({ t: "result", w: w, home: fx.home, res: res });
+    ui.screen = "home";
+    return null;
+  }
+  function h2hOpp() { var fx = matchDayToday(); if (!fx || !onl()) return null; var o = fx.home === S.clubId ? fx.away : fx.home; return isHuman(o) ? o : null; }
+  // both managers press Kick off; the host starts the shared match when both have
+  function h2hKickoff() {
+    var opp = h2hOpp(); if (!opp) return;
+    var L = lineupOf(S.clubId), lineup = { formation: L.formation, xi: L.xi.slice(), bench: benchOf(S.clubId).slice(0, 9).map(function (p) { return p.id; }) };
+    if (S.online.role === "client") { toHost({ t: "lmready", lineup: lineup }); NET.h2hWait = true; render(); return; }
+    NET.h2h = NET.h2h || {}; NET.h2h.host = true; NET.h2hWait = true; hostTryH2H(); render();
+  }
+  function hostTryH2H() {
+    var opp = h2hOpp(); if (!opp || !NET.h2h || !NET.h2h.host || !NET.h2h[opp]) return;
+    var lineup = NET.h2h[opp]; NET.h2h = null; NET.h2hWait = false; NET.lmVer = -1;
+    var fx = matchDayToday(), k = fx.home === opp ? "h" : "a";
+    startLive({ remote: { k: k, cid: opp, lineup: lineup } });
+    sendTo(NET.conns[opp], { t: "lmstart", k: k, w: fx.week });
+  }
+  function renderWaitRound() {
+    var o = S.online, st = NET.st || {}, done = o.role === "host" ? Object.keys((o.results || {})[o.waitW] || {}) : (st.done || []);
+    var fx = humanFixtures(o.waitW);
+    return '<div class="screen-head"><h2>Waiting for the other matches</h2></div><section class="panel" style="padding:16px;display:grid;gap:10px">' +
+      '<p class="muted" style="margin:0">Your result is in. The round is played when every manager has finished his match.</p>' +
+      fx.map(function (home) {
+        var lg = D.leagues.find(function (l) { return S.schedule[l.id][o.waitW] && S.schedule[l.id][o.waitW].some(function (m) { return m[0] === home; }); });
+        var m = lg ? S.schedule[lg.id][o.waitW].find(function (x) { return x[0] === home; }) : [home, ""];
+        var ok = done.indexOf(home) >= 0;
+        return '<div style="display:flex;gap:10px;align-items:center">' + badge(m[0], 22) + esc(club(m[0]).name) + " v " + esc(club(m[1]).name) + badge(m[1], 22) + '<b style="margin-left:auto;color:' + (ok ? "var(--win)" : "var(--muted)") + '">' + (ok ? "Finished" : "Playing…") + "</b></div>";
+      }).join("") + "</section>";
+  }
+  function onlineChip() {
+    var o = S.online, n = o.humans.length, up = o.role === "host" ? 1 + Object.keys(NET.conns).length : (NET.status === "client" ? n : 1);
+    var bad = o.role === "client" && NET.status !== "client";
+    return '<button class="chip-link" data-act="onlinepanel" title="Online game ' + esc(o.code) + '" style="' + (bad ? "color:var(--loss)" : "") + '">● ' + (bad ? "Reconnecting" : up + "/" + n + " online") + "</button>";
+  }
+  function onlinePanel() {
+    var o = S.online;
+    var rows = o.humans.map(function (h) {
+      var up = h.club === S.clubId || (o.role === "host" ? !!NET.conns[h.club] : NET.status === "client");
+      return '<div style="display:flex;gap:10px;align-items:center">' + badge(h.club, 24) + "<b>" + esc(h.name) + '</b><span class="muted">' + esc(club(h.club).name) + '</span><span style="margin-left:auto;color:' + (up ? "var(--win)" : "var(--loss)") + '">' + (up ? "online" : "offline") + "</span>" +
+        (o.role === "host" && h.club !== S.clubId && !up ? '<button class="btn ghost" data-act="onlinedrop" data-club="' + esc(h.club) + '">Drop</button>' : "") + "</div>";
+    }).join("");
+    modal("<h2>Online game " + esc(o.code) + "</h2>" + rows + (NET.outOfStep ? '<p style="margin:0;color:var(--loss)">Your game is out of step with the host\'s.</p>' : "") +
+      '<p class="muted" style="margin:0">' + (o.role === "host" ? "Keep this game open: the others play through your device. Drop a manager who has left to carry on without him (his club goes back to the AI)." : "The host's device runs the game; if it's closed, you'll reconnect when it opens again.") + "</p>" +
+      '<button class="btn primary" data-act="closemodal">Close</button>');
+  }
+  function onlineResume() {
+    var o = S.online;
+    if (o.role === "host") hostOpen(o.code);
+    else clientOpen(o.code, { t: "hello", club: S.clubId, name: o.name, resume: true });
+  }
+  function startOnlineCareer(cid, seed, online) {
+    S = newSeason(cid, seed >>> 0);
+    S.online = online;
+    applyAll(); lineupOf(S.clubId); save();
+    ui.online = null; ui.title = false; ui.screen = "home";
+    if (window.DLSManager && window.DLSManager.becomeClub && window.DLSManager.currentClub() !== S.clubId) window.DLSManager.becomeClub(S.clubId);
+    render();
+  }
+
+  // ---- lobby
+  function renderOnline() {
+    var O = ui.online, body;
+    var head = '<header class="panel topbar"><div class="club-id"><div><div class="nm">Online game</div><div class="lg">Assistant Manager 27 · ' + seasonLabel() + '</div></div></div><button class="btn ghost" data-act="onlineback">Back</button></header>';
+    var err = O.err ? '<p style="margin:0;color:var(--loss)">' + esc(O.err) + "</p>" : "";
+    if (O.step === "menu") {
+      body = '<section class="panel" style="padding:16px;display:grid;gap:12px;max-width:520px"><label class="label" for="onName">Your name</label><input id="onName" maxlength="24" value="' + esc(O.name || "") + '" placeholder="Manager name" style="font:inherit;color:var(--fg);background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:9px 12px">' +
+        '<button class="btn primary" data-act="onhost">Host a game</button><div style="display:flex;gap:8px"><input id="onCode" maxlength="6" placeholder="Game code" style="flex:1;font:inherit;text-transform:uppercase;color:var(--fg);background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:9px 12px"><button class="btn" data-act="onjoin">Join</button></div>' + err +
+        '<p class="muted" style="margin:0;font-size:.82rem">Everyone plays in the same career: time moves on when every manager presses Continue. Devices connect directly; a free public server (PeerJS) only introduces them. Starting or joining an online game replaces the career saved on this device.</p></section>';
+    } else if (O.step === "connecting") {
+      body = '<section class="panel" style="padding:16px">Connecting to ' + esc(O.code) + "…" + err + "</section>";
+    } else {
+      var lid = O.pickLeague || "premier_league", lg = D.leagues.find(function (l) { return l.id === lid; });
+      var taken = {}; (O.humans || []).forEach(function (h) { if (h.club && h.id !== O.myId) taken[h.club] = h.name; });
+      var mine = (O.humans || []).find(function (h) { return h.id === O.myId; });
+      body = '<section class="panel" style="padding:14px;display:grid;gap:10px"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><div><div class="label">Game code</div><div style="font-size:1.6rem;font-weight:800;letter-spacing:.12em">' + esc(O.code || "…") + '</div></div><div style="display:grid;gap:4px">' +
+        (O.humans || []).map(function (h) { return '<div style="display:flex;gap:8px;align-items:center">' + (h.club ? badge(h.club, 20) : "") + "<b>" + esc(h.name) + '</b><span class="muted">' + (h.club ? esc(club(h.club).name) : "choosing…") + "</span></div>"; }).join("") + "</div>" +
+        (O.role === "host" ? '<button class="btn primary" data-act="onstart" style="margin-left:auto"' + ((O.humans || []).length < 2 || !mine || !mine.club ? " disabled" : "") + ">Start game</button>" : '<span class="muted" style="margin-left:auto">' + (mine && mine.club ? "Waiting for the host to start…" : "Pick your club") + "</span>") + "</div>" + err + "</section>" +
+        '<div class="tabs">' + D.leagues.map(function (l) { return '<button class="chip-btn" data-onleague="' + l.id + '" aria-pressed="' + (l.id === lid) + '">' + leagueLogo(l.id, 14) + esc(l.name) + "</button>"; }).join("") + "</div>" +
+        '<div class="club-grid">' + lg.clubs.map(function (cid) {
+          var t = taken[cid];
+          return '<button class="club-card" data-onpick="' + cid + '" aria-pressed="' + (mine && mine.club === cid) + '"' + (t ? " disabled" : "") + ">" + badge(cid, 30) + "<div><b>" + esc(club(cid).name) + '</b><div class="meta">' + (t ? esc(t) : esc(club(cid).city)) + "</div></div></button>";
+        }).join("") + "</div>";
+    }
+    app.innerHTML = head + '<main class="screen" style="display:grid;gap:12px">' + body + "</main>";
+  }
+  function onlineAct(act, t) {
+    var O = ui.online;
+    if (act === "online") { ui.online = { step: "menu", name: (S && S.manager && S.manager.name) || "" }; return render(); }
+    if (act === "onlineback") { if (NET.peer && !S) try { NET.peer.destroy(); } catch (e) {} NET.peer = null; ui.online = null; ui.title = true; return render(); }
+    if (act === "onhost") {
+      O.name = ((document.getElementById("onName") || {}).value || "Manager").trim() || "Manager";
+      O.role = "host"; O.code = newCode(); O.step = "lobby"; O.myId = "host"; O.humans = [{ id: "host", name: O.name, club: null }];
+      hostOpen(O.code); return render();
+    }
+    if (act === "onjoin") {
+      O.name = ((document.getElementById("onName") || {}).value || "Manager").trim() || "Manager";
+      var code = ((document.getElementById("onCode") || {}).value || "").trim().toUpperCase();
+      if (code.length < 4) { O.err = "Enter the host's game code."; return render(); }
+      O.role = "client"; O.code = code; O.step = "connecting"; O.err = null;
+      clientOpen(code, { t: "hello", name: O.name });
+      var check = setInterval(function () { if (NET.peer && NET.peer.id) { O.myId = NET.peer.id; clearInterval(check); } }, 200);
+      return render();
+    }
+    if (act === "onstart") {
+      var seed = (Date.now() % 2147483647) >>> 0, humans = O.humans.filter(function (h) { return h.club; });
+      broadcast({ t: "start", seed: seed, humans: humans });
+      var me = humans.find(function (h) { return h.id === "host"; });
+      startOnlineCareer(me.club, seed, { code: O.code, role: "host", name: me.name, humans: humans.map(function (h) { return { name: h.name, club: h.club }; }) });
+      return;
+    }
+  }
+  function onlinePick(cid) {
+    var O = ui.online; if (!O) return;
+    O.err = null;
+    if (O.role === "host") {
+      if (O.humans.some(function (h) { return h.club === cid && h.id !== "host"; })) return;
+      O.humans[0].club = cid; broadcast(lobbyState());
+    } else {
+      toHost({ t: "pick", club: cid, name: O.name });
+      var me = (O.humans || []).find(function (h) { return h.id === O.myId; }); if (me) me.club = cid; else (O.humans = O.humans || []).push({ id: O.myId, name: O.name, club: cid });
+    }
+    render();
+  }
+
+  // ---- the shared live match: the host streams it, the other side sends its actions
+  function lmSer(sd) {
+    function r1(o) { var x = {}; Object.keys(o).forEach(function (k) { x[k] = Math.round(o[k] * 10) / 10; }); return x; }
+    return { cid: sd.cid, home: sd.home, formation: sd.formation, slots: sd.slots, bench: sd.bench, subs: sd.subs, cond: r1(sd.cond), yc: sd.yc, off: sd.off, rat: r1(sd.rat), played: sd.played, tac: sd.tac, shout: sd.shout, shoutTo: sd.shoutTo, shoutCd: sd.shoutCd, goals: sd.goals, st: sd.st, boost: 0, mine: false, human: true };
+  }
+  function lmStream(force) {
+    if (!LM || !LM.remote) return;
+    var now = Date.now();
+    if (!force && now - NET.lmLast < 110) return;
+    NET.lmLast = now;
+    var d = LM.lastDraw || { p: LM.pl.map(function (s) { return s.map(function (p) { return [p.x, p.y]; }); }), b: [LM.bl.x, LM.bl.y, LM.bl.z], c: LM.bl.own };
+    var m = { t: "lms", p: d.p.map(function (s) { return s.map(function (q) { return [Math.round(q[0] * 10) / 10, Math.round(q[1] * 10) / 10]; }); }), b: d.b.map(function (v) { return Math.round(v * 100) / 100; }), c: d.c, rp: !!LM.replay };
+    if (LM.ver !== NET.lmVer || force || now - (NET.lmFullAt || 0) > 1500) {
+      NET.lmVer = LM.ver; NET.lmFullAt = now;
+      m.full = { h: lmSer(LM.h), a: lmSer(LM.a), min: LM.min, half: LM.half, phase: LM.phase, paused: LM.paused, speed: LM.speed, shown: LM.shown, feed: LM.feed.slice(0, 60), headline: LM.headline,
+        mom: LM.mom.slice(-40), talk: LM.rtalk ? { kind: LM.rtalk.kind, ctx: LM.rtalk.ctx, opts: LM.rtalk.opts.map(function (o) { return { text: o.text, tone: o.tone }; }), chosen: LM.rtalk.chosen, reacts: LM.rtalk.reacts, done: !!LM.rtalk.done, avg: LM.rtalk.avg || 0, waitOther: !!(LM.rtalk.done && LM.talk && !LM.talk.done) } : null,
+        stop1: LM.stop1, stop2: LM.stop2, poss: LM.poss };
+    }
+    sendTo(NET.conns[LM.remote.cid], m);
+  }
+  function lmMirrorStart(m) {
+    var view = "pitch"; try { view = localStorage.getItem("dlsmgr-lmview") || "pitch"; } catch (e) {}
+    LM = { remoteView: true, k: m.k, w: m.w, view: view, feed: [], headline: null, panel: null, tab: "stats", h: null, a: null, mom: [], min: 0, half: 1, phase: "pre", speed: 1, paused: true, talk: null, stop1: 2, stop2: 4,
+      pl: [[], []], bl: { x: 50, y: 50, z: 0, own: null }, acts: [], ball: { x: 50, y: 50 } };
+    NET.h2hWait = false; NET.seenFeed = null;
+    ui.screen = "live";
+  }
+  function lmMirror(m) {
+    if (!LM || !LM.remoteView) return;
+    var first = !LM.h;
+    if (m.full) {
+      var f = m.full, newest = f.feed && f.feed[0];
+      // the crowd for goals, the referee for whistles (on the other device too)
+      if (NET.seenFeed && f.feed) {
+        for (var i = 0; i < f.feed.length && i < 6; i++) {
+          var e = f.feed[i]; if (NET.seenFeed && e.text === NET.seenFeed.text && e.min === NET.seenFeed.min) break;
+          if (e.kind === "goal") (e.side === LM.k ? Sfx.roar : Sfx.groan)();
+          else if (e.kind === "whistle") Sfx.whistle(/Full-time/.test(e.text) ? 3 : /Half-time/.test(e.text) ? 2 : 1);
+        }
+      }
+      NET.seenFeed = newest || NET.seenFeed;
+      LM.h = f.h; LM.a = f.a; LM.me = LM[LM.k]; LM.opp = LM.k === "h" ? LM.a : LM.h;
+      ["min", "half", "phase", "paused", "speed", "shown", "feed", "headline", "mom", "stop1", "stop2", "poss"].forEach(function (k) { LM[k] = f[k]; });
+      LM.talk = f.talk;
+      if (f.talk && f.talk.kind === "ft" && f.talk.chosen != null && !LM.ftApplied) {
+        LM.ftApplied = true;
+        bump("morale", Math.round((f.talk.avg || 0) * 120));
+        (f.talk.reacts || []).forEach(function (x) { if (x.c === "bad") relAdd("p:" + x.id, -2, "Unhappy with your team talk"); else if (x.c === "good") relAdd("p:" + x.id, 1, "Liked your team talk"); });
+        save();
+      }
+    }
+    if (!LM.h) return;
+    if (first || ui.screen !== "live" || !document.getElementById("lm")) { ui.screen = "live"; render(); }
+    else if (m.full) lmPaint();
+    var rb = document.getElementById("lmReplay"); if (rb) rb.className = m.rp ? "on" : "";
+    lmDraw({ p: m.p, b: m.b, c: m.c });
+  }
+  // what the other manager does, applied to his side on the host
+  function lmRemoteAct(v) {
+    var k = v.split(":"), sd = LM.rside;
+    if (k[0] === "toggle") { LM.paused = !LM.paused; lmPaint(); return lmRun(); }
+    if (k[0] === "speed") { LM.speed = Math.max(0, Math.min(3, +k[1] || 0)); lmPaint(); return lmRun(); }
+    if (k[0] === "skip") { lmSkip(); lmPaint(); return; }
+    if (k[0] === "tac" && sd.tac.hasOwnProperty(k[1])) { sd.tac[k[1]] = Math.max(0, Math.min(k[1] === "ment" ? 4 : 2, +k[2] || 0)); lmFeed("info", club(sd.cid).name + " change their " + { ment: "mentality", tempo: "tempo", press: "pressing" }[k[1]] + ".", LM.remote.k); return lmPaint(); }
+    if (k[0] === "form" && FORMATIONS[k[1]]) { if (sd.formation !== k[1]) lmFormation(sd, k[1]); return lmPaint(); }
+    if (k[0] === "sub") { var out = +k[1], inn = +k[2]; if (sd.subs < 5 && sd.slots[out] != null && sd.bench.indexOf(inn) >= 0) lmSub(sd, out, inn); return lmPaint(); }
+    if (k[0] === "shout" && SHOUTS[k[1]]) { if (LM.min < sd.shoutCd) return; sd.shout = k[1]; sd.shoutTo = LM.min + 12; sd.shoutCd = LM.min + 8; lmFeed("talk", club(sd.cid).name + "'s bench: " + SHOUTS[k[1]].name.toLowerCase() + "!", LM.remote.k); return lmPaint(); }
+    if (k[0] === "talk" && LM.rtalk && LM.rtalk.chosen == null) { lmTalkPick(LM.rtalk, sd, +k[1], false); return lmPaint(); }
+    if (k[0] === "talkdone" && LM.rtalk && LM.rtalk.chosen != null) { LM.rtalk.done = true; if (LM.talk && !LM.talk.done) return lmPaint(); return lmTalkProceed(); }
+  }
+  // the other side's view: panels and tabs are its own, everything else goes to the host
+  function lmClientAct(v) {
+    var k = v.split(":");
+    if (k[0] === "tab") { LM.tab = k[1]; return lmPaint(); }
+    if (k[0] === "view") { LM.view = LM.view !== "feed" ? "feed" : "pitch"; try { localStorage.setItem("dlsmgr-lmview", LM.view); } catch (e) {} return render(); }
+    if (k[0] === "panel") { LM.panel = k[1]; LM.subOut = null; return lmPaint(); }
+    if (k[0] === "close") { LM.panel = null; return lmPaint(); }
+    if (k[0] === "subout") { LM.subOut = +k[1]; return lmPaint(); }
+    if (k[0] === "subin") { if (LM.subOut != null) toHost({ t: "lm", v: "sub:" + LM.subOut + ":" + k[1] }); LM.subOut = null; LM.panel = null; return lmPaint(); }
+    if (k[0] === "shout") { LM.panel = null; lmPaint(); }
+    toHost({ t: "lm", v: v });
   }
 
   // ------------------------------------------------------------ live text match (FM-style)
@@ -2674,8 +3130,8 @@ input[type="search"], select {
     focus: { name: "Focus", d: "Concentrate: concede fewer good chances for a while.", eff: function () { return 0.01; } }
   };
   function lmRand() { return LM.r(); }
-  function lmSide(cid, mine, home) {
-    var L = lineupOf(cid), bench = benchOf(cid).slice(0, 9).map(function (p) { return p.id; }), cond = {};
+  function lmSide(cid, mine, home, given) {
+    var L = given || lineupOf(cid), bench = given && given.bench ? given.bench.slice() : benchOf(cid).slice(0, 9).map(function (p) { return p.id; }), cond = {};
     L.xi.concat(bench).forEach(function (id) { cond[id] = 100; });
     return { cid: cid, mine: mine, home: home, formation: L.formation, slots: L.xi.slice(), bench: bench, subs: 0, cond: cond, yc: {}, off: {}, played: L.xi.slice(),
       tac: { ment: 2, tempo: 1, press: 1 }, boost: 0, shout: null, shoutTo: 0, shoutCd: 0, rat: {}, goals: 0,
@@ -2738,33 +3194,39 @@ input[type="search"], select {
   function evMin() { return LM.half === 1 ? Math.min(45, LM.min) : Math.min(90, LM.min); }
   function pk(a) { return a[Math.floor(lmRand() * a.length)]; }
 
-  function startLive() {
+  function startLive(opts) {
+    opts = opts || {};
     var fx = nextFixture();
     if (!fx) return;
     var seed = (S.seed ^ (fx.week * 7919 + 17)) ^ (Date.now() & 0xffff);
     var view = "pitch"; try { view = localStorage.getItem("dlsmgr-lmview") || "pitch"; } catch (e) {}
     LM = { view: view, hold: 0, acts: [], fx: fx, r: rng(seed >>> 0), min: 0, half: 1, phase: "pre", speed: 1, paused: true, feed: [], headline: null, panel: null, tab: "stats",
       h: null, a: null, ball: { x: 50, y: 50 }, poss: null, mom: [], stop1: 1 + Math.floor(Math.random() * 3), stop2: 2 + Math.floor(Math.random() * 5), events: [], talk: null, subsLog: [] };
-    LM.h = lmSide(fx.home, fx.home === S.clubId, true);
-    LM.a = lmSide(fx.away, fx.away === S.clubId, false);
+    var R = opts.remote;
+    LM.h = lmSide(fx.home, fx.home === S.clubId, true, R && R.k === "h" ? R.lineup : null);
+    LM.a = lmSide(fx.away, fx.away === S.clubId, false, R && R.k === "a" ? R.lineup : null);
     LM.me = LM.h.mine ? LM.h : LM.a;
+    if (R) { LM.remote = { k: R.k, cid: R.cid }; LM.rside = LM[R.k]; LM.rside.human = true; LM.me.human = true; }
     lmInit2d();
     LM.opp = lmOther(LM.me);
-    LM.opp.boost = (lmRand() - 0.5) * 0.04;
+    if (!LM.opp.human) LM.opp.boost = (lmRand() - 0.5) * 0.04;
     lmFeed("whistle", "Welcome to " + (club(fx.home).stadium || club(fx.home).name) + " for " + club(fx.home).name + " against " + club(fx.away).name + ".");
     LM.talk = lmTalk("pre");
+    if (LM.remote) LM.rtalk = lmTalk("pre", LM.rside);
     ui.screen = "live";
     render();
   }
 
   // ---- team talks: the options depend on the moment; what works depends on the context
-  function lmContext() {
-    var me = lmUnits(LM.me), op = lmUnits(LM.opp);
+  function lmContext(sd) {
+    sd = sd || LM.me;
+    var ot = lmOther(sd), me = lmUnits(sd), op = lmUnits(ot);
     var str = (me.fw + me.mf + me.df + me.gk) / 4 - (op.fw + op.mf + op.df + op.gk) / 4;
-    return { fav: str > 3, dog: str < -3, str: str, derby: rivals(LM.me.cid, LM.opp.cid), gd: lmGd(LM.me) };
+    return { fav: str > 3, dog: str < -3, str: str, derby: rivals(sd.cid, ot.cid), gd: lmGd(sd) };
   }
-  function lmTalk(kind) {
-    var c = lmContext(), o = [];
+  function lmTalk(kind, sd) {
+    sd = sd || LM.me;
+    var c = lmContext(sd), o = [];
     function T(id, text, tone, eff) { o.push({ id: id, text: text, tone: tone, eff: eff }); }
     if (kind === "pre") {
       T("faith", "I have faith in you. Go and show everyone what you can do.", "Encouraging", c.dog ? 0.06 : 0.025);
@@ -2805,14 +3267,17 @@ input[type="search"], select {
         T("better", "Not good enough. I expect a reaction.", "Assertive", c.fav ? 0.03 : -0.02);
       }
     }
-    var ctx = kind === "ft" ? (c.gd > 0 ? "You won " : c.gd < 0 ? "You lost " : "A draw, ") + LM.me.goals + "–" + LM.opp.goals + "." :
+    var ctx = kind === "ft" ? (c.gd > 0 ? "You won " : c.gd < 0 ? "You lost " : "A draw, ") + sd.goals + "–" + lmOther(sd).goals + "." :
       kind === "ht" ? "Half-time: " + (c.gd > 0 ? "you lead " : c.gd < 0 ? "you trail " : "level at ") + LM.h.goals + "–" + LM.a.goals + "." :
       (c.fav ? "You're the favourites." : c.dog ? "You're the underdogs." : "It looks an even game.") + (c.derby ? " It's a derby." : "");
     return { kind: kind, ctx: ctx, opts: o, chosen: null, reacts: null };
   }
   var REACT = [[0.06, "Fired up", "good"], [0.03, "Motivated", "good"], [0.008, "Focused", "ok"], [-0.015, "Unmoved", "meh"], [-1, "Unhappy", "bad"]];
-  function lmTalkChoose(i) {
-    var t = LM.talk, op = t.opts[i], sd = LM.me, ids = lmOn(sd), mor = S.morale == null ? 55 : S.morale, sum = 0, reacts = [];
+  function lmTalkChoose(i) { return lmTalkPick(LM.talk, LM.me, i, true); }
+  // local: this device's own side (relationships and morale are its own); the other online
+  // manager's side gets its effect on the pitch here and its morale on his own device
+  function lmTalkPick(t, sd, i, local) {
+    var op = t.opts[i], ids = lmOn(sd), mor = local && S.morale != null ? S.morale : 55, sum = 0, reacts = [];
     t.chosen = i;
     (LM.talkTone = LM.talkTone || {})[sd === LM.h ? "h" : "a"] = op.tone;
     ids.forEach(function (id) {
@@ -2821,20 +3286,26 @@ input[type="search"], select {
       sum += v;
       var w = REACT.find(function (x) { return v >= x[0]; });
       reacts.push({ id: id, v: v, w: w[1], c: w[2] });
-      if (w[2] === "bad") relAdd("p:" + id, -2, "Unhappy with your team talk");
-      else if (w[2] === "good" && t.kind === "ft") relAdd("p:" + id, 1, "Liked your team talk");
+      if (local && w[2] === "bad") relAdd("p:" + id, -2, "Unhappy with your team talk");
+      else if (local && w[2] === "good" && t.kind === "ft") relAdd("p:" + id, 1, "Liked your team talk");
     });
     var avg = sum / Math.max(1, ids.length);
-    if (t.kind === "ft") { bump("morale", Math.round(avg * 120)); }
+    t.avg = avg;
+    if (t.kind === "ft") { if (local) bump("morale", Math.round(avg * 120)); }
     else sd.boost = Math.max(-0.1, Math.min(0.12, (t.kind === "ht" ? sd.boost * 0.4 : 0) + avg));
     reacts.sort(function (a, b) { return Math.abs(b.v) - Math.abs(a.v); });
     t.reacts = reacts.slice(0, 6);
-    lmFeed("talk", (t.kind === "pre" ? "Team talk: " : t.kind === "ht" ? "Half-time team talk: " : "Full-time team talk: ") + "“" + op.text + "”", sd === LM.h ? "h" : "a");
+    if (local) lmFeed("talk", (t.kind === "pre" ? "Team talk: " : t.kind === "ht" ? "Half-time team talk: " : "Full-time team talk: ") + "“" + op.text + "”", sd === LM.h ? "h" : "a");
     lmPaint();
   }
   function lmTalkDone() {
+    LM.talk.done = true;
+    if (LM.remote && LM.rtalk && !LM.rtalk.done) return lmPaint();   // the other manager is still talking
+    lmTalkProceed();
+  }
+  function lmTalkProceed() {
     var k = LM.talk.kind;
-    LM.talk = null;
+    LM.talk = null; LM.rtalk = null;
     if (k === "pre") { LM.phase = "play"; LM.paused = false; lmFeed("whistle", "Kick-off! " + club(LM.fx.home).name + " get us under way."); lmRun(); }
     else if (k === "ht") { LM.phase = "play"; LM.half = 2; LM.min = 45; LM.paused = false; if (LM.pl) lmKickoff(1); lmFeed("whistle", "The second half is under way."); lmRun(); }
     else return lmFinish();
@@ -2844,7 +3315,7 @@ input[type="search"], select {
   // ---- the clock
   function lmRun() {
     clearTimeout(lmTimer);
-    if (!LM || LM.paused || LM.phase !== "play" || LM.panel || LM.talk) return;
+    if (!LM || LM.remoteView || LM.paused || LM.phase !== "play" || LM.panel || LM.talk) return;
     if (lm2d()) {
       if (!LM.raf) { LM.tLast = 0; LM.raf = requestAnimationFrame(lmTick); }
       if (!LM.inMin) { LM.inMin = true; lmBegin(); }
@@ -2874,12 +3345,14 @@ input[type="search"], select {
         LM.phase = "ht"; LM.paused = true;
         lmFeed("whistle", "Half-time: " + club(LM.h.cid).name + " " + LM.h.goals + "–" + LM.a.goals + " " + club(LM.a.cid).name + ".");
         LM.talk = lmTalk("ht");
+        if (LM.remote) LM.rtalk = lmTalk("ht", LM.rside);
         // the other dugout makes its half-time changes
-        lmAi(LM.opp, "ht");
+        if (!LM.opp.human) lmAi(LM.opp, "ht");
       } else {
         LM.phase = "ft"; LM.paused = true;
         lmFeed("whistle", "Full-time: " + club(LM.h.cid).name + " " + LM.h.goals + "–" + LM.a.goals + " " + club(LM.a.cid).name + ".");
         LM.talk = lmTalk("ft");
+        if (LM.remote) LM.rtalk = lmTalk("ft", LM.rside);
       }
     }
     lmPaint();
@@ -2899,7 +3372,7 @@ input[type="search"], select {
   function lmMinute() {
     LM.acts = [];
     var H = lmUnits(LM.h), A = lmUnits(LM.a), r = LM.r, m = LM.min;
-    [LM.h, LM.a].forEach(function (sd) { if (!sd.mine) lmAi(sd, false); });
+    [LM.h, LM.a].forEach(function (sd) { if (!sd.mine && !sd.human) lmAi(sd, false); });
     var mh = LM.h.tac.ment - 2, ma = LM.a.tac.ment - 2;
     var possH = 0.5 + (H.mf - A.mf) / 90 + (LM.h.tac.press - LM.a.tac.press) * 0.025 - (mh - ma) * 0.012 + (lmOn(LM.h).length - lmOn(LM.a).length) * 0.03;
     possH = Math.max(0.26, Math.min(0.74, possH + (r() - 0.5) * 0.08));
@@ -3020,7 +3493,7 @@ input[type="search"], select {
       lmRate(who, -1.6);
       LM.events.push({ min: evMin(), side: side, type: "rc", p: who });
       lmFeed("red", (s.yc[who] ? "Second yellow! " : "RED CARD! ") + lmName(who) + " is sent off! " + club(s.cid).name + " are down to " + lmOn(s).length + ".", side);
-      if (!s.mine) lmAi(s, "red");
+      if (!s.mine && !s.human) lmAi(s, "red");
     } else if (u < card) {
       s.yc[who] = true; s.st.yc++;
       lmRate(who, -0.3);
@@ -3117,6 +3590,7 @@ input[type="search"], select {
     var res = { h: h.cid, a: a.cid, hg: h.goals, ag: a.goals, real: false, live: true, events: L.events.slice().sort(function (x, y) { return x.min - y.min; }), stats: stats, ratings: ratings,
       xi: { h: h.played.slice(), a: a.played.slice() }, subs: L.subsLog.slice() };
     LM.phase = "done";
+    if (L.remote) sendTo(NET.conns[L.remote.cid], { t: "lmend", w: L.fx.week });
     var mine = playWeek({ live: res });
     LM = null;
     if (mine) { ui.report = mine; ui.screen = "report"; } else ui.screen = "home";
@@ -3126,7 +3600,7 @@ input[type="search"], select {
   // ---- the screen (its own look: a broadcast-style match centre)
   function viewLive() {
     var pv = LM.view !== "feed";
-    return '<div class="lm' + (pv ? " pv" : "") + '" id="lm"><header class="lm-head" id="lmHead"></header><div class="lm-hl" id="lmHl"></div>' +
+    return '<div class="lm' + (pv ? " pv" : "") + (LM.remoteView ? " rv" : "") + '" id="lm"><header class="lm-head" id="lmHead"></header><div class="lm-hl" id="lmHl"></div>' +
       '<div class="lm-main"><div class="lm-pwrap"><div class="lm-pitch" id="lmPitch">' + lmPitchHtml() + '</div></div><div class="lm-feed" id="lmFeed"></div><aside class="lm-side" id="lmSide"></aside></div>' +
       '<nav class="lm-bar" id="lmBar"></nav><div id="lmOv"></div></div>';
   }
@@ -3350,7 +3824,7 @@ input[type="search"], select {
     LM.raf = requestAnimationFrame(lmTick);
     var last = LM.tLast || now; LM.tLast = now;
     var real = Math.min(0.05, (now - last) / 1000);
-    if (LM.replay) return lmReplayFrame(real);
+    if (LM.replay) { lmReplayFrame(real); return lmStream(); }
     var running = LM.phase === "play" && !LM.paused && !LM.panel && !LM.talk && lm2d();
     var dt = running ? real * SPD[LM.speed] : real * 0.4;
     LM.simT = (LM.simT || 0) + dt;
@@ -3358,6 +3832,7 @@ input[type="search"], select {
     lmMove(dt);
     if (running) lmAdvance(dt);
     if (LM.rec) LM.rec.push(lmSnap());
+    lmStream();
     lmDraw();
   }
   function lmAdvance(dt) {
@@ -3428,6 +3903,8 @@ input[type="search"], select {
   }
   function lmDraw(snap) {
     var pt = document.getElementById("lmPitch"); if (!pt) return;
+    if (!snap) snap = { p: LM.pl.map(function (s2) { return s2.map(function (p) { return [p.x, p.y]; }); }), b: [LM.bl.x, LM.bl.y, LM.bl.z], c: LM.bl.own ? LM.bl.own.slice() : null };
+    if (!LM.remoteView) LM.lastDraw = snap;
     [0, 1].forEach(function (k) {
       var sd = lmSideK(k);
       for (var i = 0; i < 11; i++) {
@@ -3479,12 +3956,13 @@ input[type="search"], select {
     return [home, away];
   }
   function lmPaintPitch() {
-    if (!LM.pl) return;
+    if (!LM.pl || LM.remoteView) return;
     lmDraw();
     if (!LM.raf) { LM.tLast = 0; LM.raf = requestAnimationFrame(lmTick); }
   }
   function lmPaint() {
     if (!LM || LM.quiet || !document.getElementById("lm")) return;
+    LM.ver = (LM.ver || 0) + 1;
     var h = LM.h, a = LM.a;
     var cl = function (cid) { return club(cid).colors || { primary: "#444" }; };
     document.getElementById("lmHead").innerHTML =
@@ -3534,6 +4012,7 @@ input[type="search"], select {
   function lmTalkHtml() {
     var t = LM.talk, title = t.kind === "pre" ? "Pre-match team talk" : t.kind === "ht" ? "Half-time team talk" : "Full-time team talk";
     var body;
+    if (t.done) return '<div class="lm-ovbg"><section class="lm-card"><h3>' + title + '</h3><p class="lm-ctx">Waiting for the other manager to finish his team talk…</p></section></div>';
     if (t.chosen == null) {
       body = '<p class="lm-ctx">' + esc(t.ctx) + '</p><div class="lm-talk">' + t.opts.map(function (o, i) {
         return '<button class="lm-opt" data-lm="talk:' + i + '"><span>“' + esc(o.text) + '”</span><em>' + esc(o.tone) + "</em></button>";
@@ -3573,6 +4052,7 @@ input[type="search"], select {
   }
   function lmAct(v) {
     if (!LM) return;
+    if (LM.remoteView) return lmClientAct(v);
     var k = v.split(":"), sd = LM.me;
     if (k[0] === "toggle") { LM.paused = !LM.paused; lmPaint(); return lmRun(); }
     if (k[0] === "speed") { LM.speed = +k[1]; lmPaint(); return lmRun(); }
@@ -4151,6 +4631,7 @@ input[type="search"], select {
       (saved ? '<button class="tm-btn tm-load" data-act="loadcareer">' + badge(saved.clubId, 38) +
         '<span><b>Load game</b><small>' + esc(club(saved.clubId).name) + " · matchweek " + (saved.week + 1) + "</small></span></button>" : "") +
       '<button class="tm-btn" data-act="newcareer"><span><b>New game</b><small>Choose a club</small></span></button>' +
+      '<button class="tm-btn" data-act="online"><span><b>Online game</b><small>Play with friends</small></span></button>' +
       '<button class="tm-btn" data-act="settings"><span><b>Settings</b><small>Difficulty, AI</small></span></button>' +
       (inGame ? '<button class="tm-btn" data-act="exportsave"><span><b>Export save</b><small>Back up your career</small></span></button>' : "") +
       "</div></nav></main>";
@@ -4519,8 +5000,10 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
-    var t = ev.target.closest("[data-reltab],[data-eutab],[data-breq],[data-deal],[data-pact],[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-back-player]");
+    var t = ev.target.closest("[data-reltab],[data-eutab],[data-breq],[data-deal],[data-pact],[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-onpick],[data-onleague],[data-back-player]");
     if (!t) return;
+    if (t.hasAttribute("data-onleague")) { ui.online.pickLeague = t.getAttribute("data-onleague"); return render(); }
+    if (t.hasAttribute("data-onpick")) return onlinePick(t.getAttribute("data-onpick"));
     if (t.hasAttribute("data-pickleague")) { ui.pickLeague = t.getAttribute("data-pickleague"); ui.pick = D.leagues.find(function (l) { return l.id === ui.pickLeague; }).clubs[0]; return renderNewGame(); }
     if (t.hasAttribute("data-pick")) { ui.pick = t.getAttribute("data-pick"); return updateNewGamePick(); }
     if (t.hasAttribute("data-msg")) {
@@ -4678,6 +5161,7 @@ input[type="search"], select {
     if (act === "exportsave") { closeDrawer(); if (window.DLSManager && window.DLSManager.exportSave) window.DLSManager.exportSave(); return; }
     if (act === "sim") {
       if (!matchDayToday()) return;
+      if (h2hOpp()) { ui.screen = "prematch"; return render(); }
       var mine = playWeek();
       if (mine) { ui.report = mine; ui.screen = "report"; } else ui.screen = "home";
       return render();
@@ -4706,7 +5190,12 @@ input[type="search"], select {
       return modal('<h2>Kick-off</h2><p class="muted" style="margin:0">Inside the game this starts the real DLS19 match with these two line-ups. In the web preview use Quick Sim.</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
     if (act === "closemodal") return closeModal();
+    if (act && /^(online|onlineback|onhost|onjoin|onstart)$/.test(act)) return onlineAct(act, t);
+    if (act === "onlinepanel") return onlinePanel();
+    if (act === "onlinedrop") { var dc = t.getAttribute("data-club"); S.online.humans = S.online.humans.filter(function (h) { return h.club !== dc; }); if (S.online.ready) delete S.online.ready[dc]; broadcast({ t: "drop", club: dc }); save(); closeModal(); hostCheckGo(); if (S.online.waitW != null) hostCheckRound(S.online.waitW); return render(); }
+    if (act === "h2h") return h2hKickoff();
     if (act === "loadcareer") {
+      if (S.online) onlineResume();
       ui.title = false; ui.screen = "home";
       // keep the game's team in step with the career (e.g. after a recovery reset it)
       if (window.DLSManager && window.DLSManager.currentClub && window.DLSManager.currentClub() !== S.clubId) window.DLSManager.becomeClub(S.clubId);
