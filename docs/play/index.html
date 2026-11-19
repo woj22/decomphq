@@ -372,6 +372,15 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .np-skip { display: inline-flex; align-items: center; gap: 5px; }
 .lm-b .skip-ic { margin-left: 4px; }
 .np-skip:hover { background: rgba(255,255,255,.2); }
+/* ---- tactics: instructions and roles */
+.ti-wrap { display: grid; gap: 12px; margin-top: 12px; }
+.ti-top { padding: 12px 14px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.ti-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.ti-grp { padding: 12px 14px; display: grid; gap: 8px; align-content: start; }
+.ti { display: grid; gap: 3px; font-size: .84rem; }
+.ti > span { color: var(--muted); }
+.ti select, .ti-roles select { font: inherit; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+.ti-roles { padding: 12px 14px; display: grid; gap: 8px; }
 /* ---- links and FM-style pages */
 a.ln { color: inherit; text-decoration: none; cursor: pointer; border-bottom: 1px dotted rgba(var(--accent-rgb), .55); }
 a.ln:hover { color: var(--accent); border-bottom-color: var(--accent); }
@@ -859,6 +868,11 @@ input[type="search"], select {
     var defH = H.df * 0.7 + H.gk * 0.3, defA = A.df * 0.7 + A.gk * 0.3;
     var lamH = Math.min(4, Math.max(0.15, 1.42 * Math.exp((attH - defA) / 11 + (H.mf - A.mf) / 30)));
     var lamA = Math.min(4, Math.max(0.15, 1.12 * Math.exp((attA - defH) / 11 + (A.mf - H.mf) / 30)));
+    // tactics: the user's own, AI clubs' chosen style against this opponent
+    var TH = home === S.clubId ? (function (L) { tacOf(L); return tacProfile(L.tac, L.roles, L.xi); })(lineupOf(home)) : tacProfile(aiTactic(home, away), defaultRoles(lineupOf(home).formation));
+    var TA = away === S.clubId ? (function (L) { tacOf(L); return tacProfile(L.tac, L.roles, L.xi); })(lineupOf(away)) : tacProfile(aiTactic(away, home), defaultRoles(lineupOf(away).formation));
+    lamH *= Math.max(0.6, Math.min(1.6, TH.rate * TA.concede * TH.xg));
+    lamA *= Math.max(0.6, Math.min(1.6, TA.rate * TH.concede * TA.xg));
     // squad morale (press conferences, results) nudges the user's team in simulated matches
     if (S && S.morale != null) { var mf = 1 + (S.morale - 55) / 400; if (home === S.clubId) lamH *= mf; else if (away === S.clubId) lamA *= mf; }
     var hg = poisson(lamH, r), ag = poisson(lamA, r), events = [];
@@ -882,7 +896,7 @@ input[type="search"], select {
       if (r() < 0.04) { var q = byId[L.xi[1 + Math.floor(r() * 10)]]; events.push({ min: 30 + Math.floor(r() * 60), side: x[0], type: "rc", p: q.id }); }
     });
     events.sort(function (a, b) { return a.min - b.min; });
-    var poss = Math.round(Math.max(30, Math.min(70, 52 + (H.mf - A.mf) * 0.9 + (r() - 0.5) * 8)));
+    var poss = Math.round(Math.max(28, Math.min(72, 52 + (H.mf - A.mf) * 0.9 + (TH.poss - TA.poss) * 60 + (r() - 0.5) * 8)));
     var shH = Math.max(hg, Math.round(lamH * 6.5 + 3 + r() * 5)), shA = Math.max(ag, Math.round(lamA * 6.5 + 3 + r() * 5));
     var otH = Math.max(hg, Math.round(shH * (0.3 + r() * 0.15))), otA = Math.max(ag, Math.round(shA * (0.3 + r() * 0.15)));
     var stats = {
@@ -2676,11 +2690,12 @@ input[type="search"], select {
 
   function viewTactics() {
     var L = lineupOf(S.clubId), slots = FORMATIONS[L.formation];
+    tacOf(L);
     var pitch = slots.map(function (s, i) {
       var p = byId[L.xi[i]], f = fit(p.pos, s[0], p.alt), sel = ui.sel && ui.sel.kind === "slot" && ui.sel.i === i;
       return '<button class="slot' + (sel ? " sel" : "") + '" style="left:' + s[1] + "%;top:" + s[2] + '%" data-slot="' + i + '" aria-label="' + esc(s[0] + ": " + p.name) + '">' +
         '<span class="disc" style="background:' + ovrColor(p.ovr + f) + ';color:#071a0d">' + (p.ovr + f) + "</span>" +
-        '<span class="nm">' + esc(p.name.split(" ").slice(-1)[0]) + "</span>" + (f < 0 ? '<span class="fit">' + s[0] + " " + f + "</span>" : '<span class="fit" style="color:#cfe">' + s[0] + "</span>") + "</button>";
+        '<span class="nm">' + esc(p.name.split(" ").slice(-1)[0]) + "</span>" + (f < 0 ? '<span class="fit">' + s[0] + " " + f + "</span>" : '<span class="fit" style="color:#cfe">' + (L.roles && L.roles[i] ? L.roles[i].r + "-" + L.roles[i].d : s[0]) + "</span>") + "</button>";
     }).join("");
     var bench = clubPlayers[S.clubId].filter(function (p) { return L.xi.indexOf(p.id) < 0; }).sort(function (a, b) { return b.ovr - a.ovr; });
     var str = strength(S.clubId);
@@ -2695,12 +2710,13 @@ input[type="search"], select {
       '<div class="label" style="padding:10px 8px 4px">Team strength</div><div style="padding:0 8px;display:grid;gap:4px">' +
       [["Attack", str.fw], ["Midfield", str.mf], ["Defence", str.df], ["Goalkeeper", str.gk]].map(function (x) {
         return '<div class="attr"><span>' + x[0] + "</span><b>" + x[1].toFixed(0) + '</b><div class="bar"><i style="width:' + x[1] + "%;background:" + ovrColor(x[1]) + '"></i></div></div>';
-      }).join("") + "</div></section></div>";
+      }).join("") + "</div></section></div>" + tacticsPanels(L);
   }
 
   // AI difficulty levels sent at kick-off (DLS profile +0x6100 = level x 100)
   var DIFFS = { easy: 1, normal: 2, hard: 3, veryhard: 4, elite: 5 };
   document.addEventListener("change", function (ev) {
+    if (ev.target && ev.target.hasAttribute && S && (ev.target.hasAttribute("data-tacset") || ev.target.hasAttribute("data-tacpreset") || ev.target.hasAttribute("data-role") || ev.target.hasAttribute("data-duty"))) { tacticsChange(ev.target); return; }
     if (ev.target && ev.target.hasAttribute && ev.target.hasAttribute("data-indiv") && S) { (S.indiv = S.indiv || {})[ev.target.getAttribute("data-indiv")] = ev.target.value; save(); return; }
     if (ev.target && ev.target.id === "badj") { var bv = +ev.target.value, bt = document.getElementById("badjv"); if (bt) bt.textContent = bv > 0 ? fmtM(bv) + " from transfers → +" + fmtM(bv / 104) + "/wk wages" : bv < 0 ? fmtM(-bv / 104) + "/wk wages → +" + fmtM(-bv) + " transfers" : "No change"; return; }
     if (ev.target && ev.target.id === "mgrname" && S) { mgr().name = ev.target.value.trim().slice(0, 28); save(); }
@@ -2996,7 +3012,8 @@ input[type="search"], select {
   // both managers press Kick off; the host starts the shared match when both have
   function h2hKickoff() {
     var opp = h2hOpp(); if (!opp) return;
-    var L = lineupOf(S.clubId), lineup = { formation: L.formation, xi: L.xi.slice(), bench: benchOf(S.clubId).slice(0, 9).map(function (p) { return p.id; }) };
+    var L = lineupOf(S.clubId); tacOf(L);
+    var lineup = { formation: L.formation, xi: L.xi.slice(), bench: benchOf(S.clubId).slice(0, 9).map(function (p) { return p.id; }), tac: L.tac, roles: L.roles };
     if (S.online.role === "client") { toHost({ t: "lmready", lineup: lineup }); NET.h2hWait = true; render(); return; }
     NET.h2h = NET.h2h || {}; NET.h2h.host = true; NET.h2hWait = true; hostTryH2H(); render();
   }
@@ -3177,7 +3194,8 @@ input[type="search"], select {
     if (k[0] === "toggle") { LM.paused = !LM.paused; lmPaint(); return lmRun(); }
     if (k[0] === "speed") { LM.speed = Math.max(0, Math.min(3, +k[1] || 0)); lmPaint(); return lmRun(); }
     if (k[0] === "skip") { lmSkip(); lmPaint(); return; }
-    if (k[0] === "tac" && sd.tac.hasOwnProperty(k[1])) { sd.tac[k[1]] = Math.max(0, Math.min(k[1] === "ment" ? 4 : 2, +k[2] || 0)); lmFeed("info", club(sd.cid).name + " change their " + { ment: "mentality", tempo: "tempo", press: "pressing" }[k[1]] + ".", LM.remote.k); return lmPaint(); }
+    if (k[0] === "preset" && PRESETS[k[1]]) { sd.tac = presetTac(k[1]); sd.tp = null; return lmPaint(); }
+    if (k[0] === "tac" && (k[1] === "ment" || TI[k[1]])) { sd.tac[k[1]] = Math.max(0, Math.min(tacMax(k[1]), +k[2] || 0)); sd.tac.preset = "custom"; sd.tp = null; lmFeed("info", club(sd.cid).name + " change their " + (k[1] === "ment" ? "mentality" : TI[k[1]].n.toLowerCase()) + ".", LM.remote.k); return lmPaint(); }
     if (k[0] === "form" && FORMATIONS[k[1]]) { if (sd.formation !== k[1]) lmFormation(sd, k[1]); return lmPaint(); }
     if (k[0] === "sub") { var out = +k[1], inn = +k[2]; if (sd.subs < 5 && sd.slots[out] != null && sd.bench.indexOf(inn) >= 0) lmSub(sd, out, inn); return lmPaint(); }
     if (k[0] === "shout" && SHOUTS[k[1]]) { if (LM.min < sd.shoutCd) return; sd.shout = k[1]; sd.shoutTo = LM.min + 12; sd.shoutCd = LM.min + 8; lmFeed("talk", club(sd.cid).name + "'s bench: " + SHOUTS[k[1]].name.toLowerCase() + "!", LM.remote.k); return lmPaint(); }
@@ -3410,6 +3428,187 @@ input[type="search"], select {
     return parts.join("");
   }
 
+  // ------------------------------------------------------------ tactics (FM-style, for simulated matches)
+  // Mentality, team instructions in possession / in transition / out of possession, and a role
+  // and duty for every position. They shape the text match and quick sim (DLS plays its own).
+  var MENT7 = ["Very defensive", "Defensive", "Cautious", "Balanced", "Positive", "Attacking", "Very attacking"];
+  var TI = {
+    // in possession
+    pass: { g: "pos", n: "Passing directness", o: ["Much shorter", "Shorter", "Standard", "More direct", "Much more direct"], d: "Shorter keeps the ball; direct makes more, poorer chances." },
+    tempo: { g: "pos", n: "Tempo", o: ["Much lower", "Lower", "Standard", "Higher", "Much higher"], d: "Higher makes more chances and tires players." },
+    width: { g: "pos", n: "Attacking width", o: ["Much narrower", "Narrower", "Standard", "Wider", "Much wider"], d: "Wider means more crosses and headers, and gaps behind." },
+    final: { g: "pos", n: "Final third", o: ["Work ball into box", "Balanced", "Shoot on sight"], d: "Fewer, better chances, or more shots from range." },
+    cross: { g: "pos", n: "Crossing", o: ["Low crosses", "Mixed", "Whipped crosses"], d: "Whipped crosses suit big target men." },
+    dribble: { g: "pos", n: "Dribbling", o: ["Dribble less", "Balanced", "Dribble more"], d: "More dribbling wins fouls and loses the ball more." },
+    // in transition
+    lost: { g: "tr", n: "When possession is lost", o: ["Counter-press", "Balanced", "Regroup"], d: "Counter-pressing wins it back high and tires players; regrouping is safer." },
+    won: { g: "tr", n: "When possession is won", o: ["Counter", "Balanced", "Hold shape"], d: "Countering hurts attacking sides; holding shape keeps the ball." },
+    gk: { g: "tr", n: "Goalkeeper distribution", o: ["Play it short", "Mixed", "Distribute long"], d: "Short builds from the back; long skips midfield." },
+    // out of possession
+    line: { g: "out", n: "Defensive line", o: ["Much deeper", "Deeper", "Standard", "Higher", "Much higher"], d: "High squeezes the pitch but quick forwards get in behind." },
+    engage: { g: "out", n: "Line of engagement", o: ["Much lower", "Lower", "Standard", "Higher", "Much higher"], d: "Where you start pressing." },
+    press: { g: "out", n: "Pressing intensity", o: ["Much less", "Less", "Standard", "More", "Much more"], d: "More pressing wins the ball back, costs stamina and fouls." },
+    tackle: { g: "out", n: "Tackling", o: ["Stay on feet", "Balanced", "Get stuck in"], d: "Getting stuck in wins duels and draws cards." },
+    trap: { g: "out", n: "Offside trap", o: ["Off", "Use offside trap"], d: "Catches forwards offside; when it fails, they're through." }
+  };
+  var TAC_DEF = { ment: 3, pass: 2, tempo: 2, width: 2, final: 1, cross: 1, dribble: 1, lost: 1, won: 1, gk: 1, line: 2, engage: 2, press: 2, tackle: 1, trap: 0 };
+  function tacMax(k) { return k === "ment" ? 6 : TI[k] ? TI[k].o.length - 1 : 0; }
+  var PRESETS = {
+    balanced: { n: "Balanced", t: {} },
+    gegenpress: { n: "Gegenpress", t: { ment: 4, pass: 3, tempo: 4, lost: 0, won: 0, line: 3, engage: 4, press: 4, tackle: 2, trap: 1 } },
+    tikitaka: { n: "Tiki-Taka", t: { ment: 4, pass: 0, tempo: 1, width: 1, final: 0, lost: 0, won: 2, gk: 0, line: 3, engage: 3, press: 3, trap: 1 } },
+    vertical: { n: "Vertical Tiki-Taka", t: { ment: 4, pass: 3, tempo: 3, width: 1, final: 0, lost: 0, won: 0, line: 3, engage: 3, press: 3 } },
+    wingplay: { n: "Wing Play", t: { ment: 4, pass: 3, tempo: 3, width: 4, cross: 2, won: 1 } },
+    routeone: { n: "Route One", t: { ment: 3, pass: 4, tempo: 3, width: 3, cross: 2, gk: 2, final: 2, lost: 2, won: 0, line: 1, press: 1 } },
+    counter: { n: "Fluid Counter-Attack", t: { ment: 2, pass: 3, tempo: 3, lost: 2, won: 0, line: 1, engage: 1, press: 1 } },
+    parkbus: { n: "Park the Bus", t: { ment: 0, pass: 3, tempo: 1, width: 1, lost: 2, won: 2, gk: 2, line: 0, engage: 0, press: 0 } },
+    control: { n: "Control Possession", t: { ment: 3, pass: 1, tempo: 2, final: 0, won: 2, gk: 0, line: 2, engage: 2, press: 2 } }
+  };
+  function presetTac(key) { var t = Object.assign({}, TAC_DEF, (PRESETS[key] || PRESETS.balanced).t); t.preset = key; return t; }
+  // roles: key attributes (0 speed, 1 acceleration, 2 stamina, 3 strength, 4 tackling, 5 control,
+  // 6 shooting, 7 passing, 8 crossing, 9 heading, 10-12 goalkeeping) and what they add
+  var ROLES = {
+    G: { n: "Goalkeeper", du: "D", k: [10, 11, 12] },
+    SK: { n: "Sweeper Keeper", du: "DSA", k: [10, 11, 7, 0], poss: 0.01, cover: 1 },
+    CD: { n: "Central Defender", du: "DS", k: [4, 3, 9], def: 0.03 },
+    BPD: { n: "Ball-Playing Defender", du: "DS", k: [4, 7, 5], def: 0.01, poss: 0.012 },
+    NCB: { n: "No-Nonsense Centre-Back", du: "D", k: [4, 3, 9], def: 0.04, poss: -0.01 },
+    FB: { n: "Full-Back", du: "DSA", k: [0, 4, 8] },
+    WB: { n: "Wing-Back", du: "DSA", k: [0, 2, 8], att: 0.02, def: -0.015, ast: 1.3, wide: 1 },
+    IWB: { n: "Inverted Wing-Back", du: "DSA", k: [7, 5, 2], poss: 0.015 },
+    NNFB: { n: "No-Nonsense Full-Back", du: "D", k: [4, 3], def: 0.03, att: -0.02 },
+    A: { n: "Anchor", du: "D", k: [4, 3], def: 0.04 },
+    BWM: { n: "Ball-Winning Midfielder", du: "DS", k: [4, 2, 3], def: 0.03, press: 1, foul: 1 },
+    DLP: { n: "Deep-Lying Playmaker", du: "DS", k: [7, 5], poss: 0.025, ast: 1.3 },
+    REG: { n: "Regista", du: "S", k: [7, 5, 6], poss: 0.03, att: 0.01, def: -0.02, ast: 1.5 },
+    CM: { n: "Central Midfielder", du: "DSA", k: [7, 5, 4] },
+    BBM: { n: "Box-to-Box Midfielder", du: "S", k: [2, 7, 4, 6], att: 0.01, def: 0.01, shot: 1.2, tire: 1 },
+    MEZ: { n: "Mezzala", du: "SA", k: [5, 7, 6], att: 0.025, def: -0.02, shot: 1.3 },
+    AP: { n: "Advanced Playmaker", du: "SA", k: [7, 5], poss: 0.02, ast: 1.6 },
+    AM: { n: "Attacking Midfielder", du: "SA", k: [6, 7, 5], att: 0.02, shot: 1.4 },
+    SS: { n: "Shadow Striker", du: "A", k: [6, 1, 5], att: 0.03, def: -0.02, shot: 1.8 },
+    T: { n: "Trequartista", du: "A", k: [5, 7, 6], poss: 0.01, att: 0.02, def: -0.03, ast: 1.4 },
+    WM: { n: "Wide Midfielder", du: "DSA", k: [2, 7, 8], wide: 1 },
+    W: { n: "Winger", du: "SA", k: [0, 1, 8], ast: 1.5, wide: 1 },
+    IW: { n: "Inverted Winger", du: "SA", k: [5, 7, 1], shot: 1.2, poss: 0.01 },
+    DW: { n: "Defensive Winger", du: "DS", k: [2, 4], def: 0.02, press: 1 },
+    IF: { n: "Inside Forward", du: "SA", k: [6, 1, 5], att: 0.015, shot: 1.5 },
+    RMD: { n: "Raumdeuter", du: "A", k: [6, 1], att: 0.02, def: -0.02, shot: 1.6 },
+    AF: { n: "Advanced Forward", du: "A", k: [0, 1, 6], att: 0.02, shot: 1.3, off: 1 },
+    PF: { n: "Pressing Forward", du: "DSA", k: [2, 4, 1], def: 0.01, press: 1 },
+    TM: { n: "Target Man", du: "SA", k: [3, 9], head: 2, ast: 1.2 },
+    P: { n: "Poacher", du: "A", k: [6, 1], shot: 1.6, xg: 0.04, off: 1 },
+    F9: { n: "False Nine", du: "S", k: [5, 7], poss: 0.02, shot: 0.7, ast: 1.5 },
+    CF: { n: "Complete Forward", du: "SA", k: [6, 5, 3, 9], shot: 1.2, ast: 1.2 },
+    DLF: { n: "Deep-Lying Forward", du: "SA", k: [5, 7, 6], poss: 0.015, ast: 1.3 }
+  };
+  var POSROLES = { GK: ["G", "SK"], CB: ["CD", "BPD", "NCB"], LB: ["FB", "WB", "IWB", "NNFB"], RB: ["FB", "WB", "IWB", "NNFB"], DM: ["A", "BWM", "DLP", "REG"],
+    CM: ["CM", "BBM", "DLP", "MEZ", "BWM", "AP"], AM: ["AM", "AP", "SS", "T"], LM: ["WM", "W", "IW", "DW"], RM: ["WM", "W", "IW", "DW"],
+    LW: ["W", "IF", "IW", "RMD"], RW: ["W", "IF", "IW", "RMD"], ST: ["AF", "PF", "TM", "P", "F9", "CF", "DLF"], SS: ["SS", "AF", "F9", "DLF"] };
+  var DUTY = { D: "Defend", S: "Support", A: "Attack" };
+  function defaultRoles(formation) {
+    var cm = 0;
+    return FORMATIONS[formation].map(function (s) {
+      var p = s[0];
+      if (p === "GK") return { r: "G", d: "D" };
+      if (p === "CB") return { r: "CD", d: "D" };
+      if (p === "LB" || p === "RB") return { r: "FB", d: "S" };
+      if (p === "DM") return { r: "DLP", d: "D" };
+      if (p === "CM") return cm++ === 0 ? { r: "BBM", d: "S" } : { r: "CM", d: "S" };
+      if (p === "AM") return { r: "AP", d: "S" };
+      if (p === "LM" || p === "RM") return { r: "W", d: "S" };
+      if (p === "LW" || p === "RW") return { r: "IF", d: "A" };
+      return { r: "AF", d: "A" };
+    });
+  }
+  // the user's tactic lives on his line-up
+  function tacOf(L) {
+    if (!L.tac) L.tac = Object.assign({ preset: "balanced" }, TAC_DEF);
+    if (!L.roles || L.roles.length !== FORMATIONS[L.formation].length) L.roles = defaultRoles(L.formation);
+    return L.tac;
+  }
+  // how well a player suits a role (key attributes against his overall), in stars, and the
+  // rating points it adds or costs him in that role
+  function roleFit(p, role) {
+    var R = ROLES[role]; if (!R || !p) return { stars: 3, pts: 0 };
+    var ks = R.k.map(function (i) { return p.attrs[i] || 50; }), avg = ks.reduce(function (s, v) { return s + v; }, 0) / ks.length;
+    var diff = avg - p.ovr;
+    return { stars: Math.max(1, Math.min(5, Math.round(3 + diff / 6))), pts: Math.max(-4, Math.min(3, diff * 0.15)) };
+  }
+  // an AI club's style, from how it measures up against today's opponent
+  function aiTactic(cid, opp) {
+    var d = squadStrength(cid) - (opp ? squadStrength(opp) : squadStrength(cid)), h = 0;
+    for (var i = 0; i < cid.length; i++) h = (h * 31 + cid.charCodeAt(i)) >>> 0;
+    var key = d > 5 ? ["control", "gegenpress", "tikitaka", "wingplay"][h % 4] : d > 1.5 ? ["vertical", "wingplay", "balanced"][h % 3] : d > -2 ? ["balanced", "vertical", "routeone"][h % 3] : d > -6 ? ["counter", "routeone"][h % 2] : "parkbus";
+    return presetTac(key);
+  }
+  // what a side's tactic does to the numbers the engine uses
+  function tacProfile(tac, roles, slots, players) {
+    var T = Object.assign({}, TAC_DEF, tac || {}), m = T.ment - 3, pa = T.pass - 2, te = T.tempo - 2, wi = T.width - 2, li = T.line - 2, en = T.engage - 2, pr = T.press - 2;
+    var P = { att: 0, def: 0, poss: 0, head: 0, press: 0, foul: 0, tire: 0, off: 0, cover: 0 };
+    (roles || []).forEach(function (rd, i) {
+      if (!rd || (slots && slots[i] == null)) return;
+      var R = ROLES[rd.r] || {}, dm = rd.d === "A" ? 1 : rd.d === "D" ? -1 : 0;
+      P.att += (R.att || 0) + dm * 0.015; P.def += (R.def || 0) - dm * 0.015; P.poss += R.poss || 0;
+      P.head += R.head ? 0.06 : 0; P.press += R.press ? 0.02 : 0; P.foul += R.foul ? 0.04 : 0; P.tire += (R.tire ? 0.02 : 0) + (dm > 0 ? 0.01 : 0); P.off += R.off ? 0.08 : 0; P.cover += R.cover || 0;
+    });
+    var k = 0.4;   // the eleven roles together count for less than the team instructions
+    return {
+      poss: -0.022 * pa - 0.008 * te + (T.dribble === 0 ? 0.01 : T.dribble === 2 ? -0.01 : 0) + (T.gk === 0 ? 0.01 : T.gk === 2 ? -0.015 : 0) + (T.won === 2 ? 0.015 : T.won === 0 ? -0.01 : 0) + 0.01 * li + 0.01 * en + 0.018 * pr + 0.006 * m + P.poss * k,
+      rate: (1 + 0.09 * m) * (1 + 0.045 * pa) * (1 + 0.04 * te) * [0.9, 1, 1.14][T.final] * (T.dribble === 2 ? 1.04 : 1) * (1 + P.att * k),
+      concede: (1 + 0.05 * m) * (1 + 0.02 * wi) * (T.lost === 0 ? 0.93 : T.lost === 2 ? 0.96 : 1) * (1 - 0.03 * pr) * (1 + 0.06 * Math.min(0, li)) * (1 + 0.03 * Math.min(0, m)) * (1 - P.def * k),
+      xg: (1 - 0.06 * pa) * [1.15, 1, 0.86][T.final] * (T.cross === 0 ? 1.03 : 1),
+      long: [0.15, 0.27, 0.45][T.final],
+      head: Math.max(0.05, 0.25 + 0.07 * wi + (T.cross === 2 ? 0.08 : T.cross === 0 ? -0.08 : 0) + P.head * k),
+      counter: T.won === 0 ? 1 : T.won === 2 ? -0.5 : 0,
+      lineRisk: Math.max(0, li) * 0.05 + (T.trap ? 0.03 : 0) - P.cover * 0.03,
+      trap: T.trap ? 1.7 : 1,
+      foul: (1 + 0.08 * pr) * [0.75, 1, 1.35][T.tackle] * (T.lost === 0 ? 1.1 : 1) * (1 + P.foul),
+      card: [0.7, 1, 1.45][T.tackle] * (1 + 0.06 * pr),
+      tire: 1 + 0.05 * te + 0.07 * pr + 0.04 * en + (T.lost === 0 ? 0.06 : 0) + P.tire,
+      off: (1 + 0.12 * m) * (1 + P.off),
+      passes: 2 + (pa < 0 ? 1 : 0) - (pa > 1 ? 1 : 0),
+      acc: -2 * pa,
+      m: m
+    };
+  }
+  // the weights that decide who shoots, who creates and who heads (from roles and duties)
+  function roleW(sd, i, what) {
+    var rd = sd.roles && sd.roles[i]; if (!rd) return 1;
+    var R = ROLES[rd.r] || {}, dm = rd.d === "A" ? 1.2 : rd.d === "D" ? 0.8 : 1;
+    return what === "shot" ? (R.shot || 1) * dm : what === "ast" ? (R.ast || 1) : what === "head" ? (R.head || 1) : 1;
+  }
+
+  // ---- the tactics screen's instructions and roles
+  function tacticsPanels(L) {
+    var T = tacOf(L), slots = FORMATIONS[L.formation];
+    function sel(k) {
+      var I = TI[k];
+      return '<label class="ti"><span>' + I.n + '</span><select data-tacset="' + k + '" title="' + esc(I.d) + '">' + I.o.map(function (o, i) { return '<option value="' + i + '"' + (T[k] === i ? " selected" : "") + ">" + o + "</option>"; }).join("") + "</select></label>";
+    }
+    function tgroup(g, title) { return '<section class="panel ti-grp"><div class="ent-st">' + title + "</div>" + Object.keys(TI).filter(function (k) { return TI[k].g === g; }).map(sel).join("") + "</section>"; }
+    var head = '<section class="panel ti-top"><label class="ti"><span>Style</span><select data-tacpreset>' + Object.keys(PRESETS).map(function (k) { return '<option value="' + k + '"' + (T.preset === k ? " selected" : "") + ">" + PRESETS[k].n + "</option>"; }).join("") +
+      (T.preset === "custom" ? '<option value="custom" selected>Custom</option>' : "") + "</select></label>" +
+      '<label class="ti"><span>Mentality</span><select data-tacset="ment">' + MENT7.map(function (o, i) { return '<option value="' + i + '"' + (T.ment === i ? " selected" : "") + ">" + o + "</option>"; }).join("") + "</select></label>" +
+      '<p class="muted" style="margin:0;font-size:.8rem">Used in the text match and quick sim (DLS plays its own match). Hover or long-press an instruction for what it does.</p></section>';
+    var roles = '<section class="panel ti-roles"><div class="ent-st">Roles and duties</div><div class="table-wrap"><table><thead><tr><th>Pos</th><th>Player</th><th>Role</th><th>Duty</th><th>Suits him</th></tr></thead><tbody>' +
+      slots.map(function (s, i) {
+        var p = byId[L.xi[i]], rd = L.roles[i], R = ROLES[rd.r], list = POSROLES[s[0]] || ["CM"], f = roleFit(p, rd.r);
+        return "<tr><td><b>" + s[0] + "</b></td><td>" + esc(p ? p.name : "–") + '</td><td><select data-role="' + i + '">' + list.map(function (r) { return '<option value="' + r + '"' + (r === rd.r ? " selected" : "") + ">" + ROLES[r].n + "</option>"; }).join("") + "</select></td>" +
+          '<td><select data-duty="' + i + '">' + R.du.split("").map(function (d) { return '<option value="' + d + '"' + (d === rd.d ? " selected" : "") + ">" + DUTY[d] + "</option>"; }).join("") + "</select></td><td>" + stars(f.stars) + "</td></tr>";
+      }).join("") + "</tbody></table></div></section>";
+    return '<div class="ti-wrap">' + head + '<div class="ti-cols">' + tgroup("pos", "In possession") + tgroup("tr", "In transition") + tgroup("out", "Out of possession") + "</div>" + roles + "</div>";
+  }
+  function tacticsChange(t) {
+    var L = lineupOf(S.clubId), T = tacOf(L);
+    if (t.hasAttribute("data-tacset")) { var k = t.getAttribute("data-tacset"); T[k] = Math.max(0, Math.min(tacMax(k), +t.value)); T.preset = "custom"; }
+    else if (t.hasAttribute("data-tacpreset")) { var keep = { preset: t.value }; L.tac = Object.assign(presetTac(t.value), keep); }
+    else if (t.hasAttribute("data-role")) { var i = +t.getAttribute("data-role"), r = t.value; L.roles[i] = { r: r, d: ROLES[r].du.indexOf(L.roles[i].d) >= 0 ? L.roles[i].d : ROLES[r].du.indexOf("S") >= 0 ? "S" : ROLES[r].du[0] }; }
+    else if (t.hasAttribute("data-duty")) { L.roles[+t.getAttribute("data-duty")].d = t.value; }
+    else return false;
+    save(); render(); return true;
+  }
+
   // ------------------------------------------------------------ live text match (FM-style)
   // A minute-by-minute simulation with its own screen: commentary, a 2D pitch, stats, player
   // ratings and condition, tactics (mentality, tempo, pressing, formation), substitutions,
@@ -3432,7 +3631,7 @@ input[type="search"], select {
     var L = given || lineupOf(cid), bench = given && given.bench ? given.bench.slice() : benchOf(cid).slice(0, 9).map(function (p) { return p.id; }), cond = {};
     L.xi.concat(bench).forEach(function (id) { cond[id] = 100; });
     return { cid: cid, mine: mine, home: home, formation: L.formation, slots: L.xi.slice(), bench: bench, subs: 0, cond: cond, yc: {}, off: {}, played: L.xi.slice(),
-      tac: { ment: 2, tempo: 1, press: 1 }, boost: 0, shout: null, shoutTo: 0, shoutCd: 0, rat: {}, goals: 0,
+      tac: given && given.tac ? Object.assign({}, TAC_DEF, given.tac) : mine ? Object.assign({}, tacOf(L)) : null, roles: given && given.roles ? given.roles.slice() : mine ? tacOf(L) && L.roles.slice() : null, tp: null, boost: 0, shout: null, shoutTo: 0, shoutCd: 0, rat: {}, goals: 0,
       st: { shots: 0, ot: 0, xg: 0, corners: 0, fouls: 0, offsides: 0, saves: 0, yc: 0, rc: 0, poss: 0, passes: 0 } };
   }
   function lmMin() { return LM.min; }
@@ -3451,7 +3650,7 @@ input[type="search"], select {
     sd.slots.forEach(function (pid, i) {
       var g = group(slots[i][0]);
       if (pid == null) { lines[g].push(32); return; }
-      var p = byId[pid], eff = p.ovr + fit(p.pos, slots[i][0], p.alt);
+      var p = byId[pid], eff = p.ovr + fit(p.pos, slots[i][0], p.alt) + (sd.roles && sd.roles[i] ? roleFit(p, sd.roles[i].r).pts : 0);
       eff *= 0.8 + 0.2 * (sd.cond[pid] / 100);
       lines[g].push(eff);
     });
@@ -3471,9 +3670,10 @@ input[type="search"], select {
   function lmSur(id) { return surname(id); }
   function lmRate(id, d) { if (id == null) return; var sd = LM.h.played.indexOf(id) >= 0 ? LM.h : LM.a; sd.rat[id] = (sd.rat[id] || 0) + d; }
   // weighted pick of one of a side's players on the pitch
+  function lmTP(sd) { if (!sd.tp) sd.tp = tacProfile(sd.tac, sd.roles, sd.slots); return sd.tp; }
   function lmPick(sd, wf, except) {
     var slots = FORMATIONS[sd.formation], ps = [], ws = [];
-    sd.slots.forEach(function (pid, i) { if (pid == null || pid === except) return; var w = wf(byId[pid], group(slots[i][0]), slots[i][0]); if (w > 0) { ps.push(pid); ws.push(w); } });
+    sd.slots.forEach(function (pid, i) { if (pid == null || pid === except) return; var w = wf(byId[pid], group(slots[i][0]), slots[i][0], i); if (w > 0) { ps.push(pid); ws.push(w); } });
     return ps.length ? pickW(ps, ws, LM.r) : null;
   }
   function lmFeed(kind, text, side) {
@@ -3508,6 +3708,7 @@ input[type="search"], select {
     lmInit2d();
     LM.opp = lmOther(LM.me);
     if (!LM.opp.human) LM.opp.boost = (lmRand() - 0.5) * 0.04;
+    [LM.h, LM.a].forEach(function (sd) { if (!sd.tac) sd.tac = aiTactic(sd.cid, lmOther(sd).cid); if (!sd.roles || sd.roles.length !== FORMATIONS[sd.formation].length) sd.roles = defaultRoles(sd.formation); sd.tp = null; });
     lmFeed("whistle", "Welcome to " + (club(fx.home).stadium || club(fx.home).name) + " for " + club(fx.home).name + " against " + club(fx.away).name + ".");
     LM.talk = lmTalk("pre");
     if (LM.remote) LM.rtalk = lmTalk("pre", LM.rside);
@@ -3671,8 +3872,8 @@ input[type="search"], select {
     LM.acts = [];
     var H = lmUnits(LM.h), A = lmUnits(LM.a), r = LM.r, m = LM.min;
     [LM.h, LM.a].forEach(function (sd) { if (!sd.mine && !sd.human) lmAi(sd, false); });
-    var mh = LM.h.tac.ment - 2, ma = LM.a.tac.ment - 2;
-    var possH = 0.5 + (H.mf - A.mf) / 90 + (LM.h.tac.press - LM.a.tac.press) * 0.025 - (mh - ma) * 0.012 + (lmOn(LM.h).length - lmOn(LM.a).length) * 0.03;
+    var TH = lmTP(LM.h), TA = lmTP(LM.a);
+    var possH = 0.5 + (H.mf - A.mf) / 90 + (TH.poss - TA.poss) * 0.6 + (lmOn(LM.h).length - lmOn(LM.a).length) * 0.03;
     possH = Math.max(0.26, Math.min(0.74, possH + (r() - 0.5) * 0.08));
     LM.h.st.poss += possH; LM.a.st.poss += 1 - possH;
     var hasH = r() < possH, att = hasH ? LM.h : LM.a, def = hasH ? LM.a : LM.h;
@@ -3680,9 +3881,9 @@ input[type="search"], select {
     var momentum = 0;
     // chances for both sides this minute (the side on the ball more likely)
     [[LM.h, LM.a, H, A, possH], [LM.a, LM.h, A, H, 1 - possH]].forEach(function (x) {
-      var s = x[0], o = x[1], U = x[2], V = x[3], share = x[4], ms = s.tac.ment - 2, mo = o.tac.ment - 2;
+      var s = x[0], o = x[1], U = x[2], V = x[3], share = x[4], ts = lmTP(s), to = lmTP(o);
       var attack = U.fw * 0.55 + U.mf * 0.45, defence = V.df * 0.7 + V.gk * 0.3;
-      var rate = 0.135 * Math.pow(share / 0.5, 0.7) * Math.exp((attack - defence) / 35) * (1 + 0.12 * ms) * (1 + 0.06 * mo) * (1 + 0.06 * (s.tac.tempo - 1));
+      var rate = 0.135 * Math.pow(share / 0.5, 0.55) * Math.exp((attack - defence) / 35) * ts.rate * to.concede;
       if (o.shout === "focus" && m < o.shoutTo) rate *= 0.9;
       if (m > 80 && lmGd(s) < 0) rate *= 1.15;   // chasing the game late on
       rate = Math.min(0.42, rate);
@@ -3692,9 +3893,9 @@ input[type="search"], select {
     LM.mom.push(Math.max(-1, Math.min(1, momentum * 3)));
     // fouls, cards, offsides
     [LM.h, LM.a].forEach(function (s) {
-      var fr = 0.115 * (1 + 0.2 * (s.tac.press - 1)) * (s.shout === "stuck" && m < s.shoutTo ? 1.35 : 1) * (s.shout === "calm" && m < s.shoutTo ? 0.75 : 1);
+      var fr = 0.115 * lmTP(s).foul * (s.shout === "stuck" && m < s.shoutTo ? 1.35 : 1) * (s.shout === "calm" && m < s.shoutTo ? 0.75 : 1);
       if (r() < fr) lmFoul(s, lmOther(s));
-      if (r() < 0.022 * (1 + 0.15 * (s.tac.ment - 2))) {
+      if (r() < 0.022 * lmTP(s).off * lmTP(lmOther(s)).trap) {
         var off = lmPick(s, function (p, g) { return g === "FW" ? 3 : g === "MF" ? 0.6 : 0; });
         s.st.offsides++;
         if (off != null && r() < 0.6) lmFeed("info", lmSur(off) + " is caught offside.", s === LM.h ? "h" : "a");
@@ -3709,25 +3910,30 @@ input[type="search"], select {
       s.slots.forEach(function (pid, i) {
         if (pid == null) return;
         var p = byId[pid], sta = p.attrs[2] || 65, gk = slots[i][0] === "GK";
-        var loss = (0.3 + 0.06 * (s.tac.tempo - 1) + 0.09 * (s.tac.press - 1)) * (1.25 - sta / 160) * (gk ? 0.35 : 1);
+        var loss = 0.3 * lmTP(s).tire * (1.25 - sta / 160) * (gk ? 0.35 : 1);
         s.cond[pid] = Math.max(20, s.cond[pid] - loss);
-        s.st.passes += 2 + (s.tac.tempo === 0 ? 1 : 0);
+        s.st.passes += lmTP(s).passes;
       });
     });
   }
   function lmShot(s, o, attack, defence, U, V) {
     var r = LM.r, side = s === LM.h ? "h" : "a", kind, xg;
-    var base = 0.075 * Math.exp((attack - defence) / 30), roll = r();
+    var base = 0.075 * Math.exp((attack - defence) / 30), roll = r(), ts = lmTP(s), to = lmTP(o);
+    // big chances: countering an attacking side, and quick forwards against a high line
+    var pace = 0; lmOn(s).forEach(function (id) { var g = group(byId[id].pos); if (g === "FW") pace = Math.max(pace, byId[id].attrs[0] || 60); });
+    var bigP = 0.10 + (ts.counter > 0 ? 0.03 * Math.max(0, to.m) : 0) + to.lineRisk * Math.max(0, (pace - 70) / 12);
+    var longP = ts.long * 0.95;
     if (roll < 0.022) { kind = "pen"; xg = 0.78; }
-    else if (roll < 0.122) { kind = "big"; xg = 0.25 + r() * 0.25; }
-    else if (roll < 0.392) { kind = "long"; xg = 0.02 + r() * 0.04; }
+    else if (roll < 0.022 + bigP) { kind = "big"; xg = 0.25 + r() * 0.25; }
+    else if (roll < 0.022 + bigP + longP) { kind = "long"; xg = 0.02 + r() * 0.04; }
     else { kind = "open"; xg = Math.min(0.32, base * (0.5 + r() * 1.3)); }
+    if (kind !== "pen") xg *= ts.xg;
     if (o.shout === "focus" && LM.min < o.shoutTo && kind === "big") xg *= 0.85;
-    var header = kind === "open" && r() < 0.25;
+    var header = kind === "open" && r() < ts.head;
     var shooter = kind === "pen" ? lmPick(s, function (p, g) { return g === "GK" ? 0 : Math.pow((p.attrs[6] || 50) / 60, 4) * (g === "FW" ? 2 : 1); }) :
-      lmPick(s, function (p, g) { var a = header ? p.attrs[9] : p.attrs[6]; var base2 = { GK: 0, DF: header ? 0.9 : 0.25, MF: kind === "long" ? 1.8 : 1.1, FW: kind === "long" ? 1.2 : 3.4 }[g]; return base2 * Math.pow((a || 50) / 60, 2) * (s.cond[p.id] / 100); });
+      lmPick(s, function (p, g, pos, i) { var a = header ? p.attrs[9] : p.attrs[6]; var base2 = { GK: 0, DF: header ? 0.9 : 0.25, MF: kind === "long" ? 1.8 : 1.1, FW: kind === "long" ? 1.2 : 3.4 }[g]; return base2 * Math.pow((a || 50) / 60, 2) * (s.cond[p.id] / 100) * roleW(s, i, header ? "head" : "shot"); });
     if (shooter == null) return;
-    var assister = kind === "pen" || kind === "long" ? null : (r() < 0.75 ? lmPick(s, function (p, g) { var a = header ? p.attrs[8] : p.attrs[7]; return g === "GK" ? 0 : Math.pow((a || 50) / 60, 2) * (g === "FW" ? 1 : g === "MF" ? 1.4 : header ? 1.2 : 0.5); }, shooter) : null);
+    var assister = kind === "pen" || kind === "long" ? null : (r() < 0.75 ? lmPick(s, function (p, g, pos, i) { var a = header ? p.attrs[8] : p.attrs[7]; return g === "GK" ? 0 : Math.pow((a || 50) / 60, 2) * (g === "FW" ? 1 : g === "MF" ? 1.4 : header ? 1.2 : 0.5) * roleW(s, i, "ast"); }, shooter) : null);
     var gkId = o.slots[0], gk = gkId != null ? byId[gkId] : null, gkr = gk ? (gk.ovr + 5) : 55;
     var fin = byId[shooter].attrs[header ? 9 : 6] || 55;
     var pGoal = Math.max(0.01, Math.min(0.92, xg * (1 + (fin - 70) / 85) * (1 - (gkr - 72) / 110)));
@@ -3781,12 +3987,12 @@ input[type="search"], select {
     if (who == null) return;
     s.st.fouls++;
     LM.acts.push({ t: "foul", side: side, p: who });
-    var card = 0.11 * (s.shout === "stuck" && LM.min < s.shoutTo ? 1.6 : 1) * (s.shout === "calm" && LM.min < s.shoutTo ? 0.6 : 1) * (1 + 0.25 * (s.tac.press - 1));
+    var card = 0.11 * lmTP(s).card * (s.shout === "stuck" && LM.min < s.shoutTo ? 1.6 : 1) * (s.shout === "calm" && LM.min < s.shoutTo ? 0.6 : 1) * 1;
     if (LM.talkTone && LM.talkTone[side] === "Aggressive") card *= 1.2;
     var u = r();
     if (u < 0.003 || (u < card * 0.8 && s.yc[who])) {
       // straight red, or a second yellow
-      s.off[who] = true; s.st.rc++; if (s.yc[who]) s.st.yc++;
+      s.off[who] = true; s.st.rc++; if (s.yc[who]) s.st.yc++; s.tp = null;
       var i = s.slots.indexOf(who); s.slots[i] = null;
       lmRate(who, -1.6);
       LM.events.push({ min: evMin(), side: side, type: "rc", p: who });
@@ -3823,8 +4029,10 @@ input[type="search"], select {
   function lmAi(sd, why) {
     var m = LM.min, gd = lmGd(sd), now = why === "ht" && LM.r() < 0.4;
     if (m >= 60 || why) {
-      sd.tac.ment = gd < 0 ? (m >= 75 ? 4 : 3) : gd > 0 ? (m >= 80 ? 0 : m >= 70 ? 1 : 2) : (m >= 75 ? 3 : 2);
-      if (lmOn(sd).length < 11 && gd >= 0) sd.tac.ment = Math.min(sd.tac.ment, 1);
+      var base3 = sd.tac.base != null ? sd.tac.base : (sd.tac.base = sd.tac.ment);
+      sd.tac.ment = gd < 0 ? Math.max(base3, m >= 75 ? 6 : 5) : gd > 0 ? Math.min(base3, m >= 80 ? 1 : m >= 70 ? 2 : 3) : (m >= 75 ? Math.max(base3, 4) : base3);
+      if (lmOn(sd).length < 11 && gd >= 0) sd.tac.ment = Math.min(sd.tac.ment, 2);
+      sd.tp = null;
     }
     if (sd.subs >= 5 || !sd.bench.length) return;
     var due = now || (!why && (m === 58 || m === 67 || m === 75 || m === 82));
@@ -3857,7 +4065,7 @@ input[type="search"], select {
       pool.forEach(function (p) { var v = p.ovr + fit(p.pos, slots[i][0], p.alt); if (v > sc) { sc = v; best = p; } });
       xi[i] = best.id; pool.splice(pool.indexOf(best), 1);
     });
-    sd.formation = f; sd.slots = xi;
+    sd.formation = f; sd.slots = xi; sd.roles = defaultRoles(f); sd.tp = null;
     lmFeed("info", club(sd.cid).name + " switch to a " + f + ".", sd === LM.h ? "h" : "a");
   }
 
@@ -3879,7 +4087,7 @@ input[type="search"], select {
     }
     var ratings = Object.assign({}, finalRatings(h, h.goals, a.goals), finalRatings(a, a.goals, h.goals));
     var tp = h.st.poss + a.st.poss || 1, poss = Math.round(h.st.poss * 100 / tp);
-    function acc(sd, U) { return Math.max(60, Math.min(93, Math.round(70 + (U.mf - 60) * 0.45 + (sd.tac.tempo === 0 ? 3 : sd.tac.tempo === 2 ? -3 : 0)))); }
+    function acc(sd, U) { return Math.max(60, Math.min(93, Math.round(70 + (U.mf - 60) * 0.45 + lmTP(sd).acc))); }
     var stats = {
       possession: [poss, 100 - poss], shots: [h.st.shots, a.st.shots], onTarget: [h.st.ot, a.st.ot], xg: [+h.st.xg.toFixed(2), +a.st.xg.toFixed(2)],
       corners: [h.st.corners, a.st.corners], fouls: [h.st.fouls, a.st.fouls], passAcc: [acc(h, lmUnits(h)), acc(a, lmUnits(a))], saves: [h.st.saves, a.st.saves],
@@ -4305,7 +4513,7 @@ input[type="search"], select {
     return tabs + '<div class="lm-pl">' + rows.map(function (x) {
       var id = x[0], c = Math.round(sd.cond[id]), v = rt(id);
       return '<div class="lm-p"><span class="lm-pos">' + x[1] + '</span><span class="lm-pn">' + esc(lmSur(id)) + (sd.yc[id] ? ' <i class="lm-yc"></i>' : "") + '</span><span class="lm-cond"><i style="width:' + c + "%;background:" + (c > 70 ? "#4cc86a" : c > 50 ? "#e0b84a" : "#e0605a") + '"></i></span><b class="lm-r" style="color:' + (v >= 7.3 ? "#4cc86a" : v < 6 ? "#e0605a" : "#e9eef0") + '">' + v.toFixed(1) + "</b></div>";
-    }).join("") + '<div class="lm-tac">' + sd.formation + " · " + MENT[sd.tac.ment] + "</div></div>";
+    }).join("") + '<div class="lm-tac">' + sd.formation + " · " + MENT7[sd.tac.ment] + (sd.tac.preset && PRESETS[sd.tac.preset] ? " · " + PRESETS[sd.tac.preset].n : "") + "</div></div>";
   }
   function lmTalkHtml() {
     var t = LM.talk, title = t.kind === "pre" ? "Pre-match team talk" : t.kind === "ht" ? "Half-time team talk" : "Full-time team talk";
@@ -4325,8 +4533,9 @@ input[type="search"], select {
   function lmPanelHtml() {
     var p = LM.panel, sd = LM.me, html;
     if (p === "tactics") {
-      function seg(key, names) { return '<div class="lm-segrow"><span>' + { ment: "Mentality", tempo: "Tempo", press: "Pressing" }[key] + '</span><div class="lm-seg">' + names.map(function (n, i) { return '<button class="lm-b' + (sd.tac[key] === i ? " on" : "") + '" data-lm="tac:' + key + ":" + i + '">' + n + "</button>"; }).join("") + "</div></div>"; }
-      html = "<h3>Tactics</h3>" + seg("ment", MENT) + seg("tempo", TEMPO) + seg("press", PRESS) +
+      function seg(key, names) { return '<div class="lm-segrow"><span>' + (key === "ment" ? "Mentality" : TI[key].n) + '</span><div class="lm-seg">' + names.map(function (n, i) { return '<button class="lm-b' + (sd.tac[key] === i ? " on" : "") + '" data-lm="tac:' + key + ":" + i + '">' + n + "</button>"; }).join("") + "</div></div>"; }
+      html = "<h3>Tactics</h3>" + '<div class="lm-segrow"><span>Style</span><div class="lm-seg">' + Object.keys(PRESETS).map(function (k) { return '<button class="lm-b' + (sd.tac.preset === k ? " on" : "") + '" data-lm="preset:' + k + '">' + PRESETS[k].n + "</button>"; }).join("") + "</div></div>" +
+        seg("ment", MENT7) + ["pass", "tempo", "width", "final", "lost", "won", "line", "press", "tackle"].map(function (k) { return seg(k, TI[k].o); }).join("") +
         '<div class="lm-segrow"><span>Formation</span><div class="lm-seg">' + Object.keys(FORMATIONS).map(function (f) { return '<button class="lm-b' + (sd.formation === f ? " on" : "") + '" data-lm="form:' + f + '">' + f + "</button>"; }).join("") + "</div></div>" +
         '<p class="lm-note">Attacking makes more chances for you and leaves more space behind. Higher tempo and more pressing tire players faster.</p>';
     } else if (p === "subs") {
@@ -4359,7 +4568,10 @@ input[type="search"], select {
     if (k[0] === "panel") { LM.panel = k[1]; LM.subOut = null; clearTimeout(lmTimer); return lmPaint(); }
     if (k[0] === "close") { LM.panel = null; lmPaint(); return lmRun(); }
     if (k[0] === "skip") { LM.panel = null; lmSkip(); lmPaint(); return; }
-    if (k[0] === "tac") { sd.tac[k[1]] = +k[2]; lmFeed("info", "You change " + { ment: "the mentality to ", tempo: "the tempo to ", press: "the pressing to " }[k[1]] + ({ ment: MENT, tempo: TEMPO, press: PRESS }[k[1]][+k[2]]).toLowerCase() + ".", sd === LM.h ? "h" : "a"); return lmPaint(); }
+    if (k[0] === "tac" && (k[1] === "ment" || TI[k[1]])) {
+      sd.tac[k[1]] = Math.max(0, Math.min(tacMax(k[1]), +k[2] || 0)); sd.tac.preset = "custom"; sd.tac.base = null; sd.tp = null;
+      lmFeed("info", "You change " + (k[1] === "ment" ? "the mentality" : TI[k[1]].n.toLowerCase()) + ": " + (k[1] === "ment" ? MENT7 : TI[k[1]].o)[sd.tac[k[1]]].toLowerCase() + ".", sd === LM.h ? "h" : "a"); return lmPaint(); }
+    if (k[0] === "preset" && PRESETS[k[1]]) { sd.tac = presetTac(k[1]); sd.tp = null; lmFeed("info", "You switch to " + PRESETS[k[1]].n + ".", sd === LM.h ? "h" : "a"); return lmPaint(); }
     if (k[0] === "form") { if (sd.formation !== k[1]) lmFormation(sd, k[1]); return lmPaint(); }
     if (k[0] === "subout") { LM.subOut = +k[1]; return lmPaint(); }
     if (k[0] === "subin") { if (LM.subOut != null && sd.subs < 5) { lmSub(sd, LM.subOut, +k[1]); LM.subOut = null; } return lmPaint(); }
@@ -5554,7 +5766,7 @@ input[type="search"], select {
     if (ev.key === "Escape") { closeModal(); closeDrawer(); }
   });
   document.addEventListener("change", function (ev) {
-    if (ev.target.id === "fsel") { var L = lineupOf(S.clubId); L.formation = ev.target.value; L.xi = autoXI(S.clubId, L.formation); ui.sel = null; save(); render(); }
+    if (ev.target.id === "fsel") { var L = lineupOf(S.clubId); L.formation = ev.target.value; L.xi = autoXI(S.clubId, L.formation); L.roles = defaultRoles(L.formation); ui.sel = null; save(); render(); }
     if (ev.target.id === "tpos") { ui.filter.pos = ev.target.value; render(); }
     if (ev.target.id === "tlg") { ui.filter.league = ev.target.value; render(); }
   });
