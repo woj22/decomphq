@@ -372,6 +372,32 @@ button.link { appearance: none; background: none; border: 0; padding: 0; font: i
 .np-skip { display: inline-flex; align-items: center; gap: 5px; }
 .lm-b .skip-ic { margin-left: 4px; }
 .np-skip:hover { background: rgba(255,255,255,.2); }
+/* ---- links and FM-style pages */
+a.ln { color: inherit; text-decoration: none; cursor: pointer; border-bottom: 1px dotted rgba(var(--accent-rgb), .55); }
+a.ln:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.ent-head { align-items: center; }
+.ent-t { display: grid; gap: 2px; min-width: 0; }
+.ent-t h2 { display: flex; align-items: center; gap: 8px; margin: 0; }
+.ptabs { margin-left: auto; }
+.ent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; align-items: start; }
+.ent-sec { padding: 12px 14px; display: grid; gap: 6px; }
+.ent-st { font-size: .74rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.kv { display: grid; grid-template-columns: minmax(110px, 40%) 1fr; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--line); font-size: .88rem; }
+.kv span { color: var(--muted); }
+.kp { display: grid; grid-template-columns: auto 1fr auto auto; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); font-size: .88rem; }
+.g-row { display: grid; grid-template-columns: 92px 18px 1fr auto auto; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); font-size: .86rem; }
+.fx-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--line); }
+.club-cell.r { justify-content: flex-end; }
+.round-nav { display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 8px; }
+.ent-badge, .ent-flag { display: grid; place-items: center; padding: 6px 0 10px; }
+.ent-flag, .flag-big { font-size: 64px; line-height: 1; }
+.flag-big { font-size: 1.6rem; }
+.ent-big { font-size: 2.6rem; font-weight: 800; text-align: center; line-height: 1.1; }
+.ent-next { display: flex; gap: 14px; align-items: center; justify-content: center; }
+.ent-club { grid-template-columns: auto 1fr; align-items: center; gap: 12px; }
+.stars { color: #f2c94c; letter-spacing: 1px; white-space: nowrap; }
+.stars i { font-style: normal; color: var(--line); }
+.kv .stars, .kp .stars { color: #f2c94c; }
 /* the other online manager's view: positions arrive ~9 times a second, glide between them */
 .lm.rv .lm-dot, .lm.rv .lm-ball, .lm.rv .lm-shadow { transition: left .12s linear, top .12s linear; }
 .btn.cont.ready { background: var(--panel-2); color: var(--fg); border-color: var(--accent); }
@@ -783,7 +809,7 @@ input[type="search"], select {
     return rounds;
   }
   function newSeason(clubId, seed) {
-    var st = { v: 1, clubId: clubId, week: 0, seed: seed, schedule: {}, results: {}, lineups: {}, pstats: {}, news: [] };
+    var st = { v: 1, wv: 2, clubId: clubId, week: 0, seed: seed, schedule: {}, results: {}, lineups: {}, pstats: {}, news: [] };
     var r = rng(seed);
     D.leagues.forEach(function (lg) {
       var ids = lg.clubs.slice().sort(function () { return r() - 0.5; });
@@ -1591,7 +1617,21 @@ input[type="search"], select {
     slovenia_2snl: { rate: 0.2, min: 7000, tv: 0.25, gate: 0.2, tier: 1 }
   };
   function lgFin(cid) { return LG_FIN[club(cid).league] || LG_FIN.prvaliga; }
-  function estWage(p, cid) { var f = lgFin(cid || p.club); return Math.round(Math.max(f.min, (p.value || 50000) * f.rate) / 52 / 10) * 10; }
+  function estWage(p, cid) {
+    if (S && S.wv >= 2) return Math.round(realWage(p, cid || p.club) / 10) * 10;
+    var f = lgFin(cid || p.club); return Math.round(Math.max(f.min, (p.value || 50000) * f.rate) / 52 / 10) * 10;
+  }
+  // wages that follow ability and the club's stature (careers from v107 on): each league has
+  // a baseline for a player of its typical level (Premier League 70: about EUR 24K a week;
+  // PrvaLiga 58: about EUR 1.8K), rising about 13% a rating point; big clubs pay more, young
+  // and veteran players less. Van Dijk at Liverpool comes out near EUR 220K a week.
+  var WAGE_LG = { premier_league: [24000, 70], la_liga: [17000, 70], prvaliga: [1800, 58], slovenia_2snl: [450, 52] };
+  function realWage(p, cid) {
+    var lg = cid === "free" || !D.clubs[cid] ? "prvaliga" : club(cid).league, b = WAGE_LG[lg] || WAGE_LG.prvaliga, a = p.age || 25;
+    var w = b[0] * Math.exp(0.124 * (p.ovr - b[1])) * (0.8 + 0.09 * (D.clubs[cid] ? clubRep(cid) : 1));
+    if (a <= 20) w *= 0.55; else if (a <= 22) w *= 0.75; else if (a >= 34) w *= 0.8; else if (a >= 32) w *= 0.9;
+    return Math.max(lg === "slovenia_2snl" ? 150 : lg === "prvaliga" ? 400 : 3000, w);
+  }
   function contractOf(p) {
     var c = S.contracts && S.contracts[p.id];
     if (c) return c;
@@ -1659,11 +1699,15 @@ input[type="search"], select {
     if (his > mine && p.ovr > (best ? best.ovr : 60) + 12) return "no";
     // nobody far better than everyone in our league comes to play in it
     if (p.ovr > leagueTop(myLeague().id) + 4) return "no";
+    // good players don't drop to a clearly smaller club
+    if (p.club !== "free" && D.clubs[p.club] && p.ovr >= 78 && clubRep(S.clubId) < clubRep(p.club) - 0.8) return "no";
     return "yes";
   }
   function wageDemand(p, renewal) {
     var cur = contractOf(p).wage, here = estWage(p, S.clubId), age = p.age || 25;
-    var base = renewal ? Math.max(cur, here) * (1.05 + Math.max(0, potOf(p) - p.ovr) * 0.01) : Math.max(here, cur * (lgFin(p.club).tier > lgFin(S.clubId).tier ? 1.15 : 1.05));
+    // a move: at least a rise on what he earns now, more for a step down in stature
+    var step = p.club === "free" || !D.clubs[p.club] ? 1 : clubRep(S.clubId) < clubRep(p.club) - 0.3 ? 1.3 : 1.1;
+    var base = renewal ? Math.max(cur, here) * (1.05 + Math.max(0, potOf(p) - p.ovr) * 0.01) : Math.max(here, cur * (lgFin(p.club).tier > lgFin(S.clubId).tier ? 1.15 : step));
     if (renewal && yearsLeft(p) < 1) base *= 1.1;
     if (age >= 32) base *= 0.9;
     return Math.round(base / 10) * 10;
@@ -1749,8 +1793,9 @@ input[type="search"], select {
         else if (o.pct < need) { o.status = "rejected"; o.why = rank <= 11 ? club(p.club).name + " see him as a first-team regular." : club(p.club).name + " want at least " + need + "% of his wages covered."; }
         else o.status = "accepted";
       } else {
-        var ask = askingPrice(p);
-        if (o.fee >= ask) o.status = "accepted";
+        var ask = askingPrice(p), sell = sellStance(p, S.clubId);
+        if (sell.no) { o.status = "rejected"; o.why = sell.why; }
+        else if ((ask = Math.round(ask * sell.mult / 10000) * 10000) && o.fee >= ask) o.status = "accepted";
         else if (o.fee >= ask * 0.78 && !o.countered) { o.status = "counter"; o.counter = ask; }
         else { o.status = "rejected"; o.why = club(p.club).name + " value him much higher."; }
       }
@@ -1804,6 +1849,20 @@ input[type="search"], select {
     ["valencia", "villarreal"], ["valencia", "levante"], ["deportivo", "celta-vigo"], ["olimpija-ljubljana", "maribor"]];
   function rivals(a, b) { return RIVALS.some(function (r) { return (r[0] === a && r[1] === b) || (r[0] === b && r[1] === a); }); }
   // the best young stars at the biggest clubs: only for enormous money, and rarely
+  // will his club sell him to this buyer? Big clubs keep their key men (top four of the squad):
+  // not to a league rival of similar stature at all, and elsewhere only to a bigger club for a
+  // big premium; good players (80+) cost extra when they would strengthen a direct rival
+  function sellStance(p, buyer) {
+    if (p.club === "free" || !D.clubs[p.club]) return { mult: 1 };
+    var sr = clubRep(p.club), br = clubRep(buyer), same = club(p.club).league === club(buyer).league, key = squadRank(p) <= 4;
+    if (key && sr >= 3.5) {
+      if (same && br >= sr - 1.2) return { no: true, why: club(p.club).name + " won't sell one of their key players to a league rival." };
+      if (br < sr + 0.3) return { no: true, why: club(p.club).name + " see " + p.name + " as a key player and won't let him go." };
+      return { mult: 1.8 };
+    }
+    if (same && p.ovr >= 80 && br >= sr - 0.5) return { mult: 1.5 };
+    return { mult: 1 };
+  }
   function untouchable(p) { return p.club !== "free" && lgFin(p.club).tier >= 4 && p.ovr >= 86 && (p.age || 25) <= 26; }
   function leagueTop(lid) { var best = 0; D.leagues.find(function (l) { return l.id === lid; }).clubs.forEach(function (c) { (clubPlayers[c] || []).forEach(function (p) { if (p.ovr > best) best = p.ovr; }); }); return best; }
   function xiAvg(cid) { var ps = (clubPlayers[cid] || []).slice().sort(function (a, b) { return b.ovr - a.ovr; }).slice(0, 11); return ps.length ? ps.reduce(function (t, p) { return t + p.ovr; }, 0) / ps.length : 50; }
@@ -1860,13 +1919,14 @@ input[type="search"], select {
       var pool = D.players.filter(function (p) {
         if (p.club === buyer || p.club === S.clubId || isHuman(p.club) || gone(p) || group(p.pos) !== need) return false;
         if (p.club !== "free" && rivals(p.club, buyer)) return false;
+        if (p.club !== "free" && D.clubs[p.club] && sellStance(p, buyer).no) return false;
         if (S.loans && S.loans[p.id]) return false;
         if (S.signed && S.signed[p.id] != null && d - S.signed[p.id] < 120) return false;
         var st = p.club === "free" ? bt : lgFin(p.club).tier;
         if (Math.abs(st - bt) > 2) return false;
         if (p.ovr < avg - 1 || p.ovr > avg + 6) return false;                 // an upgrade, but not absurd
         if (st > bt && p.ovr > topOf(club(buyer).league) + 3) return false;  // won't drop far down
-        var fee = p.club === "free" ? 0 : askingPrice(p) * (untouchable(p) ? 3 : 1);
+        var fee = p.club === "free" ? 0 : askingPrice(p) * (untouchable(p) ? 3 : 1) * sellStance(p, buyer).mult;
         return fee <= budget;
       });
       if (!pool.length) continue;
@@ -1876,7 +1936,7 @@ input[type="search"], select {
       if (p.ovr >= 84 && r() > 0.35) continue;
       if ((p.age || 25) >= 33 && r() > 0.3) continue;
       if (p.club !== "free" && squadRank(p) <= 3 && r() > 0.25) continue;     // clubs keep their best
-      var from = p.club, fee = from === "free" ? 0 : Math.round(askingPrice(p) * (untouchable(p) ? 3 : 1) * (0.95 + r() * 0.15) / 10000) * 10000;
+      var from = p.club, fee = from === "free" ? 0 : Math.round(askingPrice(p) * (untouchable(p) ? 3 : 1) * sellStance(p, buyer).mult * (0.95 + r() * 0.15) / 10000) * 10000;
       S.ai[buyer] = aiBal(buyer) - fee;
       if (from !== "free") S.ai[from] = aiBal(from) + fee;
       (S.signed = S.signed || {})[p.id] = d;
@@ -2457,7 +2517,7 @@ input[type="search"], select {
     var stars = (clubPlayers[S.clubId].slice().sort(function (a, b) { return b.ovr - a.ovr; }).slice(0, 15).reduce(function (s, p) { return s + p.ovr; }, 0) / 15).toFixed(0);
     return '<header class="panel topbar">' +
       '<button class="icon-btn" data-act="drawer" aria-label="Menu">' + icon("menu") + "</button>" +
-      '<div class="club-id">' + badge(S.clubId, 30) + '<div><div class="nm">' + esc(c.name) + '</div><div class="lg">' + leagueLogo(lg.id, 12) + esc(lg.name) + " · " + seasonLabel() + "</div></div></div>" +
+      '<div class="club-id">' + badge(S.clubId, 30) + '<div><div class="nm">' + clubLink(S.clubId) + '</div><div class="lg">' + leagueLogo(lg.id, 12) + leagueLink(lg.id) + " · " + seasonLabel() + "</div></div></div>" +
       '<div class="grow"></div><div class="chips">' +
       '<button class="hide-sm chip-link" data-go="finances" title="Transfer budget (finances)"><span class="coin"></span>' + money(S.fin ? S.fin.tb : 0) + "</button>" +
       '<span class="hide-sm" title="Squad strength (top 15 average)">★ ' + stars + "</span>" +
@@ -2481,7 +2541,9 @@ input[type="search"], select {
     if (ui.rosterPending) syncRosters();
     if (ui.screen === "live") { if (LM && LM.h) { app.innerHTML = viewLive(); lmPaint(); return; } if (!LM) ui.screen = "home"; else { app.innerHTML = '<main class="screen"><p class="muted">Connecting to the match…</p></main>'; return; } }
     if (S.online && S.online.waitW != null && ui.screen !== "report") { app.innerHTML = topbar() + '<main class="screen" id="screen">' + renderWaitRound() + "</main>"; return; }
-    var html = topbar() + '<main class="screen" id="screen">' + ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts, europe: viewEurope, history: viewHistory, relationships: viewRelationships }[ui.screen] || viewHome)() + "</main>";
+    var body = ({ home: viewHome, squad: viewSquad, player: viewPlayer, tactics: viewTactics, fixtures: viewFixtures, table: viewTable, stats: viewStats, transfers: viewTransfers, training: viewTraining, report: viewReport, prematch: viewPrematch, kickoff: viewKickoff, inbox: viewInbox, calendar: viewCalendar, social: viewSocial, press: viewPress, manager: viewManager, finances: viewFinances, board: viewBoard, deals: viewDeals, contracts: viewContracts, europe: viewEurope, history: viewHistory, relationships: viewRelationships, club: viewClub, league: viewLeague, nation: viewNation, coach: viewCoach }[ui.screen] || viewHome)();
+    if (!/^(tactics|manager|press|kickoff|prematch)$/.test(ui.screen)) { try { body = linkify(body); } catch (e) {} }
+    var html = topbar() + '<main class="screen" id="screen">' + body + "</main>";
     app.innerHTML = html;
     window.scrollTo(0, 0);
   }
@@ -2544,12 +2606,12 @@ input[type="search"], select {
     var vals = order.map(function (i) { return p.attrs[i]; });
     return screenHead(p.name, '<button class="btn ghost" data-back-player>Back</button>') +
       '<div class="profile"><section class="panel profile-head"><div style="display:flex;gap:12px;align-items:center">' + (faceImg(p, 88) || (askFaces([p]) || faceAsked[p.dls] ? '<div class="face face-wait" title="Rendering the in-game face…">…</div>' : "")) + badge(p.club, 44) +
-      '<div><div class="shirt">' + (p.shirt || "–") + '</div><div class="muted">' + esc(c.name) + "</div></div>" +
+      '<div><div class="shirt">' + (p.shirt || "–") + '</div><div class="muted">' + (p.club === "free" ? "Free agent" : clubLink(p.club) + " · " + leagueLink(c.league)) + "</div></div>" +
       '<div style="margin-left:auto;display:grid;justify-items:center;gap:2px"><span class="ovr" style="font-size:1.4rem;padding:6px 12px;background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span><span class="muted" style="font-size:.75rem">OVR</span></div>' +
       '<div style="display:grid;justify-items:center;gap:2px"><span class="ovr pot" style="font-size:1.4rem;padding:6px 12px">' + potOf(p) + '</span><span class="muted" style="font-size:.75rem">POT</span></div></div>' +
       '<div class="facts">' +
       fact("Position", p.position + (p.alt && p.alt.length ? " (also " + p.alt.join(", ") + ")" : "")) + fact("Age", p.age + (p.dob ? " (" + p.dob.split("-").reverse().join("/") + ")" : "")) +
-      fact("Nationality", p.nat + (p.nat2 ? " / " + p.nat2 : "")) + fact("Height", p.height ? p.height + " cm" : "–") +
+      '<div class="fact"><span class="label">Nationality</span><b>' + nationLink(p.nat) + (p.nat2 ? " / " + nationLink(p.nat2) : "") + "</b></div>" + fact("Height", p.height ? p.height + " cm" : "–") +
       fact("Foot", p.foot ? p.foot[0].toUpperCase() + p.foot.slice(1) : "–") + fact("Value", money(p.value)) +
       fact("Contract", S && S.fin && p.club !== "free" ? "Until " + contractOf(p).end.split("-").reverse().join("/") : p.contract || "–") + fact("Shirt", p.shirt || "–") + "</div></section>" +
       '<section class="panel attrs">' + names.map(function (n, i) {
@@ -3110,6 +3172,219 @@ input[type="search"], select {
     if (k[0] === "subin") { if (LM.subOut != null) toHost({ t: "lm", v: "sub:" + LM.subOut + ":" + k[1] }); LM.subOut = null; LM.panel = null; return lmPaint(); }
     if (k[0] === "shout") { LM.panel = null; lmPaint(); }
     toHost({ t: "lm", v: v });
+  }
+
+  // ------------------------------------------------------------ pages for clubs, leagues, nations,
+  // managers (FM-style), with back navigation, and names turned into links wherever they appear
+  var NAT_ALIAS = { "Curacao": "Curaçao", "Dom. Rep.": "Dominican Republic", "Dominican Rep.": "Dominican Republic", "Korea South": "South Korea", "Korea, South": "South Korea",
+    "N. Macedonia": "North Macedonia", "USA": "United States", "St. Vincent & Grenadinen": "St. Vincent & Grenadines" };
+  var NAT_ISO = { "Albania": "AL", "Algeria": "DZ", "Angola": "AO", "Argentina": "AR", "Aruba": "AW", "Australia": "AU", "Austria": "AT", "Azerbaijan": "AZ", "Barbados": "BB", "Belgium": "BE", "Benin": "BJ",
+    "Bosnia-Herzegovina": "BA", "Brazil": "BR", "Bulgaria": "BG", "Burkina Faso": "BF", "Cameroon": "CM", "Canada": "CA", "Cape Verde": "CV", "Central African Republic": "CF", "Chad": "TD", "Chile": "CL",
+    "Colombia": "CO", "Congo": "CG", "Cote d'Ivoire": "CI", "Croatia": "HR", "Cuba": "CU", "Curaçao": "CW", "Czech Republic": "CZ", "DR Congo": "CD", "Denmark": "DK", "Dominica": "DM",
+    "Dominican Republic": "DO", "Ecuador": "EC", "Egypt": "EG", "Eritrea": "ER", "Estonia": "EE", "Faroe Islands": "FO", "Finland": "FI", "France": "FR", "Gabon": "GA", "Georgia": "GE",
+    "Germany": "DE", "Ghana": "GH", "Greece": "GR", "Grenada": "GD", "Guadeloupe": "GP", "Guernsey": "GG", "Guinea": "GN", "Guinea-Bissau": "GW", "Guyana": "GY", "Haiti": "HT", "Hungary": "HU",
+    "Iceland": "IS", "India": "IN", "Indonesia": "ID", "Ireland": "IE", "Israel": "IL", "Italy": "IT", "Jamaica": "JM", "Japan": "JP", "Kenya": "KE", "South Korea": "KR", "Kosovo": "XK",
+    "Liberia": "LR", "Lithuania": "LT", "Luxembourg": "LU", "Madagascar": "MG", "Malaysia": "MY", "Mali": "ML", "Martinique": "MQ", "Mauritania": "MR", "Mexico": "MX", "Monaco": "MC",
+    "Montenegro": "ME", "Montserrat": "MS", "Morocco": "MA", "Mozambique": "MZ", "Netherlands": "NL", "New Zealand": "NZ", "Nigeria": "NG", "North Macedonia": "MK", "Norway": "NO",
+    "Paraguay": "PY", "Poland": "PL", "Portugal": "PT", "Romania": "RO", "Russia": "RU", "Senegal": "SN", "Serbia": "RS", "Sierra Leone": "SL", "Slovakia": "SK", "Slovenia": "SI",
+    "Spain": "ES", "St. Kitts & Nevis": "KN", "St. Lucia": "LC", "St. Vincent & Grenadines": "VC", "Suriname": "SR", "Sweden": "SE", "Switzerland": "CH", "Syria": "SY", "São Tomé": "ST",
+    "The Gambia": "GM", "Togo": "TG", "Tunisia": "TN", "Türkiye": "TR", "Uganda": "UG", "Ukraine": "UA", "United Arab Emirates": "AE", "United States": "US", "Uruguay": "UY",
+    "Uzbekistan": "UZ", "Venezuela": "VE", "Zimbabwe": "ZW", "Italy ": "IT" };
+  var NAT_SUB = { "England": "gbeng", "Scotland": "gbsct", "Wales": "gbwls" };
+  function natName(n) { return NAT_ALIAS[n] || n; }
+  function flag(n) {
+    n = natName(n);
+    if (NAT_SUB[n]) return String.fromCodePoint(0x1F3F4) + NAT_SUB[n].split("").map(function (c) { return String.fromCodePoint(0xE0000 + c.charCodeAt(0)); }).join("") + String.fromCodePoint(0xE007F);
+    if (n === "Northern Ireland") return String.fromCodePoint(0x1F1EC, 0x1F1E7);
+    var iso = NAT_ISO[n]; if (!iso || iso.length !== 2) return "🏳️";
+    return String.fromCodePoint(0x1F1E6 + iso.charCodeAt(0) - 65, 0x1F1E6 + iso.charCodeAt(1) - 65);
+  }
+  function natPlayers(n) { n = natName(n); return D.players.filter(function (p) { return natName(p.nat) === n && !gone(p); }); }
+  // links
+  function clubLink(cid, text) { return '<a class="ln" data-club="' + esc(cid) + '">' + esc(text || club(cid).name) + "</a>"; }
+  function leagueLink(lid, text) { var lg = D.leagues.find(function (l) { return l.id === lid; }); return '<a class="ln" data-league="' + esc(lid) + '">' + esc(text || (lg ? lg.name : lid)) + "</a>"; }
+  function nationLink(n) { return n ? '<a class="ln" data-nation="' + esc(natName(n)) + '">' + flag(n) + " " + esc(natName(n)) + "</a>" : "–"; }
+  function playerLink(id, text) { var p = byId[id]; return p ? '<a class="ln" data-player="' + id + '">' + esc(text || p.name) + "</a>" : esc(text || "?"); }
+  function coachLink(cid) { return '<a class="ln" data-coach="' + esc(cid) + '">' + esc(cid === S.clubId ? mgrName() : isHuman(cid) ? humanName(cid) : coachOf(cid)) + "</a>"; }
+  function stars(v) { var full = Math.max(1, Math.min(5, Math.round(v))); return '<span class="stars" title="' + v.toFixed(1) + ' of 5">' + "★".repeat(full) + "<i>" + "★".repeat(5 - full) + "</i></span>"; }
+  function clubRep(cid) { return Math.max(0.5, Math.min(5, (squadStrength(cid) - 52) / 6.5)); }
+  // ---- history of pages: Back goes where you came from
+  function navState() { return { screen: ui.screen, player: ui.player, club: ui.club, league: ui.league, nation: ui.nation, coach: ui.coach, tab: ui.ptab }; }
+  function navTo(screen, set) {
+    ui.hist = ui.hist || [];
+    ui.hist.push(navState());
+    if (ui.hist.length > 40) ui.hist.shift();
+    ui.screen = screen; ui.ptab = null;
+    Object.keys(set || {}).forEach(function (k) { ui[k] = set[k]; });
+    closeDrawer(); closeModal();
+    render();
+  }
+  function navBack() {
+    var h = (ui.hist || []).pop();
+    if (!h) { ui.screen = "home"; return render(); }
+    ui.screen = h.screen; ui.player = h.player; ui.club = h.club; ui.league = h.league; ui.nation = h.nation; ui.coach = h.coach; ui.ptab = h.tab;
+    render();
+  }
+  function entHead(title, sub, extra) {
+    return '<div class="screen-head ent-head"><button class="btn ghost" data-act="navback"><span style="display:inline-grid;width:18px">' + icon("back") + "</span>Back</button>" +
+      '<div class="ent-t"><h2>' + title + "</h2>" + (sub ? '<div class="muted">' + sub + "</div>" : "") + "</div>" + (extra || "") + "</div>";
+  }
+  function ptabs(list, cur) { return '<div class="tabs ptabs">' + list.map(function (t) { return '<button class="chip-btn" data-ptab="' + t[0] + '" aria-pressed="' + (t[0] === cur) + '">' + t[1] + "</button>"; }).join("") + "</div>"; }
+  function sec(title, body, cls) { return '<section class="panel ent-sec ' + (cls || "") + '"><div class="ent-st">' + title + "</div>" + body + "</section>"; }
+  function kv(k, v) { return '<div class="kv"><span>' + k + "</span><b>" + v + "</b></div>"; }
+  // a club's fixtures and results this season
+  function clubGames(cid) {
+    var lid = club(cid).league, out = [];
+    (S.schedule[lid] || []).forEach(function (round, w) {
+      var m = round.find(function (g) { return g[0] === cid || g[1] === cid; }); if (!m) return;
+      var res = (S.results[lid][w] || []).find(function (x) { return x.h === m[0] && x.a === m[1]; });
+      out.push({ w: w, h: m[0], a: m[1], res: res, lid: lid });
+    });
+    return out;
+  }
+  function gameRow(g, cid) {
+    var home = g.h === cid, opp = home ? g.a : g.h, r = g.res, out = "";
+    if (r) { var gf = home ? r.hg : r.ag, ga = home ? r.ag : r.hg; out = gf > ga ? "W" : gf === ga ? "D" : "L"; }
+    return '<div class="g-row"><span class="muted">' + dayLabel(weekDay(g.w), true) + '</span><span class="muted">' + (home ? "H" : "A") + '</span><span class="club-cell">' + badge(opp, 18) + clubLink(opp) + "</span>" +
+      (r ? '<a class="ln" data-report="' + g.lid + ":" + g.w + ":" + g.h + '"><b>' + r.hg + "–" + r.ag + '</b></a><span class="dot ' + out + '" style="display:inline-grid;width:18px;height:18px;font-size:.6rem">' + out + "</span>" : '<span class="muted">' + (g.w === S.week ? "Next" : "") + "</span><span></span>") + "</div>";
+  }
+
+  // ---- club
+  function viewClub() {
+    var cid = ui.club, c = club(cid);
+    if (!c || !D.clubs[cid]) { ui.screen = "home"; return viewHome(); }
+    var lid = c.league, tab = ui.ptab || "overview", ps = clubPlayers[cid].slice().sort(function (a, b) { return b.ovr - a.ovr; });
+    var t = standings(lid), pos = t.findIndex(function (x) { return x.id === cid; }) + 1, row = t[pos - 1] || { pts: 0, form: [], p: 0 };
+    var games = clubGames(cid), next = games.find(function (g) { return !g.res && g.w >= S.week; }), last = games.filter(function (g) { return g.res; }).slice(-5).reverse();
+    var value = ps.reduce(function (s, p) { return s + (p.value || 0); }, 0);
+    var rv = (typeof RIVALS !== "undefined" ? RIVALS : []).filter(function (r) { return r[0] === cid || r[1] === cid; }).map(function (r) { return r[0] === cid ? r[1] : r[0]; }).filter(function (x) { return D.clubs[x]; });
+    var head = entHead(badge(cid, 34) + " " + esc(c.name), leagueLink(lid) + " · " + esc(c.city || "") + (cid === S.clubId ? " · your club" : isHuman(cid) ? " · " + esc(humanName(cid)) + "'s club" : ""),
+      ptabs([["overview", "Overview"], ["squad", "Squad"], ["games", "Fixtures"]], tab));
+    if (tab === "squad") {
+      return head + '<div class="table-wrap"><table><thead><tr><th>Pos</th><th>Name</th><th>Nat</th><th class="num">Age</th><th class="num">Ovr</th><th class="num">Value</th></tr></thead><tbody>' +
+        ps.map(function (p) { return '<tr><td><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span></td><td>" + playerLink(p.id) + "</td><td>" + nationLink(p.nat) + '</td><td class="num">' + p.age + '</td><td class="num"><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span></td><td class="num">' + money(p.value) + "</td></tr>"; }).join("") + "</tbody></table></div>";
+    }
+    if (tab === "games") return head + '<section class="panel ent-sec">' + games.map(function (g) { return gameRow(g, cid); }).join("") + "</section>";
+    var moves = (S.transfers || []).filter(function (x) { return x.to === cid || x.from === cid; }).slice(-8).reverse();
+    return head + '<div class="ent-grid">' +
+      sec("Profile", '<div class="ent-badge">' + badge(cid, 84) + "</div>" + kv("Stadium", esc(c.stadium || "–")) + kv("City", esc(c.city || "–")) + kv("League", leagueLink(lid)) + kv("Manager", coachLink(cid)) +
+        kv("Reputation", stars(clubRep(cid))) + kv("Squad value", money(value)) + (rv.length ? kv("Rivals", rv.map(function (x) { return clubLink(x); }).join(", ")) : "")) +
+      sec("Season", '<div class="ent-big">' + (row.p ? ordinal(pos) : "–") + '</div><div class="muted" style="text-align:center">' + leagueLink(lid) + " · " + row.pts + " pts</div>" +
+        '<div class="form" style="justify-content:center">' + row.form.slice(-5).map(function (x) { return '<span class="dot ' + x + '">' + x + "</span>"; }).join("") + "</div>" +
+        (next ? '<div class="ent-st" style="margin-top:8px">Next match</div><div class="ent-next">' + badge(next.h, 40) + '<b>v</b>' + badge(next.a, 40) + '</div><div class="muted" style="text-align:center">' + clubLink(next.h) + " v " + clubLink(next.a) + "<br>" + dayLabel(weekDay(next.w)) + "</div>" : "")) +
+      sec("Key players", ps.slice(0, 8).map(function (p) { return '<div class="kp"><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span>" + playerLink(p.id) + '<span class="muted">' + flag(p.nat) + '</span><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + "</span></div>"; }).join("")) +
+      sec("Recent results", last.length ? last.map(function (g) { return gameRow(g, cid); }).join("") : '<p class="muted" style="margin:0">No matches played yet.</p>') +
+      sec("Transfers", moves.length ? moves.map(function (x) { var inn = x.to === cid; return '<div class="kp"><span class="muted">' + (inn ? "In" : "Out") + "</span>" + playerLink(x.pid) + '<span class="muted">' + (inn ? (x.from === "free" ? "free agent" : clubLink(x.from)) : clubLink(x.to)) + "</span><b>" + (x.fee ? money(x.fee) : "Free") + "</b></div>"; }).join("") : '<p class="muted" style="margin:0">No transfers this season.</p>') +
+      "</div>";
+  }
+
+  // ---- league
+  function viewLeague() {
+    var lid = ui.league, lg = D.leagues.find(function (l) { return l.id === lid; });
+    if (!lg) { ui.screen = "home"; return viewHome(); }
+    var tab = ui.ptab || "table", t = standings(lid), n = t.length, nat = lg.country || countryOf(lid);
+    var head = entHead(leagueLogo(lid, 30) + " " + esc(lg.name), (nat ? nationLink(nat) + " · " : "") + lg.clubs.length + " clubs · " + S.schedule[lid].length + " matchweeks",
+      ptabs([["table", "Table"], ["stats", "Stats"], ["round", "Fixtures"], ["clubs", "Clubs"], ["history", "History"]], tab));
+    if (tab === "stats") {
+      var ps = D.players.filter(function (p) { return club(p.club).league === lid && S.pstats[p.id]; });
+      function top(k, lab, f) { var a = ps.filter(f || function () { return true; }).sort(function (x, y) { return (y.v = val(y, k)) - (x.v = val(x, k)); }).slice(0, 10); return sec(lab, a.length ? a.map(function (p, i) { return '<div class="kp"><span class="muted">' + (i + 1) + "</span>" + playerLink(p.id) + '<span class="muted">' + clubLink(p.club) + "</span><b>" + (k === "avg" ? val(p, k).toFixed(2) : val(p, k)) + "</b></div>"; }).join("") : '<p class="muted" style="margin:0">Nothing yet.</p>'); }
+      function val(p, k) { var s2 = S.pstats[p.id]; return k === "avg" ? (s2.apps ? s2.rsum / s2.apps : 0) : s2[k] || 0; }
+      return head + '<div class="ent-grid">' + top("goals", "Top scorers") + top("assists", "Assists") + top("avg", "Average rating", function (p) { return S.pstats[p.id].apps >= Math.max(3, Math.floor(S.week / 3)); }) + top("cs", "Clean sheets", function (p) { return p.pos === "GK"; }) + "</div>";
+    }
+    if (tab === "round") {
+      var nr = S.schedule[lid].length, w = ui.lgRound != null ? ui.lgRound : Math.min(nr - 1, Math.max(0, S.week - (S.results[lid][S.week] ? 0 : 1)));
+      if (w < 0) w = 0;
+      var round = S.schedule[lid][w] || [], rs = S.results[lid][w] || [];
+      return head + '<div class="round-nav"><button class="btn ghost" data-lground="' + Math.max(0, w - 1) + '">‹</button><b>Matchweek ' + (w + 1) + " · " + dayLabel(weekDay(w), true) + '</b><button class="btn ghost" data-lground="' + Math.min(nr - 1, w + 1) + '">›</button></div>' +
+        '<section class="panel ent-sec">' + round.map(function (m) { var r = rs.find(function (x) { return x.h === m[0]; }); return '<div class="fx-row"><span class="club-cell r">' + clubLink(m[0]) + badge(m[0], 18) + "</span>" + (r ? '<a class="ln" data-report="' + lid + ":" + w + ":" + m[0] + '"><b>' + r.hg + "–" + r.ag + "</b></a>" : '<span class="muted">v</span>') + '<span class="club-cell">' + badge(m[1], 18) + clubLink(m[1]) + "</span></div>"; }).join("") + "</section>";
+    }
+    if (tab === "clubs") return head + '<div class="ent-grid">' + lg.clubs.slice().sort(function (a, b) { return squadStrength(b) - squadStrength(a); }).map(function (c2) {
+      return '<section class="panel ent-sec ent-club">' + badge(c2, 40) + "<div>" + clubLink(c2) + '<div class="muted">' + esc(club(c2).city || "") + " · " + stars(clubRep(c2)) + "</div></div></section>"; }).join("") + "</div>";
+    if (tab === "history") {
+      var hs = (S.history || []).slice().reverse();
+      return head + sec("Champions", hs.length ? hs.map(function (h) { var ch = h.champions && h.champions[lid]; return ch ? '<div class="kp"><span class="muted">' + esc(h.label) + '</span><span class="club-cell">' + badge(ch, 20) + clubLink(ch) + "</span></div>" : ""; }).join("") : '<p class="muted" style="margin:0">The first season is still being played.</p>');
+    }
+    return head + '<div class="table-wrap"><table><thead><tr><th>#</th><th>Club</th><th class="num">P</th><th class="num">W</th><th class="num">D</th><th class="num">L</th><th class="num">GD</th><th class="num">Pts</th></tr></thead><tbody>' +
+      t.map(function (r, i) { var z = zoneOf(lid, i, n), zc = ZONES[z]; return '<tr class="' + (r.id === S.clubId ? "me" : "") + '"><td style="box-shadow:inset 3px 0 0 ' + (zc ? zc[1] : "transparent") + '">' + (i + 1) + '</td><td><span class="club-cell">' + badge(r.id, 20) + clubLink(r.id) + '</span></td><td class="num">' + r.p + '</td><td class="num">' + r.w + '</td><td class="num">' + r.d + '</td><td class="num">' + r.l + '</td><td class="num">' + (r.gf - r.ga) + '</td><td class="num"><b>' + r.pts + "</b></td></tr>"; }).join("") + "</tbody></table></div>";
+  }
+
+  // ---- nation
+  function viewNation() {
+    var n = natName(ui.nation), ps = natPlayers(n).sort(function (a, b) { return b.ovr - a.ovr; });
+    var leagues = D.leagues.filter(function (l) { return (l.country || countryOf(l.id)) === n; });
+    var clubsHere = {}; leagues.forEach(function (l) { l.clubs.forEach(function (c) { clubsHere[c] = 1; }); });
+    // clubs of the country's leagues, or failing that the clubs with most of its players
+    var major = Object.keys(clubsHere).sort(function (a, b) { return squadStrength(b) - squadStrength(a); }).slice(0, 8);
+    if (!major.length) { var cnt = {}; ps.forEach(function (p) { if (p.club !== "free") cnt[p.club] = (cnt[p.club] || 0) + 1; }); major = Object.keys(cnt).sort(function (a, b) { return cnt[b] - cnt[a]; }).slice(0, 8); }
+    var co = D.coeff && D.coeff.countries ? D.coeff.countries : {}, rank = null, pts = null;
+    if (co[n]) { var tot = Object.keys(co).map(function (k) { return [k, co[k].reduce(function (s, v) { return s + (v || 0); }, 0)]; }).sort(function (a, b) { return b[1] - a[1]; }); rank = tot.findIndex(function (x) { return x[0] === n; }) + 1; pts = tot[rank - 1][1]; }
+    var moves = (S.transfers || []).filter(function (x) { return byId[x.pid] && natName(byId[x.pid].nat) === n && x.fee; }).sort(function (a, b) { return b.fee - a.fee; }).slice(0, 6);
+    var xi = ps.slice(0, 23), avg = xi.length ? xi.reduce(function (s, p) { return s + p.ovr; }, 0) / xi.length : 0;
+    return entHead('<span class="flag-big">' + flag(n) + "</span> " + esc(n), ps.length + " players in the game" + (rank ? " · UEFA ranking " + ordinal(rank) : "")) + '<div class="ent-grid">' +
+      sec("Profile", '<div class="ent-flag">' + flag(n) + "</div>" + kv("Players in the game", ps.length) + kv("Best 23 average", xi.length ? avg.toFixed(1) : "–") + kv("Strength", stars(Math.max(0.5, (avg - 55) / 5.5))) +
+        (rank ? kv("UEFA country ranking", ordinal(rank) + " (" + pts.toFixed(1) + " pts, 5 seasons)") : "") + (leagues.length ? kv("Leagues in the game", leagues.map(function (l) { return leagueLink(l.id); }).join(", ")) : "")) +
+      sec("Key people", ps.length ? kv("Key player", playerLink(ps[0].id) + ' <span class="muted">' + clubLink(ps[0].club) + "</span>") + (ps[1] ? kv("Captain material", playerLink(ps.filter(function (p) { return p.age >= 27; })[0] ? ps.filter(function (p) { return p.age >= 27; })[0].id : ps[1].id)) : "") +
+        (ps.filter(function (p) { return p.age <= 21; })[0] ? kv("Best young player", playerLink(ps.filter(function (p) { return p.age <= 21; })[0].id)) : "") : '<p class="muted" style="margin:0">No players from here in the game.</p>') +
+      sec("Major clubs", major.length ? major.map(function (c) { return '<div class="kp"><span class="club-cell">' + badge(c, 20) + clubLink(c) + '</span><span class="muted">' + leagueLink(club(c).league) + "</span>" + stars(clubRep(c)) + "</div>"; }).join("") : '<p class="muted" style="margin:0">None.</p>') +
+      sec("Top players", ps.slice(0, 10).map(function (p) { return '<div class="kp"><span class="pos-pill pos-' + group(p.pos) + '">' + p.pos + "</span>" + playerLink(p.id) + '<span class="muted">' + (p.club === "free" ? "Free agent" : clubLink(p.club)) + '</span><span class="ovr" style="background:' + ovrColor(p.ovr) + '">' + p.ovr + "</span></div>"; }).join("") || '<p class="muted" style="margin:0">None.</p>') +
+      (leagues.length ? sec("Competitions", leagues.map(function (l) { return '<div class="kp">' + leagueLogo(l.id, 18) + leagueLink(l.id) + '<span class="muted">' + l.clubs.length + " clubs</span>" + stars(l.clubs.reduce(function (s, c) { return s + clubRep(c); }, 0) / l.clubs.length) + "</div>"; }).join("")) : "") +
+      sec("Major transfers", moves.length ? moves.map(function (x) { return '<div class="kp">' + playerLink(x.pid) + '<span class="muted">' + (x.from === "free" ? "free" : clubLink(x.from)) + " → " + clubLink(x.to) + "</span><b>" + money(x.fee) + "</b></div>"; }).join("") : '<p class="muted" style="margin:0">No transfers.</p>') +
+      "</div>";
+  }
+
+  // ---- manager
+  function viewCoach() {
+    var cid = ui.coach; if (!D.clubs[cid]) { ui.screen = "home"; return viewHome(); }
+    var me = cid === S.clubId, name = me ? mgrName() : isHuman(cid) ? humanName(cid) : coachOf(cid), key = "m:" + cid;
+    var t = standings(club(cid).league), pos = t.findIndex(function (x) { return x.id === cid; }) + 1, row = t[pos - 1] || { p: 0, w: 0, d: 0, l: 0, pts: 0, form: [] };
+    var h2h = me ? [] : clubGames(cid).filter(function (g) { return g.res && (g.h === S.clubId || g.a === S.clubId); });
+    var log = me ? [] : (S.relLog || []).filter(function (x) { return x.key === key; }).slice(0, 8);
+    return entHead(esc(name), "Manager of " + clubLink(cid) + (isHuman(cid) && !me ? " · online manager" : "")) + '<div class="ent-grid">' +
+      sec("Profile", '<div class="ent-badge">' + badge(cid, 72) + "</div>" + kv("Club", clubLink(cid)) + kv("League", leagueLink(club(cid).league)) + kv("This season", row.w + "W " + row.d + "D " + row.l + "L · " + (row.p ? ordinal(pos) : "–")) +
+        kv("Form", '<span class="form">' + row.form.slice(-5).map(function (x) { return '<span class="dot ' + x + '" style="width:18px;height:18px;font-size:.6rem">' + x + "</span>"; }).join("") + "</span>")) +
+      (me ? "" : sec("You and " + esc(name.split(" ").slice(-1)[0]), kv("Relationship", relPill(relOf(key))) + '<div class="rel-bar" style="margin:6px 0 10px"><i style="left:' + (50 + Math.min(0, relOf(key)) / 2) + "%;width:" + Math.abs(relOf(key)) / 2 + "%;background:" + relLabel(relOf(key))[2] + '"></i></div>' +
+        (log.length ? log.map(function (x) { return '<div class="kp"><span class="muted">' + dayLabel(Math.floor(x.t / 24), true) + "</span><span>" + esc(x.why) + '</span><b style="color:' + (x.d >= 0 ? "var(--win)" : "var(--loss)") + '">' + (x.d > 0 ? "+" : "") + x.d + "</b></div>"; }).join("") : '<p class="muted" style="margin:0">Nothing between you yet.</p>'))) +
+      (me ? "" : sec("Head to head", h2h.length ? h2h.map(function (g) { return gameRow(g, S.clubId); }).join("") : '<p class="muted" style="margin:0">You haven\'t met this season.</p>')) +
+      "</div>";
+  }
+
+  // ---- names into links (text only; never inside buttons, links or clickable rows)
+  var LINKRX = null, LINKMAP = null;
+  function buildLinker() {
+    LINKMAP = {};
+    function add(name, attr) { if (name && name.length >= 4 && !LINKMAP[name]) LINKMAP[name] = attr; }
+    Object.keys(D.clubs).forEach(function (c) { add(club(c).name, 'data-club="' + c + '"'); });
+    D.leagues.forEach(function (l) { add(l.name, 'data-league="' + l.id + '"'); });
+    Object.keys(D.clubs).forEach(function (c) { if (club(c).manager) add(club(c).manager, 'data-coach="' + c + '"'); });
+    var seen = {};
+    D.players.forEach(function (p) { if (p.name && p.name.indexOf(" ") > 0) { if (seen[p.name]) LINKMAP[p.name] = null; else { seen[p.name] = 1; add(p.name, 'data-player="' + p.id + '"'); } } });
+    var names = Object.keys(LINKMAP).filter(function (k) { return LINKMAP[k]; }).sort(function (a, b) { return b.length - a.length; });
+    var escRx = function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); };
+    try { LINKRX = new RegExp("(?<![\\p{L}\\p{N}])(" + names.map(function (n) { return escRx(esc(n)); }).join("|") + ")(?![\\p{L}\\p{N}])", "gu"); }
+    catch (e) { LINKRX = new RegExp("\\b(" + names.map(function (n) { return escRx(esc(n)); }).join("|") + ")\\b", "g"); }
+    var byEsc = {}; names.forEach(function (n) { byEsc[esc(n)] = LINKMAP[n]; }); LINKMAP = byEsc;
+  }
+  function linkify(html) {
+    if (!LINKRX) buildLinker();
+    var parts = html.split(/(<[^>]+>)/), depth = 0, stack = [];
+    for (var i = 0; i < parts.length; i++) {
+      var s = parts[i];
+      if (!s) continue;
+      if (s[0] === "<") {
+        var m = s.match(/^<\/?([a-zA-Z0-9]+)/); if (!m) continue;
+        var tag = m[1].toLowerCase(), closing = s[1] === "/", selfc = /\/>$/.test(s) || /^(img|br|hr|input|meta|link|source|wbr)$/.test(tag);
+        if (closing) {
+          for (var j = stack.length - 1; j >= 0; j--) if (stack[j].t === tag) { while (stack.length > j) { if (stack.pop().hot) depth--; } break; }
+        } else if (!selfc) {
+          var hot = /^(a|button|select|option|textarea|svg|script|style|title|h2)$/.test(tag) || /\sdata-[a-z]/.test(s);
+          stack.push({ t: tag, hot: hot }); if (hot) depth++;
+        }
+        continue;
+      }
+      if (depth > 0 || s.length < 4) continue;
+      parts[i] = s.replace(LINKRX, function (x) { var a = LINKMAP[x]; return a ? '<a class="ln" ' + a + ">" + x + "</a>" : x; });
+    }
+    return parts.join("");
   }
 
   // ------------------------------------------------------------ live text match (FM-style)
@@ -4500,7 +4775,9 @@ input[type="search"], select {
     var p = byId[+a[1]];
     if (a[0] === "bid") {
       if (!windowOpen()) return modal('<h2>Window closed</h2><p class="muted" style="margin:0">Transfers can only be made in July–August and January.</p><button class="btn primary" data-act="closemodal">OK</button>');
-      var ask = askingPrice(p);
+      var stance = sellStance(p, S.clubId);
+      if (stance.no) return modal("<h2>Not for sale</h2><p class=\"muted\" style=\"margin:0\">" + esc(stance.why) + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+      var ask = Math.round(askingPrice(p) * stance.mult / 10000) * 10000;
       return modal("<h2>Offer for " + esc(p.name) + '</h2><p class="muted" style="margin:0">' + esc(club(p.club).name) + " value him at around " + fmtM(ask) + ". Your budget: " + fmtM(S.fin.tb) + ".</p>" +
         '<label class="label" for="offerFee">Fee (€)</label><input id="offerFee" type="number" min="0" step="5000" value="' + Math.min(Math.round(ask * 0.85 / 5000) * 5000, Math.round(S.fin.tb)) + '">' +
         '<div class="tabs">' + [0.8, 1, 1.15].map(function (f) { var v = Math.round(ask * f / 5000) * 5000; return '<button class="chip-btn" type="button" onclick="document.getElementById(\'offerFee\').value=' + v + '">' + fmtM(v) + "</button>"; }).join("") + "</div>" +
@@ -4534,7 +4811,7 @@ input[type="search"], select {
     if (l) return '<section class="panel pa"><div><b>On loan</b> at ' + esc(club(p.club).name) + " from " + esc(loanFromName(l)) + " until the end of the season. He can't be signed until he returns.</div></section>";
     var open = (S.offers || []).some(function (o) { return o.pid === p.id && o.dir === "in" && (o.status === "pending" || o.status === "accepted" || o.status === "counter"); });
     var free = p.club === "free";
-    return '<section class="panel pa"><div class="pa-facts"><div><div class="label">' + (free ? "Free agent" : "Asking price") + "</div><b>" + (free ? "No fee" : fmtM(askingPrice(p))) + '</b></div><div><div class="label">Wage</div><b>' + fmtM(c.wage) + '/wk</b></div><div><div class="label">Contract</div><b>' + (free ? "–" : c.end.slice(0, 4)) + "</b></div>" +
+    return '<section class="panel pa"><div class="pa-facts"><div><div class="label">' + (free ? "Free agent" : "Asking price") + "</div><b>" + (free ? "No fee" : p.club === S.clubId ? fmtM(askingPrice(p)) : sellStance(p, S.clubId).no ? "Not for sale" : fmtM(Math.round(askingPrice(p) * sellStance(p, S.clubId).mult / 10000) * 10000)) + '</b></div><div><div class="label">Wage</div><b>' + fmtM(c.wage) + '/wk</b></div><div><div class="label">Contract</div><b>' + (free ? "–" : c.end.slice(0, 4)) + "</b></div>" +
       '<div><div class="label">Interest</div><b>' + (interest(p) === "no" ? "Not interested" : "Open to talks") + "</b></div></div>" +
       (open ? '<div class="muted">You already have a deal in progress for him (see Transfers › Deals).</div>' :
         '<div class="pa-btns">' + (free ? '<button class="btn primary" data-pact="free:' + p.id + '">Offer contract</button>' : '<button class="btn primary" data-pact="bid:' + p.id + '">Make transfer offer</button><button class="btn" data-pact="loan:' + p.id + '">Request loan</button>') + "</div>") + "</section>";
@@ -5000,7 +5277,7 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ events
   document.addEventListener("click", function (ev) {
-    var t = ev.target.closest("[data-reltab],[data-eutab],[data-breq],[data-deal],[data-pact],[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-onpick],[data-onleague],[data-back-player]");
+    var t = ev.target.closest("[data-reltab],[data-eutab],[data-breq],[data-deal],[data-pact],[data-tfocus],[data-tint],[data-msg],[data-mact],[data-calm],[data-soc],[data-pans],[data-mgr],[data-go],[data-act],[data-player],[data-slot],[data-bench],[data-table],[data-stats],[data-report],[data-pick],[data-pickleague],[data-onpick],[data-onleague],[data-club],[data-league],[data-nation],[data-coach],[data-ptab],[data-lground],[data-back-player]");
     if (!t) return;
     if (t.hasAttribute("data-onleague")) { ui.online.pickLeague = t.getAttribute("data-onleague"); return render(); }
     if (t.hasAttribute("data-onpick")) return onlinePick(t.getAttribute("data-onpick"));
@@ -5060,9 +5337,16 @@ input[type="search"], select {
     var go = t.getAttribute("data-go"), act = t.getAttribute("data-act");
     if (go === "inbox" && ui.screen !== "inbox") ui.msg = null;
     if (go === "calendar") ui.calMonth = null;
-    if (go) { closeDrawer(); ui.screen = go; ui.sel = null; return render(); }
-    if (t.hasAttribute("data-back-player")) { ui.screen = ui.prev || "squad"; return render(); }
-    if (t.hasAttribute("data-player")) { ui.prev = ui.screen === "player" ? ui.prev : ui.screen; ui.player = +t.getAttribute("data-player"); ui.screen = "player"; return render(); }
+    if (go) { closeDrawer(); ui.screen = go; ui.sel = null; ui.hist = []; return render(); }
+    if (act === "navback") return navBack();
+    if (t.hasAttribute("data-back-player")) { if (ui.hist && ui.hist.length) return navBack(); ui.screen = ui.prev || "squad"; return render(); }
+    if (t.hasAttribute("data-player")) { ui.prev = ui.screen === "player" ? ui.prev : ui.screen; return navTo("player", { player: +t.getAttribute("data-player") }); }
+    if (t.hasAttribute("data-club")) return navTo("club", { club: t.getAttribute("data-club") });
+    if (t.hasAttribute("data-league")) return navTo("league", { league: t.getAttribute("data-league"), lgRound: null });
+    if (t.hasAttribute("data-nation")) return navTo("nation", { nation: t.getAttribute("data-nation") });
+    if (t.hasAttribute("data-coach")) return navTo("coach", { coach: t.getAttribute("data-coach") });
+    if (t.hasAttribute("data-ptab")) { ui.ptab = t.getAttribute("data-ptab"); return render(); }
+    if (t.hasAttribute("data-lground")) { ui.lgRound = +t.getAttribute("data-lground"); return render(); }
     if (t.hasAttribute("data-table")) { ui.tableLeague = t.getAttribute("data-table"); return render(); }
     if (t.hasAttribute("data-stats")) { ui.statsLeague = t.getAttribute("data-stats"); return render(); }
     if (t.hasAttribute("data-report")) {
