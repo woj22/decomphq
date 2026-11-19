@@ -719,6 +719,7 @@ input[type="search"], select {
 
 <script src="data.js"></script>
 <script src="music/list.js"></script>
+<script src="photos/list.js"></script>
 <script>
 (function () {
   "use strict";
@@ -2038,11 +2039,26 @@ input[type="search"], select {
 
   // ------------------------------------------------------------ AI (OpenAI, through the app)
   var aiSeq = 0, aiWait = {};
-  function aiOn() { return S && S.aiOff !== true && window.DLSManager && window.DLSManager.aiStatus && !!window.DLSManager.aiStatus(); }
+  var WEBAI = {
+    aiStatus: function () { try { return localStorage.getItem("dlsmgr-ai-key") ? (localStorage.getItem("dlsmgr-ai-model") || "gpt-4o-mini") : ""; } catch (e) { return ""; } },
+    setAiKey: function (k, m) { try { if (k) localStorage.setItem("dlsmgr-ai-key", k.trim()); if (m) localStorage.setItem("dlsmgr-ai-model", m.trim()); } catch (e) {} },
+    clearAiKey: function () { try { localStorage.removeItem("dlsmgr-ai-key"); localStorage.removeItem("dlsmgr-ai-model"); } catch (e) {} },
+    aiChat: function (id, msgs, max) {
+      var key = ""; try { key = localStorage.getItem("dlsmgr-ai-key") || ""; } catch (e) {}
+      fetch("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + key },
+        body: JSON.stringify({ model: WEBAI.aiStatus() || "gpt-4o-mini", messages: JSON.parse(msgs), max_tokens: max, temperature: 0.8, response_format: { type: "json_object" } }) })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (x) { if (!x.ok) return window.dlsAi(id, false, (x.j.error && x.j.error.message) || "error"); window.dlsAi(id, true, x.j.choices[0].message.content); })
+        .catch(function (e) { window.dlsAi(id, false, String(e)); });
+    }
+  };
+  // the app keeps the key in its own storage (Java); the browser version in its local storage
+  function aiB() { return window.DLSManager && window.DLSManager.aiChat ? window.DLSManager : WEBAI; }
+  function aiOn() { return S && S.aiOff !== true && !!aiB().aiStatus(); }
   function aiAsk(system, user, maxTokens, cb) {
     var id = ++aiSeq;
     aiWait[id] = cb;
-    try { window.DLSManager.aiChat(id, JSON.stringify([{ role: "system", content: system }, { role: "user", content: user }]), maxTokens || 900); }
+    try { aiB().aiChat(id, JSON.stringify([{ role: "system", content: system }, { role: "user", content: user }]), maxTokens || 900); }
     catch (e) { delete aiWait[id]; cb(null, String(e)); }
   }
   window.dlsAi = function (id, ok, text) {
@@ -2187,10 +2203,9 @@ input[type="search"], select {
     save();
   }
   function aiSettings() {
-    if (!window.DLSManager || !window.DLSManager.aiStatus) return "";
-    var st = window.DLSManager.aiStatus();
+    var st = aiB().aiStatus(), web = aiB() === WEBAI;
     return '<hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="label">AI press conferences</div>' +
-      '<p class="muted" style="margin:0">' + (st ? "On, using " + esc(st) + (S && S.aiOff ? " (paused)" : "") + ". Used only when you answer in your own words. The key is kept in the app only, never in your save." : "Add an OpenAI API key to answer press questions in your own words (and have managers reply to them in character).") + "</p>" +
+      '<p class="muted" style="margin:0">' + (st ? "On, using " + esc(st) + (S && S.aiOff ? " (paused)" : "") + ". Used only when you answer in your own words. " + (web ? "The key is kept in this browser only (never in your save); don't add it on a shared device." : "The key is kept in the app only, never in your save.") : "Add an OpenAI API key to answer press questions in your own words (and have managers reply to them in character)." + (web ? " In the browser the key is kept on this device only." : "")) + "</p>" +
       '<input id="aiKey" type="password" autocomplete="off" placeholder="' + (st ? "Replace key (sk-…)" : "OpenAI API key (sk-…)") + '">' +
       '<input id="aiModel" placeholder="Model" value="' + esc(st || "gpt-4o-mini") + '">' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="aisave">Save</button>' + (st ? '<button class="btn" data-act="aioff">' + (S && S.aiOff ? "Turn on" : "Pause AI") + '</button><button class="btn ghost" data-act="aiclear">Remove key</button>' : "") + "</div>";
@@ -2607,7 +2622,7 @@ input[type="search"], select {
     var names = order.map(function (i) { return allNames[i]; });
     var vals = order.map(function (i) { return p.attrs[i]; });
     return screenHead(p.name, '<button class="btn ghost" data-back-player>Back</button>') +
-      '<div class="profile"><section class="panel profile-head"><div style="display:flex;gap:12px;align-items:center">' + (faceImg(p, 88) || (askFaces([p]) || faceAsked[p.dls] ? '<div class="face face-wait" title="Rendering the in-game face…">…</div>' : "")) + badge(p.club, 44) +
+      '<div class="profile"><section class="panel profile-head"><div style="display:flex;gap:12px;align-items:center">' + photoImg(p, 88) + (faceImg(p, 88) || (window.DLSManager && (askFaces([p]) || faceAsked[p.dls]) ? '<div class="face face-wait" title="Rendering the in-game face…">…</div>' : "")) + badge(p.club, 44) +
       '<div><div class="shirt">' + (p.shirt || "–") + '</div><div class="muted">' + (p.club === "free" ? "Free agent" : clubLink(p.club) + " · " + leagueLink(c.league)) + "</div></div>" +
       '<div style="margin-left:auto;display:grid;justify-items:center;gap:2px"><span class="ovr" style="font-size:1.4rem;padding:6px 12px;background:' + ovrColor(p.ovr) + '">' + p.ovr + '</span><span class="muted" style="font-size:.75rem">OVR</span></div>' +
       '<div style="display:grid;justify-items:center;gap:2px"><span class="ovr pot" style="font-size:1.4rem;padding:6px 12px">' + potOf(p) + '</span><span class="muted" style="font-size:.75rem">POT</span></div></div>' +
@@ -2615,7 +2630,8 @@ input[type="search"], select {
       fact("Position", p.position + (p.alt && p.alt.length ? " (also " + p.alt.join(", ") + ")" : "")) + fact("Age", p.age + (p.dob ? " (" + p.dob.split("-").reverse().join("/") + ")" : "")) +
       '<div class="fact"><span class="label">Nationality</span><b>' + nationLink(p.nat) + (p.nat2 ? " / " + nationLink(p.nat2) : "") + "</b></div>" + fact("Height", p.height ? p.height + " cm" : "–") +
       fact("Foot", p.foot ? p.foot[0].toUpperCase() + p.foot.slice(1) : "–") + fact("Value", money(p.value)) +
-      fact("Contract", S && S.fin && p.club !== "free" ? "Until " + contractOf(p).end.split("-").reverse().join("/") : p.contract || "–") + fact("Shirt", p.shirt || "–") + "</div></section>" +
+      fact("Contract", S && S.fin && p.club !== "free" ? "Until " + contractOf(p).end.split("-").reverse().join("/") : p.contract || "–") + fact("Shirt", p.shirt || "–") + "</div>" +
+      (photoImg(p, 1) ? '<div class="muted" style="font-size:.7rem">Photo: Wikimedia Commons (free licence)</div>' : "") + "</section>" +
       '<section class="panel attrs">' + names.map(function (n, i) {
         var v = vals[i];
         return '<div class="attr"><span>' + n + "</span><b>" + v + '</b><div class="bar"><i style="width:' + v + "%;background:" + ovrColor(v) + '"></i></div></div>';
@@ -2631,6 +2647,12 @@ input[type="search"], select {
     FACES = {};
     try { JSON.parse(window.DLSManager.facesDone()).forEach(function (id) { FACES[id] = 1; }); } catch (e) {}
     faceBase = window.DLSManager.facesUrl ? window.DLSManager.facesUrl() : "";
+  }
+  // real photos (Wikimedia Commons, freely licensed), shipped with the menus: photos/<id>.jpg
+  var PHOTOS = null;
+  function photoImg(p, size) {
+    if (!PHOTOS) { PHOTOS = {}; (window.PHOTO_IDS || []).forEach(function (id) { PHOTOS[id] = 1; }); }
+    return PHOTOS[p.id] ? '<img class="face photo" src="photos/' + p.id + '.jpg" width="' + size + '" height="' + size + '" alt="" loading="lazy">' : "";
   }
   function faceImg(p, size) {
     facesInit();
@@ -5434,13 +5456,13 @@ input[type="search"], select {
     }
     if (act === "aisave") {
       var k = (document.getElementById("aiKey") || {}).value || "", md = (document.getElementById("aiModel") || {}).value || "";
-      if (window.DLSManager && window.DLSManager.setAiKey) window.DLSManager.setAiKey(k, md);
+      aiB().setAiKey(k, md);
       if (S) { S.aiOff = false; save(); } closeModal();
-      return modal('<h2>AI</h2><p class="muted" style="margin:0">' + (window.DLSManager && window.DLSManager.aiStatus && window.DLSManager.aiStatus() ? "Saved. You can now answer in your own words in press conferences (" + esc(window.DLSManager.aiStatus()) + ")." : "No key saved.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
+      return modal('<h2>AI</h2><p class="muted" style="margin:0">' + (aiB().aiStatus() ? "Saved. You can now answer in your own words in press conferences (" + esc(aiB().aiStatus()) + ")." : "No key saved.") + '</p><button class="btn primary" data-act="closemodal">OK</button>');
     }
     if (act === "musicskip") { Music.skip(); return; }
     if (act === "aioff") { if (S) { S.aiOff = !S.aiOff; save(); } closeModal(); return; }
-    if (act === "aiclear") { if (window.DLSManager && window.DLSManager.clearAiKey) window.DLSManager.clearAiKey(); closeModal(); return; }
+    if (act === "aiclear") { aiB().clearAiKey(); closeModal(); return; }
     if (act === "msgback") { ui.msg = null; return render(); }
     if (act === "readall") { S.inbox.forEach(function (m) { m.read = true; }); save(); return render(); }
     if (act === "closedrawer") return closeDrawer();

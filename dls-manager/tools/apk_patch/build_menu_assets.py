@@ -26,6 +26,7 @@ def main():
     ap.add_argument("--leagues", help="folder of league logos <league id>.png (copied to leagues/)")
     ap.add_argument("--clubs", help="clubs.json (build_club_squads.py): adds each player's DLS id as 'dls'")
     ap.add_argument("--ui", help="folder of title / loading pictures and logos (copied to bg/)")
+    ap.add_argument("--photos", help="folder of player headshots <player id>.jpg (Wikimedia Commons; resized to photos/, listed in photos/list.js)")
     ap.add_argument("--music", help="folder of menu songs (.m4a/.mp3/.ogg, copied to music/ and listed in music/list.js)")
     a = ap.parse_args()
 
@@ -58,7 +59,7 @@ def main():
                "orientation": "landscape", "background_color": "#0b0e0d", "theme_color": "#0b0e0d",
                "icons": [{"src": "bg/icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "bg/icon-512.png", "sizes": "512x512", "type": "image/png"}]},
               open(os.path.join(a.out, "manifest.json"), "w"), indent=1)
-    html = html.replace("<script>", '<script src="data.js"></script>\n<script src="music/list.js"></script>\n<script>', 1)
+    html = html.replace("<script>", '<script src="data.js"></script>\n<script src="music/list.js"></script>\n<script src="photos/list.js"></script>\n<script>', 1)
     open(os.path.join(a.out, "index.html"), "w", encoding="utf-8").write(html)
 
     data = json.load(open(os.path.join(a.menu, "data.json"), encoding="utf-8"))
@@ -99,6 +100,25 @@ def main():
         for f in os.listdir(a.ui):
             if f.lower().endswith((".jpg", ".png")):
                 shutil.copy(os.path.join(a.ui, f), os.path.join(a.out, "bg", f))
+    photos = []
+    if a.photos:
+        from PIL import Image
+        os.makedirs(os.path.join(a.out, "photos"), exist_ok=True)
+        for f in sorted(os.listdir(a.photos)):
+            m = re.match(r"(\d+)\.jpe?g$", f)
+            if not m:
+                continue
+            try:
+                im = Image.open(os.path.join(a.photos, f)).convert("RGB")
+            except Exception:
+                continue
+            w, h = im.size
+            side = min(w, h)
+            im = im.crop(((w - side) // 2, 0, (w - side) // 2 + side, side)).resize((160, 160), Image.LANCZOS)
+            im.save(os.path.join(a.out, "photos", m.group(1) + ".jpg"), quality=78, optimize=True, progressive=True)
+            photos.append(int(m.group(1)))
+        with open(os.path.join(a.out, "photos", "list.js"), "w") as fh:
+            fh.write("window.PHOTO_IDS = " + json.dumps(photos) + ";\n")
     songs = []
     if a.music:
         os.makedirs(os.path.join(a.out, "music"), exist_ok=True)
@@ -113,7 +133,7 @@ def main():
         with open(os.path.join(a.out, "music", "list.js"), "w", encoding="utf-8") as fh:
             fh.write("window.MUSIC_FILES = " + json.dumps(songs) + ";\nwindow.MUSIC_TITLES = " + json.dumps(titles, ensure_ascii=False) + ";\n")
     size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(a.out) for f in fs)
-    print(f"menu assets: index.html, data.js, {n} badges, {len(faces)} font weights, {len(songs)} songs, {size // 1024} KB -> {a.out}")
+    print(f"menu assets: index.html, data.js, {n} badges, {len(faces)} font weights, {len(songs)} songs, {len(photos)} photos, {size // 1024} KB -> {a.out}")
 
 
 if __name__ == "__main__":
