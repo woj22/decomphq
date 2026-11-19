@@ -87,7 +87,7 @@ static int pauseOpen;
 static int pendingPause;       /* our pause button was tapped */
 static u32 lastHud = 0xffffffff;
 static int lastAdded = -1;
-static int halfNo, lastLeft;
+static int halfNo, lastLeft, periodStart, periodEnded;
 static int pendingAction;      /* pause menu choice, 0 = none */
 static int lastTop = -2, lastDepth = -1, lastCut = -1;
 static unsigned frameNo;
@@ -318,13 +318,30 @@ void dlsmgr_frame(void)
         int frames = half * 60;
         /* which period: counted here, not from the minute (it passes 45 in first-half added
            time). A new period starts when the frame counter jumps back up to (near) full. */
-        if (minute <= 1 && left > frames - 120)
-            halfNo = 0;                       /* kick-off */
-        else if (left > lastLeft + 300)
+        if (minute <= 1 && left > frames - 120) {
+            if (halfNo != 0 || left > periodStart) periodStart = left;   /* kick-off */
+            if (halfNo != 0) periodEnded = 0;
+            halfNo = 0;
+        } else if (left > lastLeft + 300) {
             halfNo++;
+            periodStart = left;
+            periodEnded = 0;
+        } else if (left > periodStart)
+            periodStart = left;
         lastLeft = left;
-        int total = halfNo * frames + (frames - left);
+        /* the countdown does not always start at exactly half x 60: measure where this period's
+           started and scale, so kick-off reads 0:00 and the end of the countdown 45:00 / 90:00
+           (assuming a full half x 60 put the clock about a minute ahead) */
+        int ps = periodStart > 0 ? periodStart : frames;
+        int el = ps - left;
+        if (el < 0) el = 0;
+        int total = halfNo * frames + (int)((long)el * frames / ps);
         if (total < 0) total = 0;
+        if (left < 1 && !periodEnded) {
+            periodEnded = 1;
+            nlog("period %d end: countdown started at %d, minute %d", halfNo, ps, minute);
+            nlog(" (half %d, added %d)%d\n", half, *(int *)(m + 0xa714), 0);
+        }
         u32 secs = (u32)total;     /* M+0xa700 counts match seconds (2700 a half) */
         u32 mn = secs / 60, sc = secs % 60;
         if (mn > 255) mn = 255;

@@ -47,8 +47,17 @@ def main():
                   "<style>" + "".join(faces) + "</style>", html)
     if "<!doctype" not in html.lower():  # the preview relies on the host's skeleton; give the app a full page
         html = ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" '
-                'content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>\n'
+                'content="width=device-width,initial-scale=1,viewport-fit=cover">'
+                # installable from a phone's browser (Add to Home Screen): name, icon, full screen
+                '<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">'
+                '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">'
+                '<meta name="apple-mobile-web-app-title" content="Assistant Manager"><meta name="theme-color" content="#0b0e0d">'
+                '<link rel="apple-touch-icon" href="bg/icon-180.png"><link rel="manifest" href="manifest.json"></head><body>\n'
                 + html + "\n</body></html>\n")
+    json.dump({"name": "Assistant Manager 27", "short_name": "Assistant Manager", "start_url": "./", "scope": "./", "display": "fullscreen",
+               "orientation": "landscape", "background_color": "#0b0e0d", "theme_color": "#0b0e0d",
+               "icons": [{"src": "bg/icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "bg/icon-512.png", "sizes": "512x512", "type": "image/png"}]},
+              open(os.path.join(a.out, "manifest.json"), "w"), indent=1)
     html = html.replace("<script>", '<script src="data.js"></script>\n<script src="music/list.js"></script>\n<script>', 1)
     open(os.path.join(a.out, "index.html"), "w", encoding="utf-8").write(html)
 
