@@ -2627,8 +2627,7 @@ input[type="search"], select {
       fact("Position", p.position + (p.alt && p.alt.length ? " (also " + p.alt.join(", ") + ")" : "")) + fact("Age", p.age + (p.dob ? " (" + p.dob.split("-").reverse().join("/") + ")" : "")) +
       '<div class="fact"><span class="label">Nationality</span><b>' + nationLink(p.nat) + (p.nat2 ? " / " + nationLink(p.nat2) : "") + "</b></div>" + fact("Height", p.height ? p.height + " cm" : "–") +
       fact("Foot", p.foot ? p.foot[0].toUpperCase() + p.foot.slice(1) : "–") + fact("Value", money(p.value)) +
-      fact("Contract", S && S.fin && p.club !== "free" ? "Until " + contractOf(p).end.split("-").reverse().join("/") : p.contract || "–") + fact("Shirt", p.shirt || "–") + "</div>" +
-      (photoImg(p, 1) ? '<div class="muted" style="font-size:.7rem">Photo: Wikimedia Commons (free licence)</div>' : "") + "</section>" +
+      fact("Contract", S && S.fin && p.club !== "free" ? "Until " + contractOf(p).end.split("-").reverse().join("/") : p.contract || "–") + fact("Shirt", p.shirt || "–") + "</div></section>" +
       '<section class="panel attrs">' + names.map(function (n, i) {
         var v = vals[i];
         return '<div class="attr"><span>' + n + "</span><b>" + v + '</b><div class="bar"><i style="width:' + v + "%;background:" + ovrColor(v) + '"></i></div></div>';
