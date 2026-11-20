@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Spindle" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/ink</item>
+        <item name="android:statusBarColor">@color/ink</item>
+        <item name="android:navigationBarColor">@color/deep</item>
+    </style>
+    <color name="ink">#FF12101A</color>
+    <color name="deep">#FF1A1724</color>
+    <color name="amber">#FFFFB547</color>
+</resources>
