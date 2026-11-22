@@ -130,7 +130,7 @@ class Spindle private constructor(val context: Context) {
     val downloadCache = SimpleCache(File(root, "downloads"), NoOpCacheEvictor(), db)
 
     val http: DefaultHttpDataSource.Factory = DefaultHttpDataSource.Factory()
-        .setUserAgent("Spindle/1.0").setAllowCrossProtocolRedirects(true)
+        .setUserAgent("Spindle/1.0").setAllowCrossProtocolRedirects(false)
         .setConnectTimeoutMs(10_000).setReadTimeoutMs(20_000)
 
     private val streamFactory = CacheDataSource.Factory().setCache(streamCache).setUpstreamDataSourceFactory(http)

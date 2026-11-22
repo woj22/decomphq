@@ -237,7 +237,7 @@ private fun StatusBanner(state: AppState) {
         !state.online -> Row(Modifier.fillMaxWidth().background(Raise).padding(16.dp, 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Outlined.CloudOff, null, tint = Amber, modifier = Modifier.size(18.dp))
             Text(
-                if (!state.networkUp) "Offline. Downloaded and cached songs still play." else "Can't reach your server. Downloaded and cached songs still play.",
+                if (!state.networkUp) "Offline. Downloaded and cached songs still play." else "Server not reachable (away from home?). Downloaded and cached songs still play.",
                 fontSize = 13.sp, modifier = Modifier.padding(start = 10.dp).weight(1f),
             )
             if (state.networkUp) TextButton({ state.sync(manual = true) }) { Text("Retry", color = Amber) }
@@ -749,7 +749,7 @@ private fun EmptyLibrary(state: AppState, nav: Nav) {
         Text(if (state.online) "Your server has no music yet" else "Your library hasn't loaded yet", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(top = 16.dp))
         Text(
             if (state.online) "Add music to Navidrome's music folder on your server device and let it finish scanning. Then refresh here."
-            else "Spindle needs to reach your server once to load your library. Check that Tailscale is connected and Navidrome is running.",
+            else "Spindle needs to reach your server once to load your library. Connect to the same Wi-Fi as your server phone and check that Navidrome is running.",
             color = Muted, modifier = Modifier.padding(top = 8.dp, bottom = 20.dp),
         )
         Button({ state.sync(manual = true) }, colors = ButtonDefaults.buttonColors(containerColor = Amber, contentColor = AmberInk)) { Text("Refresh library", fontWeight = FontWeight.Bold) }

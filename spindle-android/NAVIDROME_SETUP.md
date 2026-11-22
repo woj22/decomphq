@@ -1,6 +1,6 @@
 # Running Navidrome on an Android phone for Spindle
 
-Spindle streams from a Navidrome server. These steps run Navidrome on a spare Android phone that holds your music, and reach it from anywhere through Tailscale.
+Spindle streams from a Navidrome server. These steps run Navidrome on a spare Android phone that holds your music. Your main phone connects to it over your home Wi-Fi, with nothing extra installed. Away from home, your downloads and recently played songs still play.
 
 ## 1. On the server phone: Termux and Navidrome
 
@@ -38,19 +38,22 @@ Spindle streams from a Navidrome server. These steps run Navidrome on a spare An
 
 - In Android settings, turn **battery optimisation off** for Termux, or Android will stop the server in the background.
 - `termux-wake-lock` keeps the phone from sleeping the server. Keep the phone plugged in.
-- Optional: install **Termux:Boot** from F-Droid and put the start command in `~/.termux/boot/start-navidrome` so it starts after a restart.
+- Optional: install **Termux:Boot** ## 2. Connect Spindle over your home Wi-Fi
 
-## 2. Tailscale on both phones
-
-1. Install **Tailscale** from the Play Store on the server phone and on the phone running Spindle. Sign in to the same account on both.
-2. In the Tailscale app on either phone, find the server phone's name, for example `music-phone`. With MagicDNS (on by default) its full name is `music-phone.<your-tailnet>.ts.net`. The full name is shown in the Tailscale admin console under Machines.
-3. In Spindle, sign in with:
-   - Server address: `http://music-phone.<your-tailnet>.ts.net:4533`
+1. Find the server phone's address: on the server phone, open **Settings → About phone → Status** (or **Settings → Wi-Fi →** your network) and note the **IP address**, for example `192.168.1.20`.
+2. In Spindle on your main phone, sign in with:
+   - Server address: `http://192.168.1.20:4533` (your address, followed by `:4533`)
    - Your Navidrome username and password
+3. Make the address permanent: in your router's settings, reserve that IP address for the server phone (often called "DHCP reservation" or "static lease"). Otherwise the router may give it a new address after a restart, and Spindle won't find it.
 
-Spindle allows plain `http` only for addresses ending in `.ts.net`. Tailscale encrypts that traffic end to end, so it's safe. Any other address has to use `https`.
+Both phones must be on the same Wi-Fi. Spindle allows plain `http` only for home-network addresses (192.168.x.x, 10.x.x.x, 172.16-31.x.x) and Tailscale addresses. Anything else has to use `https`.
 
-Android allows one VPN at a time. If another VPN app is on, Tailscale can't connect, and Spindle will show your saved library offline.
+### Optional: listening away from home
+
+- **Tailscale:** install it on both phones and sign in to the same account, then use the server's Tailscale name instead, for example `http://music-phone.<your-tailnet>.ts.net:4533`. It runs as a VPN on your main phone.
+- **A public https address**, for example through Cloudflare Tunnel: Spindle already accepts any `https` address. Setting it up has security and cost trade-offs, so plan it separately.
+
+me. If another VPN app is on, Tailscale can't connect, and Spindle will show your saved library offline.
 
 ## How Spindle keeps in sync
 

@@ -56,7 +56,7 @@ fun SignInScreen(state: AppState) {
         Icon(Icons.Filled.LibraryMusic, null, tint = Amber, modifier = Modifier.size(48.dp))
         BigTitle(if (state.needsSignIn) "Sign in again" else "Connect your music", 30)
         Text("Spindle streams from your Navidrome server. Your library, artwork and playlists are saved on this phone so you can browse offline.", color = Muted)
-        SpindleField(server, { server = it }, "Server address", "http://music-phone.your-tailnet.ts.net:4533", KeyboardType.Uri)
+        SpindleField(server, { server = it }, "Server address", "http://192.168.1.20:4533", KeyboardType.Uri)
         SpindleField(user, { user = it }, "Username", "", KeyboardType.Text)
         SpindleField(password, { password = it }, "Password", "", KeyboardType.Password, password = true, onDone = { connect() })
         error?.let { Text(it, color = Rose, fontSize = 14.sp) }
@@ -64,10 +64,16 @@ fun SignInScreen(state: AppState) {
             if (busy) CircularProgressIndicator(Modifier.size(20.dp), color = AmberInk, strokeWidth = 2.dp) else Text("Connect", fontWeight = FontWeight.Bold)
         }
         Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(Raise).padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Using Tailscale", fontWeight = FontWeight.SemiBold)
+            Text("Finding the address", fontWeight = FontWeight.SemiBold)
             Text(
-                "Install Tailscale on this phone and on the device running Navidrome, and sign in to the same account on both. " +
-                    "Use the server's Tailscale name, shown in the Tailscale app, followed by :4533. Your password isn't stored; only a signed token is, encrypted.",
+                "On the server phone, open Settings → About phone → Status (or Wi-Fi → your network) and note its IP address, " +
+                    "then enter it here followed by :4533. Both phones need to be on the same Wi-Fi. " +
+                    "Away from home, your downloads and recently played songs still play.",
+                color = Muted, fontSize = 13.sp,
+            )
+            Text(
+                "Using Tailscale or an https address instead? Enter that address; it works the same way. " +
+                    "Your password isn't stored; only a signed token is, encrypted.",
                 color = Muted, fontSize = 13.sp,
             )
         }

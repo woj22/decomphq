@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Plain http is allowed only for Tailscale names (*.ts.net): Tailscale already encrypts that traffic end to end.
-     Every other address must use https. -->
+<!-- Android can't limit plain http to private address ranges here, so it is allowed at this level and the app
+     enforces the rule itself (ServerAddress in Subsonic.kt): http only for home-network addresses and Tailscale
+     names; everything else must be https. Redirects to another protocol are refused. -->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="false" />
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">ts.net</domain>
-    </domain-config>
+    <base-config cleartextTrafficPermitted="true" />
 </network-security-config>

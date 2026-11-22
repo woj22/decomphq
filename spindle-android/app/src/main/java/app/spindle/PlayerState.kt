@@ -28,7 +28,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.net.URI
 import java.util.UUID
 import java.util.concurrent.Executors
 
@@ -117,16 +116,13 @@ class AppState(context: Context, private val scope: CoroutineScope) {
     /** Checks the address and login, then saves them and runs the first sync. Returns an error to show, or null. */
     suspend fun signIn(server: String, user: String, password: String): String? {
         val normalized = Credentials.normalizeServer(server)
-        val host = runCatching { URI(normalized).host }.getOrNull()
-        if (host.isNullOrBlank()) return "Enter the server address, for example http://music-phone.your-tailnet.ts.net:4533"
-        if (normalized.startsWith("http://") && !host.endsWith(".ts.net"))
-            return "For your security, plain http only works with Tailscale names ending in .ts.net. Use that name, or an https address."
+        ServerAddress.problem(normalized)?.let { return it }
         if (user.isBlank() || password.isEmpty()) return "Enter your Navidrome username and password."
         val creds = Credentials.fromPassword(normalized, user, password)
         val err = withContext(Dispatchers.IO) {
             try { SubsonicClient(creds).ping(); null } catch (e: SubsonicException) {
                 when (e.kind) {
-                    SubsonicException.Kind.Unreachable -> "Can't reach the server. Check that Tailscale is connected on this phone and that Navidrome is running on the other device."
+                    SubsonicException.Kind.Unreachable -> "Can't reach the server. Check that this phone is on the same Wi-Fi as the server phone (or connected to Tailscale, if you use it), and that Navidrome is running."
                     SubsonicException.Kind.BadLogin -> "Navidrome didn't accept that username and password."
                     SubsonicException.Kind.NotSubsonic -> "That address answered, but it isn't a Navidrome server. Check the port (usually 4533)."
                     SubsonicException.Kind.Server -> "The server refused the sign-in: ${e.message}"

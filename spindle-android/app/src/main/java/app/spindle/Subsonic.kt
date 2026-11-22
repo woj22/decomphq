@@ -28,6 +28,33 @@ data class Credentials(val server: String, val user: String, val salt: String, v
     }
 }
 
+/**
+ * Which server addresses Spindle accepts. Plain http is allowed only where the network itself is private:
+ * home-network addresses (192.168.x.x, 10.x.x.x, 172.16-31.x.x) and Tailscale names (*.ts.net), which Tailscale
+ * encrypts. Anything reachable from the open internet must use https.
+ */
+object ServerAddress {
+    fun isPrivateHost(host: String): Boolean {
+        val h = host.lowercase().trim('[', ']')
+        if (h.endsWith(".ts.net")) return true
+        val parts = h.split('.').map { it.toIntOrNull() ?: return false }
+        if (parts.size != 4 || parts.any { it !in 0..255 }) return false
+        return parts[0] == 10 ||
+            (parts[0] == 172 && parts[1] in 16..31) ||
+            (parts[0] == 192 && parts[1] == 168) ||
+            (parts[0] == 100 && parts[1] in 64..127) // Tailscale's own addresses
+    }
+
+    /** Returns a message explaining what's wrong with [normalized], or null if it can be used. */
+    fun problem(normalized: String): String? {
+        val host = runCatching { java.net.URI(normalized).host }.getOrNull()
+        if (host.isNullOrBlank()) return "Enter the server address, for example http://192.168.1.20:4533"
+        if (normalized.startsWith("http://") && !isPrivateHost(host))
+            return "For your security, plain http only works with home-network addresses (like 192.168.1.20) or Tailscale names. Use one of those, or an https address."
+        return null
+    }
+}
+
 /** Why a request failed, in terms the sign-in and status screens can explain. */
 class SubsonicException(val kind: Kind, message: String, val code: Int = 0) : IOException(message) {
     enum class Kind { Unreachable, BadLogin, NotSubsonic, Server }
