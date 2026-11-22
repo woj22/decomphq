@@ -3,12 +3,8 @@
 package app.spindle
 
 import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -23,7 +19,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,12 +31,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.QueueMusic
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.CloudDone
+import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -55,24 +53,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.offline.Download
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 // The same dim listening-room palette as the web version.
-private val Ink = Color(0xFF12101A)
-private val Deep = Color(0xFF1A1724)
-private val Raise = Color(0xFF252131)
-private val Line = Color(0xFF332E43)
-private val Fg = Color(0xFFECE8F4)
-private val Muted = Color(0xFF9B94AD)
-private val Amber = Color(0xFFFFB547)
-private val AmberInk = Color(0xFF2A1A00)
-private val Rose = Color(0xFFFF6F7D)
+internal val Ink = Color(0xFF12101A)
+internal val Deep = Color(0xFF1A1724)
+internal val Raise = Color(0xFF252131)
+internal val Line = Color(0xFF332E43)
+internal val Fg = Color(0xFFECE8F4)
+internal val Muted = Color(0xFF9B94AD)
+internal val Amber = Color(0xFFFFB547)
+internal val AmberInk = Color(0xFF2A1A00)
+internal val Rose = Color(0xFFFF6F7D)
 
 private val SpindleColors = darkColorScheme(
     primary = Amber, onPrimary = AmberInk, background = Ink, onBackground = Fg,
@@ -99,35 +98,29 @@ private enum class Tab(val label: String, val icon: ImageVector) {
 }
 
 private sealed interface Detail {
-    data class AlbumD(val albumId: Long) : Detail
-    data class ArtistD(val name: String) : Detail
+    data class AlbumD(val albumId: String) : Detail
+    data class ArtistD(val id: String?, val name: String) : Detail
     data class PlaylistD(val id: String) : Detail
+    data object SettingsD : Detail
 }
-
-private val audioPermission =
-    if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO else Manifest.permission.READ_EXTERNAL_STORAGE
 
 @Composable
 fun SpindleApp() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val state = remember { AppState(context.applicationContext, scope) }
-    var granted by remember { mutableStateOf(ContextCompat.checkSelfPermission(context, audioPermission) == PackageManager.PERMISSION_GRANTED) }
-    var asked by remember { mutableStateOf(false) }
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { res ->
-        asked = true
-        granted = res[audioPermission] == true
-    }
+    DisposableEffect(Unit) { onDispose { state.dispose() } }
+    val notifyLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
-    // Connect to the player while the app is open; rescan the music each time it comes back to the front.
+    // Connect to the player while the app is open; check for library changes when it comes back to the front.
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    DisposableEffect(lifecycle, granted) {
+    DisposableEffect(lifecycle) {
         val obs = LifecycleEventObserver { _, e ->
             when (e) {
                 Lifecycle.Event.ON_START -> state.connect()
                 Lifecycle.Event.ON_RESUME -> {
-                    granted = ContextCompat.checkSelfPermission(context, audioPermission) == PackageManager.PERMISSION_GRANTED
-                    if (granted) state.rescan()
+                    state.refreshCached()
+                    if (state.signedIn && System.currentTimeMillis() - state.catalog.lastSync > 15 * 60_000) state.sync()
                 }
                 Lifecycle.Event.ON_STOP -> state.disconnect()
                 else -> {}
@@ -136,11 +129,9 @@ fun SpindleApp() {
         lifecycle.addObserver(obs)
         onDispose { lifecycle.removeObserver(obs) }
     }
-    LaunchedEffect(Unit) {
-        if (!granted) {
-            val perms = buildList { add(audioPermission); if (Build.VERSION.SDK_INT >= 33) add(Manifest.permission.POST_NOTIFICATIONS) }
-            launcher.launch(perms.toTypedArray())
-        }
+    // Playback and download notifications need permission on Android 13 and later.
+    LaunchedEffect(state.signedIn) {
+        if (state.signedIn && Build.VERSION.SDK_INT >= 33) notifyLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
     LaunchedEffect(state.isPlaying) {
         while (state.isPlaying) { state.tickPosition(); delay(500) }
@@ -158,16 +149,18 @@ fun SpindleApp() {
 
     val nav = Nav(
         album = { stack += Detail.AlbumD(it) },
-        artist = { stack += Detail.ArtistD(it) },
+        artist = { id, name -> stack += Detail.ArtistD(id, name) },
         playlist = { stack += Detail.PlaylistD(it) },
         more = { song, pid -> menuFor = song to pid },
+        settings = { stack += Detail.SettingsD },
     )
+    val showLibrary = state.loaded && state.signedIn && !state.needsSignIn
 
     Box(Modifier.fillMaxSize().background(Ink)) {
         Scaffold(
             containerColor = Ink,
             bottomBar = {
-                Column(Modifier.background(Deep)) {
+                if (showLibrary) Column(Modifier.background(Deep)) {
                     state.current?.let { MiniPlayer(state, it) { nowOpen = true } }
                     NavigationBar(containerColor = Deep, tonalElevation = 0.dp) {
                         Tab.entries.forEach { t ->
@@ -186,18 +179,23 @@ fun SpindleApp() {
                 }
             },
         ) { pad ->
-            Box(Modifier.padding(pad).statusBarsPadding()) {
-                when {
-                    !granted -> PermissionScreen(asked) { launcher.launch(arrayOf(audioPermission)) }
-                    !state.scanned -> Centered { CircularProgressIndicator(color = Amber) }
-                    state.songs.isEmpty() -> EmptyLibrary { state.rescan() }
-                    stack.isNotEmpty() -> DetailScreen(state, stack.last(), nav) { stack.removeAt(stack.lastIndex) }
-                    else -> when (tab) {
-                        Tab.Songs -> SongsScreen(state, nav)
-                        Tab.Albums -> AlbumsScreen(state, nav)
-                        Tab.Artists -> ArtistsScreen(state, nav)
-                        Tab.Liked -> LikedScreen(state, nav)
-                        Tab.Playlists -> PlaylistsScreen(state, nav)
+            Column(Modifier.padding(pad).statusBarsPadding()) {
+                if (showLibrary) StatusBanner(state)
+                Box(Modifier.weight(1f)) {
+                    when {
+                        !state.loaded -> Centered { CircularProgressIndicator(color = Amber) }
+                        !state.signedIn || state.needsSignIn -> SignInScreen(state)
+                        stack.lastOrNull() == Detail.SettingsD -> SettingsScreen(state) { stack.removeAt(stack.lastIndex) }
+                        state.songs.isEmpty() && state.syncing -> FirstSync(state)
+                        state.songs.isEmpty() -> EmptyLibrary(state, nav)
+                        stack.isNotEmpty() -> DetailScreen(state, stack.last(), nav) { stack.removeAt(stack.lastIndex) }
+                        else -> when (tab) {
+                            Tab.Songs -> SongsScreen(state, nav)
+                            Tab.Albums -> AlbumsScreen(state, nav)
+                            Tab.Artists -> ArtistsScreen(state, nav)
+                            Tab.Liked -> LikedScreen(state, nav)
+                            Tab.Playlists -> PlaylistsScreen(state, nav)
+                        }
                     }
                 }
             }
@@ -217,22 +215,43 @@ fun SpindleApp() {
             dismiss = { menuFor = null },
             addToPlaylist = { menuFor = null; addToPl = song },
             goAlbum = { menuFor = null; nowOpen = false; stack += Detail.AlbumD(song.albumId) },
-            goArtist = { menuFor = null; nowOpen = false; stack += Detail.ArtistD(song.artist) },
+            goArtist = { menuFor = null; nowOpen = false; stack += Detail.ArtistD(song.artistId, song.artist) },
         )
     }
     addToPl?.let { song -> AddToPlaylistDialog(state, song) { addToPl = null } }
 }
 
 private class Nav(
-    val album: (Long) -> Unit,
-    val artist: (String) -> Unit,
+    val album: (String) -> Unit,
+    val artist: (String?, String) -> Unit,
     val playlist: (String) -> Unit,
     val more: (Song, String?) -> Unit,
+    val settings: () -> Unit,
 )
+
+/** Offline notice, sync errors, and a thin line while syncing. */
+@Composable
+private fun StatusBanner(state: AppState) {
+    val err = state.syncError
+    when {
+        !state.online -> Row(Modifier.fillMaxWidth().background(Raise).padding(16.dp, 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Outlined.CloudOff, null, tint = Amber, modifier = Modifier.size(18.dp))
+            Text(
+                if (!state.networkUp) "Offline. Downloaded and cached songs still play." else "Can't reach your server. Downloaded and cached songs still play.",
+                fontSize = 13.sp, modifier = Modifier.padding(start = 10.dp).weight(1f),
+            )
+            if (state.networkUp) TextButton({ state.sync(manual = true) }) { Text("Retry", color = Amber) }
+        }
+        err != null -> Row(Modifier.fillMaxWidth().background(Raise).padding(16.dp, 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(err, fontSize = 13.sp, color = Rose, modifier = Modifier.weight(1f))
+        }
+    }
+    if (state.syncing) LinearProgressIndicator(Modifier.fillMaxWidth().height(2.dp), color = Amber, trackColor = Ink)
+}
 
 // ---------------- screens ----------------
 
-private enum class Sort(val label: String) { Title("Title"), Artist("Artist"), Recent("Recently added") }
+private enum class Sort(val label: String) { Title("Title"), Artist("Artist"), Recent("Recently added"), Played("Most played") }
 
 @Composable
 private fun SongsScreen(state: AppState, nav: Nav) {
@@ -245,14 +264,15 @@ private fun SongsScreen(state: AppState, nav: Nav) {
             .let { l ->
                 when (sort) {
                     Sort.Title -> l
-                    Sort.Artist -> l.sortedWith(compareBy({ it.artist.lowercase() }, { it.album.lowercase() }, { it.track }))
-                    Sort.Recent -> l.sortedByDescending { it.dateAdded }
+                    Sort.Artist -> l.sortedWith(compareBy({ it.artist.lowercase() }, { it.album.lowercase() }, { it.disc }, { it.track }))
+                    Sort.Recent -> l.sortedByDescending { it.created }
+                    Sort.Played -> l.sortedWith(compareByDescending<Song> { it.playCount }.thenByDescending { it.played })
                 }
             }
     }
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 16.dp)) {
         item {
-            Header("Songs", "${state.songs.size} songs · ${totalTime(state.songs)}")
+            Header("Songs", "${state.songs.size} songs · ${totalTime(state.songs)}", nav.settings)
             OutlinedTextField(
                 value = query, onValueChange = { query = it },
                 placeholder = { Text("Search title, artist or album") },
@@ -287,22 +307,19 @@ private fun SortChip(sort: Sort, onPick: (Sort) -> Unit) {
     }
 }
 
-private data class AlbumInfo(val id: Long, val name: String, val artist: String, val songs: List<Song>)
-
 @Composable
 private fun AlbumsScreen(state: AppState, nav: Nav) {
-    val albums = remember(state.songs) {
-        state.songs.groupBy { it.albumId }.map { (id, s) ->
-            val artists = s.map { it.artist }.distinct()
-            AlbumInfo(id, s.first().album, if (artists.size == 1) artists[0] else "Various artists", s)
-        }.sortedBy { it.name.lowercase() }
-    }
+    val albums = remember(state.catalog.albums) { state.catalog.albums.sortedBy { it.name.lowercase() } }
     LazyVerticalGrid(GridCells.Adaptive(150.dp), Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp, 0.dp, 16.dp, 16.dp),
         horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
-        item(span = { GridItemSpan(maxLineSpan) }) { Header("Albums", "${albums.size} albums", pad = false) }
+        item(span = { GridItemSpan(maxLineSpan) }) { Header("Albums", "${albums.size} albums", nav.settings, pad = false) }
         items(albums, key = { it.id }) { a ->
             Column(Modifier.clip(RoundedCornerShape(8.dp)).clickable { nav.album(a.id) }) {
-                Art(a.songs.first(), Modifier.fillMaxWidth().aspectRatio(1f), 8.dp, big = true)
+                Box {
+                    Art(a.coverArt, Modifier.fillMaxWidth().aspectRatio(1f), 8.dp, big = true, fallbackKey = a.name)
+                    if (state.isPinned(Pins.album(a.id))) Icon(Icons.Filled.DownloadForOffline, "Downloaded", tint = Amber,
+                        modifier = Modifier.align(Alignment.BottomEnd).padding(6.dp).size(22.dp).background(Ink.copy(alpha = 0.6f), CircleShape))
+                }
                 Text(a.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 8.dp))
                 Text(a.artist, color = Muted, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
@@ -310,18 +327,28 @@ private fun AlbumsScreen(state: AppState, nav: Nav) {
     }
 }
 
+/** Songs credited to an artist, either on the track or as the album artist. */
+private fun songsByArtist(state: AppState, id: String?, name: String): List<Song> =
+    state.songs.filter { s -> if (id != null) s.artistId == id || state.albumsById[s.albumId]?.artistId == id else s.artist == name }
+
 @Composable
 private fun ArtistsScreen(state: AppState, nav: Nav) {
-    val artists = remember(state.songs) { state.songs.groupBy { it.artist }.toList().sortedBy { it.first.lowercase() } }
+    val artists = remember(state.catalog) {
+        val songCount = HashMap<String, Int>()
+        state.songs.forEach { s ->
+            val ids = setOfNotNull(s.artistId, state.albumsById[s.albumId]?.artistId)
+            ids.forEach { songCount[it] = (songCount[it] ?: 0) + 1 }
+        }
+        state.catalog.artists.sortedBy { it.name.lowercase() }.map { it to (songCount[it.id] ?: 0) }
+    }
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 16.dp)) {
-        item { Header("Artists", "${artists.size} artists") }
-        items(artists, key = { it.first }) { (name, songs) ->
-            Row(Modifier.fillMaxWidth().clickable { nav.artist(name) }.padding(16.dp, 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Art(songs.first(), Modifier.size(52.dp), 26.dp)
+        item { Header("Artists", "${artists.size} artists", nav.settings) }
+        items(artists, key = { it.first.id }) { (artist, songs) ->
+            Row(Modifier.fillMaxWidth().clickable { nav.artist(artist.id, artist.name) }.padding(16.dp, 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Art(artist.coverArt, Modifier.size(52.dp), 26.dp, fallbackKey = artist.name)
                 Column(Modifier.padding(start = 14.dp).weight(1f)) {
-                    Text(name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    val albums = songs.map { it.albumId }.distinct().size
-                    Text("${songs.size} songs · $albums album${if (albums == 1) "" else "s"}", color = Muted, fontSize = 13.sp)
+                    Text(artist.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text("$songs songs · ${artist.albumCount} album${if (artist.albumCount == 1) "" else "s"}", color = Muted, fontSize = 13.sp)
                 }
                 Icon(Icons.Filled.ChevronRight, null, tint = Muted)
             }
@@ -333,7 +360,7 @@ private fun ArtistsScreen(state: AppState, nav: Nav) {
 private fun LikedScreen(state: AppState, nav: Nav) {
     val list = remember(state.songs, state.likes) { state.songs.filter { it.id in state.likes } }
     TrackListScreen(state, "Liked songs", "${list.size} songs" + if (list.isNotEmpty()) " · ${totalTime(list)}" else "", list, nav, null,
-        empty = "Tap the heart on any song to save it here.")
+        empty = "Tap the heart on any song to save it here. Likes sync with your Navidrome favourites.", pinKey = Pins.LIKED, settings = nav.settings)
 }
 
 @Composable
@@ -341,7 +368,7 @@ private fun PlaylistsScreen(state: AppState, nav: Nav) {
     var creating by remember { mutableStateOf(false) }
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 16.dp)) {
         item {
-            Header("Playlists", "${state.playlists.size} playlists")
+            Header("Playlists", "${state.playlists.size} playlists", nav.settings)
             Row(Modifier.fillMaxWidth().clickable { creating = true }.padding(16.dp, 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(52.dp).clip(RoundedCornerShape(6.dp)).background(Raise), contentAlignment = Alignment.Center) { Icon(Icons.Filled.Add, null, tint = Amber) }
                 Text("New playlist", fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 14.dp))
@@ -350,11 +377,12 @@ private fun PlaylistsScreen(state: AppState, nav: Nav) {
         items(state.playlists, key = { it.id }) { p ->
             val songs = state.songsOf(p)
             Row(Modifier.fillMaxWidth().clickable { nav.playlist(p.id) }.padding(16.dp, 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Art(songs.firstOrNull(), Modifier.size(52.dp), 6.dp, fallbackKey = p.name)
+                Art(state.coverFor(songs.firstOrNull()), Modifier.size(52.dp), 6.dp, fallbackKey = p.name)
                 Column(Modifier.padding(start = 14.dp).weight(1f)) {
                     Text(p.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text("${songs.size} songs", color = Muted, fontSize = 13.sp)
                 }
+                if (state.isPinned(Pins.playlist(p.id))) Icon(Icons.Filled.DownloadForOffline, "Downloaded", tint = Amber, modifier = Modifier.size(18.dp))
             }
         }
     }
@@ -365,16 +393,19 @@ private fun PlaylistsScreen(state: AppState, nav: Nav) {
 private fun DetailScreen(state: AppState, d: Detail, nav: Nav, back: () -> Unit) {
     when (d) {
         is Detail.AlbumD -> {
-            val list = remember(state.songs, d) { state.songs.filter { it.albumId == d.albumId }.sortedWith(compareBy({ it.track }, { it.title.lowercase() })) }
-            if (list.isEmpty()) return back()
-            val artists = list.map { it.artist }.distinct()
-            TrackListScreen(state, list.first().album, (if (artists.size == 1) artists[0] else "Various artists") + " · ${list.size} songs · ${totalTime(list)}",
-                list, nav, null, back = back, art = list.first(), numbered = true)
+            val list = remember(state.songs, d) { state.songs.filter { it.albumId == d.albumId }.sortedWith(compareBy({ it.disc }, { it.track }, { it.title.lowercase() })) }
+            val album = state.albumsById[d.albumId]
+            if (list.isEmpty() || album == null) return back()
+            TrackListScreen(state, album.name, album.artist + (if (album.year > 0) " · ${album.year}" else "") + " · ${list.size} songs · ${totalTime(list)}",
+                list, nav, null, back = back, cover = album.coverArt, numbered = true, pinKey = Pins.album(album.id))
         }
         is Detail.ArtistD -> {
-            val list = remember(state.songs, d) { state.songs.filter { it.artist == d.name }.sortedWith(compareBy({ it.album.lowercase() }, { it.track })) }
+            val list = remember(state.songs, d) {
+                songsByArtist(state, d.id, d.name).sortedWith(compareBy({ state.albumsById[it.albumId]?.year ?: 0 }, { it.album.lowercase() }, { it.disc }, { it.track }))
+            }
             if (list.isEmpty()) return back()
-            TrackListScreen(state, d.name, "${list.size} songs · ${totalTime(list)}", list, nav, null, back = back, art = list.first())
+            val cover = state.catalog.artists.find { it.id == d.id }?.coverArt ?: state.coverFor(list.first())
+            TrackListScreen(state, d.name, "${list.size} songs · ${totalTime(list)}", list, nav, null, back = back, cover = cover)
         }
         is Detail.PlaylistD -> {
             val p = state.playlists.find { it.id == d.id } ?: return back()
@@ -382,7 +413,8 @@ private fun DetailScreen(state: AppState, d: Detail, nav: Nav, back: () -> Unit)
             var renaming by remember { mutableStateOf(false) }
             var confirmDelete by remember { mutableStateOf(false) }
             TrackListScreen(state, p.name, "${list.size} songs" + if (list.isNotEmpty()) " · ${totalTime(list)}" else "", list, nav, p.id, back = back,
-                art = list.firstOrNull(), fallbackKey = p.name, empty = "Add songs with the ⋮ button next to any song.",
+                cover = state.coverFor(list.firstOrNull()), fallbackKey = p.name, empty = "Add songs with the ⋮ button next to any song.",
+                pinKey = Pins.playlist(p.id),
                 extra = {
                     TextButton({ renaming = true }) { Text("Rename", color = Muted) }
                     TextButton({ confirmDelete = true }) { Text("Delete", color = Muted) }
@@ -390,33 +422,35 @@ private fun DetailScreen(state: AppState, d: Detail, nav: Nav, back: () -> Unit)
             if (renaming) NameDialog("Rename playlist", p.name, "Save", { renaming = false }) { state.renamePlaylist(p.id, it); renaming = false }
             if (confirmDelete) AlertDialog(
                 onDismissRequest = { confirmDelete = false }, containerColor = Raise,
-                title = { Text("Delete \"${p.name}\"?") }, text = { Text("The songs stay in your library.") },
+                title = { Text("Delete \"${p.name}\"?") }, text = { Text("It's deleted on your server too. The songs stay in your library.") },
                 confirmButton = { TextButton({ confirmDelete = false; state.deletePlaylist(p.id) }) { Text("Delete", color = Rose) } },
                 dismissButton = { TextButton({ confirmDelete = false }) { Text("Cancel", color = Muted) } },
             )
         }
+        Detail.SettingsD -> SettingsScreen(state, back)
     }
 }
 
 @Composable
 private fun TrackListScreen(
     state: AppState, title: String, sub: String, list: List<Song>, nav: Nav, playlistId: String?,
-    back: (() -> Unit)? = null, art: Song? = null, fallbackKey: String? = null, numbered: Boolean = false,
-    empty: String = "", extra: @Composable RowScope.() -> Unit = {},
+    back: (() -> Unit)? = null, cover: String? = null, fallbackKey: String? = null, numbered: Boolean = false,
+    empty: String = "", pinKey: String? = null, settings: (() -> Unit)? = null, extra: @Composable RowScope.() -> Unit = {},
 ) {
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 16.dp)) {
         item {
             if (back != null) IconButton(back, Modifier.padding(start = 4.dp, top = 4.dp)) { Icon(Icons.Filled.ArrowBack, "Back") }
             if (back != null) {
                 Row(Modifier.padding(16.dp, 8.dp), verticalAlignment = Alignment.Bottom) {
-                    Art(art, Modifier.size(128.dp), 10.dp, big = true, fallbackKey = fallbackKey ?: title)
+                    Art(cover, Modifier.size(128.dp), 10.dp, big = true, fallbackKey = fallbackKey ?: title, size = ArtCache.LARGE)
                     Column(Modifier.padding(start = 16.dp)) { BigTitle(title, 28); Text(sub, color = Muted, fontSize = 13.sp) }
                 }
-            } else Header(title, sub)
+            } else Header(title, sub, settings)
             Row(Modifier.padding(16.dp, 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 if (list.isNotEmpty()) PlayButtons(list, state)
                 Spacer(Modifier.weight(1f)); extra()
             }
+            if (pinKey != null && list.isNotEmpty()) DownloadToggle(state, pinKey, list)
             if (list.isEmpty() && empty.isNotEmpty()) Text(empty, color = Muted, modifier = Modifier.padding(16.dp))
         }
         itemsIndexed(list, key = { i, s -> "${s.id}-$i" }) { i, s ->
@@ -426,18 +460,58 @@ private fun TrackListScreen(
     }
 }
 
+/** Keep a whole album, playlist or Liked songs on the phone, with progress while it downloads. */
+@Composable
+private fun DownloadToggle(state: AppState, key: String, list: List<Song>) {
+    val pinned = state.isPinned(key)
+    var confirmRemove by remember { mutableStateOf(false) }
+    val done = list.count { state.availability(it) == Availability.Downloaded }
+    val waitingForWifi = pinned && done < list.size && state.app.downloadWifiOnly && !state.app.unmetered
+    Row(
+        Modifier.fillMaxWidth().clickable { if (pinned) confirmRemove = true else state.setPinned(key, true) }.padding(16.dp, 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(if (pinned && done == list.size) Icons.Filled.DownloadForOffline else Icons.Filled.Download, null, tint = if (pinned) Amber else Muted)
+        Column(Modifier.padding(start = 12.dp).weight(1f)) {
+            Text(
+                when {
+                    !pinned -> "Download"
+                    done == list.size -> "Downloaded"
+                    waitingForWifi -> "Waiting for Wi-Fi · $done of ${list.size}"
+                    else -> "Downloading · $done of ${list.size}"
+                },
+                fontWeight = FontWeight.SemiBold, color = if (pinned) Amber else Fg,
+            )
+            Text(if (pinned) "Kept on this phone until you remove it" else "Keep these songs on this phone for offline listening", color = Muted, fontSize = 12.sp)
+        }
+        Switch(pinned, { on -> if (on) state.setPinned(key, true) else confirmRemove = true },
+            colors = SwitchDefaults.colors(checkedTrackColor = Amber, checkedThumbColor = AmberInk, uncheckedTrackColor = Raise, uncheckedBorderColor = Line))
+    }
+    if (pinned && done < list.size) LinearProgressIndicator({ done.toFloat() / list.size }, Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(3.dp), color = Amber, trackColor = Line)
+    if (confirmRemove) AlertDialog(
+        onDismissRequest = { confirmRemove = false }, containerColor = Raise,
+        title = { Text("Remove download?") },
+        text = { Text("These songs stay in your library and can still stream. Songs also kept by another album or playlist stay downloaded.") },
+        confirmButton = { TextButton({ confirmRemove = false; state.setPinned(key, false) }) { Text("Remove", color = Rose) } },
+        dismissButton = { TextButton({ confirmRemove = false }) { Text("Cancel", color = Muted) } },
+    )
+}
+
 // ---------------- pieces ----------------
 
 @Composable
-private fun Header(title: String, sub: String, pad: Boolean = true) {
-    Column(if (pad) Modifier.padding(16.dp, 20.dp, 16.dp, 12.dp) else Modifier.padding(top = 20.dp, bottom = 4.dp)) {
-        BigTitle(title, 34)
-        Text(sub, color = Muted, fontSize = 13.sp)
+internal fun Header(title: String, sub: String, onSettings: (() -> Unit)? = null, pad: Boolean = true) {
+    Row(if (pad) Modifier.padding(16.dp, 20.dp, 4.dp, 12.dp) else Modifier.padding(top = 20.dp, bottom = 4.dp), verticalAlignment = Alignment.Top) {
+        Column(Modifier.weight(1f)) {
+            BigTitle(title, 34)
+            Text(sub, color = Muted, fontSize = 13.sp)
+        }
+        if (onSettings != null) IconButton(onSettings) { Icon(Icons.Filled.Settings, "Settings", tint = Muted) }
     }
 }
 
 @Composable
-private fun BigTitle(text: String, size: Int) =
+internal fun BigTitle(text: String, size: Int) =
     Text(text, fontSize = size.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.5).sp, lineHeight = (size + 4).sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
 
 @Composable
@@ -450,17 +524,36 @@ private fun PlayButtons(list: List<Song>, state: AppState) {
     }
 }
 
+/** Downloaded (kept until removed) and cached (recently played, may be cleared) look different at a glance. */
+@Composable
+private fun AvailabilityIcon(a: Availability) {
+    when (a) {
+        Availability.Downloaded -> Icon(Icons.Filled.DownloadForOffline, "Downloaded", tint = Amber, modifier = Modifier.size(16.dp))
+        Availability.Downloading -> CircularProgressIndicator(Modifier.size(13.dp), color = Amber, strokeWidth = 2.dp)
+        Availability.Cached -> Icon(Icons.Outlined.CloudDone, "Cached", tint = Muted, modifier = Modifier.size(16.dp))
+        Availability.StreamOnly -> {}
+    }
+}
+
 @Composable
 private fun SongRow(state: AppState, s: Song, number: Int? = null, onClick: () -> Unit, onMore: () -> Unit) {
     val playing = state.current?.id == s.id
-    Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(start = 16.dp, top = 6.dp, bottom = 6.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+    val playable = state.playable(s)
+    Row(
+        Modifier.fillMaxWidth().clickable(enabled = playable, onClick = onClick).alpha(if (playable) 1f else 0.4f)
+            .padding(start = 16.dp, top = 6.dp, bottom = 6.dp, end = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         if (number != null) Text("$number", color = if (playing) Amber else Muted, fontSize = 13.sp, modifier = Modifier.width(30.dp))
-        else Art(s, Modifier.size(48.dp), 6.dp)
+        else Art(state.coverFor(s), Modifier.size(48.dp), 6.dp, fallbackKey = s.album)
         Column(Modifier.padding(start = if (number != null) 0.dp else 12.dp).weight(1f)) {
             Text(s.title, color = if (playing) Amber else Fg, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(s.artist, color = Muted, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
-        if (s.id in state.likes) Icon(Icons.Filled.Favorite, "Liked", tint = Rose, modifier = Modifier.size(16.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+            if (s.id in state.likes) Icon(Icons.Filled.Favorite, "Liked", tint = Rose, modifier = Modifier.size(16.dp))
+            AvailabilityIcon(state.availability(s))
+        }
         Text(fmt(s.durationMs), color = Muted, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
         IconButton(onMore) { Icon(Icons.Filled.MoreVert, "More", tint = Muted) }
     }
@@ -470,10 +563,24 @@ private fun SongRow(state: AppState, s: Song, number: Int? = null, onClick: () -
 private fun SongMenu(state: AppState, song: Song, playlistId: String?, dismiss: () -> Unit, addToPlaylist: () -> Unit, goAlbum: () -> Unit, goArtist: () -> Unit) {
     ModalBottomSheet(onDismissRequest = dismiss, containerColor = Deep) {
         Row(Modifier.padding(20.dp, 0.dp, 20.dp, 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Art(song, Modifier.size(52.dp), 6.dp)
+            Art(state.coverFor(song), Modifier.size(52.dp), 6.dp, fallbackKey = song.album)
             Column(Modifier.padding(start = 12.dp)) {
                 Text(song.title, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(song.artist, color = Muted, fontSize = 13.sp, maxLines = 1)
+                val a = state.availability(song)
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
+                    AvailabilityIcon(a)
+                    Text(
+                        when (a) {
+                            Availability.Downloaded -> "Downloaded · kept until you remove it"
+                            Availability.Downloading -> "Downloading"
+                            Availability.Cached -> "Cached · may be cleared to make room"
+                            Availability.StreamOnly -> "Streams from your server"
+                        },
+                        color = if (a == Availability.Downloaded) Amber else Muted, fontSize = 12.sp,
+                        modifier = Modifier.padding(start = if (a == Availability.StreamOnly) 0.dp else 6.dp),
+                    )
+                }
             }
         }
         HorizontalDivider(color = Line)
@@ -481,6 +588,9 @@ private fun SongMenu(state: AppState, song: Song, playlistId: String?, dismiss: 
         MenuItem(if (liked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder, if (liked) "Remove from Liked" else "Like") { state.toggleLike(song); dismiss() }
         MenuItem(Icons.Filled.PlaylistPlay, "Play next") { state.playNext(song); dismiss() }
         MenuItem(Icons.Filled.PlaylistAdd, "Add to playlist", addToPlaylist)
+        val songPin = Pins.song(song.id)
+        if (state.isPinned(songPin)) MenuItem(Icons.Filled.RemoveCircleOutline, "Remove download") { state.setPinned(songPin, false); dismiss() }
+        else if (state.availability(song) != Availability.Downloaded) MenuItem(Icons.Filled.Download, "Download") { state.setPinned(songPin, true); dismiss() }
         if (playlistId != null) MenuItem(Icons.Filled.RemoveCircleOutline, "Remove from this playlist") { state.removeFromPlaylist(playlistId, song); dismiss() }
         MenuItem(Icons.Filled.Album, "Go to album", goAlbum)
         MenuItem(Icons.Filled.Person, "Go to artist", goArtist)
@@ -537,7 +647,7 @@ private fun MiniPlayer(state: AppState, s: Song, open: () -> Unit) {
         val p = if (state.duration > 0) (state.position.toFloat() / state.duration).coerceIn(0f, 1f) else 0f
         Box(Modifier.fillMaxWidth().height(2.dp).background(Line)) { Box(Modifier.fillMaxWidth(p).fillMaxHeight().background(Amber)) }
         Row(Modifier.padding(12.dp, 8.dp, 4.dp, 8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Art(s, Modifier.size(44.dp), 6.dp)
+            Art(state.coverFor(s), Modifier.size(44.dp), 6.dp, fallbackKey = s.album)
             Column(Modifier.padding(start = 12.dp).weight(1f)) {
                 Text(s.title, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(s.artist, color = Muted, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -561,13 +671,13 @@ private fun NowPlaying(state: AppState, s: Song, close: () -> Unit, nav: Nav, on
             IconButton({ nav.more(s, null) }, Modifier.offset(x = 12.dp)) { Icon(Icons.Filled.MoreVert, "More") }
         }
         Spacer(Modifier.weight(0.4f))
-        Art(s, Modifier.fillMaxWidth().aspectRatio(1f), 12.dp, big = true, px = 900)
+        Art(state.coverFor(s), Modifier.fillMaxWidth().aspectRatio(1f), 12.dp, big = true, fallbackKey = s.album, size = ArtCache.LARGE)
         Spacer(Modifier.weight(0.4f))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(s.title, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, maxLines = 2, overflow = TextOverflow.Ellipsis, lineHeight = 28.sp)
                 Text(s.artist, color = Muted, fontSize = 16.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.clickable { onClose(); nav.artist(s.artist) })
+                    modifier = Modifier.clickable { onClose(); nav.artist(s.artistId, s.artist) })
             }
             val liked = s.id in state.likes
             IconButton({ state.toggleLike(s) }) { Icon(if (liked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder, "Like", tint = if (liked) Rose else Fg, modifier = Modifier.size(28.dp)) }
@@ -593,27 +703,27 @@ private fun NowPlaying(state: AppState, s: Song, close: () -> Unit, nav: Nav, on
             }
             IconButton({ state.next() }, Modifier.size(56.dp)) { Icon(Icons.Filled.SkipNext, "Next", Modifier.size(38.dp)) }
             IconButton({ state.cycleRepeat() }) {
-                Icon(if (state.repeat == androidx.media3.common.Player.REPEAT_MODE_ONE) Icons.Filled.RepeatOne else Icons.Filled.Repeat, "Repeat",
-                    tint = if (state.repeat == androidx.media3.common.Player.REPEAT_MODE_OFF) Muted else Amber)
+                Icon(if (state.repeat == Player.REPEAT_MODE_ONE) Icons.Filled.RepeatOne else Icons.Filled.Repeat, "Repeat",
+                    tint = if (state.repeat == Player.REPEAT_MODE_OFF) Muted else Amber)
             }
         }
         Spacer(Modifier.weight(0.3f))
     }
 }
 
+/** Cover art from the server, kept on the phone; a generated cover when there is none. */
 @Composable
-private fun Art(song: Song?, modifier: Modifier, corner: Dp, big: Boolean = false, fallbackKey: String? = null, px: Int = 360) {
+internal fun Art(coverId: String?, modifier: Modifier, corner: Dp, big: Boolean = false, fallbackKey: String? = null, size: Int = ArtCache.SMALL) {
     val context = LocalContext.current
-    val key = song?.albumId
-    var bmp by remember(key) { mutableStateOf<ImageBitmap?>(key?.let { ArtCache.peek(it) }) }
-    LaunchedEffect(key) {
-        if (song != null && bmp == null && !ArtCache.isMissing(song.albumId)) bmp = withContext(Dispatchers.IO) { ArtCache.load(context, song, px) }
+    var bmp by remember(coverId, size) { mutableStateOf<ImageBitmap?>(coverId?.let { ArtCache.peek(it, size) }) }
+    LaunchedEffect(coverId, size) {
+        if (coverId != null && bmp == null) bmp = withContext(Dispatchers.IO) { ArtCache.load(context, Spindle.get(context).client, coverId, size) }
     }
     Box(modifier.clip(RoundedCornerShape(corner))) {
         val b = bmp
         if (b != null) Image(b, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
         else {
-            val name = fallbackKey ?: song?.album ?: "Spindle"
+            val name = fallbackKey ?: "Spindle"
             Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(hueColor(name, 0.55f, 0.38f), hueColor(name, 0.6f, 0.22f, shift = 50f)))))
             if (big) Text(name.split(" ").first().take(8), color = Color.White.copy(alpha = 0.5f), fontWeight = FontWeight.ExtraBold, fontSize = 26.sp,
                 modifier = Modifier.align(Alignment.BottomStart).padding(10.dp), maxLines = 1)
@@ -623,33 +733,32 @@ private fun Art(song: Song?, modifier: Modifier, corner: Dp, big: Boolean = fals
 }
 
 @Composable
-private fun PermissionScreen(asked: Boolean, request: () -> Unit) {
-    val context = LocalContext.current
+private fun FirstSync(state: AppState) {
     Centered {
-        Icon(Icons.Filled.LibraryMusic, null, tint = Amber, modifier = Modifier.size(56.dp))
-        Text("Let Spindle find your music", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(top = 16.dp))
-        Text("Spindle plays the songs stored on this phone. It needs permission to see your music files. Nothing leaves your phone.",
-            color = Muted, modifier = Modifier.padding(top = 8.dp, bottom = 20.dp))
-        Button(request, colors = ButtonDefaults.buttonColors(containerColor = Amber, contentColor = AmberInk)) { Text("Allow access", fontWeight = FontWeight.Bold) }
-        if (asked) TextButton({
-            context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null)))
-        }) { Text("Open app settings", color = Muted) }
+        CircularProgressIndicator(color = Amber)
+        Text("Loading your library", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(top = 20.dp))
+        Text(state.syncProgress.ifBlank { "Connecting" }, color = Muted, modifier = Modifier.padding(top = 8.dp))
+        Text("This takes longest the first time. After that, only changes are downloaded.", color = Muted, fontSize = 13.sp, modifier = Modifier.padding(top = 16.dp))
     }
 }
 
 @Composable
-private fun EmptyLibrary(rescan: () -> Unit) {
+private fun EmptyLibrary(state: AppState, nav: Nav) {
     Centered {
         Icon(Icons.Filled.Album, null, tint = Amber, modifier = Modifier.size(56.dp))
-        Text("No music on this phone yet", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(top = 16.dp))
-        Text("Copy MP3, M4A, FLAC or other audio files into the Music folder on your phone, for example over a USB cable or from a download. Spindle finds them automatically.",
-            color = Muted, modifier = Modifier.padding(top = 8.dp, bottom = 20.dp))
-        Button(rescan, colors = ButtonDefaults.buttonColors(containerColor = Amber, contentColor = AmberInk)) { Text("Look again", fontWeight = FontWeight.Bold) }
+        Text(if (state.online) "Your server has no music yet" else "Your library hasn't loaded yet", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(top = 16.dp))
+        Text(
+            if (state.online) "Add music to Navidrome's music folder on your server device and let it finish scanning. Then refresh here."
+            else "Spindle needs to reach your server once to load your library. Check that Tailscale is connected and Navidrome is running.",
+            color = Muted, modifier = Modifier.padding(top = 8.dp, bottom = 20.dp),
+        )
+        Button({ state.sync(manual = true) }, colors = ButtonDefaults.buttonColors(containerColor = Amber, contentColor = AmberInk)) { Text("Refresh library", fontWeight = FontWeight.Bold) }
+        TextButton(nav.settings) { Text("Settings", color = Muted) }
     }
 }
 
 @Composable
-private fun Centered(content: @Composable ColumnScope.() -> Unit) =
+internal fun Centered(content: @Composable ColumnScope.() -> Unit) =
     Column(Modifier.fillMaxSize().padding(32.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally, content = content)
 
 private fun hueColor(key: String, s: Float, l: Float, shift: Float = 0f): Color {
