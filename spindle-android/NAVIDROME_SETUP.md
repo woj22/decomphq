@@ -38,7 +38,9 @@ Spindle streams from a Navidrome server. These steps run Navidrome on a spare An
 
 - In Android settings, turn **battery optimisation off** for Termux, or Android will stop the server in the background.
 - `termux-wake-lock` keeps the phone from sleeping the server. Keep the phone plugged in.
-- Optional: install **Termux:Boot** ## 2. Connect Spindle over your home Wi-Fi
+- Optional: install **Termux:Boot** from F-Droid and put the start command in `~/.termux/boot/start-navidrome` so it starts after a restart.
+
+## 2. Connect Spindle over your home Wi-Fi
 
 1. Find the server phone's address: on the server phone, open **Settings → About phone → Status** (or **Settings → Wi-Fi →** your network) and note the **IP address**, for example `192.168.1.20`.
 2. In Spindle on your main phone, sign in with:
@@ -50,10 +52,8 @@ Both phones must be on the same Wi-Fi. Spindle allows plain `http` only for home
 
 ### Optional: listening away from home
 
-- **Tailscale:** install it on both phones and sign in to the same account, then use the server's Tailscale name instead, for example `http://music-phone.<your-tailnet>.ts.net:4533`. It runs as a VPN on your main phone.
+- **Tailscale:** install it on both phones and sign in to the same account, then use the server's Tailscale name instead, for example `http://music-phone.<your-tailnet>.ts.net:4533`. It runs as a VPN on your main phone, and Android allows only one VPN at a time.
 - **A public https address**, for example through Cloudflare Tunnel: Spindle already accepts any `https` address. Setting it up has security and cost trade-offs, so plan it separately.
-
-me. If another VPN app is on, Tailscale can't connect, and Spindle will show your saved library offline.
 
 ## How Spindle keeps in sync
 
