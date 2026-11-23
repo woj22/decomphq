@@ -199,7 +199,7 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
       <div class="filters">
         <label class="search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="q" type="search" placeholder="Search alias, Discord name, nationality, case number or charge" aria-label="Search files">
+          <input id="q" type="search" placeholder="Search alias, Discord or Roblox name, nationality, case number or charge" aria-label="Search files">
         </label>
         <div class="chips" id="status-chips" role="group" aria-label="Filter by status"></div>
         <select id="threat-filter" aria-label="Filter by threat level"></select>
@@ -249,7 +249,7 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
         </section>
         <section>
           <h3>Reporting</h3>
-          <p>Seen someone on the register? Message an SRE officer on the server with the case number, where you saw them and when. Rewards are paid by the Crown once a capture is confirmed.</p>
+          <p>Seen someone on the register? Message an SRE officer on the server with the case number, where you saw them and when.</p>
         </section>
       </div>
     </section>
@@ -271,14 +271,14 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
 //   id        case number shown on the file, e.g. "SRE-0001"
 //   alias     in-game name or callsign
 //   discord   Discord username
+//   roblox    Roblox username
 //   nationality  in-game nationality or country, e.g. "Belgian", "Dutch", "French"
 //   status    "wanted" | "at-large" | "in-custody" | "cleared"
 //   threat    "low" | "medium" | "high" | "extreme"
 //   charges   list of in-game charges, e.g. ["Treason against the Crown"]
-//   lastSeen  province or region key from the atlas: antwerp, east-flanders, west-flanders,
+//   lastSeen  a place name (e.g. "Malawi"), or a province/region key from the atlas: antwerp, east-flanders, west-flanders,
 //             flemish-brabant, limburg, hainaut, liege, luxembourg, namur, walloon-brabant,
 //             brussels, flanders, wallonia
-//   reward    bounty text, e.g. "5,000 coins"
 //   issued    date the notice went out, e.g. "2026-11-23"
 //   issuedBy  who signed the notice
 //   photo     image URL (a Discord avatar link works), or "" for the silhouette
@@ -294,12 +294,14 @@ const D = {
   mapUrl: "https://claude.ai/artifact/PW7wrgXMvMA6zuwgVKzKB3",
 
   profiles: [
-    { id: "SRE-0001", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SRE-0002", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SRE-0003", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SRE-0004", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SRE-0005", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SRE-0006", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRE-0001", alias: "Dargobert", discord: "therewego0574_8437", roblox: "Ducens_Filum", nationality: "German", status: "wanted", threat: "medium",
+      charges: ["Colluding with foreign governments to smuggle weaponry into Belgium"], lastSeen: "Malawi", issued: "", issuedBy: "", summary: "", notes: "",
+      photo: "data:image/webp;base64,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" },
+    { id: "SRE-0002", alias: "", discord: "", roblox: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRE-0003", alias: "", discord: "", roblox: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRE-0004", alias: "", discord: "", roblox: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRE-0005", alias: "", discord: "", roblox: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRE-0006", alias: "", discord: "", roblox: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
   ],
 
   // Short notices shown on the Bulletins tab: { date: "2026-11-23", title: "", body: "" }
@@ -322,9 +324,10 @@ const PLACES = {
 const SIL = `<svg class="sil" viewBox="0 0 100 90" fill="currentColor" aria-hidden="true"><circle cx="50" cy="30" r="19"/><path d="M10 90c2-22 18-34 40-34s38 12 40 34z"/></svg>`;
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const safeUrl = u => /^https?:\/\//i.test(u || "") || /^[\w./-]+\.(png|jpe?g|gif|webp)$/i.test(u || "") ? u : "";
+const safeUrl = u => /^https?:\/\//i.test(u || "") || /^data:image\/(png|jpeg|gif|webp);base64,[\w+/=]+$/.test(u || "") || /^[\w./-]+\.(png|jpe?g|gif|webp)$/i.test(u || "") ? u : "";
 const status = p => STATUS[p.status] ? p.status : "";
 const named = p => !!(p.alias || "").trim();
+const placeName = k => PLACES[k] || k || "";
 const filled = p => named(p) || p.discord || p.status || (p.charges || []).length;
 
 document.getElementById("agency").textContent = D.agency || "SRE";
@@ -352,7 +355,9 @@ const tf = document.getElementById("threat-filter");
 tf.innerHTML = `<option value="all">Any threat</option>` + Object.entries(THREAT).map(([k, v]) => `<option value="${k}">${v[1]}</option>`).join("");
 tf.addEventListener("change", () => { F.threat = tf.value; renderGrid(); });
 const rf = document.getElementById("region-filter");
-rf.innerHTML = `<option value="all">Anywhere</option>` + Object.entries(PLACES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+const abroad = [...new Set(D.profiles.map(p => p.lastSeen).filter(k => k && !PLACES[k]))].sort();
+rf.innerHTML = `<option value="all">Anywhere</option><optgroup label="Belgium">` + Object.entries(PLACES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("") + `</optgroup>`
+  + (abroad.length ? `<optgroup label="Abroad">` + abroad.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join("") + `</optgroup>` : "");
 rf.addEventListener("change", () => { F.region = rf.value; renderGrid(); });
 const nf = document.getElementById("nation-filter");
 const nations = [...new Set(D.profiles.map(p => (p.nationality || "").trim()).filter(Boolean))].sort();
@@ -381,7 +386,7 @@ function renderGrid() {
     if (F.region !== "all" && p.lastSeen !== F.region) return false;
     if (F.nation !== "all" && (p.nationality || "").trim() !== F.nation) return false;
     if (F.q) {
-      const hay = [p.id, p.alias, p.discord, p.nationality, ...(p.charges || [])].join(" ").toLowerCase();
+      const hay = [p.id, p.alias, p.discord, p.roblox, p.nationality, p.lastSeen, ...(p.charges || [])].join(" ").toLowerCase();
       if (!hay.includes(F.q)) return false;
     }
     return true;
@@ -405,9 +410,8 @@ function renderGrid() {
         <dl class="meta">
           <dt>Nationality</dt><dd class="${p.nationality ? "" : "none"}">${val(p.nationality)}</dd>
           <dt>Charges</dt><dd class="${charges.length ? "" : "none"}">${charges.length ? esc(charges[0]) + (charges.length > 1 ? ` +${charges.length - 1}` : "") : "—"}</dd>
-          <dt>Seen</dt><dd class="${p.lastSeen ? "" : "none"}">${val(PLACES[p.lastSeen])}</dd>
+          <dt>Seen</dt><dd class="${p.lastSeen ? "" : "none"}">${val(placeName(p.lastSeen))}</dd>
           <dt>Threat</dt><dd>${threatHTML(p.threat)}</dd>
-          <dt>Reward</dt><dd class="${p.reward ? "" : "none"}">${val(p.reward)}</dd>
         </dl>
       </div></a>`;
   }).join("");
@@ -424,8 +428,8 @@ function renderFile(id) {
   const charges = p.charges || [];
   const notSet = `<dd class="none">Not filled in yet</dd>`;
   const field = (label, v) => `<div><dt>${label}</dt>${v ? `<dd>${v}</dd>` : notSet}</div>`;
-  const seen = p.lastSeen && PLACES[p.lastSeen]
-    ? (D.mapUrl ? `<a href="${esc(D.mapUrl)}#${p.lastSeen}">${esc(PLACES[p.lastSeen])}</a>` : esc(PLACES[p.lastSeen])) : "";
+  const seen = !p.lastSeen ? "" : PLACES[p.lastSeen] && D.mapUrl
+    ? `<a href="${esc(D.mapUrl)}#${p.lastSeen}">${esc(PLACES[p.lastSeen])}</a>` : esc(placeName(p.lastSeen));
   document.title = `${p.id} · SRE Wanted Register`;
   el.innerHTML = `
     <a class="back" href="#wanted">← Back to register</a>
@@ -440,10 +444,10 @@ function renderFile(id) {
         <dl class="fields">
           ${field("Alias", p.alias && esc(p.alias))}
           ${field("Discord", p.discord && esc(p.discord))}
+          ${field("Roblox", p.roblox && esc(p.roblox))}
           ${field("Nationality", p.nationality && esc(p.nationality))}
           ${field("Last seen", seen)}
           ${field("Threat level", THREAT[p.threat] && threatHTML(p.threat))}
-          ${field("Reward", p.reward && esc(p.reward))}
           ${field("Notice issued", p.issued && esc(p.issued))}
         </dl>
         <div class="block"><h3>Charges</h3>${charges.length
