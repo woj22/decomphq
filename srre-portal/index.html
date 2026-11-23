@@ -1,11 +1,5 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>SGRS Wanted Register</title>
-<meta name="description" content="Wanted register and case files for the Kingdom of Belgium roleplay server.">
-<link rel="icon" href="logo-dark.png">
+<title>SRRE Wanted Register</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,600;62..125,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -33,7 +27,6 @@
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 * { box-sizing: border-box; }
-html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 body {
   margin: 0; background: var(--bg); color: var(--fg);
   font: 15px/1.55 var(--font-body);
@@ -41,7 +34,6 @@ body {
     linear-gradient(to right, rgb(255 255 255 / .025) 1px, transparent 1px),
     linear-gradient(to bottom, rgb(255 255 255 / .025) 1px, transparent 1px);
   background-size: 48px 48px;
-  min-height: 100vh;
 }
 .gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .wrap { max-width: 1240px; margin: 0 auto; }
@@ -50,11 +42,12 @@ button, input, select { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 /* Top bar */
-.top { border-bottom: 1px solid var(--line); background: rgb(11 13 16 / .85); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 5; }
+.top { border-bottom: 1px solid var(--line); background: rgb(11 13 16 / .85); backdrop-filter: blur(10px); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
 .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 12px; }
 .crest { display: flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
-.crest-badge { width: 44px; height: 56px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); display: grid; place-items: center; flex: none; padding: 4px; }
-.crest-badge img { height: 48px; width: auto; max-width: 100%; object-fit: contain; display: block; }
+.crest-badge { width: 44px; height: 52px; display: block; flex: none; }
+.crest-badge svg { width: 100%; height: 100%; display: block; }
 .crest-text { display: grid; min-width: 0; }
 .crest-text b { font: 800 1.35rem/1 var(--font-display); font-stretch: 110%; letter-spacing: .06em; }
 .crest-text span { font-size: .74rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -172,14 +165,20 @@ footer { border-top: 1px solid var(--line); color: var(--faint); font-size: .78r
 footer .wrap { padding-block: 18px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
-</head>
-<body>
 <div class="flagline" aria-hidden="true"><i></i><i></i><i></i></div>
 <header class="top gutter">
   <div class="wrap">
     <a class="crest" href="#wanted">
-      <span class="crest-badge"><img src="logo-dark.png" alt=""></span>
-      <span class="crest-text"><b id="agency">SGRS</b><span id="agency-long"></span></span>
+      <span class="crest-badge"><svg viewBox="0 0 120 140" role="img" aria-label="SRRE crest">
+          <path d="M60 6 108 22v48c0 32-22 52-48 64C34 122 12 102 12 70V22Z" fill="#0b0d10" stroke="#f5d53a" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M60 14 100 27.5V70c0 26-17.5 43-40 54.5C37.5 113 20 96 20 70V27.5Z" fill="none" stroke="#f5d53a" stroke-opacity=".3" stroke-width="1.5"/>
+          <path d="M44 41 46 28l7 6 7-10 7 10 7-6 2 13Z" fill="#f5d53a"/>
+          <rect x="44" y="42" width="32" height="4" rx="1" fill="#f5d53a"/>
+          <polygon points="60.0,52.0 62.9,74.8 73.4,67.6 66.8,77.9 88.0,80.0 66.8,82.1 73.4,92.4 62.9,85.2 60.0,108.0 57.1,85.2 46.6,92.4 53.2,82.1 32.0,80.0 53.2,77.9 46.6,67.6 57.1,74.8" fill="#f5d53a"/>
+          <circle cx="60" cy="80" r="7.5" fill="#0b0d10"/>
+          <circle cx="60" cy="80" r="4.5" fill="#ef3e42"/>
+        </svg></span>
+      <span class="crest-text"><b id="agency">SRRE</b><span id="agency-long"></span></span>
     </a>
     <nav aria-label="Portal sections">
       <a href="#wanted" data-nav="wanted">Wanted</a>
@@ -197,7 +196,7 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
         <div>
           <div class="eyebrow" id="server-eyebrow">Kingdom of Belgium</div>
           <h1>Wanted register</h1>
-          <p class="lede">Open case files issued by the SGRS. Select a file to read the full dossier. Report sightings to an SGRS officer on the server.</p>
+          <p class="lede">Open case files issued by the SRRE. Select a file to read the full dossier. Report sightings to an SRRE officer on the server.</p>
         </div>
         <div class="tally" id="tally"></div>
       </div>
@@ -221,14 +220,14 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
     <section class="view" id="view-bulletins" hidden>
       <div class="eyebrow">Notices</div>
       <h1>Bulletins</h1>
-      <p class="lede">Announcements from the SGRS: new warrants, captures, pardons and alerts.</p>
+      <p class="lede">Announcements from the SRRE: new warrants, captures, pardons and alerts.</p>
       <div class="list" id="bulletins"></div>
     </section>
 
     <section class="view" id="view-about" hidden>
       <div class="eyebrow">The service</div>
-      <h1>About the SGRS</h1>
-      <p class="lede">The SGRS is the intelligence and security service of the Kingdom of Belgium on this server. It keeps the wanted register and issues notices on behalf of the Crown.</p>
+      <h1>About the SRRE</h1>
+      <p class="lede">The SRRE is the Kingdom of Belgium's foreign intelligence service on this server. It watches threats from abroad, runs agents in the field, keeps the wanted register and issues notices on behalf of the Crown.</p>
       <div class="about">
         <section>
           <h3>Statuses</h3>
@@ -250,7 +249,7 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
         </section>
         <section>
           <h3>Reporting</h3>
-          <p>Seen someone on the register? Message an SGRS officer on the server with the case number, where you saw them and when. Rewards are paid by the Crown once a capture is confirmed.</p>
+          <p>Seen someone on the register? Message an SRRE officer on the server with the case number, where you saw them and when. Rewards are paid by the Crown once a capture is confirmed.</p>
         </section>
       </div>
     </section>
@@ -265,9 +264,47 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
   </div>
 </footer>
 
-<script src="data.js"></script>
 <script>
-const D = window.SGRS_DATA || { profiles: [], bulletins: [] };
+// Portal data. Fill in profiles here.
+//
+// Profile fields (all optional, leave "" or [] until you have something):
+//   id        case number shown on the file, e.g. "SRRE-0001"
+//   alias     in-game name or callsign
+//   discord   Discord username
+//   nationality  in-game nationality or country, e.g. "Belgian", "Dutch", "French"
+//   status    "wanted" | "at-large" | "in-custody" | "cleared"
+//   threat    "low" | "medium" | "high" | "extreme"
+//   charges   list of in-game charges, e.g. ["Treason against the Crown"]
+//   lastSeen  province or region key from the atlas: antwerp, east-flanders, west-flanders,
+//             flemish-brabant, limburg, hainaut, liege, luxembourg, namur, walloon-brabant,
+//             brussels, flanders, wallonia
+//   reward    bounty text, e.g. "5,000 coins"
+//   issued    date the notice went out, e.g. "2026-11-23"
+//   issuedBy  who signed the notice
+//   photo     image URL (a Discord avatar link works), or "" for the silhouette
+//   summary   one or two sentences for the card
+//   notes     longer case notes for the dossier
+//
+// Keep it to in-game roleplay details. No real names, addresses or other real-life info.
+
+const D = {
+  agency: "SRRE",
+  agencyLong: "Service Royal du Renseignement Extérieur",
+  server: "Kingdom of Belgium",
+  mapUrl: "https://claude.ai/artifact/PW7wrgXMvMA6zuwgVKzKB3",
+
+  profiles: [
+    { id: "SRRE-0001", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRRE-0002", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRRE-0003", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRRE-0004", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRRE-0005", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SRRE-0006", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+  ],
+
+  // Short notices shown on the Bulletins tab: { date: "2026-11-23", title: "", body: "" }
+  bulletins: [],
+};
 
 const STATUS = {
   "wanted": { label: "Wanted", c: "var(--red)" },
@@ -290,7 +327,7 @@ const status = p => STATUS[p.status] ? p.status : "";
 const named = p => !!(p.alias || "").trim();
 const filled = p => named(p) || p.discord || p.status || (p.charges || []).length;
 
-document.getElementById("agency").textContent = D.agency || "SGRS";
+document.getElementById("agency").textContent = D.agency || "SRRE";
 document.getElementById("agency-long").textContent = `${D.agencyLong || ""} · ${D.server || ""}`;
 document.getElementById("server-eyebrow").textContent = D.server || "Kingdom of Belgium";
 document.getElementById("foot-left").textContent = `Roleplay portal for the ${D.server || "Kingdom of Belgium"} Discord server.`;
@@ -332,7 +369,7 @@ function photoHTML(p, big) {
   const url = safeUrl(p.photo);
   const s = STATUS[status(p)];
   return `<div class="photo">${url ? `<img src="${esc(url)}" alt="">` : SIL}
-    <span class="stamp">${esc(p.id || "SGRS-????")}</span>
+    <span class="stamp">${esc(p.id || "SRRE-????")}</span>
     ${big ? "" : `<span class="pill" style="--c:${s.c}">${s.label}</span>`}</div>`;
 }
 const val = (v, empty = "—") => v ? esc(v) : empty;
@@ -351,7 +388,7 @@ function renderGrid() {
   });
   const grid = document.getElementById("grid");
   if (!D.profiles.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><b>No case files yet</b>Add profiles in <code>data.js</code> and reload.</div>`;
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><b>No case files yet</b>Files appear here once the service issues them.</div>`;
     return;
   }
   if (!list.length) {
@@ -389,7 +426,7 @@ function renderFile(id) {
   const field = (label, v) => `<div><dt>${label}</dt>${v ? `<dd>${v}</dd>` : notSet}</div>`;
   const seen = p.lastSeen && PLACES[p.lastSeen]
     ? (D.mapUrl ? `<a href="${esc(D.mapUrl)}#${p.lastSeen}">${esc(PLACES[p.lastSeen])}</a>` : esc(PLACES[p.lastSeen])) : "";
-  document.title = `${p.id} · SGRS Wanted Register`;
+  document.title = `${p.id} · SRRE Wanted Register`;
   el.innerHTML = `
     <a class="back" href="#wanted">← Back to register</a>
     <div class="dossier">
@@ -414,7 +451,7 @@ function renderFile(id) {
           : `<p class="none">No charges recorded yet.</p>`}</div>
         <div class="block"><h3>Summary</h3><p class="${p.summary ? "" : "none"}">${p.summary ? esc(p.summary) : "No summary yet."}</p></div>
         <div class="block"><h3>Case notes</h3><p class="${p.notes ? "" : "none"}">${p.notes ? esc(p.notes) : "No notes yet."}</p></div>
-        <div class="sig"><span>Issued by <b>${val(p.issuedBy, "the SGRS")}</b></span><span>${esc(D.server || "")}</span></div>
+        <div class="sig"><span>Issued by <b>${val(p.issuedBy, "the SRRE")}</b></span><span>${esc(D.server || "")}</span></div>
       </article>
     </div>`;
 }
@@ -423,7 +460,7 @@ function renderBulletins() {
   const el = document.getElementById("bulletins");
   const list = (D.bulletins || []).slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
   el.innerHTML = list.length ? list.map(b => `<article class="bulletin"><time>${esc(b.date)}</time><h3>${esc(b.title)}</h3><p>${esc(b.body)}</p></article>`).join("")
-    : `<div class="empty"><b>No bulletins yet</b>Add notices to <code>bulletins</code> in <code>data.js</code>.</div>`;
+    : `<div class="empty"><b>No bulletins yet</b>Notices will appear here when the service posts them.</div>`;
 }
 
 function route() {
@@ -432,7 +469,7 @@ function route() {
   const view = isFile ? "file" : ["wanted", "bulletins", "about"].includes(h) ? h : "wanted";
   document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== "view-" + view);
   document.querySelectorAll("[data-nav]").forEach(a => a.setAttribute("aria-current", (isFile ? "wanted" : view) === a.dataset.nav ? "page" : "false"));
-  if (isFile) renderFile(h.slice(5)); else document.title = "SGRS Wanted Register";
+  if (isFile) renderFile(h.slice(5)); else document.title = "SRRE Wanted Register";
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
@@ -441,5 +478,3 @@ renderGrid();
 renderBulletins();
 route();
 </script>
-</body>
-</html>
