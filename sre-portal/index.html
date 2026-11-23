@@ -259,8 +259,7 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
 
 <footer class="gutter">
   <div class="wrap">
-    <span id="foot-left">Roleplay portal for the Kingdom of Belgium Discord server.</span>
-    <span>Fictional. Not affiliated with the Belgian Defence or any government service.</span>
+    <span id="foot-left">SRE · Kingdom of Belgium Discord server</span>
   </div>
 </footer>
 
@@ -333,7 +332,7 @@ const filled = p => named(p) || p.discord || p.status || (p.charges || []).lengt
 document.getElementById("agency").textContent = D.agency || "SRE";
 document.getElementById("agency-long").textContent = `${D.agencyLong || ""} · ${D.server || ""}`;
 document.getElementById("server-eyebrow").textContent = D.server || "Kingdom of Belgium";
-document.getElementById("foot-left").textContent = `Roleplay portal for the ${D.server || "Kingdom of Belgium"} Discord server.`;
+document.getElementById("foot-left").textContent = `${D.agency || "SRE"} · ${D.server || "Kingdom of Belgium"} Discord server`;
 
 // tally
 const count = s => D.profiles.filter(p => status(p) === s).length;
