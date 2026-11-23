@@ -251,17 +251,16 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
           <h3>Reporting</h3>
           <p>Seen someone on the register? Message an SRE officer on the server with the case number, where you saw them and when.</p>
         </section>
+        <section>
+          <h3>This portal</h3>
+          <p>The SRE is part of the Kingdom of Belgium roleplay on Discord. Its case files, charges and notices are in-game fiction, not real-world records.</p>
+        </section>
       </div>
     </section>
 
   </div>
 </main>
 
-<footer class="gutter">
-  <div class="wrap">
-    <span id="foot-left">SRE · Kingdom of Belgium Discord server</span>
-  </div>
-</footer>
 
 <script>
 // Portal data. Fill in profiles here.
@@ -332,7 +331,6 @@ const filled = p => named(p) || p.discord || p.status || (p.charges || []).lengt
 document.getElementById("agency").textContent = D.agency || "SRE";
 document.getElementById("agency-long").textContent = `${D.agencyLong || ""} · ${D.server || ""}`;
 document.getElementById("server-eyebrow").textContent = D.server || "Kingdom of Belgium";
-document.getElementById("foot-left").textContent = `${D.agency || "SRE"} · ${D.server || "Kingdom of Belgium"} Discord server`;
 
 // tally
 const count = s => D.profiles.filter(p => status(p) === s).length;
