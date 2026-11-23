@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SGRS Wanted Register</title>
+<meta name="description" content="Wanted register and case files for the Kingdom of Belgium roleplay server.">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,600;62..125,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: an operations console. Top bar with the crest, a register of case files as a card grid,
+   and a dossier view per file. Committed to one dark look (a night-shift intelligence desk);
+   the flag's black, yellow and red appear only as signal colours. */
+:root {
+  color-scheme: dark;
+  --bg: #0b0d10;
+  --panel: #12151a;
+  --panel-2: #191d24;
+  --line: #262b34;
+  --fg: #e9ecf1;
+  --muted: #8b93a3;
+  --faint: #5b6271;
+  --gold: #f5d53a;
+  --red: #ef3e42;
+  --amber: #f0a23b;
+  --blue: #5b8dff;
+  --green: #3ecf8e;
+  --owl: #f2793d;
+  --font-display: "Archivo", "IBM Plex Sans", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 15px/1.55 var(--font-body);
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / .025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / .025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  min-height: 100vh;
+}
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1240px; margin: 0 auto; }
+a { color: inherit; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* Top bar */
+.top { border-bottom: 1px solid var(--line); background: rgb(11 13 16 / .85); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 5; }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 12px; }
+.crest { display: flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
+.crest-badge { width: 44px; height: 56px; border-radius: 10px; background: #fff; display: grid; place-items: center; flex: none; padding: 4px; }
+.crest-badge img { height: 48px; width: auto; max-width: 100%; object-fit: contain; display: block; }
+.crest-text { display: grid; min-width: 0; }
+.crest-text b { font: 800 1.35rem/1 var(--font-display); font-stretch: 110%; letter-spacing: .06em; }
+.crest-text span { font-size: .74rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.flagline { display: flex; height: 3px; }
+.flagline i { flex: 1; } .flagline i:nth-child(1) { background: #000; } .flagline i:nth-child(2) { background: var(--gold); } .flagline i:nth-child(3) { background: var(--red); }
+nav { display: flex; gap: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 4px; }
+nav a { text-decoration: none; font-weight: 600; font-size: .86rem; color: var(--muted); padding: 7px 14px; border-radius: 7px; }
+nav a:hover { color: var(--fg); }
+nav a[aria-current="page"] { background: var(--panel-2); color: var(--fg); box-shadow: inset 0 -2px 0 var(--gold); }
+
+main { padding-block: 28px 40px; }
+.view[hidden] { display: none; }
+
+/* Register header */
+.eyebrow { font: 600 .72rem var(--font-mono); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+.eyebrow::before { content: ""; width: 8px; height: 8px; background: var(--red); border-radius: 50%; box-shadow: 0 0 0 4px rgb(239 62 66 / .18); }
+h1 { font: 800 clamp(2rem, 5vw, 3.4rem)/1 var(--font-display); font-stretch: 112%; letter-spacing: -.01em; margin: 10px 0 8px; text-wrap: balance; text-transform: uppercase; }
+.lede { color: var(--muted); max-width: 62ch; margin: 0; }
+.head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+@media (max-width: 860px) { .head { grid-template-columns: minmax(0, 1fr); } }
+
+.tally { display: grid; grid-template-columns: repeat(4, minmax(84px, 1fr)); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--line); gap: 1px; }
+@media (max-width: 520px) { .tally { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tally div { background: var(--panel); padding: 10px 14px; }
+.tally b { display: block; font: 800 1.6rem/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.tally span { font: 500 .68rem var(--font-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.tally span::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+
+/* Filters */
+.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 28px 0 18px; }
+.search { flex: 1 1 260px; position: relative; min-width: 0; }
+.search input { width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 10px 36px; }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--faint); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px; font-size: .82rem; font-weight: 600; color: var(--muted); cursor: pointer; }
+.chip[aria-pressed="true"] { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+select { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: .86rem; }
+
+/* Cards */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; text-decoration: none;
+  display: grid; grid-template-rows: auto 1fr; transition: border-color .2s, transform .2s;
+}
+.card:hover { border-color: #3a414e; transform: translateY(-2px); }
+.photo { position: relative; aspect-ratio: 4 / 3.4; background: repeating-linear-gradient(135deg, var(--panel-2) 0 10px, #161a20 10px 20px); display: grid; place-items: end center; overflow: hidden; }
+.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.photo .sil { width: 58%; color: #2a303a; }
+.stamp { position: absolute; left: 10px; top: 10px; font: 600 .7rem var(--font-mono); letter-spacing: .1em; background: rgb(11 13 16 / .8); border: 1px solid var(--line); border-radius: 6px; padding: 3px 7px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 600 .66rem var(--font-mono); text-transform: uppercase; letter-spacing: .12em; padding: 4px 8px; border-radius: 6px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); }
+.photo .pill { position: absolute; right: 10px; top: 10px; background: rgb(11 13 16 / .85); }
+.card-body { padding: 14px 16px 16px; display: grid; gap: 10px; align-content: start; }
+.card h2 { font: 800 1.25rem/1.15 var(--font-display); font-stretch: 105%; margin: 0; overflow-wrap: anywhere; }
+.card h2.blank, .dossier h2.blank { color: var(--faint); font-style: italic; font-weight: 600; }
+.card p { margin: 0; font-size: .86rem; color: var(--muted); }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; font-size: .82rem; margin: 0; }
+.meta dt { font: 500 .66rem var(--font-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--faint); align-self: center; }
+.meta dd { margin: 0; overflow-wrap: anywhere; }
+.meta dd.none { color: var(--faint); }
+
+.threat { display: inline-flex; gap: 3px; vertical-align: middle; }
+.threat i { width: 14px; height: 6px; border-radius: 2px; background: #2a303a; }
+.threat[data-l="1"] i:nth-child(-n+1), .threat[data-l="2"] i:nth-child(-n+2), .threat[data-l="3"] i:nth-child(-n+3), .threat[data-l="4"] i:nth-child(-n+4) { background: var(--c); }
+
+.empty { border: 1px dashed var(--line); border-radius: 14px; padding: 36px 20px; text-align: center; color: var(--muted); }
+.empty b { display: block; color: var(--fg); font: 700 1.1rem var(--font-display); margin-bottom: 4px; }
+.empty code, .about code { font-family: var(--font-mono); font-size: .85em; background: var(--panel-2); padding: 1px 6px; border-radius: 5px; }
+
+/* Dossier */
+.back { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: .86rem; color: var(--muted); text-decoration: none; margin-bottom: 18px; }
+.back:hover { color: var(--fg); }
+.dossier { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .dossier { grid-template-columns: minmax(0, 1fr); } }
+.dossier .photo { border-radius: 14px; border: 1px solid var(--line); aspect-ratio: 4 / 5; }
+.sheet { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: grid; gap: 20px; min-width: 0; position: relative; overflow: hidden; }
+.sheet::after {
+  content: "CLASSIFIED"; position: absolute; right: -36px; top: 26px; transform: rotate(18deg);
+  font: 800 1.4rem var(--font-display); font-stretch: 125%; letter-spacing: .2em; color: rgb(239 62 66 / .16);
+  border: 3px solid rgb(239 62 66 / .16); padding: 2px 14px; pointer-events: none;
+}
+.sheet-head { display: grid; gap: 8px; }
+.case { font: 600 .78rem var(--font-mono); letter-spacing: .14em; color: var(--gold); }
+.dossier h2 { font: 800 clamp(1.8rem, 4vw, 2.6rem)/1.05 var(--font-display); font-stretch: 108%; margin: 0; text-transform: uppercase; overflow-wrap: anywhere; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0; }
+@media (max-width: 520px) { .fields { grid-template-columns: minmax(0, 1fr); } }
+.fields div { background: var(--panel); padding: 11px 14px; min-width: 0; }
+.fields dt { font: 500 .66rem var(--font-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--faint); }
+.fields dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+.fields dd.none { color: var(--faint); font-weight: 400; font-style: italic; }
+.block h3 { font: 600 .7rem var(--font-mono); text-transform: uppercase; letter-spacing: .14em; color: var(--muted); margin: 0 0 8px; }
+.block p { margin: 0; max-width: 68ch; white-space: pre-wrap; }
+.block p.none { color: var(--faint); font-style: italic; }
+.charges { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.charges li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline; }
+.charges li span { font: 600 .7rem var(--font-mono); color: var(--red); }
+.sig { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-top: 1px dashed var(--line); padding-top: 14px; font-size: .82rem; color: var(--muted); }
+.sig b { color: var(--fg); font-weight: 600; }
+
+/* Bulletins & about */
+.list { display: grid; gap: 12px; margin-top: 24px; }
+.bulletin { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+.bulletin time { font: 500 .72rem var(--font-mono); color: var(--gold); letter-spacing: .08em; }
+.bulletin h3 { margin: 4px 0 6px; font: 700 1.1rem var(--font-display); }
+.bulletin p { margin: 0; color: var(--muted); white-space: pre-wrap; }
+.about { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
+.about section { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.about h3 { margin: 0 0 8px; font: 700 1.05rem var(--font-display); }
+.about p, .about li { color: var(--muted); font-size: .92rem; }
+.about p { margin: 0; }
+.about ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+
+footer { border-top: 1px solid var(--line); color: var(--faint); font-size: .78rem; }
+footer .wrap { padding-block: 18px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="flagline" aria-hidden="true"><i></i><i></i><i></i></div>
+<header class="top gutter">
+  <div class="wrap">
+    <a class="crest" href="#wanted">
+      <span class="crest-badge"><img src="logo.png" alt=""></span>
+      <span class="crest-text"><b id="agency">SGRS</b><span id="agency-long"></span></span>
+    </a>
+    <nav aria-label="Portal sections">
+      <a href="#wanted" data-nav="wanted">Wanted</a>
+      <a href="#bulletins" data-nav="bulletins">Bulletins</a>
+      <a href="#about" data-nav="about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="gutter">
+  <div class="wrap">
+
+    <section class="view" id="view-wanted">
+      <div class="head">
+        <div>
+          <div class="eyebrow" id="server-eyebrow">Kingdom of Belgium</div>
+          <h1>Wanted register</h1>
+          <p class="lede">Open case files issued by the SGRS. Select a file to read the full dossier. Report sightings to an SGRS officer on the server.</p>
+        </div>
+        <div class="tally" id="tally"></div>
+      </div>
+
+      <div class="filters">
+        <label class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" type="search" placeholder="Search alias, Discord name, case number or charge" aria-label="Search files">
+        </label>
+        <div class="chips" id="status-chips" role="group" aria-label="Filter by status"></div>
+        <select id="threat-filter" aria-label="Filter by threat level"></select>
+        <select id="region-filter" aria-label="Filter by last seen"></select>
+      </div>
+
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section class="view" id="view-file" hidden></section>
+
+    <section class="view" id="view-bulletins" hidden>
+      <div class="eyebrow">Notices</div>
+      <h1>Bulletins</h1>
+      <p class="lede">Announcements from the SGRS: new warrants, captures, pardons and alerts.</p>
+      <div class="list" id="bulletins"></div>
+    </section>
+
+    <section class="view" id="view-about" hidden>
+      <div class="eyebrow">The service</div>
+      <h1>About the SGRS</h1>
+      <p class="lede">The SGRS is the intelligence and security service of the Kingdom of Belgium on this server. It keeps the wanted register and issues notices on behalf of the Crown.</p>
+      <div class="about">
+        <section>
+          <h3>Statuses</h3>
+          <ul>
+            <li><b style="color:var(--red)">Wanted</b>: an active warrant; arrest on sight.</li>
+            <li><b style="color:var(--amber)">At large</b>: identified but location unknown.</li>
+            <li><b style="color:var(--blue)">In custody</b>: detained and awaiting judgement.</li>
+            <li><b style="color:var(--green)">Cleared</b>: warrant lifted or pardoned.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Threat levels</h3>
+          <ul>
+            <li><b>Low</b>: minor offences, approach freely.</li>
+            <li><b>Medium</b>: repeat offender, report before acting.</li>
+            <li><b>High</b>: dangerous, contact an officer.</li>
+            <li><b>Extreme</b>: enemy of the Crown, do not engage alone.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Reporting</h3>
+          <p>Seen someone on the register? Message an SGRS officer on the server with the case number, where you saw them and when. Rewards are paid by the Crown once a capture is confirmed.</p>
+        </section>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="gutter">
+  <div class="wrap">
+    <span id="foot-left">Roleplay portal for the Kingdom of Belgium Discord server.</span>
+    <span>Fictional. Not affiliated with the Belgian Defence or any government service.</span>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+const D = window.SGRS_DATA || { profiles: [], bulletins: [] };
+
+const STATUS = {
+  "wanted": { label: "Wanted", c: "var(--red)" },
+  "at-large": { label: "At large", c: "var(--amber)" },
+  "in-custody": { label: "In custody", c: "var(--blue)" },
+  "cleared": { label: "Cleared", c: "var(--green)" },
+  "": { label: "Draft", c: "var(--faint)" },
+};
+const THREAT = { "low": [1, "Low", "var(--green)"], "medium": [2, "Medium", "var(--gold)"], "high": [3, "High", "var(--amber)"], "extreme": [4, "Extreme", "var(--red)"] };
+const PLACES = {
+  "antwerp": "Antwerp", "east-flanders": "East Flanders", "west-flanders": "West Flanders", "flemish-brabant": "Flemish Brabant",
+  "limburg": "Limburg", "hainaut": "Hainaut", "liege": "Liège", "luxembourg": "Luxembourg", "namur": "Namur",
+  "walloon-brabant": "Walloon Brabant", "brussels": "Brussels-Capital", "flanders": "Flanders", "wallonia": "Wallonia",
+};
+const SIL = `<svg class="sil" viewBox="0 0 100 90" fill="currentColor" aria-hidden="true"><circle cx="50" cy="30" r="19"/><path d="M10 90c2-22 18-34 40-34s38 12 40 34z"/></svg>`;
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = u => /^https?:\/\//i.test(u || "") || /^[\w./-]+\.(png|jpe?g|gif|webp)$/i.test(u || "") ? u : "";
+const status = p => STATUS[p.status] ? p.status : "";
+const named = p => !!(p.alias || "").trim();
+const filled = p => named(p) || p.discord || p.status || (p.charges || []).length;
+
+document.getElementById("agency").textContent = D.agency || "SGRS";
+document.getElementById("agency-long").textContent = `${D.agencyLong || ""} · ${D.server || ""}`;
+document.getElementById("server-eyebrow").textContent = D.server || "Kingdom of Belgium";
+document.getElementById("foot-left").textContent = `Roleplay portal for the ${D.server || "Kingdom of Belgium"} Discord server.`;
+
+// tally
+const count = s => D.profiles.filter(p => status(p) === s).length;
+document.getElementById("tally").innerHTML = ["wanted", "at-large", "in-custody", "cleared"].map(s =>
+  `<div style="--c:${STATUS[s].c}"><b>${count(s)}</b><span>${STATUS[s].label}</span></div>`).join("");
+
+// filters
+const F = { q: "", status: "all", threat: "all", region: "all" };
+const chips = document.getElementById("status-chips");
+chips.innerHTML = [["all", "All"], ["wanted", "Wanted"], ["at-large", "At large"], ["in-custody", "In custody"], ["cleared", "Cleared"]]
+  .map(([k, l]) => `<button class="chip" data-s="${k}" aria-pressed="${k === "all"}">${l}</button>`).join("");
+chips.addEventListener("click", e => {
+  const b = e.target.closest("[data-s]"); if (!b) return;
+  F.status = b.dataset.s;
+  chips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === b));
+  renderGrid();
+});
+const tf = document.getElementById("threat-filter");
+tf.innerHTML = `<option value="all">Any threat</option>` + Object.entries(THREAT).map(([k, v]) => `<option value="${k}">${v[1]}</option>`).join("");
+tf.addEventListener("change", () => { F.threat = tf.value; renderGrid(); });
+const rf = document.getElementById("region-filter");
+rf.innerHTML = `<option value="all">Anywhere</option>` + Object.entries(PLACES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+rf.addEventListener("change", () => { F.region = rf.value; renderGrid(); });
+document.getElementById("q").addEventListener("input", e => { F.q = e.target.value.trim().toLowerCase(); renderGrid(); });
+
+function threatHTML(t) {
+  const v = THREAT[t];
+  if (!v) return `<span class="threat" data-l="0"><i></i><i></i><i></i><i></i></span>`;
+  return `<span class="threat" data-l="${v[0]}" style="--c:${v[2]}" title="${v[1]}"><i></i><i></i><i></i><i></i></span> ${v[1]}`;
+}
+function photoHTML(p, big) {
+  const url = safeUrl(p.photo);
+  const s = STATUS[status(p)];
+  return `<div class="photo">${url ? `<img src="${esc(url)}" alt="">` : SIL}
+    <span class="stamp">${esc(p.id || "SGRS-????")}</span>
+    ${big ? "" : `<span class="pill" style="--c:${s.c}">${s.label}</span>`}</div>`;
+}
+const val = (v, empty = "—") => v ? esc(v) : empty;
+
+function renderGrid() {
+  const list = D.profiles.filter(p => {
+    if (F.status !== "all" && status(p) !== F.status) return false;
+    if (F.threat !== "all" && p.threat !== F.threat) return false;
+    if (F.region !== "all" && p.lastSeen !== F.region) return false;
+    if (F.q) {
+      const hay = [p.id, p.alias, p.discord, ...(p.charges || [])].join(" ").toLowerCase();
+      if (!hay.includes(F.q)) return false;
+    }
+    return true;
+  });
+  const grid = document.getElementById("grid");
+  if (!D.profiles.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><b>No case files yet</b>Add profiles in <code>data.js</code> and reload.</div>`;
+    return;
+  }
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><b>No files match</b>Clear the search or pick another filter.</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(p => {
+    const charges = p.charges || [];
+    return `<a class="card" href="#file-${encodeURIComponent(p.id)}">
+      ${photoHTML(p)}
+      <div class="card-body">
+        <h2 class="${named(p) ? "" : "blank"}">${named(p) ? esc(p.alias) : "Unassigned file"}</h2>
+        <p>${p.summary ? esc(p.summary) : filled(p) ? "" : "Profile not filled in yet."}</p>
+        <dl class="meta">
+          <dt>Charges</dt><dd class="${charges.length ? "" : "none"}">${charges.length ? esc(charges[0]) + (charges.length > 1 ? ` +${charges.length - 1}` : "") : "—"}</dd>
+          <dt>Seen</dt><dd class="${p.lastSeen ? "" : "none"}">${val(PLACES[p.lastSeen])}</dd>
+          <dt>Threat</dt><dd>${threatHTML(p.threat)}</dd>
+          <dt>Reward</dt><dd class="${p.reward ? "" : "none"}">${val(p.reward)}</dd>
+        </dl>
+      </div></a>`;
+  }).join("");
+}
+
+function renderFile(id) {
+  const p = D.profiles.find(x => x.id === id);
+  const el = document.getElementById("view-file");
+  if (!p) {
+    el.innerHTML = `<a class="back" href="#wanted">← Back to register</a><div class="empty"><b>File not found</b>No case file has the number ${esc(id)}.</div>`;
+    return;
+  }
+  const s = STATUS[status(p)];
+  const charges = p.charges || [];
+  const notSet = `<dd class="none">Not filled in yet</dd>`;
+  const field = (label, v) => `<div><dt>${label}</dt>${v ? `<dd>${v}</dd>` : notSet}</div>`;
+  const seen = p.lastSeen && PLACES[p.lastSeen]
+    ? (D.mapUrl ? `<a href="${esc(D.mapUrl)}#${p.lastSeen}">${esc(PLACES[p.lastSeen])}</a>` : esc(PLACES[p.lastSeen])) : "";
+  document.title = `${p.id} · SGRS Wanted Register`;
+  el.innerHTML = `
+    <a class="back" href="#wanted">← Back to register</a>
+    <div class="dossier">
+      ${photoHTML(p, true)}
+      <article class="sheet">
+        <div class="sheet-head">
+          <span class="case">CASE FILE ${esc(p.id)}</span>
+          <h2 class="${named(p) ? "" : "blank"}">${named(p) ? esc(p.alias) : "Unassigned file"}</h2>
+          <div class="tags"><span class="pill" style="--c:${s.c}">${s.label}</span>${THREAT[p.threat] ? `<span class="pill" style="--c:${THREAT[p.threat][2]}">Threat · ${THREAT[p.threat][1]}</span>` : ""}</div>
+        </div>
+        <dl class="fields">
+          ${field("Alias", p.alias && esc(p.alias))}
+          ${field("Discord", p.discord && esc(p.discord))}
+          ${field("Last seen", seen)}
+          ${field("Threat level", THREAT[p.threat] && threatHTML(p.threat))}
+          ${field("Reward", p.reward && esc(p.reward))}
+          ${field("Notice issued", p.issued && esc(p.issued))}
+        </dl>
+        <div class="block"><h3>Charges</h3>${charges.length
+          ? `<ul class="charges">${charges.map((c, i) => `<li><span>${String(i + 1).padStart(2, "0")}</span>${esc(c)}</li>`).join("")}</ul>`
+          : `<p class="none">No charges recorded yet.</p>`}</div>
+        <div class="block"><h3>Summary</h3><p class="${p.summary ? "" : "none"}">${p.summary ? esc(p.summary) : "No summary yet."}</p></div>
+        <div class="block"><h3>Case notes</h3><p class="${p.notes ? "" : "none"}">${p.notes ? esc(p.notes) : "No notes yet."}</p></div>
+        <div class="sig"><span>Issued by <b>${val(p.issuedBy, "the SGRS")}</b></span><span>${esc(D.server || "")}</span></div>
+      </article>
+    </div>`;
+}
+
+function renderBulletins() {
+  const el = document.getElementById("bulletins");
+  const list = (D.bulletins || []).slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  el.innerHTML = list.length ? list.map(b => `<article class="bulletin"><time>${esc(b.date)}</time><h3>${esc(b.title)}</h3><p>${esc(b.body)}</p></article>`).join("")
+    : `<div class="empty"><b>No bulletins yet</b>Add notices to <code>bulletins</code> in <code>data.js</code>.</div>`;
+}
+
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1)) || "wanted";
+  const isFile = h.startsWith("file-");
+  const view = isFile ? "file" : ["wanted", "bulletins", "about"].includes(h) ? h : "wanted";
+  document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== "view-" + view);
+  document.querySelectorAll("[data-nav]").forEach(a => a.setAttribute("aria-current", (isFile ? "wanted" : view) === a.dataset.nav ? "page" : "false"));
+  if (isFile) renderFile(h.slice(5)); else document.title = "SGRS Wanted Register";
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+
+renderGrid();
+renderBulletins();
+route();
+</script>
+</body>
+</html>
