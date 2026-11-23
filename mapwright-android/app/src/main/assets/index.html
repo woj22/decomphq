@@ -1,0 +1,1217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Mapwright</title>
+<style>
+@font-face { font-family: "IM Fell English"; font-style: normal; font-weight: 400; src: url(fonts/fell.woff) format("woff"); }
+@font-face { font-family: "IM Fell English"; font-style: italic; font-weight: 400; src: url(fonts/fell-italic.woff) format("woff"); }
+@font-face { font-family: "IM Fell English SC"; font-style: normal; font-weight: 400; src: url(fonts/fell-sc.woff) format("woff"); }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 400; src: url(fonts/manrope-400.woff) format("woff"); }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 500; src: url(fonts/manrope-400.woff) format("woff"); }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 600; src: url(fonts/manrope-600.woff) format("woff"); }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 700; src: url(fonts/manrope-700.woff) format("woff"); }
+body { margin: 0; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+input { -webkit-user-select: text; user-select: text; }
+[hidden] { display: none !important; }
+</style>
+<style>
+/* Layout: a cartographer's desk. Tool rail on the left, the sheet in the middle, a properties drawer on the right.
+   On phones the rail moves to the bottom and the drawer becomes a sheet above it.
+   Deliberately single-theme: dark green-black chrome so the parchment is the brightest thing on screen. */
+:root {
+  --desk: #171c19;      /* page ground */
+  --panel: #1f2622;     /* rails and drawer */
+  --raise: #2a332e;     /* inputs, hover */
+  --line: #38433c;
+  --fg: #ebe5d4;
+  --muted: #9da496;
+  --brass: #d4ab5c;     /* the one accent */
+  --brass-ink: #251a05;
+  --danger: #e2876b;
+  --ui: "Manrope", system-ui, -apple-system, sans-serif;
+  --map: "IM Fell English", "Iowan Old Style", Georgia, serif;
+  --map-sc: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--desk); color: var(--fg); font-family: var(--ui); font-size: 13px; overflow: hidden; }
+button, input, select { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; border-radius: 6px; }
+svg { display: block; }
+
+.app { height: 100%; display: grid; grid-template-columns: 56px minmax(0, 1fr) 272px; grid-template-rows: 52px minmax(0, 1fr); }
+.top { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); min-width: 0; }
+.brand { font-family: var(--map-sc); font-size: 21px; letter-spacing: .06em; color: var(--brass); margin-right: 8px; white-space: nowrap; }
+.mapsel { display: flex; align-items: center; gap: 4px; min-width: 110px; flex: 0 1 280px; }
+.mapsel select, .mapsel input { background: var(--raise); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; min-width: 0; width: 100%; }
+.spacer { flex: 1; }
+.tb { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 8px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.tb:hover { color: var(--fg); background: var(--raise); }
+.tb:disabled { opacity: .35; cursor: default; background: none; }
+.tb.primary { background: var(--brass); color: var(--brass-ink); }
+.tb.primary:hover { filter: brightness(1.07); }
+.status { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.status.warn { color: var(--danger); }
+
+.rail { background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 4px; padding-block: 10px; }
+.rail button { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; color: var(--muted); position: relative; }
+.rail button:hover { color: var(--fg); background: var(--raise); }
+.rail button[aria-pressed="true"] { color: var(--brass-ink); background: var(--brass); }
+.rail .sep { width: 24px; height: 1px; background: var(--line); margin: 4px 0; }
+
+.stage { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: radial-gradient(ellipse at center, #222a25 0%, var(--desk) 70%); touch-action: none; }
+#cv { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hint { position: absolute; left: 12px; bottom: 12px; background: #171c19d9; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; color: var(--muted); font-size: 12px; pointer-events: none; max-width: calc(100% - 24px); }
+.zoom { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 2px; background: #171c19d9; border: 1px solid var(--line); border-radius: 8px; padding: 2px; }
+.zoom button { width: 32px; height: 30px; border-radius: 6px; color: var(--muted); font-weight: 700; }
+.zoom button:hover { color: var(--fg); background: var(--raise); }
+.banner { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--brass); color: var(--fg); border-radius: 999px; padding: 6px 14px; font-size: 12px; white-space: nowrap; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
+
+.drawer { background: var(--panel); border-left: 1px solid var(--line); overflow-y: auto; min-height: 0; padding: 14px 14px 24px; display: flex; flex-direction: column; gap: 18px; }
+.drawer h3 { margin: 0 0 8px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.drawer section { display: flex; flex-direction: column; gap: 8px; }
+.drawer .tname { font-family: var(--map); font-size: 20px; color: var(--fg); margin: 0; }
+.drawer p { margin: 0; color: var(--muted); line-height: 1.45; }
+.row { display: flex; align-items: center; gap: 8px; }
+.row label { flex: 0 0 64px; color: var(--muted); }
+.row input[type=range] { flex: 1; accent-color: var(--brass); min-width: 0; }
+.row .val { width: 36px; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+.field { background: var(--raise); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%; }
+.seg { display: flex; background: var(--raise); border: 1px solid var(--line); border-radius: 9px; padding: 2px; gap: 2px; }
+.seg button { flex: 1; padding: 6px 4px; border-radius: 7px; color: var(--muted); font-weight: 600; }
+.seg button[aria-pressed="true"] { background: var(--brass); color: var(--brass-ink); }
+.stamps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.stamps button { aspect-ratio: 1; border-radius: 8px; background: #efe3c4; border: 2px solid transparent; display: grid; place-items: center; padding: 2px; }
+.stamps button[aria-pressed="true"] { border-color: var(--brass); box-shadow: 0 0 0 2px var(--brass); }
+.stamps canvas { width: 100%; height: 100%; }
+.stampname { color: var(--fg); font-weight: 600; }
+.check { display: flex; align-items: center; gap: 8px; color: var(--fg); cursor: pointer; }
+.check input { accent-color: var(--brass); width: 16px; height: 16px; }
+.btnrow { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn { padding: 8px 12px; border-radius: 8px; background: var(--raise); border: 1px solid var(--line); font-weight: 600; }
+.btn:hover { border-color: var(--muted); }
+.btn.danger { color: var(--danger); }
+.btn.armed { background: var(--danger); color: #1b0d07; border-color: var(--danger); }
+kbd { font-family: var(--ui); font-size: 11px; background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; color: var(--muted); }
+
+.menu { position: fixed; z-index: 50; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 6px; min-width: 220px; box-shadow: 0 18px 40px -12px #000; display: grid; }
+.menu button { text-align: left; padding: 9px 10px; border-radius: 6px; }
+.menu button:hover { background: var(--raise); }
+.menu small { display: block; color: var(--muted); font-size: 11px; }
+.menu .sep { height: 1px; background: var(--line); margin: 4px 0; }
+
+@media (max-width: 760px) {
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: 50px minmax(0, 1fr) auto calc(56px + env(safe-area-inset-bottom, 0px)); }
+  .brand { display: none; }
+  .top .tb .lbl { display: none; }
+  .rail { grid-row: 4; flex-direction: row; justify-content: space-around; border-right: 0; border-top: 1px solid var(--line); padding: 6px max(8px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(8px, env(safe-area-inset-left, 0px)); overflow-x: auto; }
+  .rail .sep { display: none; }
+  .stage { grid-row: 2; }
+  .drawer { grid-row: 3; border-left: 0; border-top: 1px solid var(--line); max-height: 38vh; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .drawer.collapsed { display: none; }
+  .stamps { grid-template-columns: repeat(7, 1fr); }
+  .hint { display: none; }
+  .mapsel { flex: 1 1 auto; }
+  .status { max-width: 28vw; overflow: hidden; text-overflow: ellipsis; font-size: 11px; }
+  .top .spacer { display: none; }
+}
+</style>
+
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand">Mapwright</div>
+    <div class="mapsel">
+      <select id="mapSelect" aria-label="Open map"></select>
+      <input id="mapName" type="text" aria-label="Map name" maxlength="80" hidden>
+    </div>
+    <button class="tb" id="mapMenuBtn" title="New, rename or delete maps"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">Map</span></button>
+    <div class="spacer"></div>
+    <span class="status" id="status"></span>
+    <button class="tb" id="undoBtn" title="Undo (Ctrl+Z)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+    <button class="tb" id="redoBtn" title="Redo (Ctrl+Shift+Z)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg></button>
+    <button class="tb primary" id="exportBtn" title="Save the map as a PNG image"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span class="lbl">Export PNG</span></button>
+  </header>
+
+  <nav class="rail" id="rail" aria-label="Tools">
+    <button data-tool="select" title="Select and move (V)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 8-6 2-2 6z"/></svg></button>
+    <button data-tool="hand" title="Pan (H, or hold Space)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11V4.5a1.5 1.5 0 0 1 3 0V12M14 11.5V6a1.5 1.5 0 0 1 3 0v8a6 6 0 0 1-6 6h-1a6 6 0 0 1-5-2.7L3.5 14a1.5 1.5 0 0 1 2.5-1.7L8 15"/></svg></button>
+    <div class="sep"></div>
+    <button data-tool="land" title="Paint land (B)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17c2-5 5-1 7-5s4-6 9-4c-1 5-4 10-9 11s-6 1-7-2z"/></svg></button>
+    <button data-tool="sea" title="Paint sea (E)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg></button>
+    <button data-tool="stamp" title="Mountains, forests and places (S)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20 9 7l4 7 2-3 7 9z"/></svg></button>
+    <button data-tool="path" title="Rivers, roads and borders (R)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20c4-1 3-6 7-7s3-6 9-9"/></svg></button>
+    <button data-tool="label" title="Place names (T)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg></button>
+    <button data-tool="decor" title="Compass, scale bar and title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m12 5 2.5 7L12 19l-2.5-7z"/></svg></button>
+    <button data-tool="erase" title="Erase features (X)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4-4 11-11 7 7-8 8zM10 21h11"/></svg></button>
+  </nav>
+
+  <main class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="banner" id="banner" hidden></div>
+    <div class="hint" id="hint"></div>
+    <div class="zoom">
+      <button id="zoomOut" title="Zoom out" aria-label="Zoom out">−</button>
+      <button id="zoomFit" title="Fit the whole map" aria-label="Fit map"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:auto"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      <button id="zoomIn" title="Zoom in" aria-label="Zoom in">+</button>
+    </div>
+  </main>
+
+  <aside class="drawer" id="drawer"></aside>
+</div>
+
+<script>
+(() => {
+"use strict";
+// ======================= constants =======================
+const W = 2400, H = 1600;            // sheet size in map units (exports at 2x: 4800 x 3200 px)
+const GW = 241, GH = 161;            // terrain grid nodes; spacing 10 units
+const SX = W / (GW - 1), SY = H / (GH - 1);
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uid = () => Math.random().toString(36).slice(2, 10);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const SESSION = uid();
+
+const STYLES = {
+  parchment: { name: "Parchment", water: "#e6d5ae", land: "#f3e8cb", ink: "#3b2b1b", waterInk: "#5d4a33", river: "#3e5361", road: "#5c4128", border: "#8b3a2a", paper: true, rip: [.42, .28, .16] },
+  atlas: { name: "Atlas", water: "#a8c5c0", land: "#ecdcad", ink: "#2e2618", waterInk: "#2c4d55", river: "#2e6b84", road: "#6a4a2a", border: "#9c392d", paper: true, rip: [.5, .32, .18] },
+  ink: { name: "Ink", water: "#ffffff", land: "#ffffff", ink: "#141414", waterInk: "#222222", river: "#141414", road: "#141414", border: "#444444", paper: false, rip: [.55, .35, .2] },
+};
+
+const LABELS = {
+  realm: { name: "Realm", font: "IM Fell English SC", size: 54, spacing: .32, italic: false, sea: false },
+  region: { name: "Region", font: "IM Fell English SC", size: 32, spacing: .22, italic: false, sea: false },
+  city: { name: "Settlement", font: "IM Fell English", size: 24, spacing: .02, italic: false, sea: false },
+  sea: { name: "Sea", font: "IM Fell English", size: 36, spacing: .18, italic: true, sea: true },
+  feature: { name: "Feature", font: "IM Fell English", size: 20, spacing: .06, italic: true, sea: false },
+};
+
+const STAMPS = [
+  ["mountain", "Mountain", 64, true], ["hill", "Hills", 40, true], ["pine", "Pine forest", 34, true], ["tree", "Woodland", 34, true],
+  ["marsh", "Marsh", 30, true], ["volcano", "Volcano", 72, false], ["capital", "Capital", 40, false], ["city", "City", 46, false],
+  ["town", "Town", 34, false], ["village", "Village", 24, false], ["castle", "Castle", 50, false], ["tower", "Tower", 42, false],
+  ["temple", "Temple", 38, false], ["ruin", "Ruins", 34, false], ["port", "Port", 32, false], ["cave", "Cave", 34, false],
+  ["camp", "Camp", 28, false], ["battle", "Battlefield", 30, false], ["ship", "Ship", 50, false], ["dot", "Marker", 18, false],
+];
+const STAMP = Object.fromEntries(STAMPS.map(([k, n, s, sc]) => [k, { name: n, size: s, scatter: sc }]));
+
+const PATHS = { river: "River", road: "Road", border: "Border" };
+const TOOLS = {
+  select: "Select", hand: "Pan", land: "Paint land", sea: "Paint sea", stamp: "Features", path: "Rivers & roads",
+  label: "Place names", decor: "Decorations", erase: "Erase features",
+};
+
+// ======================= state =======================
+const S = {
+  map: null,              // {id, name, terrain: Uint8Array, items: [], settings: {}}
+  saved: true, example: false,
+  maps: [], docs: {},     // from the store
+  db: null, downloads: null,
+  tool: "land", brush: 60, stamp: "mountain", stampSize: 1, scatter: true,
+  pathKind: "river", labelStyle: "realm", labelText: "", decor: "compass",
+  sel: null, view: { x: 0, y: 0, z: .4 }, undo: [], redo: [],
+  saving: false, saveAgain: false, storeState: "connecting",
+};
+
+function newMap(name) {
+  return { id: uid() + uid(), name, terrain: new Uint8Array(GW * GH), items: [], settings: { style: "parchment", frame: true } };
+}
+
+// ======================= random & noise =======================
+function rng(seed) { let s = (seed >>> 0) || 1; return () => { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; return ((s >>> 0) % 1e6) / 1e6; }; }
+function hashStr(t) { let h = 2166136261; for (const c of String(t)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function makeNoise(seed) {
+  const r = rng(seed), P = new Float32Array(512 * 512);
+  for (let i = 0; i < P.length; i++) P[i] = r();
+  const v = (x, y) => P[((y & 511) << 9) | (x & 511)];
+  const sm = t => t * t * (3 - 2 * t);
+  const n = (x, y) => { const xi = Math.floor(x), yi = Math.floor(y), xf = sm(x - xi), yf = sm(y - yi);
+    const a = v(xi, yi), b = v(xi + 1, yi), c = v(xi, yi + 1), d = v(xi + 1, yi + 1);
+    return a + (b - a) * xf + (c - a) * yf + (a - b - c + d) * xf * yf; };
+  return (x, y, oct = 5) => { let s = 0, amp = .5, f = 1, norm = 0; for (let o = 0; o < oct; o++) { s += amp * n(x * f + o * 17.3, y * f - o * 9.1); norm += amp; amp *= .5; f *= 2; } return s / norm; };
+}
+const wobble = makeNoise(7);
+
+// ======================= terrain → coastline =======================
+let coast = null; // {fill: Path2D, line: Path2D}
+function buildCoast() {
+  const t = S.map.terrain, f = new Float32Array(GW * GH), g = new Float32Array(GW * GH);
+  for (let i = 0; i < t.length; i++) f[i] = t[i];
+  // two box blurs round the cell edges into smooth shores
+  for (let pass = 0; pass < 2; pass++) {
+    const src = pass ? g : f, dst = pass ? f : g;
+    for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
+      let s = 0, n = 0;
+      for (let dy = -1; dy <= 1; dy++) { const yy = clamp(y + dy, 0, GH - 1); for (let dx = -1; dx <= 1; dx++) { s += src[yy * GW + clamp(x + dx, 0, GW - 1)]; n++; } }
+      dst[y * GW + x] = s / n;
+    }
+  }
+  const T = .5, fill = new Path2D(), line = new Path2D();
+  const jit = (x, y) => [x + (wobble(x / 60, y / 60, 3) - .5) * 14, y + (wobble(x / 60 + 40, y / 60 + 40, 3) - .5) * 14];
+  const lerp = (x1, y1, v1, x2, y2, v2) => { const k = (T - v1) / (v2 - v1); return jit(x1 + (x2 - x1) * k, y1 + (y2 - y1) * k); };
+  for (let y = 0; y < GH - 1; y++) {
+    let run = -1;
+    for (let x = 0; x < GW - 1; x++) {
+      const a = f[y * GW + x], b = f[y * GW + x + 1], c = f[(y + 1) * GW + x + 1], d = f[(y + 1) * GW + x];
+      const inA = a >= T, inB = b >= T, inC = c >= T, inD = d >= T;
+      if (inA && inB && inC && inD) { if (run < 0) run = x; continue; }
+      if (run >= 0) { fill.rect(run * SX - .5, y * SY - .5, (x - run) * SX + 1, SY + 1); run = -1; }
+      if (!inA && !inB && !inC && !inD) continue;
+      const x0 = x * SX, y0 = y * SY, x1 = x0 + SX, y1 = y0 + SY;
+      const corners = [[x0, y0, a, inA], [x1, y0, b, inB], [x1, y1, c, inC], [x0, y1, d, inD]];
+      const poly = [], cross = [];
+      for (let k = 0; k < 4; k++) {
+        const p = corners[k], q = corners[(k + 1) % 4];
+        if (p[3]) poly.push([p[0], p[1]]);
+        if (p[3] !== q[3]) { const m = lerp(p[0], p[1], p[2], q[0], q[1], q[2]); poly.push(m); cross.push(m); }
+      }
+      fill.moveTo(poly[0][0], poly[0][1]); for (let k = 1; k < poly.length; k++) fill.lineTo(poly[k][0], poly[k][1]); fill.closePath();
+      for (let k = 0; k + 1 < cross.length; k += 2) { line.moveTo(cross[k][0], cross[k][1]); line.lineTo(cross[k + 1][0], cross[k + 1][1]); }
+    }
+    if (run >= 0) fill.rect(run * SX - .5, y * SY - .5, (GW - 1 - run) * SX + 1, SY + 1);
+  }
+  coast = { fill, line };
+}
+
+// ======================= paper texture =======================
+let paperTex = null;
+function buildPaper() {
+  const c = document.createElement("canvas"); c.width = 1200; c.height = 800;
+  const x = c.getContext("2d"), r = rng(99);
+  x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height);
+  for (let i = 0; i < 260; i++) {
+    const px = r() * c.width, py = r() * c.height, rad = 20 + r() * 140;
+    const g = x.createRadialGradient(px, py, 0, px, py, rad);
+    g.addColorStop(0, `rgba(120,85,40,${.015 + r() * .03})`); g.addColorStop(1, "rgba(120,85,40,0)");
+    x.fillStyle = g; x.fillRect(px - rad, py - rad, rad * 2, rad * 2);
+  }
+  const img = x.getImageData(0, 0, c.width, c.height), d = img.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (r() - .5) * 16; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+  x.putImageData(img, 0, 0);
+  const v = x.createRadialGradient(c.width / 2, c.height / 2, c.height * .35, c.width / 2, c.height / 2, c.width * .62);
+  v.addColorStop(0, "rgba(110,75,30,0)"); v.addColorStop(1, "rgba(110,75,30,.28)");
+  x.fillStyle = v; x.fillRect(0, 0, c.width, c.height);
+  paperTex = c;
+}
+
+// ======================= drawing: features =======================
+function strokeFill(ctx, p, P, stroke = true) { ctx.fillStyle = P.land; ctx.fill(p); if (stroke) ctx.stroke(p); }
+function house(ctx, x, y, w, h, P) {
+  const p = new Path2D(); p.moveTo(x - w / 2, y); p.lineTo(x - w / 2, y - h); p.lineTo(x, y - h - w * .55); p.lineTo(x + w / 2, y - h); p.lineTo(x + w / 2, y); p.closePath();
+  strokeFill(ctx, p, P);
+}
+function drawIcon(ctx, it, P) {
+  const s = it.s, x = it.x, y = it.y, r = rng(hashStr(it.id));
+  ctx.save();
+  ctx.lineWidth = Math.max(1.1, s * .045); ctx.strokeStyle = P.ink; ctx.lineJoin = "round"; ctx.lineCap = "round";
+  const thin = ctx.lineWidth * .7;
+  switch (it.kind) {
+    case "mountain": case "volcano": {
+      const w = s * .62, px = x + (r() - .5) * s * .16, py = y - s, top = it.kind === "volcano" ? s * .12 : 0;
+      const p = new Path2D(); p.moveTo(x - w, y); p.quadraticCurveTo(x - w * .4, y - s * .55, px - top, py + top * .8);
+      if (top) p.lineTo(px + top, py + top * .8);
+      p.quadraticCurveTo(x + w * .45, y - s * .5, x + w, y);
+      const f = new Path2D(p); f.closePath(); ctx.fillStyle = P.land; ctx.fill(f); ctx.stroke(p);
+      ctx.lineWidth = thin; ctx.beginPath();
+      for (let i = 1; i <= 5; i++) { const t = i / 6.5, hx = px + (x + w - px) * t, hy = py + (y - py) * t + s * .03; ctx.moveTo(hx, hy); ctx.lineTo(hx - s * .16, hy + s * .1); }
+      ctx.moveTo(px, py + top); ctx.lineTo(px + s * .04, py + s * .38); ctx.stroke();
+      if (top) { ctx.beginPath(); for (let i = 0; i < 3; i++) ctx.arc(px + (i - 1) * s * .07 + s * .03 * i, py - s * (.12 + i * .1), s * (.05 + i * .02), 0, Math.PI * 2); ctx.stroke(); }
+      break;
+    }
+    case "hill": {
+      const w = s * .7, h = s * .5;
+      const p = new Path2D(); p.moveTo(x - w, y); p.quadraticCurveTo(x, y - h * 2, x + w, y);
+      const f = new Path2D(p); f.closePath(); ctx.fillStyle = P.land; ctx.fill(f); ctx.stroke(p);
+      ctx.lineWidth = thin; ctx.beginPath(); for (let i = 0; i < 3; i++) { const hx = x + w * (.25 + i * .18), hy = y - h * (.75 - i * .2); ctx.moveTo(hx, hy); ctx.lineTo(hx - s * .1, hy + s * .1); } ctx.stroke();
+      break;
+    }
+    case "pine": {
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - s * .22); ctx.stroke();
+      const p = new Path2D(); p.moveTo(x - s * .3, y - s * .2); p.lineTo(x - s * .08, y - s * .55); p.lineTo(x - s * .2, y - s * .55); p.lineTo(x, y - s); p.lineTo(x + s * .2, y - s * .55); p.lineTo(x + s * .08, y - s * .55); p.lineTo(x + s * .3, y - s * .2); p.closePath();
+      strokeFill(ctx, p, P);
+      ctx.lineWidth = thin; ctx.beginPath(); ctx.moveTo(x + s * .05, y - s * .3); ctx.lineTo(x + s * .18, y - s * .26); ctx.stroke();
+      break;
+    }
+    case "tree": {
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - s * .35); ctx.stroke();
+      const p = new Path2D(), cx = x, cy = y - s * .62, R = s * .3;
+      for (let i = 0; i <= 7; i++) { const a = -Math.PI / 2 + i * Math.PI * 2 / 7, rr = R * (.92 + r() * .16), bx = cx + Math.cos(a) * rr, by = cy + Math.sin(a) * rr * 1.08; if (i === 0) p.moveTo(bx, by); else { const am = a - Math.PI / 7; p.quadraticCurveTo(cx + Math.cos(am) * rr * 1.3, cy + Math.sin(am) * rr * 1.35, bx, by); } }
+      p.closePath(); strokeFill(ctx, p, P);
+      ctx.lineWidth = thin; ctx.beginPath(); ctx.arc(cx + R * .15, cy + R * .1, R * .55, -.2, 1.2); ctx.stroke();
+      break;
+    }
+    case "marsh": {
+      ctx.lineWidth = thin; ctx.beginPath();
+      for (let i = 0; i < 3; i++) { const bx = x + (i - 1) * s * .38, by = y - (i === 1 ? s * .2 : 0); ctx.moveTo(bx - s * .22, by); ctx.lineTo(bx + s * .22, by);
+        for (let k = -1; k <= 1; k++) { ctx.moveTo(bx + k * s * .07, by); ctx.lineTo(bx + k * s * .11, by - s * (.22 + (k === 0 ? .1 : 0))); } }
+      ctx.stroke(); break;
+    }
+    case "capital": {
+      const cy = y - s * .4; ctx.beginPath(); ctx.arc(x, cy, s * .36, 0, Math.PI * 2); ctx.fillStyle = P.land; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(x, cy, s * .28, 0, Math.PI * 2); ctx.lineWidth = thin; ctx.stroke();
+      ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * .09 : s * .22; ctx.lineTo(x + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
+      ctx.closePath(); ctx.fillStyle = P.ink; ctx.fill(); break;
+    }
+    case "city": {
+      const hs = [.62, .9, .55];
+      hs.forEach((h, i) => { const tx = x + (i - 1) * s * .26, tw = s * .22;
+        const p = new Path2D(); p.rect(tx - tw / 2, y - s * h, tw, s * h); strokeFill(ctx, p, P);
+        const roof = new Path2D(); roof.moveTo(tx - tw / 2 - s * .03, y - s * h); roof.lineTo(tx, y - s * h - s * .2); roof.lineTo(tx + tw / 2 + s * .03, y - s * h); roof.closePath(); ctx.fillStyle = P.ink; ctx.fill(roof);
+        ctx.fillRect(tx - s * .025, y - s * h * .6, s * .05, s * .08); });
+      ctx.beginPath(); ctx.moveTo(x - s * .5, y); ctx.lineTo(x + s * .5, y); ctx.stroke(); break;
+    }
+    case "town": house(ctx, x - s * .2, y, s * .34, s * .38, P); house(ctx, x + s * .2, y, s * .3, s * .3, P); break;
+    case "village": house(ctx, x, y, s * .5, s * .42, P); break;
+    case "castle": {
+      const k = new Path2D(), kw = s * .42, kh = s * .5;
+      k.moveTo(x - kw / 2, y); k.lineTo(x - kw / 2, y - kh);
+      for (let i = 0; i < 4; i++) { const cx = x - kw / 2 + i * kw / 3.5; k.lineTo(cx, y - kh - s * .07); k.lineTo(cx + kw / 7, y - kh - s * .07); k.lineTo(cx + kw / 7, y - kh); k.lineTo(cx + kw / 3.5, y - kh); }
+      k.lineTo(x + kw / 2, y); k.closePath(); strokeFill(ctx, k, P);
+      [-1, 1].forEach(sd => { const t = new Path2D(), tx = x + sd * s * .33, tw = s * .2, th = s * .72; t.rect(tx - tw / 2, y - th, tw, th); strokeFill(ctx, t, P);
+        const roof = new Path2D(); roof.moveTo(tx - tw / 2 - s * .03, y - th); roof.lineTo(tx, y - th - s * .22); roof.lineTo(tx + tw / 2 + s * .03, y - th); roof.closePath(); ctx.fillStyle = P.ink; ctx.fill(roof); });
+      ctx.beginPath(); ctx.moveTo(x - s * .07, y); ctx.lineTo(x - s * .07, y - s * .14); ctx.arc(x, y - s * .14, s * .07, Math.PI, 0); ctx.lineTo(x + s * .07, y); ctx.fillStyle = P.ink; ctx.fill(); break;
+    }
+    case "tower": {
+      const tw = s * .26, th = s * .82, p = new Path2D();
+      p.moveTo(x - tw / 2, y); p.lineTo(x - tw / 2 * .85, y - th); for (let i = 0; i < 3; i++) { const cx = x - tw / 2 + i * tw / 2.5; p.lineTo(cx, y - th - s * .09); p.lineTo(cx + tw / 5, y - th - s * .09); p.lineTo(cx + tw / 5, y - th); }
+      p.lineTo(x + tw / 2 * .85, y - th); p.lineTo(x + tw / 2, y); p.closePath(); strokeFill(ctx, p, P);
+      ctx.fillStyle = P.ink; ctx.fillRect(x - s * .025, y - th * .7, s * .05, s * .12); break;
+    }
+    case "temple": {
+      const p = new Path2D(); p.moveTo(x - s * .46, y - s * .58); p.lineTo(x, y - s * .9); p.lineTo(x + s * .46, y - s * .58); p.closePath(); strokeFill(ctx, p, P);
+      ctx.beginPath(); for (let i = 0; i < 4; i++) { const cx = x - s * .33 + i * s * .22; ctx.moveTo(cx, y - s * .58); ctx.lineTo(cx, y - s * .08); } ctx.stroke();
+      ctx.beginPath(); ctx.rect(x - s * .48, y - s * .08, s * .96, s * .08); ctx.fillStyle = P.land; ctx.fill(); ctx.stroke(); break;
+    }
+    case "ruin": {
+      ctx.lineWidth = ctx.lineWidth;
+      [[-.22, .62], [.18, .4], [.38, .22]].forEach(([dx, h]) => { const p = new Path2D(), cx = x + dx * s, w = s * .14;
+        p.moveTo(cx - w / 2, y); p.lineTo(cx - w / 2, y - s * h); p.lineTo(cx - w / 6, y - s * h - s * .06); p.lineTo(cx + w / 6, y - s * h + s * .02); p.lineTo(cx + w / 2, y - s * h - s * .04); p.lineTo(cx + w / 2, y); p.closePath(); strokeFill(ctx, p, P); });
+      ctx.beginPath(); ctx.moveTo(x - s * .42, y); ctx.lineTo(x + s * .5, y); ctx.stroke();
+      ctx.fillStyle = P.ink; for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(x - s * .05 + i * s * .1, y - s * .03, s * .025, 0, 7); ctx.fill(); } break;
+    }
+    case "port": {
+      const cy = y - s * .5; ctx.beginPath(); ctx.arc(x, y - s * .86, s * .08, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x, y - s * .78); ctx.lineTo(x, y - s * .05); ctx.moveTo(x - s * .2, y - s * .62); ctx.lineTo(x + s * .2, y - s * .62);
+      ctx.moveTo(x - s * .34, y - s * .3); ctx.quadraticCurveTo(x - s * .3, y - s * .02, x, y - s * .05); ctx.quadraticCurveTo(x + s * .3, y - s * .02, x + s * .34, y - s * .3); ctx.stroke(); void cy; break;
+    }
+    case "cave": {
+      const p = new Path2D(); p.moveTo(x - s * .55, y); p.quadraticCurveTo(x, y - s * 1.2, x + s * .55, y); const f = new Path2D(p); f.closePath(); ctx.fillStyle = P.land; ctx.fill(f); ctx.stroke(p);
+      ctx.beginPath(); ctx.moveTo(x - s * .16, y); ctx.lineTo(x - s * .16, y - s * .16); ctx.arc(x, y - s * .16, s * .16, Math.PI, 0); ctx.lineTo(x + s * .16, y); ctx.closePath(); ctx.fillStyle = P.ink; ctx.fill(); break;
+    }
+    case "camp": {
+      const p = new Path2D(); p.moveTo(x - s * .42, y); p.lineTo(x, y - s * .7); p.lineTo(x + s * .42, y); p.closePath(); strokeFill(ctx, p, P);
+      ctx.beginPath(); ctx.moveTo(x, y - s * .7); ctx.lineTo(x, y); ctx.moveTo(x, y - s * .7); ctx.lineTo(x - s * .06, y - s * .9); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - s * .12, y - s * .3); ctx.lineTo(x + s * .02, y); ctx.fillStyle = P.ink; ctx.fill(); break;
+    }
+    case "battle": {
+      ctx.lineWidth *= 1.3; ctx.beginPath();
+      ctx.moveTo(x - s * .4, y - s * .05); ctx.lineTo(x + s * .35, y - s * .8); ctx.moveTo(x + s * .4, y - s * .05); ctx.lineTo(x - s * .35, y - s * .8);
+      ctx.moveTo(x - s * .38, y - s * .3); ctx.lineTo(x - s * .12, y - s * .05); ctx.moveTo(x + s * .38, y - s * .3); ctx.lineTo(x + s * .12, y - s * .05); ctx.stroke(); break;
+    }
+    case "ship": {
+      const hull = new Path2D(); hull.moveTo(x - s * .5, y - s * .22); hull.quadraticCurveTo(x, y + s * .08, x + s * .5, y - s * .22); hull.lineTo(x + s * .38, y - s * .22); hull.lineTo(x - s * .4, y - s * .22); hull.closePath(); strokeFill(ctx, hull, P);
+      ctx.beginPath(); ctx.moveTo(x, y - s * .22); ctx.lineTo(x, y - s * .95); ctx.stroke();
+      const sail = new Path2D(); sail.moveTo(x - s * .3, y - s * .85); sail.quadraticCurveTo(x - s * .22, y - s * .55, x - s * .3, y - s * .32); sail.lineTo(x + s * .3, y - s * .32); sail.quadraticCurveTo(x + s * .38, y - s * .55, x + s * .3, y - s * .85); sail.closePath(); strokeFill(ctx, sail, P);
+      ctx.beginPath(); ctx.moveTo(x, y - s * .95); ctx.lineTo(x + s * .18, y - s * .9); ctx.lineTo(x, y - s * .85); ctx.fillStyle = P.ink; ctx.fill(); break;
+    }
+    default: { ctx.beginPath(); ctx.arc(x, y - s * .35, s * .3, 0, Math.PI * 2); ctx.fillStyle = P.land; ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(x, y - s * .35, s * .14, 0, Math.PI * 2); ctx.fillStyle = P.ink; ctx.fill(); }
+  }
+  ctx.restore();
+}
+function iconBox(it) { return { x0: it.x - it.s * .6, x1: it.x + it.s * .6, y0: it.y - it.s * 1.05, y1: it.y + it.s * .08 }; }
+
+// ======================= drawing: paths =======================
+function smooth(pts) {
+  let p = pts;
+  for (let k = 0; k < 2; k++) { const q = [p[0]]; for (let i = 0; i < p.length - 1; i++) { const a = p[i], b = p[i + 1]; q.push([a[0] * .75 + b[0] * .25, a[1] * .75 + b[1] * .25], [a[0] * .25 + b[0] * .75, a[1] * .25 + b[1] * .75]); } q.push(p[p.length - 1]); p = q; }
+  return p;
+}
+function drawPath(ctx, it, P) {
+  const pts = smooth(it.pts); if (pts.length < 2) return;
+  ctx.save(); ctx.lineCap = "round"; ctx.lineJoin = "round";
+  const w = it.w || 1;
+  if (it.kind === "river") {
+    ctx.strokeStyle = P.river;
+    let len = 0; const seg = []; for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); len += d; }
+    let acc = 0;
+    for (let i = 1; i < pts.length; i++) { acc += seg[i - 1]; ctx.lineWidth = (1 + 5 * (acc / len)) * w; ctx.beginPath(); ctx.moveTo(pts[i - 1][0], pts[i - 1][1]); ctx.lineTo(pts[i][0], pts[i][1]); ctx.stroke(); }
+  } else {
+    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (const p of pts.slice(1)) ctx.lineTo(p[0], p[1]);
+    if (it.kind === "road") { ctx.strokeStyle = P.road; ctx.lineWidth = 2.4 * w; ctx.setLineDash([10 * w, 7 * w]); }
+    else { ctx.strokeStyle = P.border; ctx.globalAlpha = .75; ctx.lineWidth = 3.2 * w; ctx.setLineDash([16 * w, 6 * w, 3 * w, 6 * w]); }
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+function distToPath(it, x, y) {
+  let best = Infinity; const p = it.pts;
+  for (let i = 1; i < p.length; i++) { const [ax, ay] = p[i - 1], [bx, by] = p[i], dx = bx - ax, dy = by - ay, l = dx * dx + dy * dy || 1;
+    const t = clamp(((x - ax) * dx + (y - ay) * dy) / l, 0, 1); best = Math.min(best, Math.hypot(ax + t * dx - x, ay + t * dy - y)); }
+  return best;
+}
+function simplify(pts, eps) {
+  if (pts.length < 3) return pts;
+  const keep = new Uint8Array(pts.length); keep[0] = keep[pts.length - 1] = 1;
+  const stack = [[0, pts.length - 1]];
+  while (stack.length) { const [a, b] = stack.pop(); let idx = -1, dmax = 0;
+    for (let i = a + 1; i < b; i++) { const d = distToPath({ pts: [pts[a], pts[b]] }, pts[i][0], pts[i][1]); if (d > dmax) { dmax = d; idx = i; } }
+    if (dmax > eps) { keep[idx] = 1; stack.push([a, idx], [idx, b]); } }
+  return pts.filter((_, i) => keep[i]).map(p => [Math.round(p[0] * 10) / 10, Math.round(p[1] * 10) / 10]);
+}
+
+// ======================= drawing: labels and decorations =======================
+function labelLayout(ctx, it) {
+  const st = LABELS[it.style] || LABELS.city, size = it.size || st.size;
+  ctx.font = `${st.italic ? "italic " : ""}${size}px "${st.font}", Georgia, serif`;
+  const text = String(it.text || ""), sp = size * st.spacing;
+  const widths = [...text].map(ch => ctx.measureText(ch).width);
+  const total = widths.reduce((a, b) => a + b, 0) + sp * Math.max(0, widths.length - 1);
+  return { st, size, chars: [...text], widths, sp, total };
+}
+function drawLabel(ctx, it, P) {
+  const L = labelLayout(ctx, it), bend = it.bend || 0;
+  ctx.save(); ctx.translate(it.x, it.y); ctx.rotate((it.rot || 0) * Math.PI / 180);
+  ctx.textBaseline = "middle"; ctx.textAlign = "center";
+  const color = L.st.sea ? P.waterInk : P.ink, halo = L.st.sea ? P.water : P.land;
+  const R = bend ? L.total / (Math.abs(bend) * Math.PI) : 0;
+  const place = (fn) => {
+    let s = -L.total / 2;
+    L.chars.forEach((ch, i) => { const mid = s + L.widths[i] / 2;
+      ctx.save();
+      if (bend) { const th = mid / R, sign = bend > 0 ? 1 : -1; ctx.translate(R * Math.sin(th), sign * R * (1 - Math.cos(th))); ctx.rotate(sign * th); }
+      else ctx.translate(mid, 0);
+      fn(ch); ctx.restore(); s += L.widths[i] + L.sp; });
+  };
+  if (P.paper || it.halo !== false) { ctx.lineWidth = L.size * .16; ctx.strokeStyle = halo; ctx.lineJoin = "round"; ctx.globalAlpha = .85; place(ch => ctx.strokeText(ch, 0, 0)); ctx.globalAlpha = 1; }
+  ctx.fillStyle = color; place(ch => ctx.fillText(ch, 0, 0));
+  ctx.restore();
+}
+function labelBox(ctx, it) { const L = labelLayout(ctx, it), h = L.size * (1 + Math.abs(it.bend || 0) * .8); return { x0: it.x - L.total / 2, x1: it.x + L.total / 2, y0: it.y - h / 2 - (it.bend > 0 ? 0 : h * .2), y1: it.y + h / 2 + (it.bend > 0 ? h * .3 : 0) }; }
+
+function drawCompass(ctx, it, P) {
+  const { x, y } = it, R = it.s;
+  ctx.save(); ctx.strokeStyle = P.ink; ctx.lineWidth = Math.max(1, R * .018); ctx.lineJoin = "round";
+  ctx.beginPath(); ctx.arc(x, y, R * .62, 0, Math.PI * 2); ctx.fillStyle = P.land; ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(x, y, R * .56, 0, Math.PI * 2); ctx.stroke();
+  for (let i = 0; i < 32; i++) { const a = i * Math.PI / 16, r1 = R * .56, r2 = R * (i % 4 ? .52 : .48); ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * r1, y + Math.sin(a) * r1); ctx.lineTo(x + Math.cos(a) * r2, y + Math.sin(a) * r2); ctx.stroke(); }
+  const point = (a, len, wid) => { const tx = x + Math.cos(a) * len, ty = y + Math.sin(a) * len, l = a - Math.PI / 2, rr = a + Math.PI / 2;
+    const lx = x + Math.cos(l) * wid, ly = y + Math.sin(l) * wid, rx = x + Math.cos(rr) * wid, ry = y + Math.sin(rr) * wid;
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(lx, ly); ctx.lineTo(tx, ty); ctx.closePath(); ctx.fillStyle = P.land; ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(rx, ry); ctx.lineTo(tx, ty); ctx.closePath(); ctx.fillStyle = P.ink; ctx.fill(); ctx.stroke(); };
+  for (let i = 0; i < 4; i++) point(Math.PI / 4 + i * Math.PI / 2, R * .5, R * .07);
+  for (let i = 0; i < 4; i++) point(-Math.PI / 2 + i * Math.PI / 2, R * .95, R * .12);
+  ctx.beginPath(); ctx.arc(x, y, R * .05, 0, Math.PI * 2); ctx.fillStyle = P.ink; ctx.fill();
+  ctx.font = `${R * .26}px "IM Fell English SC", Georgia, serif`; ctx.textAlign = "center"; ctx.textBaseline = "bottom"; ctx.fillStyle = P.ink; ctx.fillText("N", x, y - R * .98);
+  ctx.restore();
+}
+function drawScale(ctx, it, P) {
+  const { x, y } = it, len = it.s, h = Math.max(6, len * .035);
+  ctx.save(); ctx.strokeStyle = P.ink; ctx.lineWidth = 1.4;
+  for (let i = 0; i < 4; i++) { ctx.fillStyle = i % 2 ? P.land : P.ink; ctx.fillRect(x + i * len / 4, y, len / 4, h); }
+  ctx.strokeRect(x, y, len, h);
+  ctx.font = `${Math.max(12, len * .07)}px "IM Fell English", Georgia, serif`; ctx.fillStyle = P.ink; ctx.textBaseline = "top"; ctx.textAlign = "center";
+  const n = parseFloat(it.text) || 0, unit = String(it.text || "").replace(/^[\d.,\s]+/, "");
+  [0, 2, 4].forEach(k => ctx.fillText(k === 4 ? (it.text || "") : n ? String(Math.round(n * k / 4 * 10) / 10) : "", x + k * len / 4, y + h + 4));
+  void unit; ctx.restore();
+}
+function drawCartouche(ctx, it, P) {
+  const size = it.size || 46;
+  ctx.save(); ctx.font = `${size}px "IM Fell English SC", Georgia, serif`;
+  const tw = ctx.measureText(it.text || "").width, w = tw + size * 1.6, h = size * 1.5, x = it.x - w / 2, y = it.y - h / 2, c = size * .45;
+  ctx.strokeStyle = P.ink; ctx.lineWidth = Math.max(1.2, size * .04); ctx.fillStyle = P.land;
+  const p = new Path2D(); p.moveTo(x + c, y); p.lineTo(x + w - c, y); p.quadraticCurveTo(x + w, y, x + w, y + c * .6); p.lineTo(x + w, y + h - c * .6); p.quadraticCurveTo(x + w, y + h, x + w - c, y + h);
+  p.lineTo(x + c, y + h); p.quadraticCurveTo(x, y + h, x, y + h - c * .6); p.lineTo(x, y + c * .6); p.quadraticCurveTo(x, y, x + c, y); p.closePath();
+  ctx.fill(p); ctx.stroke(p);
+  ctx.lineWidth *= .6; ctx.strokeRect(x + c * .45, y + c * .3, w - c * .9, h - c * .6);
+  [[x, y + h / 2, -1], [x + w, y + h / 2, 1]].forEach(([ex, ey, d]) => { ctx.beginPath(); ctx.arc(ex + d * c * .35, ey, c * .35, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(ex + d * c * .35, ey, c * .12, 0, Math.PI * 2); ctx.fillStyle = P.ink; ctx.fill(); ctx.fillStyle = P.land; });
+  ctx.fillStyle = P.ink; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(it.text || "", it.x, it.y + size * .05);
+  ctx.restore();
+  return { x0: x - c, x1: x + w + c, y0: y, y1: y + h };
+}
+function decorBox(ctx, it) {
+  if (it.type === "compass") return { x0: it.x - it.s, x1: it.x + it.s, y0: it.y - it.s * 1.25, y1: it.y + it.s };
+  if (it.type === "scale") return { x0: it.x - 6, x1: it.x + it.s + 6, y0: it.y - 6, y1: it.y + it.s * .2 + 24 };
+  const size = it.size || 46; ctx.save(); ctx.font = `${size}px "IM Fell English SC", Georgia, serif`; const w = ctx.measureText(it.text || "").width + size * 1.6; ctx.restore();
+  return { x0: it.x - w / 2 - size * .5, x1: it.x + w / 2 + size * .5, y0: it.y - size * .75, y1: it.y + size * .75 };
+}
+function drawFrame(ctx, P) {
+  ctx.save(); ctx.strokeStyle = P.ink;
+  ctx.lineWidth = 3; ctx.strokeRect(18, 18, W - 36, H - 36);
+  ctx.lineWidth = 1.2; ctx.strokeRect(30, 30, W - 60, H - 60);
+  ctx.lineWidth = 1; for (let x = 30; x < W - 30; x += 60) { ctx.fillStyle = (x / 60) % 2 ? P.ink : P.land; ctx.fillRect(x, 20, Math.min(60, W - 30 - x), 8); ctx.fillRect(x, H - 28, Math.min(60, W - 30 - x), 8); }
+  for (let y = 30; y < H - 30; y += 60) { ctx.fillStyle = (y / 60) % 2 ? P.ink : P.land; ctx.fillRect(20, y, 8, Math.min(60, H - 30 - y)); ctx.fillRect(W - 28, y, 8, Math.min(60, H - 30 - y)); }
+  ctx.strokeRect(20, 20, W - 40, 8); ctx.strokeRect(20, H - 28, W - 40, 8); ctx.strokeRect(20, 20, 8, H - 40); ctx.strokeRect(W - 28, 20, 8, H - 40);
+  ctx.restore();
+}
+
+// ======================= render =======================
+const cv = $("#cv"), ctx = cv.getContext("2d");
+let dirtyCoast = true, raf = 0, pointerWorld = null;
+function render() { if (!raf) raf = requestAnimationFrame(() => { raf = 0; draw(); }); }
+
+function drawMap(c, opts = {}) {
+  const P = STYLES[S.map.settings.style] || STYLES.parchment;
+  if (dirtyCoast || !coast) { buildCoast(); dirtyCoast = false; }
+  c.save(); c.beginPath(); c.rect(0, 0, W, H); c.clip();
+  c.fillStyle = P.water; c.fillRect(0, 0, W, H);
+  if (P.paper) { c.globalCompositeOperation = "multiply"; c.globalAlpha = .9; c.drawImage(paperTex, 0, 0, W, H); c.globalAlpha = 1; c.globalCompositeOperation = "source-over"; }
+  // ripple lines echo the coast out to sea
+  c.lineCap = "round"; c.lineJoin = "round";
+  [46, 30, 16].forEach((wd, i) => {
+    c.globalAlpha = P.rip[2 - i]; c.strokeStyle = P.waterInk; c.lineWidth = wd + 2.2; c.stroke(coast.line);
+    c.globalAlpha = 1; c.strokeStyle = P.water; c.lineWidth = wd; c.stroke(coast.line);
+  });
+  if (P.paper) { c.save(); c.globalCompositeOperation = "multiply"; c.globalAlpha = .9; c.beginPath(); c.rect(0, 0, W, H); c.clip(); c.restore(); }
+  // land, with the paper showing through and a soft shade inside the shore
+  c.save(); c.clip(coast.fill);
+  c.fillStyle = P.land; c.fillRect(0, 0, W, H);
+  if (P.paper) { c.globalCompositeOperation = "multiply"; c.globalAlpha = .75; c.drawImage(paperTex, 0, 0, W, H); c.globalAlpha = 1; c.globalCompositeOperation = "source-over"; }
+  c.globalAlpha = .13; c.strokeStyle = P.ink; c.lineWidth = 16; c.stroke(coast.line); c.globalAlpha = 1;
+  c.restore();
+  c.strokeStyle = P.ink; c.lineWidth = 2.4; c.stroke(coast.line);
+
+  const items = S.map.items;
+  for (const it of items) if (it.type === "path") drawPath(c, it, P);
+  const icons = items.filter(it => it.type === "icon").sort((a, b) => a.y - b.y);
+  for (const it of icons) drawIcon(c, it, P);
+  for (const it of items) if (it.type === "compass") drawCompass(c, it, P); else if (it.type === "scale") drawScale(c, it, P);
+  for (const it of items) if (it.type === "label") drawLabel(c, it, P);
+  for (const it of items) if (it.type === "cartouche") drawCartouche(c, it, P);
+  if (S.map.settings.frame) drawFrame(c, P);
+  c.restore();
+  if (!opts.clean) {
+    c.save(); c.strokeStyle = "rgba(0,0,0,.35)"; c.lineWidth = 2 / S.view.z; c.strokeRect(0, 0, W, H); c.restore();
+  }
+}
+
+function draw() {
+  const dpr = window.devicePixelRatio || 1, r = cv.getBoundingClientRect();
+  if (cv.width !== Math.round(r.width * dpr) || cv.height !== Math.round(r.height * dpr)) { cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr); }
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
+  if (!S.map) return;
+  const v = S.view;
+  ctx.setTransform(dpr * v.z, 0, 0, dpr * v.z, -v.x * v.z * dpr, -v.y * v.z * dpr);
+  ctx.save(); ctx.shadowColor = "rgba(0,0,0,.5)"; ctx.shadowBlur = 40 * v.z; ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H); ctx.restore();
+  drawMap(ctx);
+  // selection and brush overlays
+  const sel = selected();
+  if (sel) { const b = boxOf(sel); ctx.save(); ctx.strokeStyle = "#d4ab5c"; ctx.lineWidth = 2 / v.z; ctx.setLineDash([6 / v.z, 4 / v.z]); ctx.strokeRect(b.x0 - 4 / v.z, b.y0 - 4 / v.z, b.x1 - b.x0 + 8 / v.z, b.y1 - b.y0 + 8 / v.z); ctx.restore(); }
+  if (drag && drag.kind === "path" && drag.pts.length > 1) drawPath(ctx, { kind: S.pathKind, pts: drag.pts, w: 1 }, STYLES[S.map.settings.style]);
+  if (pointerWorld && ["land", "sea", "erase"].includes(S.tool)) {
+    ctx.save(); ctx.strokeStyle = S.tool === "erase" ? "#e2876b" : "#d4ab5c"; ctx.lineWidth = 1.5 / v.z; ctx.setLineDash([5 / v.z, 4 / v.z]);
+    ctx.beginPath(); ctx.arc(pointerWorld.x, pointerWorld.y, S.brush, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+  }
+}
+
+function boxOf(it) {
+  if (it.type === "icon") return iconBox(it);
+  if (it.type === "label") return labelBox(ctx, it);
+  if (it.type === "path") { const xs = it.pts.map(p => p[0]), ys = it.pts.map(p => p[1]); return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }; }
+  return decorBox(ctx, it);
+}
+function selected() { return S.sel ? S.map.items.find(i => i.id === S.sel) : null; }
+function hitTest(x, y) {
+  const items = S.map.items, tol = 8 / S.view.z, inB = b => x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1;
+  const order = [...items.filter(i => i.type === "cartouche"), ...items.filter(i => i.type === "label").reverse(), ...items.filter(i => i.type === "compass" || i.type === "scale"),
+    ...items.filter(i => i.type === "icon").sort((a, b) => b.y - a.y)];
+  for (const it of order) if (inB(boxOf(it))) return it;
+  let best = null, bd = tol;
+  for (const it of items) if (it.type === "path") { const d = distToPath(it, x, y); if (d < bd) { bd = d; best = it; } }
+  return best;
+}
+
+// ======================= viewport =======================
+function fit() {
+  S.userMoved = false;
+  const r = cv.getBoundingClientRect(), pad = 24, z = Math.min((r.width - pad * 2) / W, (r.height - pad * 2) / H);
+  S.view = { z, x: -(r.width / z - W) / 2, y: -(r.height / z - H) / 2 }; render();
+}
+function zoomAt(f, sx, sy) {
+  S.userMoved = true;
+  const v = S.view, nz = clamp(v.z * f, .08, 4), wx = v.x + sx / v.z, wy = v.y + sy / v.z;
+  S.view = { z: nz, x: wx - sx / nz, y: wy - sy / nz }; render();
+}
+function toWorld(e) { const r = cv.getBoundingClientRect(); return { x: S.view.x + (e.clientX - r.left) / S.view.z, y: S.view.y + (e.clientY - r.top) / S.view.z }; }
+
+// ======================= history =======================
+function snapshot() { return { t: S.map.terrain.slice(), items: JSON.stringify(S.map.items), settings: JSON.stringify(S.map.settings) }; }
+function pushUndo() { S.undo.push(snapshot()); if (S.undo.length > 60) S.undo.shift(); S.redo = []; updateHistoryButtons(); }
+function restore(sn) { S.map.terrain = sn.t; S.map.items = JSON.parse(sn.items); S.map.settings = JSON.parse(sn.settings); dirtyCoast = true; if (!selected()) S.sel = null; }
+function undo() { if (!S.undo.length) return; S.redo.push(snapshot()); restore(S.undo.pop()); changed(); renderDrawer(); }
+function redo() { if (!S.redo.length) return; S.undo.push(snapshot()); restore(S.redo.pop()); changed(); renderDrawer(); }
+function updateHistoryButtons() { $("#undoBtn").disabled = !S.undo.length; $("#redoBtn").disabled = !S.redo.length; }
+
+// ======================= editing =======================
+function paintTerrain(x, y, val) {
+  const r = S.brush, t = S.map.terrain;
+  const x0 = clamp(Math.floor((x - r) / SX), 0, GW - 1), x1 = clamp(Math.ceil((x + r) / SX), 0, GW - 1);
+  const y0 = clamp(Math.floor((y - r) / SY), 0, GH - 1), y1 = clamp(Math.ceil((y + r) / SY), 0, GH - 1);
+  for (let gy = y0; gy <= y1; gy++) for (let gx = x0; gx <= x1; gx++) {
+    const dx = gx * SX - x, dy = gy * SY - y, rr = r * (1 + (wobble(gx / 7, gy / 7, 2) - .5) * .35);
+    if (dx * dx + dy * dy <= rr * rr) t[gy * GW + gx] = val;
+  }
+  dirtyCoast = true;
+}
+function placeIcon(kind, x, y, jitter) {
+  const base = STAMP[kind].size * S.stampSize, r = Math.random;
+  const it = { id: uid(), type: "icon", kind, x: Math.round(x + (jitter ? (r() - .5) * base * .4 : 0)), y: Math.round(y + (jitter ? (r() - .5) * base * .3 : 0)), s: Math.round(base * (jitter ? .85 + r() * .3 : 1)) };
+  S.map.items.push(it); return it;
+}
+function eraseAt(x, y) {
+  const r = S.brush, before = S.map.items.length;
+  S.map.items = S.map.items.filter(it => {
+    if (it.type === "icon") return Math.hypot(it.x - x, it.y - it.s * .4 - y) > r;
+    if (it.type === "path") return distToPath(it, x, y) > r * .5;
+    if (it.type === "label") { const b = labelBox(ctx, it); return !(x >= b.x0 - r * .3 && x <= b.x1 + r * .3 && y >= b.y0 - r * .3 && y <= b.y1 + r * .3); }
+    return true;
+  });
+  return S.map.items.length !== before;
+}
+function addDecor(kind, x, y) {
+  let it;
+  if (kind === "compass") it = { id: uid(), type: "compass", x, y, s: 110 };
+  else if (kind === "scale") it = { id: uid(), type: "scale", x: x - 150, y, s: 300, text: "100 leagues" };
+  else it = { id: uid(), type: "cartouche", x, y, text: S.map.name, size: 46 };
+  S.map.items.push(it); return it;
+}
+function deleteSelected() {
+  const it = selected(); if (!it) return;
+  pushUndo(); S.map.items = S.map.items.filter(i => i !== it); S.sel = null; changed(); renderDrawer();
+}
+
+// ======================= pointer input =======================
+let drag = null, spaceDown = false;
+const pointers = new Map();
+cv.addEventListener("pointerdown", e => {
+  if (!S.map) return;
+  cv.setPointerCapture(e.pointerId); pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  closeMenu();
+  if (pointers.size === 2) { // pinch: cancel whatever started and zoom/pan instead
+    if (drag && drag.undoPushed && drag.kind !== "pan") { restore(S.undo.pop()); updateHistoryButtons(); changed(false); }
+    const [a, b] = [...pointers.values()];
+    drag = { kind: "pinch", d: Math.hypot(a.x - b.x, a.y - b.y), cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2 }; return;
+  }
+  const w = toWorld(e);
+  if (e.button === 1 || S.tool === "hand" || spaceDown) { drag = { kind: "pan", sx: e.clientX, sy: e.clientY, vx: S.view.x, vy: S.view.y }; cv.style.cursor = "grabbing"; return; }
+  switch (S.tool) {
+    case "select": {
+      const hit = hitTest(w.x, w.y);
+      S.sel = hit ? hit.id : null; renderDrawer();
+      drag = hit ? { kind: "move", it: hit, sx: w.x, sy: w.y, ox: hit.x, oy: hit.y, opts: hit.pts ? hit.pts.map(p => p.slice()) : null, undoPushed: false }
+        : { kind: "pan", sx: e.clientX, sy: e.clientY, vx: S.view.x, vy: S.view.y };
+      break;
+    }
+    case "land": case "sea": pushUndo(); paintTerrain(w.x, w.y, S.tool === "land" ? 1 : 0); drag = { kind: "paint", lx: w.x, ly: w.y, undoPushed: true }; changed(); break;
+    case "erase": pushUndo(); eraseAt(w.x, w.y); drag = { kind: "erase", undoPushed: true }; changed(); break;
+    case "stamp": {
+      pushUndo(); const it = placeIcon(S.stamp, w.x, w.y, false);
+      drag = { kind: "stamp", lx: w.x, ly: w.y, undoPushed: true, scatter: S.scatter && STAMP[S.stamp].scatter, sp: it.s * (S.stamp === "mountain" ? .55 : .5) };
+      if (!drag.scatter) { S.sel = it.id; renderDrawer(); }
+      changed(); break;
+    }
+    case "path": drag = { kind: "path", pts: [[w.x, w.y]] }; break;
+    case "label": {
+      pushUndo();
+      const st = S.labelStyle, it = { id: uid(), type: "label", x: Math.round(w.x), y: Math.round(w.y), text: S.labelText.trim() || defaultLabel(st), style: st, rot: 0, bend: st === "realm" ? .15 : 0, size: LABELS[st].size };
+      S.map.items.push(it); S.sel = it.id; S.labelText = ""; changed(); renderDrawer();
+      setTimeout(() => { const f = $("#selText"); if (f) { f.focus(); f.select(); } }, 0);
+      drag = { kind: "move", it, sx: w.x, sy: w.y, ox: it.x, oy: it.y, undoPushed: true }; break;
+    }
+    case "decor": { pushUndo(); const it = addDecor(S.decor, Math.round(w.x), Math.round(w.y)); S.sel = it.id; changed(); renderDrawer(); drag = { kind: "move", it, sx: w.x, sy: w.y, ox: it.x, oy: it.y, undoPushed: true }; break; }
+  }
+});
+cv.addEventListener("pointermove", e => {
+  if (!S.map) return;
+  if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  const w = toWorld(e); pointerWorld = w;
+  if (!drag) { if (["land", "sea", "erase"].includes(S.tool)) render(); return; }
+  if (drag.kind === "pinch") {
+    if (pointers.size < 2) return;
+    const [a, b] = [...pointers.values()], d = Math.hypot(a.x - b.x, a.y - b.y), cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2, r = cv.getBoundingClientRect();
+    zoomAt(d / drag.d, cx - r.left, cy - r.top);
+    S.view.x -= (cx - drag.cx) / S.view.z; S.view.y -= (cy - drag.cy) / S.view.z;
+    drag.d = d; drag.cx = cx; drag.cy = cy; render(); return;
+  }
+  switch (drag.kind) {
+    case "pan": S.userMoved = true; S.view.x = drag.vx - (e.clientX - drag.sx) / S.view.z; S.view.y = drag.vy - (e.clientY - drag.sy) / S.view.z; render(); break;
+    case "move": {
+      const dx = w.x - drag.sx, dy = w.y - drag.sy;
+      if (!drag.undoPushed && Math.hypot(dx, dy) * S.view.z < 3) return;
+      if (!drag.undoPushed) { pushUndo(); drag.undoPushed = true; }
+      if (drag.it.type === "path") drag.it.pts = drag.opts.map(p => [p[0] + dx, p[1] + dy]);
+      else { drag.it.x = Math.round(drag.ox + dx); drag.it.y = Math.round(drag.oy + dy); }
+      changed(); break;
+    }
+    case "paint": {
+      const val = S.tool === "land" ? 1 : 0, d = Math.hypot(w.x - drag.lx, w.y - drag.ly), steps = Math.max(1, Math.ceil(d / (S.brush / 3)));
+      for (let i = 1; i <= steps; i++) paintTerrain(drag.lx + (w.x - drag.lx) * i / steps, drag.ly + (w.y - drag.ly) * i / steps, val);
+      drag.lx = w.x; drag.ly = w.y; changed(); break;
+    }
+    case "erase": if (eraseAt(w.x, w.y)) changed(); else render(); break;
+    case "stamp": if (drag.scatter && Math.hypot(w.x - drag.lx, w.y - drag.ly) >= drag.sp) { placeIcon(S.stamp, w.x, w.y, true); drag.lx = w.x; drag.ly = w.y; changed(); } break;
+    case "path": { const last = drag.pts[drag.pts.length - 1]; if (Math.hypot(w.x - last[0], w.y - last[1]) > 6 / S.view.z) { drag.pts.push([w.x, w.y]); render(); } break; }
+  }
+});
+function endPointer(e) {
+  pointers.delete(e.pointerId);
+  if (drag && drag.kind === "pinch") { if (pointers.size === 0) drag = null; return; }
+  if (!drag) return;
+  if (drag.kind === "path" && drag.pts.length >= 2) {
+    pushUndo(); const it = { id: uid(), type: "path", kind: S.pathKind, pts: simplify(drag.pts, 2.5 / Math.max(.3, S.view.z)), w: 1 };
+    S.map.items.push(it); changed();
+  }
+  drag = null; cv.style.cursor = "";
+  render();
+}
+cv.addEventListener("pointerup", endPointer);
+cv.addEventListener("pointercancel", endPointer);
+cv.addEventListener("pointerleave", () => { pointerWorld = null; render(); });
+cv.addEventListener("wheel", e => {
+  e.preventDefault(); const r = cv.getBoundingClientRect();
+  if (e.ctrlKey || !e.shiftKey && Math.abs(e.deltaY) > Math.abs(e.deltaX) && e.deltaMode === 0 && !Number.isInteger(e.deltaY)) zoomAt(Math.exp(-e.deltaY * .01), e.clientX - r.left, e.clientY - r.top);
+  else if (e.deltaMode === 1 || Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 50) zoomAt(Math.exp(-e.deltaY * .0015), e.clientX - r.left, e.clientY - r.top);
+  else { S.userMoved = true; S.view.x += e.deltaX / S.view.z; S.view.y += e.deltaY / S.view.z; render(); }
+}, { passive: false });
+
+document.addEventListener("keydown", e => {
+  if (e.target.closest("input, select, textarea")) { if (e.key === "Escape") e.target.blur(); return; }
+  const k = e.key.toLowerCase(), mod = e.ctrlKey || e.metaKey;
+  if (mod && k === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+  if (mod && k === "y") { e.preventDefault(); redo(); return; }
+  if (e.code === "Space") { spaceDown = true; cv.style.cursor = "grab"; e.preventDefault(); return; }
+  if (k === "delete" || k === "backspace") { deleteSelected(); return; }
+  if (k === "escape") { S.sel = null; renderDrawer(); render(); return; }
+  if (k === "[") { S.brush = clamp(S.brush - 10, 10, 300); renderDrawer(); render(); return; }
+  if (k === "]") { S.brush = clamp(S.brush + 10, 10, 300); renderDrawer(); render(); return; }
+  const map = { v: "select", h: "hand", b: "land", e: "sea", s: "stamp", r: "path", t: "label", x: "erase" };
+  if (!mod && map[k]) setTool(map[k]);
+});
+document.addEventListener("keyup", e => { if (e.code === "Space") { spaceDown = false; cv.style.cursor = ""; } });
+
+// ======================= names =======================
+const SYL = ["ar", "bel", "cor", "dun", "el", "fen", "gal", "har", "is", "kel", "lor", "mar", "nor", "or", "pel", "ros", "sar", "tal", "ul", "val", "wyn", "yr", "ath", "eth", "oth", "ash", "dra", "mir", "thal", "bran", "cael", "dor", "gwen", "hal", "ost", "ren", "vey", "bris", "cal", "mor"];
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+function nameRoot(r) { const pick = () => SYL[Math.floor(r() * SYL.length)]; const a = pick(); let b = pick(); while (b === a || b.slice(0, 2) === a.slice(-2)) b = pick(); let n = a + b; if (r() < .2) { let c = pick(); while (c === b) c = pick(); n += c; } return cap(n.replace(/(.)\1\1/, "$1$1")); }
+function realmName(r) { return nameRoot(r) + ["ia", "mark", "or", "mere", "gard", "esse", "ond"][Math.floor(r() * 7)]; }
+function placeName(r) { return nameRoot(r) + ["ford", "hold", "haven", "wick", "by", "ton", "mouth", "reach", "fall", "gate", "stead", "moor"][Math.floor(r() * 12)]; }
+function seaName(r) { return ["The Sea of ", "The Gulf of ", "The ", "The Bay of "][Math.floor(r() * 4)] + nameRoot(r) + (r() < .3 ? " Deep" : ""); }
+function defaultLabel(st) { const r = rng(Date.now()); return st === "realm" ? realmName(r) : st === "sea" ? seaName(r) : st === "city" ? placeName(r) : st === "region" ? "The " + nameRoot(r) + " Wilds" : "The " + nameRoot(r) + " Pass"; }
+
+// ======================= generator =======================
+function generate(kind, features, seed = (Math.random() * 1e9) | 0) {
+  const r = rng(seed), noise = makeNoise(seed), ridge = makeNoise(seed + 1), wood = makeNoise(seed + 2);
+  const h = new Float32Array(GW * GH);
+  for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
+    const nx = x / GW, ny = y / GH, dx = (nx - .5) * 2, dy = (ny - .5) * 2, d = Math.sqrt(dx * dx * .9 + dy * dy * 1.1);
+    const e = kind === "archipelago" ? noise(nx * 7, ny * 5, 5) : noise(nx * 3.2, ny * 2.4, 6);
+    h[y * GW + x] = kind === "blank" ? -1 : e - d * (kind === "archipelago" ? .32 : .62);
+  }
+  const m = newMap("Untitled map"), target = kind === "archipelago" ? .27 : .4;
+  if (kind !== "blank") { const sorted = Float32Array.from(h).sort(), thr = sorted[Math.floor(sorted.length * (1 - target))]; for (let i = 0; i < h.length; i++) m.terrain[i] = h[i] >= thr ? 1 : 0; }
+  // keep the very edge as sea so the landmass sits inside the frame
+  for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) if (x < 5 || y < 5 || x > GW - 6 || y > GH - 6) m.terrain[y * GW + x] = 0;
+  if (!features || kind === "blank") return m;
+
+  const T = m.terrain, idx = (x, y) => y * GW + x;
+  // distance (in grid steps) from each cell to the nearest cell of the other kind
+  const dist = new Int16Array(GW * GH).fill(-1), q = [];
+  for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) { const v = T[idx(x, y)];
+    if ((x > 0 && T[idx(x - 1, y)] !== v) || (x < GW - 1 && T[idx(x + 1, y)] !== v) || (y > 0 && T[idx(x, y - 1)] !== v) || (y < GH - 1 && T[idx(x, y + 1)] !== v)) { dist[idx(x, y)] = 0; q.push(idx(x, y)); } }
+  for (let qi = 0; qi < q.length; qi++) { const i = q[qi], x = i % GW, y = (i / GW) | 0;
+    for (const [nx, ny] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) if (nx >= 0 && ny >= 0 && nx < GW && ny < GH) { const j = idx(nx, ny); if (dist[j] < 0 && T[j] === T[i]) { dist[j] = dist[i] + 1; q.push(j); } } }
+  const land = (x, y) => T[idx(clamp(Math.round(x / SX), 0, GW - 1), clamp(Math.round(y / SY), 0, GH - 1))] === 1;
+  const inland = (x, y) => dist[idx(clamp(Math.round(x / SX), 0, GW - 1), clamp(Math.round(y / SY), 0, GH - 1))];
+  const items = m.items, used = [];
+  const free = (x, y, rad) => used.every(u => Math.hypot(u[0] - x, u[1] - y) > rad + u[2]);
+  const icon = (kind, x, y, s) => { const it = { id: uid(), type: "icon", kind, x: Math.round(x), y: Math.round(y), s: Math.round(s) }; items.push(it); used.push([x, y - s * .4, s * .45]); return it; };
+
+  // mountains along ridges
+  const peaks = [];
+  for (let y = 120; y < H - 80; y += 42) for (let x = 80; x < W - 80; x += 50) {
+    const jx = x + (r() - .5) * 30, jy = y + (r() - .5) * 24, rv = 1 - Math.abs(ridge(jx / 520, jy / 520, 4) * 2 - 1);
+    if (land(jx, jy) && inland(jx, jy) > 3 && rv > .9 && free(jx, jy, 20)) peaks.push(icon("mountain", jx, jy, 50 + r() * 26));
+    else if (land(jx, jy) && inland(jx, jy) > 2 && rv > .83 && r() < .4 && free(jx, jy, 16)) icon("hill", jx, jy, 32 + r() * 12);
+  }
+  // forests
+  for (let y = 80; y < H - 60; y += 26) for (let x = 60; x < W - 60; x += 28) {
+    const jx = x + (r() - .5) * 18, jy = y + (r() - .5) * 14, wv = wood(jx / 300, jy / 300, 4);
+    if (land(jx, jy) && inland(jx, jy) > 1 && wv > .6 && free(jx, jy, 10)) icon(wv > .66 ? "pine" : "tree", jx, jy, 28 + r() * 10);
+  }
+  // settlements: a capital inland, cities and ports on the coast, towns between
+  const spots = [];
+  for (let i = 0; i < 4000 && spots.length < 400; i++) { const x = 120 + r() * (W - 240), y = 140 + r() * (H - 260); if (land(x, y)) spots.push([x, y, inland(x, y)]); }
+  const names = new Set(), uniq = f => { let n; do n = f(r); while (names.has(n)); names.add(n); return n; };
+  const place = (kind, pred, size, label) => { const s = spots.find(p => pred(p) && free(p[0], p[1], 46)); if (!s) return null;
+    const it = icon(kind, s[0], s[1], size);
+    if (label) items.push({ id: uid(), type: "label", x: Math.round(s[0]), y: Math.round(s[1] + 22), text: uniq(placeName), style: "city", rot: 0, bend: 0, size: kind === "capital" ? 28 : 22 });
+    return it; };
+  const capital = place("capital", p => p[2] > 8, 40, true);
+  const cities = [];
+  for (let i = 0; i < 3; i++) { const c = place(i === 0 ? "port" : "city", p => p[2] >= 1 && p[2] <= 3, i === 0 ? 34 : 44, true); if (c) cities.push(c); }
+  for (let i = 0; i < 4; i++) { const c = place(i % 2 ? "village" : "town", p => p[2] > 2, i % 2 ? 24 : 34, true); if (c) cities.push(c); }
+  place("castle", p => p[2] > 5, 48, false); place("ruin", p => p[2] > 4, 34, false); place("tower", p => p[2] > 3, 42, false);
+
+  // rivers run downhill from the mountains to the sea
+  const hval = (x, y) => h[idx(clamp(Math.round(x / SX), 0, GW - 1), clamp(Math.round(y / SY), 0, GH - 1))];
+  peaks.filter(pk => inland(pk.x, pk.y) > 8).sort((a, b) => inland(b.x, b.y) - inland(a.x, a.y)).filter((pk, i, arr) => arr.slice(0, i).every(o => Math.hypot(o.x - pk.x, o.y - pk.y) > 300)).slice(0, 5).forEach(pk => {
+    let x = pk.x + 20, y = pk.y + 6; const pts = [[x, y]];
+    for (let step = 0; step < 220 && land(x, y); step++) {
+      let best = null, bv = Infinity;
+      for (let a = 0; a < 12; a++) { const ang = a * Math.PI / 6, nx = x + Math.cos(ang) * 18, ny = y + Math.sin(ang) * 18, v = hval(nx, ny) + (r() - .5) * .02 + inland(nx, ny) * .004; if (v < bv) { bv = v; best = [nx, ny]; } }
+      x = best[0]; y = best[1]; pts.push([x, y]);
+    }
+    if (!land(x, y) && pts.length > 8) items.push({ id: uid(), type: "path", kind: "river", pts: simplify(pts, 3), w: 1 });
+  });
+  // roads from the capital
+  if (capital) cities.forEach(c => {
+    const pts = [[capital.x, capital.y]], n = 8;
+    for (let i = 1; i < n; i++) { const t = i / n; pts.push([capital.x + (c.x - capital.x) * t + (r() - .5) * 50, capital.y + (c.y - capital.y) * t + (r() - .5) * 50]); }
+    pts.push([c.x, c.y]);
+    if (pts.every(p => land(p[0], p[1]))) items.push({ id: uid(), type: "path", kind: "road", pts, w: 1 });
+  });
+  // names for the realm and the sea, a compass, a scale and a title
+  let cx = 0, cy = 0, n = 0; for (let y = 0; y < GH; y += 2) for (let x = 0; x < GW; x += 2) if (T[idx(x, y)]) { cx += x * SX; cy += y * SY; n++; }
+  if (n) { cx /= n; cy /= n; let best = [cx, cy], bd = -1; for (const s of spots) if (s[2] > bd && Math.hypot(s[0] - cx, s[1] - cy) < 400 && free(s[0], s[1] - 30, 60)) { bd = s[2]; best = s; }
+    m.name = uniq(realmName); items.push({ id: uid(), type: "label", x: Math.round(best[0]), y: Math.round(best[1] - 40), text: m.name, style: "realm", rot: 0, bend: .12, size: 58 }); }
+  const corner = (cands, rad) => cands.find(([x, y]) => !land(x, y) && !land(x - rad, y - rad) && !land(x + rad, y + rad)) || cands[0];
+  const [ccx, ccy] = corner([[W - 190, H - 210], [190, H - 210], [W - 190, 230], [190, 230]], 110); items.push({ id: uid(), type: "compass", x: ccx, y: ccy, s: 110 });
+  const [scx, scy] = corner([[W - 420, H - 90], [110, H - 90]], 40); items.push({ id: uid(), type: "scale", x: scx, y: scy, s: 300, text: "100 leagues" });
+  let sea = null, sd = -1; for (let y = 22; y < GH - 22; y += 3) for (let x = 36; x < GW - 36; x += 3) { const i = idx(x, y), px = x * SX, py = y * SY;
+    if (!T[i] && dist[i] > sd && Math.hypot(px - ccx, py - ccy) > 300 && Math.hypot(px - scx - 150, py - scy) > 220) { sd = dist[i]; sea = [px, py]; } }
+  if (sea) items.push({ id: uid(), type: "label", x: Math.round(sea[0]), y: Math.round(sea[1]), text: uniq(seaName), style: "sea", rot: 0, bend: -.08, size: 36 });
+  m.settings.style = "parchment";
+  return m;
+}
+
+// ======================= storage =======================
+function packTerrain(t) { const b = new Uint8Array(Math.ceil(t.length / 8)); for (let i = 0; i < t.length; i++) if (t[i]) b[i >> 3] |= 1 << (i & 7); let s = ""; for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s); }
+function unpackTerrain(str) { const t = new Uint8Array(GW * GH); try { const s = atob(str || ""); for (let i = 0; i < t.length; i++) t[i] = (s.charCodeAt(i >> 3) >> (i & 7)) & 1; } catch {} return t; }
+const AND = window.MapwrightAndroid || null;
+function getDoc(id) { if (AND) { try { return JSON.parse(AND.loadMap(id) || "null"); } catch { return null; } } return S.docs[id]; }
+function mapDoc(m) { return { name: m.name, updatedAt: Date.now(), editor: SESSION, v: 1, terrain: packTerrain(m.terrain), items: m.items, settings: m.settings }; }
+function docToMap(id, d) { return { id, name: d.name || "Untitled map", terrain: unpackTerrain(d.terrain), items: Array.isArray(d.items) ? d.items : [], settings: Object.assign({ style: "parchment", frame: true }, d.settings || {}) }; }
+
+let saveTimer = 0;
+function changed(save = true) {
+  render();
+  if (!save) return;
+  S.saved = false; S.example = false; $("#banner").hidden = true;
+  setStatus();
+  clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 1200);
+}
+async function saveNow() {
+  if (AND && S.map) {
+    const m = S.map, doc = mapDoc(m), res = AND.saveMap(m.id, JSON.stringify(doc));
+    if (res === "ok") { S.saved = true; S.storeState = "ok"; const e = S.maps.find(x => x.id === m.id); if (e) { e.name = m.name; e.updatedAt = doc.updatedAt; } else S.maps.unshift({ id: m.id, name: m.name, updatedAt: doc.updatedAt }); renderMapSelect(); }
+    else S.storeState = res === "full" ? "full" : "error";
+    return setStatus();
+  }
+  if (!S.db || !S.map) return setStatus();
+  if (S.saving) { S.saveAgain = true; return; }
+  S.saving = true; setStatus();
+  const m = S.map;
+  try {
+    await S.db.doc("maps/" + m.id).set(mapDoc(m));
+    if (S.map === m && !S.saveAgain) S.saved = true;
+    S.storeState = "ok";
+  } catch (err) {
+    S.storeState = err && err.code === "permission_denied" ? "readonly" : err && err.code === "quota_exceeded" ? "full" : "error";
+  }
+  S.saving = false; setStatus();
+  if (S.saveAgain) { S.saveAgain = false; saveNow(); }
+}
+function setStatus() {
+  const el = $("#status"); el.classList.remove("warn");
+  if (S.storeState === "none") { el.textContent = "Not saved: sign in to claude.ai to keep maps"; el.classList.add("warn"); return; }
+  if (S.storeState === "connecting") { el.textContent = "Connecting…"; return; }
+  if (S.storeState === "readonly") { el.textContent = "View only: you can't save changes to these maps"; el.classList.add("warn"); return; }
+  if (S.storeState === "full") { el.textContent = "Storage full: delete a map to keep saving"; el.classList.add("warn"); return; }
+  if (S.storeState === "error") { el.textContent = "Couldn't save. Retrying with your next change"; el.classList.add("warn"); return; }
+  el.textContent = S.example ? "Example, not saved yet" : S.saving ? "Saving…" : S.saved ? (AND ? "Saved on this phone" : "Saved") : "Unsaved changes";
+}
+
+function openMap(m, example = false) {
+  S.map = m; S.example = example; S.saved = !example; S.sel = null; S.undo = []; S.redo = []; dirtyCoast = true;
+  updateHistoryButtons(); renderMapSelect(); renderDrawer(); setStatus(); fit();
+  const b = $("#banner"); b.hidden = !example; b.textContent = "Example map, made up for you. Change anything to keep it, or start a new map from the Map menu.";
+  try { localStorage.setItem("mapwright:last", m.id); } catch {}
+  if (AND) AND.setLastMap(m.id);
+}
+function renderMapSelect() {
+  const sel = $("#mapSelect"), list = S.maps.slice();
+  if (S.map && !list.some(m => m.id === S.map.id)) list.unshift({ id: S.map.id, name: S.map.name });
+  sel.innerHTML = list.map(m => `<option value="${esc(m.id)}" ${S.map && m.id === S.map.id ? "selected" : ""}>${esc(m.id === S.map?.id ? S.map.name : m.name)}</option>`).join("");
+}
+$("#mapSelect").addEventListener("change", e => {
+  const id = e.target.value; if (id === S.map?.id) return; const d = getDoc(id); if (!d) return;
+  if (!S.saved) saveNow();
+  openMap(docToMap(id, d));
+});
+
+// ======================= menus =======================
+let menuEl = null;
+function closeMenu() { menuEl?.remove(); menuEl = null; }
+function openMenu(anchor, html, onClick) {
+  closeMenu(); menuEl = document.createElement("div"); menuEl.className = "menu"; menuEl.innerHTML = html; document.body.appendChild(menuEl);
+  const r = anchor.getBoundingClientRect(), m = menuEl.getBoundingClientRect();
+  menuEl.style.top = Math.min(r.bottom + 6, innerHeight - m.height - 8) + "px"; menuEl.style.left = clamp(r.left, 8, innerWidth - m.width - 8) + "px";
+  menuEl.addEventListener("click", e => { const b = e.target.closest("button[data-a]"); if (b) onClick(b.dataset.a, b); });
+}
+document.addEventListener("pointerdown", e => { if (menuEl && !e.target.closest(".menu") && !e.target.closest("#mapMenuBtn")) closeMenu(); });
+$("#mapMenuBtn").addEventListener("click", e => {
+  if (menuEl) return closeMenu();
+  openMenu(e.currentTarget, `
+    <button data-a="new-features">New continent<small>Coastline, mountains, forests, towns and names</small></button>
+    <button data-a="new-continent">New continent, coast only</button>
+    <button data-a="new-archipelago">New archipelago<small>Scattered islands</small></button>
+    <button data-a="new-blank">New blank sea<small>Paint the land yourself</small></button>
+    <div class="sep"></div>
+    <button data-a="rename">Rename this map</button>
+    <button data-a="delete" style="color:var(--danger)">Delete this map</button>`, (a, btn) => {
+    if (a.startsWith("new-")) {
+      closeMenu(); const kind = a.slice(4);
+      const m = generate(kind === "features" ? "continent" : kind, kind === "features");
+      if (kind !== "features") m.name = kind === "blank" ? "Untitled map" : kind === "archipelago" ? "Untitled isles" : "Untitled continent";
+      if (!S.saved) saveNow();
+      openMap(m); changed();
+    } else if (a === "rename") {
+      closeMenu(); const inp = $("#mapName"), sel = $("#mapSelect"); inp.value = S.map.name; sel.hidden = true; inp.hidden = false; inp.focus(); inp.select();
+    } else if (a === "delete") {
+      if (!btn.dataset.armed) { btn.dataset.armed = "1"; btn.textContent = `Delete "${S.map.name}" for good? Click again`; return; }
+      closeMenu(); deleteMap();
+    }
+  });
+});
+const finishRename = () => {
+  const inp = $("#mapName"); if (inp.hidden) return;
+  const v = inp.value.trim(); inp.hidden = true; $("#mapSelect").hidden = false;
+  if (v && v !== S.map.name) { pushUndo(); S.map.name = v; renderMapSelect(); changed(); }
+};
+$("#mapName").addEventListener("blur", finishRename);
+$("#mapName").addEventListener("keydown", e => { if (e.key === "Enter") finishRename(); if (e.key === "Escape") { $("#mapName").value = S.map.name; finishRename(); } });
+async function deleteMap() {
+  const id = S.map.id;
+  if (AND) AND.deleteMap(id);
+  else if (S.db && S.docs[id]) { try { await S.db.doc("maps/" + id).delete(); } catch { S.storeState = "error"; setStatus(); return; } }
+  delete S.docs[id]; S.maps = S.maps.filter(m => m.id !== id);
+  const next = S.maps[0];
+  const nd = next && getDoc(next.id);
+  if (nd) openMap(docToMap(next.id, nd)); else openMap(generate("continent", true), true);
+}
+
+// ======================= drawer =======================
+function stampPreview(kind) {
+  const c = document.createElement("canvas"); c.width = 96; c.height = 96; const x = c.getContext("2d");
+  const s = kind === "mountain" || kind === "volcano" ? 64 : kind === "village" || kind === "dot" ? 44 : 54;
+  drawIcon(x, { id: "p" + kind, kind, x: 48, y: 48 + s * .45, s }, STYLES.parchment); return c;
+}
+const previews = {};
+function setTool(t) {
+  S.tool = t; if (t !== "select" && t !== "label" && t !== "decor") S.sel = null;
+  document.querySelectorAll("[data-tool]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.tool === t)));
+  cv.style.cursor = t === "hand" ? "grab" : t === "select" ? "default" : "crosshair";
+  $("#drawer").classList.remove("collapsed");
+  renderDrawer(); render();
+}
+function sliderRow(id, label, min, max, step, val, fmt = v => v) {
+  return `<div class="row"><label for="${id}">${label}</label><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"><span class="val" id="${id}V">${fmt(val)}</span></div>`;
+}
+const HINTS = {
+  select: "Click a feature to select it. Drag to move. Delete removes it. Drag empty space to pan.",
+  hand: "Drag to pan. Scroll or pinch to zoom.",
+  land: "Drag to paint land. Hold Space to pan, [ and ] change the brush.",
+  sea: "Drag to carve out sea, lakes and bays.",
+  stamp: "Click to place. Mountains, hills, forests and marsh paint as you drag.",
+  path: "Drag to draw. Rivers widen toward the end you finish at, so start at the source.",
+  label: "Type a name, then click the map to place it. Drag it to move it.",
+  decor: "Click the map to place it, then drag it into position.",
+  erase: "Drag over features to remove them. The land stays.",
+};
+function renderDrawer() {
+  const d = $("#drawer"), sel = selected(), m = S.map;
+  $("#hint").textContent = HINTS[S.tool] || "";
+  let h = "";
+  if (sel && (S.tool === "select" || S.tool === "label" || S.tool === "decor" || S.tool === "stamp")) {
+    h += `<section><h3>Selected</h3>`;
+    if (sel.type === "label") {
+      h += `<input class="field" id="selText" type="text" value="${esc(sel.text)}" maxlength="80" aria-label="Name">
+        <div class="seg" id="selStyle">${Object.entries(LABELS).map(([k, v]) => `<button data-v="${k}" aria-pressed="${sel.style === k}">${v.name}</button>`).join("")}</div>
+        ${sliderRow("selSize", "Size", 10, 120, 1, sel.size || LABELS[sel.style].size)}
+        ${sliderRow("selBend", "Curve", -1, 1, .05, sel.bend || 0, v => Math.round(v * 100))}
+        ${sliderRow("selRot", "Angle", -90, 90, 1, sel.rot || 0, v => v + "°")}`;
+    } else if (sel.type === "icon") {
+      h += `<p class="stampname">${esc(STAMP[sel.kind]?.name || "Feature")}</p>${sliderRow("selSize", "Size", 10, 200, 1, sel.s)}`;
+    } else if (sel.type === "path") {
+      h += `<div class="seg" id="selKind">${Object.entries(PATHS).map(([k, v]) => `<button data-v="${k}" aria-pressed="${sel.kind === k}">${v}</button>`).join("")}</div>
+        ${sliderRow("selW", "Width", .4, 3, .1, sel.w || 1, v => v + "×")}
+        ${sel.kind === "river" ? `<button class="btn" id="selReverse">Swap source and mouth</button>` : ""}`;
+    } else if (sel.type === "compass") h += `<p class="stampname">Compass rose</p>${sliderRow("selSize", "Size", 40, 300, 1, sel.s)}`;
+    else if (sel.type === "scale") h += `<p class="stampname">Scale bar</p><input class="field" id="selText" type="text" value="${esc(sel.text)}" maxlength="30" aria-label="Distance">${sliderRow("selSize", "Length", 100, 800, 1, sel.s)}`;
+    else if (sel.type === "cartouche") h += `<p class="stampname">Title</p><input class="field" id="selText" type="text" value="${esc(sel.text)}" maxlength="60" aria-label="Title">${sliderRow("selSize", "Size", 20, 120, 1, sel.size || 46)}`;
+    h += `<div class="btnrow"><button class="btn danger" id="selDelete">Delete</button></div></section>`;
+  }
+  const t = S.tool;
+  h += `<section><h3>Tool</h3><p class="tname">${TOOLS[t]}</p>`;
+  if (t === "land" || t === "sea" || t === "erase") h += sliderRow("brush", "Brush", 10, 300, 5, S.brush);
+  if (t === "stamp") {
+    h += `<div class="stamps" id="stamps">${STAMPS.map(([k, n]) => `<button data-k="${k}" title="${n}" aria-label="${n}" aria-pressed="${S.stamp === k}"></button>`).join("")}</div>
+      <p class="stampname">${STAMP[S.stamp].name}</p>
+      ${sliderRow("stampSize", "Size", .4, 2.5, .05, S.stampSize, v => Math.round(v * 100) + "%")}
+      ${STAMP[S.stamp].scatter ? `<label class="check"><input type="checkbox" id="scatter" ${S.scatter ? "checked" : ""}> Paint a range as you drag</label>` : ""}`;
+  }
+  if (t === "path") h += `<div class="seg" id="pathKind">${Object.entries(PATHS).map(([k, v]) => `<button data-v="${k}" aria-pressed="${S.pathKind === k}">${v}</button>`).join("")}</div>`;
+  if (t === "label") h += `<input class="field" id="labelText" type="text" placeholder="Name, or leave blank for a made-up one" value="${esc(S.labelText)}" maxlength="80">
+      <div class="seg" id="labelStyle">${Object.entries(LABELS).map(([k, v]) => `<button data-v="${k}" aria-pressed="${S.labelStyle === k}">${v.name}</button>`).join("")}</div>`;
+  if (t === "decor") h += `<div class="seg" id="decorKind"><button data-v="compass" aria-pressed="${S.decor === "compass"}">Compass</button><button data-v="scale" aria-pressed="${S.decor === "scale"}">Scale bar</button><button data-v="cartouche" aria-pressed="${S.decor === "cartouche"}">Title</button></div>`;
+  h += `<p>${HINTS[t]}</p></section>`;
+  if (m) {
+    h += `<section><h3>Map</h3>
+      <div class="seg" id="mapStyle">${Object.entries(STYLES).map(([k, v]) => `<button data-v="${k}" aria-pressed="${m.settings.style === k}">${v.name}</button>`).join("")}</div>
+      <label class="check"><input type="checkbox" id="mapFrame" ${m.settings.frame ? "checked" : ""}> Border</label>
+      <p>${m.items.filter(i => i.type === "label").length} names · ${m.items.filter(i => i.type === "icon").length} features · ${m.items.filter(i => i.type === "path").length} rivers and roads</p>
+      <p>Exports as a 4800 × 3200 PNG, enough for a full book page at 300 dpi.</p></section>
+      <section><h3>Keys</h3><p><kbd>V</kbd> select · <kbd>B</kbd> land · <kbd>E</kbd> sea · <kbd>S</kbd> features · <kbd>R</kbd> rivers · <kbd>T</kbd> names · <kbd>X</kbd> erase · <kbd>Space</kbd> pan · <kbd>Ctrl Z</kbd> undo</p></section>`;
+  }
+  d.innerHTML = h;
+  // previews are drawn once and reused
+  d.querySelectorAll("#stamps button").forEach(b => { const k = b.dataset.k; previews[k] ??= stampPreview(k); const c = document.createElement("canvas"); c.width = 96; c.height = 96; c.getContext("2d").drawImage(previews[k], 0, 0); b.appendChild(c); });
+}
+
+// drawer events (delegated so re-renders keep working)
+let editPushed = false;
+$("#drawer").addEventListener("pointerdown", () => { editPushed = false; });
+$("#drawer").addEventListener("input", e => {
+  const id = e.target.id, v = e.target.type === "range" ? parseFloat(e.target.value) : e.target.value, sel = selected();
+  const vEl = document.getElementById(id + "V");
+  if (vEl) vEl.textContent = id === "selBend" ? Math.round(v * 100) : id === "selRot" ? v + "°" : id === "selW" ? v + "×" : id === "stampSize" ? Math.round(v * 100) + "%" : v;
+  if (id === "brush") { S.brush = v; render(); return; }
+  if (id === "stampSize") { S.stampSize = v; return; }
+  if (id === "labelText") { S.labelText = v; return; }
+  if (!sel) return;
+  if (!editPushed) { pushUndo(); editPushed = true; }
+  if (id === "selText") sel.text = v;
+  if (id === "selSize") { if (sel.type === "icon" || sel.type === "compass" || sel.type === "scale") sel.s = v; else sel.size = v; }
+  if (id === "selBend") sel.bend = v;
+  if (id === "selRot") sel.rot = v;
+  if (id === "selW") sel.w = v;
+  changed();
+});
+$("#drawer").addEventListener("change", e => {
+  if (e.target.id === "scatter") S.scatter = e.target.checked;
+  if (e.target.id === "mapFrame") { pushUndo(); S.map.settings.frame = e.target.checked; changed(); }
+  if (e.target.id === "selText") editPushed = false;
+});
+$("#drawer").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const seg = b.closest(".seg"), sel = selected();
+  if (b.dataset.k) { S.stamp = b.dataset.k; renderDrawer(); return; }
+  if (b.id === "selDelete") return deleteSelected();
+  if (b.id === "selReverse" && sel) { pushUndo(); sel.pts.reverse(); changed(); return; }
+  if (!seg) return;
+  const v = b.dataset.v;
+  if (seg.id === "pathKind") S.pathKind = v;
+  if (seg.id === "labelStyle") S.labelStyle = v;
+  if (seg.id === "decorKind") S.decor = v;
+  if (seg.id === "mapStyle") { pushUndo(); S.map.settings.style = v; changed(); }
+  if (seg.id === "selStyle" && sel) { pushUndo(); sel.style = v; sel.size = LABELS[v].size; changed(); }
+  if (seg.id === "selKind" && sel) { pushUndo(); sel.kind = v; changed(); }
+  renderDrawer();
+});
+$("#rail").addEventListener("click", e => { const b = e.target.closest("[data-tool]"); if (!b) return;
+  if (b.dataset.tool === S.tool && matchMedia("(max-width: 760px)").matches) { $("#drawer").classList.toggle("collapsed"); return; }
+  setTool(b.dataset.tool); });
+$("#undoBtn").onclick = undo; $("#redoBtn").onclick = redo;
+$("#zoomIn").onclick = () => { const r = cv.getBoundingClientRect(); zoomAt(1.3, r.width / 2, r.height / 2); };
+$("#zoomOut").onclick = () => { const r = cv.getBoundingClientRect(); zoomAt(1 / 1.3, r.width / 2, r.height / 2); };
+$("#zoomFit").onclick = fit;
+new ResizeObserver(() => { if (!S.userMoved && S.map) fit(); else render(); }).observe(cv);
+
+// ======================= export =======================
+$("#exportBtn").addEventListener("click", async () => {
+  const btn = $("#exportBtn"), label = btn.querySelector(".lbl");
+  if (AND) {
+    label && (label.textContent = "Exporting…"); btn.disabled = true;
+    setTimeout(() => {
+      try {
+        const c = document.createElement("canvas"); c.width = W * 2; c.height = H * 2;
+        const x = c.getContext("2d"); x.scale(2, 2); drawMap(x, { clean: true });
+        const name = (S.map.name || "map").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").toLowerCase() || "map";
+        // handed over in 1 MB pieces: one 24 MB string is too much for some phones
+        const b64 = c.toDataURL("image/png").split(",")[1]; c.width = c.height = 0;
+        const job = AND.beginPng(name + ".png"); let res = job.startsWith("Couldn") ? job : "";
+        for (let i = 0; !res && i < b64.length; i += 1 << 20) if (AND.appendPng(job, b64.slice(i, i + (1 << 20))) !== "ok") res = "Export failed: the phone ran out of space";
+        if (!res) res = AND.finishPng(job);
+        $("#status").textContent = res; $("#status").classList.toggle("warn", !res.startsWith("Saved"));
+      } catch (err) { $("#status").textContent = "Export failed: the map is too large for this phone's memory"; $("#status").classList.add("warn"); }
+      label && (label.textContent = "Export PNG"); btn.disabled = false;
+    }, 30);
+    return;
+  }
+  if (!S.downloads) { $("#status").textContent = "Export isn't available in this view. Open the map on claude.ai while signed in."; $("#status").classList.add("warn"); return; }
+  label && (label.textContent = "Exporting…"); btn.disabled = true;
+  try {
+    const c = document.createElement("canvas"); c.width = W * 2; c.height = H * 2;
+    const x = c.getContext("2d"); x.scale(2, 2); drawMap(x, { clean: true });
+    const blob = await new Promise(res => c.toBlob(res, "image/png"));
+    const name = (S.map.name || "map").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").toLowerCase() || "map";
+    await S.downloads.save({ filename: name + ".png", data: blob });
+  } catch (err) {
+    if (err && err.code && err.code !== "cancelled" && err.code !== "declined") { $("#status").textContent = "Export failed: " + (err.message || err.code); $("#status").classList.add("warn"); }
+  }
+  label && (label.textContent = "Export PNG"); btn.disabled = false;
+});
+
+// ======================= start =======================
+buildPaper();
+setTool("select");
+openMap(generate("continent", true, 20481), true);
+if (document.fonts) document.fonts.ready.then(() => render());
+updateHistoryButtons();
+
+window.__flush = () => { clearTimeout(saveTimer); if (!S.saved && !S.example) saveNow(); };
+if (AND) {
+  S.storeState = "ok";
+  try { S.maps = JSON.parse(AND.listMaps() || "[]"); } catch { S.maps = []; }
+  const last = AND.lastMap(), pick = S.maps.find(m => m.id === last) || S.maps[0], d = pick && getDoc(pick.id);
+  if (d) openMap(docToMap(pick.id, d)); else renderMapSelect();
+  setStatus();
+}
+(async () => {
+  if (AND) return;
+  if (!window.claude?.use) { S.storeState = "none"; return setStatus(); }
+  const [db, downloads] = await Promise.all([claude.use("db"), claude.use("downloads")]);
+  S.downloads = downloads;
+  if (!downloads) $("#exportBtn").title = "Export isn't available in this view";
+  if (!db) { S.storeState = "none"; return setStatus(); }
+  S.db = db;
+  let first = true;
+  const timer = setTimeout(() => { if (first) { S.storeState = "error"; setStatus(); } }, 10000);
+  db.collection("maps").orderBy("updatedAt", "desc").onSnapshot(snap => {
+    clearTimeout(timer);
+    if (S.storeState === "connecting" || S.storeState === "error") S.storeState = "ok";
+    S.docs = {}; S.maps = snap.docs.map(d => { const data = d.data(); S.docs[d.id] = data; return { id: d.id, name: data.name || "Untitled map", updatedAt: data.updatedAt || 0 }; });
+    if (first) {
+      first = false;
+      let last = null; try { last = localStorage.getItem("mapwright:last"); } catch {}
+      const pick = S.maps.find(m => m.id === last) || S.maps[0];
+      if (pick && (S.example || S.saved)) openMap(docToMap(pick.id, S.docs[pick.id]));
+    } else if (S.map && S.saved && !S.saving) {
+      // someone else changed the open map: show their version
+      const d = S.docs[S.map.id];
+      if (d && d.editor !== SESSION && !snap.metadata?.hasPendingWrites) { const keepView = S.view; openMap(docToMap(S.map.id, d)); S.view = keepView; render(); }
+    }
+    renderMapSelect(); setStatus();
+  }, err => { clearTimeout(timer); S.storeState = "error"; setStatus(); });
+})();
+})();
+</script>
+
+</body>
+</html>

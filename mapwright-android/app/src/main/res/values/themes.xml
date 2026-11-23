@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Mapwright" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/desk</item>
+    </style>
+    <color name="desk">#FF171C19</color>
+    <color name="brass">#FFD4AB5C</color>
+</resources>
