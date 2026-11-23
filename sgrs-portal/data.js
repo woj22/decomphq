@@ -4,6 +4,7 @@
 //   id        case number shown on the file, e.g. "SGRS-0001"
 //   alias     in-game name or callsign
 //   discord   Discord username
+//   nationality  in-game nationality or country, e.g. "Belgian", "Dutch", "French"
 //   status    "wanted" | "at-large" | "in-custody" | "cleared"
 //   threat    "low" | "medium" | "high" | "extreme"
 //   charges   list of in-game charges, e.g. ["Treason against the Crown"]
@@ -26,12 +27,12 @@ window.SGRS_DATA = {
   mapUrl: "../belgium-map/index.html",
 
   profiles: [
-    { id: "SGRS-0001", alias: "", discord: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SGRS-0002", alias: "", discord: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SGRS-0003", alias: "", discord: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SGRS-0004", alias: "", discord: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SGRS-0005", alias: "", discord: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
-    { id: "SGRS-0006", alias: "", discord: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SGRS-0001", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SGRS-0002", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SGRS-0003", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SGRS-0004", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SGRS-0005", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
+    { id: "SGRS-0006", alias: "", discord: "", nationality: "", status: "", threat: "", charges: [], lastSeen: "", reward: "", issued: "", issuedBy: "", photo: "", summary: "", notes: "" },
   ],
 
   // Short notices shown on the Bulletins tab: { date: "2026-11-23", title: "", body: "" }

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SGRS Wanted Register</title>
 <meta name="description" content="Wanted register and case files for the Kingdom of Belgium roleplay server.">
-<link rel="icon" href="logo.png">
+<link rel="icon" href="logo-dark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,600;62..125,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -53,7 +53,7 @@ button, input, select { font: inherit; color: inherit; }
 .top { border-bottom: 1px solid var(--line); background: rgb(11 13 16 / .85); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 5; }
 .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 12px; }
 .crest { display: flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
-.crest-badge { width: 44px; height: 56px; border-radius: 10px; background: #fff; display: grid; place-items: center; flex: none; padding: 4px; }
+.crest-badge { width: 44px; height: 56px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); display: grid; place-items: center; flex: none; padding: 4px; }
 .crest-badge img { height: 48px; width: auto; max-width: 100%; object-fit: contain; display: block; }
 .crest-text { display: grid; min-width: 0; }
 .crest-text b { font: 800 1.35rem/1 var(--font-display); font-stretch: 110%; letter-spacing: .06em; }
@@ -142,6 +142,7 @@ select { background: var(--panel); border: 1px solid var(--line); border-radius:
 .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0; }
 @media (max-width: 520px) { .fields { grid-template-columns: minmax(0, 1fr); } }
 .fields div { background: var(--panel); padding: 11px 14px; min-width: 0; }
+.fields div:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .fields dt { font: 500 .66rem var(--font-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--faint); }
 .fields dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
 .fields dd.none { color: var(--faint); font-weight: 400; font-style: italic; }
@@ -177,7 +178,7 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
 <header class="top gutter">
   <div class="wrap">
     <a class="crest" href="#wanted">
-      <span class="crest-badge"><img src="logo.png" alt=""></span>
+      <span class="crest-badge"><img src="logo-dark.png" alt=""></span>
       <span class="crest-text"><b id="agency">SGRS</b><span id="agency-long"></span></span>
     </a>
     <nav aria-label="Portal sections">
@@ -204,10 +205,11 @@ footer .wrap { padding-block: 18px; display: flex; justify-content: space-betwee
       <div class="filters">
         <label class="search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="q" type="search" placeholder="Search alias, Discord name, case number or charge" aria-label="Search files">
+          <input id="q" type="search" placeholder="Search alias, Discord name, nationality, case number or charge" aria-label="Search files">
         </label>
         <div class="chips" id="status-chips" role="group" aria-label="Filter by status"></div>
         <select id="threat-filter" aria-label="Filter by threat level"></select>
+        <select id="nation-filter" aria-label="Filter by nationality"></select>
         <select id="region-filter" aria-label="Filter by last seen"></select>
       </div>
 
@@ -299,7 +301,7 @@ document.getElementById("tally").innerHTML = ["wanted", "at-large", "in-custody"
   `<div style="--c:${STATUS[s].c}"><b>${count(s)}</b><span>${STATUS[s].label}</span></div>`).join("");
 
 // filters
-const F = { q: "", status: "all", threat: "all", region: "all" };
+const F = { q: "", status: "all", threat: "all", region: "all", nation: "all" };
 const chips = document.getElementById("status-chips");
 chips.innerHTML = [["all", "All"], ["wanted", "Wanted"], ["at-large", "At large"], ["in-custody", "In custody"], ["cleared", "Cleared"]]
   .map(([k, l]) => `<button class="chip" data-s="${k}" aria-pressed="${k === "all"}">${l}</button>`).join("");
@@ -315,6 +317,10 @@ tf.addEventListener("change", () => { F.threat = tf.value; renderGrid(); });
 const rf = document.getElementById("region-filter");
 rf.innerHTML = `<option value="all">Anywhere</option>` + Object.entries(PLACES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
 rf.addEventListener("change", () => { F.region = rf.value; renderGrid(); });
+const nf = document.getElementById("nation-filter");
+const nations = [...new Set(D.profiles.map(p => (p.nationality || "").trim()).filter(Boolean))].sort();
+nf.innerHTML = `<option value="all">Any nationality</option>` + nations.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+nf.addEventListener("change", () => { F.nation = nf.value; renderGrid(); });
 document.getElementById("q").addEventListener("input", e => { F.q = e.target.value.trim().toLowerCase(); renderGrid(); });
 
 function threatHTML(t) {
@@ -336,8 +342,9 @@ function renderGrid() {
     if (F.status !== "all" && status(p) !== F.status) return false;
     if (F.threat !== "all" && p.threat !== F.threat) return false;
     if (F.region !== "all" && p.lastSeen !== F.region) return false;
+    if (F.nation !== "all" && (p.nationality || "").trim() !== F.nation) return false;
     if (F.q) {
-      const hay = [p.id, p.alias, p.discord, ...(p.charges || [])].join(" ").toLowerCase();
+      const hay = [p.id, p.alias, p.discord, p.nationality, ...(p.charges || [])].join(" ").toLowerCase();
       if (!hay.includes(F.q)) return false;
     }
     return true;
@@ -359,6 +366,7 @@ function renderGrid() {
         <h2 class="${named(p) ? "" : "blank"}">${named(p) ? esc(p.alias) : "Unassigned file"}</h2>
         <p>${p.summary ? esc(p.summary) : filled(p) ? "" : "Profile not filled in yet."}</p>
         <dl class="meta">
+          <dt>Nationality</dt><dd class="${p.nationality ? "" : "none"}">${val(p.nationality)}</dd>
           <dt>Charges</dt><dd class="${charges.length ? "" : "none"}">${charges.length ? esc(charges[0]) + (charges.length > 1 ? ` +${charges.length - 1}` : "") : "—"}</dd>
           <dt>Seen</dt><dd class="${p.lastSeen ? "" : "none"}">${val(PLACES[p.lastSeen])}</dd>
           <dt>Threat</dt><dd>${threatHTML(p.threat)}</dd>
@@ -395,6 +403,7 @@ function renderFile(id) {
         <dl class="fields">
           ${field("Alias", p.alias && esc(p.alias))}
           ${field("Discord", p.discord && esc(p.discord))}
+          ${field("Nationality", p.nationality && esc(p.nationality))}
           ${field("Last seen", seen)}
           ${field("Threat level", THREAT[p.threat] && threatHTML(p.threat))}
           ${field("Reward", p.reward && esc(p.reward))}
