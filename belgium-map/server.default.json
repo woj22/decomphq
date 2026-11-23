@@ -1,0 +1,19 @@
+{
+ "name": "Your Server",
+ "areas": {
+  "belgium": {"title": "Monarch of Belgium", "ruler": "", "members": null},
+  "flanders": {"title": "Sovereign of Flanders", "ruler": "", "members": null},
+  "wallonia": {"title": "Sovereign of Wallonia", "ruler": "", "members": null},
+  "brussels": {"title": "Lord of Brussels", "ruler": "", "members": null},
+  "antwerp": {"title": "Margrave of Antwerp", "ruler": "", "members": null},
+  "east-flanders": {"title": "Count of East Flanders", "ruler": "", "members": null},
+  "west-flanders": {"title": "Count of West Flanders", "ruler": "", "members": null},
+  "flemish-brabant": {"title": "Duke of Brabant", "ruler": "", "members": null},
+  "limburg": {"title": "Count of Limburg", "ruler": "", "members": null},
+  "hainaut": {"title": "Count of Hainaut", "ruler": "", "members": null},
+  "liege": {"title": "Prince-Bishop of Liège", "ruler": "", "members": null},
+  "luxembourg": {"title": "Duke of Luxembourg", "ruler": "", "members": null},
+  "namur": {"title": "Count of Namur", "ruler": "", "members": null},
+  "walloon-brabant": {"title": "Lord of Walloon Brabant", "ruler": "", "members": null}
+ }
+}

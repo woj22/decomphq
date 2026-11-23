@@ -1,4 +1,4 @@
-"""Build index.html from template.html + provinces.geojson.
+"""Build index.html from template.html, src/*, server.default.json and provinces.geojson.
 
 Projects the province polygons to SVG path strings (equirectangular,
 corrected for latitude) and injects them into the template.
@@ -70,7 +70,32 @@ geo = {"w": W, "h": H, "shapes": out,
            "namur": lonlat(4.8719, 50.4674), "arlon": lonlat(5.8167, 49.6833),
            "wavre": lonlat(4.6075, 50.7170),
        }}
-tpl = (HERE / "template.html").read_text()
-body = tpl.replace("__GEO__", json.dumps(geo, separators=(",", ":")))
+# The page republishes itself (when an editor saves server data) in exactly this shape.
+SKEL = ('<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">'
+        '<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'
+        'html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}'
+        'img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>\n')
+HEAD = ('<title>Belgium Region Atlas</title>\n'
+        '<meta name="claude:viewport-fit-sides" content="cover">\n'
+        '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+        '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800'
+        '&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">')
+src = HERE / "src"
+server = json.loads((HERE / "server.default.json").read_text())
+parts = {
+    "__SKELJSON__": json.dumps(SKEL),
+    "__HEADJSON__": json.dumps(HEAD),
+    "__SKEL__": SKEL,
+    "__HEAD__": HEAD,
+    "__STYLE__": (src / "style.css").read_text(),
+    "__SERVER__": json.dumps(server, indent=1, ensure_ascii=False).replace("<", "\\u003c"),
+    "__GEO__": json.dumps(geo, separators=(",", ":")),
+    "__DATA__": (src / "content.js").read_text(),
+    "__APP__": (src / "app.js").read_text(),
+}
+body = (HERE / "template.html").read_text()
+for k, v in parts.items():
+    body = body.replace(k, v, 1)
 (HERE / "index.html").write_text(body)
 print("wrote index.html", W, "x", H, len(body), "bytes")
